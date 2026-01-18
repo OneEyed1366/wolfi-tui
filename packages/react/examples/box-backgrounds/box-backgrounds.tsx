@@ -1,5 +1,5 @@
-import React from 'react';
-import {Box, Text} from '../../src/index.js';
+import React from 'react'
+import { Box, Text } from '../../src/index.js'
 
 function BoxBackgrounds() {
 	return (
@@ -114,7 +114,7 @@ function BoxBackgrounds() {
 				<Text>Press Ctrl+C to exit</Text>
 			</Box>
 		</Box>
-	);
+	)
 }
 
-export default BoxBackgrounds;
+export default BoxBackgrounds

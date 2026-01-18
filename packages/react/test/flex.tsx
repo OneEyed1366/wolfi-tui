@@ -1,9 +1,9 @@
-import React from 'react';
-import test from 'ava';
-import {Box, Text} from '@wolfie/react';
-import {renderToString} from './helpers/render-to-string.js';
+import React from 'react'
+import { test, expect } from 'vitest'
+import { Box, Text } from '@wolfie/react'
+import { renderToString } from './helpers/render-to-string.js'
 
-test('grow equally', t => {
+test('grow equally', () => {
 	const output = renderToString(
 		<Box width={6}>
 			<Box flexGrow={1}>
@@ -12,26 +12,26 @@ test('grow equally', t => {
 			<Box flexGrow={1}>
 				<Text>B</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A  B');
-});
+	expect(output).toBe('A  B')
+})
 
-test('grow one element', t => {
+test('grow one element', () => {
 	const output = renderToString(
 		<Box width={6}>
 			<Box flexGrow={1}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A    B');
-});
+	expect(output).toBe('A    B')
+})
 
-test('dont shrink', t => {
+test('dont shrink', () => {
 	const output = renderToString(
 		<Box width={16}>
 			<Box flexShrink={0} width={6}>
@@ -43,13 +43,13 @@ test('dont shrink', t => {
 			<Box width={6}>
 				<Text>C</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A     B     C');
-});
+	expect(output).toBe('A     B     C')
+})
 
-test('shrink equally', t => {
+test('shrink equally', () => {
 	const output = renderToString(
 		<Box width={10}>
 			<Box flexShrink={1} width={6}>
@@ -59,60 +59,60 @@ test('shrink equally', t => {
 				<Text>B</Text>
 			</Box>
 			<Text>C</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A    B   C');
-});
+	expect(output).toBe('A    B   C')
+})
 
-test('set flex basis with flexDirection="row" container', t => {
+test('set flex basis with flexDirection="row" container', () => {
 	const output = renderToString(
 		<Box width={6}>
 			<Box flexBasis={3}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A  B');
-});
+	expect(output).toBe('A  B')
+})
 
-test('set flex basis in percent with flexDirection="row" container', t => {
+test('set flex basis in percent with flexDirection="row" container', () => {
 	const output = renderToString(
 		<Box width={6}>
 			<Box flexBasis="50%">
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A  B');
-});
+	expect(output).toBe('A  B')
+})
 
-test('set flex basis with flexDirection="column" container', t => {
+test('set flex basis with flexDirection="column" container', () => {
 	const output = renderToString(
 		<Box height={6} flexDirection="column">
 			<Box flexBasis={3}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A\n\n\nB\n\n');
-});
+	expect(output).toBe('A\n\n\nB\n\n')
+})
 
-test('set flex basis in percent with flexDirection="column" container', t => {
+test('set flex basis in percent with flexDirection="column" container', () => {
 	const output = renderToString(
 		<Box height={6} flexDirection="column">
 			<Box flexBasis="50%">
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A\n\n\nB\n\n');
-});
+	expect(output).toBe('A\n\n\nB\n\n')
+})

@@ -1,5 +1,5 @@
-import React from 'react';
-import {Box, Text, render, useFocus} from '../../src/index.js';
+import React from 'react'
+import { Box, Text, render, useFocus } from '../../src/index.js'
 
 function Focus() {
 	return (
@@ -14,16 +14,16 @@ function Focus() {
 			<Item label="Second" />
 			<Item label="Third" />
 		</Box>
-	);
+	)
 }
 
-function Item({label}) {
-	const {isFocused} = useFocus();
+function Item({ label }) {
+	const { isFocused } = useFocus()
 	return (
 		<Text>
 			{label} {isFocused && <Text color="green">(focused)</Text>}
 		</Text>
-	);
+	)
 }
 
-render(<Focus />);
+render(<Focus />)

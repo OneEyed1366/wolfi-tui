@@ -1,5 +1,5 @@
-import React from 'react';
-import {render, Box, Text} from '../../src/index.js';
+import React from 'react'
+import { render, Box, Text } from '../../src/index.js'
 
 function Borders() {
 	return (
@@ -36,7 +36,7 @@ function Borders() {
 				</Box>
 			</Box>
 		</Box>
-	);
+	)
 }
 
-render(<Borders />);
+render(<Borders />)

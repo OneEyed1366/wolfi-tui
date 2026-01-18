@@ -1,38 +1,38 @@
-import React from 'react';
-import test from 'ava';
-import {Box, Text} from '@wolfie/react';
-import {renderToString} from './helpers/render-to-string.js';
+import React from 'react'
+import { test, expect } from 'vitest'
+import { Box, Text } from '@wolfie/react'
+import { renderToString } from './helpers/render-to-string.js'
 
-test('gap', t => {
+test('gap', () => {
 	const output = renderToString(
 		<Box gap={1} width={3} flexWrap="wrap">
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A B\n\nC');
-});
+	expect(output).toBe('A B\n\nC')
+})
 
-test('column gap', t => {
+test('column gap', () => {
 	const output = renderToString(
 		<Box gap={1}>
 			<Text>A</Text>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A B');
-});
+	expect(output).toBe('A B')
+})
 
-test('row gap', t => {
+test('row gap', () => {
 	const output = renderToString(
 		<Box flexDirection="column" gap={1}>
 			<Text>A</Text>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A\n\nB');
-});
+	expect(output).toBe('A\n\nB')
+})

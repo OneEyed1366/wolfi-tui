@@ -1,121 +1,121 @@
-import React from 'react';
-import test from 'ava';
-import {Box, Text} from '@wolfie/react';
-import {renderToString} from './helpers/render-to-string.js';
+import React from 'react'
+import { test, expect } from 'vitest'
+import { Box, Text } from '@wolfie/react'
+import { renderToString } from './helpers/render-to-string.js'
 
-test('padding', t => {
+test('padding', () => {
 	const output = renderToString(
 		<Box padding={2}>
 			<Text>X</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\n  X\n\n');
-});
+	expect(output).toBe('\n\n  X\n\n')
+})
 
-test('padding X', t => {
+test('padding X', () => {
 	const output = renderToString(
 		<Box>
 			<Box paddingX={2}>
 				<Text>X</Text>
 			</Box>
 			<Text>Y</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '  X  Y');
-});
+	expect(output).toBe('  X  Y')
+})
 
-test('padding Y', t => {
+test('padding Y', () => {
 	const output = renderToString(
 		<Box paddingY={2}>
 			<Text>X</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\nX\n\n');
-});
+	expect(output).toBe('\n\nX\n\n')
+})
 
-test('padding top', t => {
+test('padding top', () => {
 	const output = renderToString(
 		<Box paddingTop={2}>
 			<Text>X</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\nX');
-});
+	expect(output).toBe('\n\nX')
+})
 
-test('padding bottom', t => {
+test('padding bottom', () => {
 	const output = renderToString(
 		<Box paddingBottom={2}>
 			<Text>X</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'X\n\n');
-});
+	expect(output).toBe('X\n\n')
+})
 
-test('padding left', t => {
+test('padding left', () => {
 	const output = renderToString(
 		<Box paddingLeft={2}>
 			<Text>X</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '  X');
-});
+	expect(output).toBe('  X')
+})
 
-test('padding right', t => {
+test('padding right', () => {
 	const output = renderToString(
 		<Box>
 			<Box paddingRight={2}>
 				<Text>X</Text>
 			</Box>
 			<Text>Y</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'X  Y');
-});
+	expect(output).toBe('X  Y')
+})
 
-test('nested padding', t => {
+test('nested padding', () => {
 	const output = renderToString(
 		<Box padding={2}>
 			<Box padding={2}>
 				<Text>X</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\n\n\n    X\n\n\n\n');
-});
+	expect(output).toBe('\n\n\n\n    X\n\n\n\n')
+})
 
-test('padding with multiline string', t => {
+test('padding with multiline string', () => {
 	const output = renderToString(
 		<Box padding={2}>
 			<Text>{'A\nB'}</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\n  A\n  B\n\n');
-});
+	expect(output).toBe('\n\n  A\n  B\n\n')
+})
 
-test('apply padding to text with newlines', t => {
+test('apply padding to text with newlines', () => {
 	const output = renderToString(
 		<Box padding={1}>
 			<Text>Hello{'\n'}World</Text>
-		</Box>,
-	);
-	t.is(output, '\n Hello\n World\n');
-});
+		</Box>
+	)
+	expect(output).toBe('\n Hello\n World\n')
+})
 
-test('apply padding to wrapped text', t => {
+test('apply padding to wrapped text', () => {
 	const output = renderToString(
 		<Box padding={1} width={5}>
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n Hel\n lo\n Wor\n ld\n');
-});
+	expect(output).toBe('\n Hel\n lo\n Wor\n ld\n')
+})

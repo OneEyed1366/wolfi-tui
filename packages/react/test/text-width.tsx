@@ -1,9 +1,9 @@
-import React from 'react';
-import test from 'ava';
-import {Box, Text} from '@wolfie/react';
-import {renderToString} from './helpers/render-to-string.js';
+import React from 'react'
+import { test, expect } from 'vitest'
+import { Box, Text } from '@wolfie/react'
+import { renderToString } from './helpers/render-to-string.js'
 
-test('wide characters do not add extra space inside fixed-width Box', t => {
+test('wide characters do not add extra space inside fixed-width Box', () => {
 	const output = renderToString(
 		<Box flexDirection="column">
 			<Box>
@@ -18,11 +18,11 @@ test('wide characters do not add extra space inside fixed-width Box', t => {
 				</Box>
 				<Text>|</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	const lines = output.split('\n');
+	const lines = output.split('\n')
 	// Both lines should have the pipe directly after the 2-column box
-	t.is(lines[0], '🍔|');
-	t.is(lines[1], '⏳|');
-});
+	expect(lines[0]).toBe('🍔|')
+	expect(lines[1]).toBe('⏳|')
+})

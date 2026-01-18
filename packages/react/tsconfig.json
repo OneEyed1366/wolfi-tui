@@ -1,13 +1,7 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"outDir": "build",
-		"rootDir": "src",
-		"composite": true,
-		"jsx": "react"
+		"rootDir": "src"
 	},
-	"include": ["src", "src/jsx-types.d.ts"],
-	"references": [
-		{"path": "../core"}
-	]
+	"include": ["src", "src/jsx-types.d.ts"]
 }

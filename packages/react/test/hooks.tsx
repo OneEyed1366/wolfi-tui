@@ -1,29 +1,45 @@
-import process from 'node:process';
-import url from 'node:url';
-import path from 'node:path';
-import test, {type ExecutionContext} from 'ava';
-import stripAnsi from 'strip-ansi';
-import {spawn} from 'node-pty';
+import process from 'node:process'
+import url from 'node:url'
+import path from 'node:path'
+import { createRequire } from 'node:module'
+import { test, expect, describe } from 'vitest'
+import stripAnsi from 'strip-ansi'
+import { nodePtyAvailable } from './helpers/run.js'
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+const require = createRequire(import.meta.url)
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
+
+// Try to load node-pty (may not be available on ARM64)
+let spawn: typeof import('node-pty').spawn | undefined
+try {
+	 
+	const pty = require('node-pty') as typeof import('node-pty')
+	spawn = pty.spawn
+} catch {
+	// node-pty not available
+}
 
 const term = (fixture: string, args: string[] = []) => {
-	let resolve: (value?: any) => void;
-	let reject: (error?: Error) => void;
+	if (!spawn) {
+		throw new Error('node-pty is not available')
+	}
 
-	// eslint-disable-next-line promise/param-names
+	let resolve: (value?: any) => void
+	let reject: (error?: Error) => void
+
 	const exitPromise = new Promise((resolve2, reject2) => {
-		resolve = resolve2;
-		reject = reject2;
-	});
+		resolve = resolve2
+		reject = reject2
+	})
 
 	const env: Record<string, string> = {
 		...process.env,
-		// eslint-disable-next-line @typescript-eslint/naming-convention
+		 
 		NODE_NO_WARNINGS: '1',
-		// eslint-disable-next-line @typescript-eslint/naming-convention
+		 
 		CI: 'false',
-	};
+	}
 
 	const ps = spawn(
 		'node',
@@ -37,300 +53,288 @@ const term = (fixture: string, args: string[] = []) => {
 			cols: 100,
 			cwd: __dirname,
 			env,
-		},
-	);
+		}
+	)
 
 	const result = {
 		write(input: string) {
 			// Give TS and Ink time to start up and render UI
 			// TODO: Send a signal from the Ink process when it's ready to accept input instead
 			setTimeout(() => {
-				ps.write(input);
-			}, 3000);
+				ps.write(input)
+			}, 3000)
 		},
 		output: '',
 		waitForExit: async () => exitPromise,
-	};
+	}
 
-	ps.onData(data => {
-		result.output += data;
-	});
+	ps.onData((data) => {
+		result.output += data
+	})
 
-	ps.onExit(({exitCode}) => {
+	ps.onExit(({ exitCode }) => {
 		if (exitCode === 0) {
-			resolve();
-			return;
+			resolve()
+			return
 		}
 
-		reject(new Error(`Process exited with non-zero exit code: ${exitCode}`));
-	});
+		reject(new Error(`Process exited with non-zero exit code: ${exitCode}`))
+	})
 
-	return result;
-};
+	return result
+}
 
-test.serial('useInput - handle lowercase character', async t => {
-	const ps = term('use-input', ['lowercase']);
-	ps.write('q');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+// All tests in this file require node-pty
+describe.skipIf(!nodePtyAvailable)('PTY hook tests', () => {
+	test('useInput - handle lowercase character', async () => {
+		const ps = term('use-input', ['lowercase'])
+		ps.write('q')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle uppercase character', async t => {
-	const ps = term('use-input', ['uppercase']);
-	ps.write('Q');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle uppercase character', async () => {
+		const ps = term('use-input', ['uppercase'])
+		ps.write('Q')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial(
-	'useInput - \r should not count as an uppercase character',
-	async t => {
-		const ps = term('use-input', ['uppercase']);
-		ps.write('\r');
-		await ps.waitForExit();
-		t.true(ps.output.includes('exited'));
-	},
-);
+	test('useInput - \\r should not count as an uppercase character', async () => {
+		const ps = term('use-input', ['uppercase'])
+		ps.write('\r')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - pasted carriage return', async t => {
-	const ps = term('use-input', ['pastedCarriageReturn']);
-	ps.write('\rtest');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - pasted carriage return', async () => {
+		const ps = term('use-input', ['pastedCarriageReturn'])
+		ps.write('\rtest')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - pasted tab', async t => {
-	const ps = term('use-input', ['pastedTab']);
-	ps.write('\ttest');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - pasted tab', async () => {
+		const ps = term('use-input', ['pastedTab'])
+		ps.write('\ttest')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle escape', async t => {
-	const ps = term('use-input', ['escape']);
-	ps.write('\u001B');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle escape', async () => {
+		const ps = term('use-input', ['escape'])
+		ps.write('\u001B')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle ctrl', async t => {
-	const ps = term('use-input', ['ctrl']);
-	ps.write('\u0006');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle ctrl', async () => {
+		const ps = term('use-input', ['ctrl'])
+		ps.write('\u0006')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle meta', async t => {
-	const ps = term('use-input', ['meta']);
-	ps.write('\u001Bm');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle meta', async () => {
+		const ps = term('use-input', ['meta'])
+		ps.write('\u001Bm')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle up arrow', async t => {
-	const ps = term('use-input', ['upArrow']);
-	ps.write('\u001B[A');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle up arrow', async () => {
+		const ps = term('use-input', ['upArrow'])
+		ps.write('\u001B[A')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle down arrow', async t => {
-	const ps = term('use-input', ['downArrow']);
-	ps.write('\u001B[B');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle down arrow', async () => {
+		const ps = term('use-input', ['downArrow'])
+		ps.write('\u001B[B')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle left arrow', async t => {
-	const ps = term('use-input', ['leftArrow']);
-	ps.write('\u001B[D');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle left arrow', async () => {
+		const ps = term('use-input', ['leftArrow'])
+		ps.write('\u001B[D')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle right arrow', async t => {
-	const ps = term('use-input', ['rightArrow']);
-	ps.write('\u001B[C');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle right arrow', async () => {
+		const ps = term('use-input', ['rightArrow'])
+		ps.write('\u001B[C')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle meta + up arrow', async t => {
-	const ps = term('use-input', ['upArrowMeta']);
-	ps.write('\u001B\u001B[A');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle meta + up arrow', async () => {
+		const ps = term('use-input', ['upArrowMeta'])
+		ps.write('\u001B\u001B[A')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle meta + down arrow', async t => {
-	const ps = term('use-input', ['downArrowMeta']);
-	ps.write('\u001B\u001B[B');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle meta + down arrow', async () => {
+		const ps = term('use-input', ['downArrowMeta'])
+		ps.write('\u001B\u001B[B')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle meta + left arrow', async t => {
-	const ps = term('use-input', ['leftArrowMeta']);
-	ps.write('\u001B\u001B[D');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle meta + left arrow', async () => {
+		const ps = term('use-input', ['leftArrowMeta'])
+		ps.write('\u001B\u001B[D')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle meta + right arrow', async t => {
-	const ps = term('use-input', ['rightArrowMeta']);
-	ps.write('\u001B\u001B[C');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle meta + right arrow', async () => {
+		const ps = term('use-input', ['rightArrowMeta'])
+		ps.write('\u001B\u001B[C')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle ctrl + up arrow', async t => {
-	const ps = term('use-input', ['upArrowCtrl']);
-	ps.write('\u001B[1;5A');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle ctrl + up arrow', async () => {
+		const ps = term('use-input', ['upArrowCtrl'])
+		ps.write('\u001B[1;5A')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle ctrl + down arrow', async t => {
-	const ps = term('use-input', ['downArrowCtrl']);
-	ps.write('\u001B[1;5B');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle ctrl + down arrow', async () => {
+		const ps = term('use-input', ['downArrowCtrl'])
+		ps.write('\u001B[1;5B')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle ctrl + left arrow', async t => {
-	const ps = term('use-input', ['leftArrowCtrl']);
-	ps.write('\u001B[1;5D');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle ctrl + left arrow', async () => {
+		const ps = term('use-input', ['leftArrowCtrl'])
+		ps.write('\u001B[1;5D')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle ctrl + right arrow', async t => {
-	const ps = term('use-input', ['rightArrowCtrl']);
-	ps.write('\u001B[1;5C');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle ctrl + right arrow', async () => {
+		const ps = term('use-input', ['rightArrowCtrl'])
+		ps.write('\u001B[1;5C')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle page down', async t => {
-	const ps = term('use-input', ['pageDown']);
-	ps.write('\u001B[6~');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle page down', async () => {
+		const ps = term('use-input', ['pageDown'])
+		ps.write('\u001B[6~')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle page up', async t => {
-	const ps = term('use-input', ['pageUp']);
-	ps.write('\u001B[5~');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle page up', async () => {
+		const ps = term('use-input', ['pageUp'])
+		ps.write('\u001B[5~')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle home', async t => {
-	const ps = term('use-input', ['home']);
-	ps.write('\u001B[H');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle home', async () => {
+		const ps = term('use-input', ['home'])
+		ps.write('\u001B[H')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle end', async t => {
-	const ps = term('use-input', ['end']);
-	ps.write('\u001B[F');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle end', async () => {
+		const ps = term('use-input', ['end'])
+		ps.write('\u001B[F')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle tab', async t => {
-	const ps = term('use-input', ['tab']);
-	ps.write('\t');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle tab', async () => {
+		const ps = term('use-input', ['tab'])
+		ps.write('\t')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle shift + tab', async t => {
-	const ps = term('use-input', ['shiftTab']);
-	ps.write('\u001B[Z');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle shift + tab', async () => {
+		const ps = term('use-input', ['shiftTab'])
+		ps.write('\u001B[Z')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle backspace', async t => {
-	const ps = term('use-input', ['backspace']);
-	ps.write('\u0008');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle backspace', async () => {
+		const ps = term('use-input', ['backspace'])
+		ps.write('\u0008')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle delete', async t => {
-	const ps = term('use-input', ['delete']);
-	ps.write('\u007F');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle delete', async () => {
+		const ps = term('use-input', ['delete'])
+		ps.write('\u007F')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - handle remove (delete)', async t => {
-	const ps = term('use-input', ['remove']);
-	ps.write('\u001B[3~');
-	await ps.waitForExit();
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - handle remove (delete)', async () => {
+		const ps = term('use-input', ['remove'])
+		ps.write('\u001B[3~')
+		await ps.waitForExit()
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-test.serial('useInput - ignore input if not active', async t => {
-	const ps = term('use-input-multiple');
-	ps.write('x');
-	await ps.waitForExit();
-	t.false(ps.output.includes('xx'));
-	t.true(ps.output.includes('x'));
-	t.true(ps.output.includes('exited'));
-});
+	test('useInput - ignore input if not active', async () => {
+		const ps = term('use-input-multiple')
+		ps.write('x')
+		await ps.waitForExit()
+		expect(ps.output.includes('xx')).toBe(false)
+		expect(ps.output.includes('x')).toBe(true)
+		expect(ps.output.includes('exited')).toBe(true)
+	})
 
-// For some reason this test is flaky, so we have to resort to using `t.try` to run it multiple times
-test.serial(
-	'useInput - handle Ctrl+C when `exitOnCtrlC` is `false`',
-	async t => {
-		const run = async (tt: ExecutionContext) => {
-			const ps = term('use-input-ctrl-c');
-			ps.write('\u0003');
-			await ps.waitForExit();
-			tt.true(ps.output.includes('exited'));
-		};
-
-		const firstTry = await t.try(run);
-
-		if (firstTry.passed) {
-			firstTry.commit();
-			return;
+	// For some reason this test is flaky, so we have to resort to retrying
+	test('useInput - handle Ctrl+C when `exitOnCtrlC` is `false`', async () => {
+		const run = async () => {
+			const ps = term('use-input-ctrl-c')
+			ps.write('\u0003')
+			await ps.waitForExit()
+			return ps.output.includes('exited')
 		}
 
-		firstTry.discard();
+		let passed = await run()
 
-		const secondTry = await t.try(run);
-
-		if (secondTry.passed) {
-			secondTry.commit();
-			return;
+		if (!passed) {
+			passed = await run()
 		}
 
-		secondTry.discard();
+		if (!passed) {
+			passed = await run()
+		}
 
-		const thirdTry = await t.try(run);
-		thirdTry.commit();
-	},
-);
+		expect(passed).toBe(true)
+	})
 
-test.serial('useStdout - write to stdout', async t => {
-	const ps = term('use-stdout');
-	await ps.waitForExit();
+	test('useStdout - write to stdout', async () => {
+		const ps = term('use-stdout')
+		await ps.waitForExit()
 
-	const lines = stripAnsi(ps.output).split('\r\n');
+		const lines = stripAnsi(ps.output).split('\r\n')
 
-	t.deepEqual(lines.slice(1, -1), [
-		'Hello from Ink to stdout',
-		'Hello World',
-		'exited',
-	]);
-});
+		expect(lines.slice(1, -1)).toEqual([
+			'Hello from Ink to stdout',
+			'Hello World',
+			'exited',
+		])
+	})
 
-// `node-pty` doesn't support streaming stderr output, so I need to figure out
-// how to test useStderr() hook. child_process.spawn() can't be used, because
-// Ink fails with "raw mode unsupported" error.
-test.todo('useStderr - write to stderr');
+	// `node-pty` doesn't support streaming stderr output, so I need to figure out
+	// how to test useStderr() hook. child_process.spawn() can't be used, because
+	// Ink fails with "raw mode unsupported" error.
+	test.todo('useStderr - write to stderr')
+})

@@ -1,32 +1,32 @@
-import widestLine from 'widest-line';
+import widestLine from 'widest-line'
 
-const cache = new Map<string, Output>();
+const cache = new Map<string, Output>()
 
 type Output = {
-	width: number;
-	height: number;
-};
+	width: number
+	height: number
+}
 
 const measureText = (text: string): Output => {
 	if (text.length === 0) {
 		return {
 			width: 0,
 			height: 0,
-		};
+		}
 	}
 
-	const cachedDimensions = cache.get(text);
+	const cachedDimensions = cache.get(text)
 
 	if (cachedDimensions) {
-		return cachedDimensions;
+		return cachedDimensions
 	}
 
-	const width = widestLine(text);
-	const height = text.split('\n').length;
-	const dimensions = {width, height};
-	cache.set(text, dimensions);
+	const width = widestLine(text)
+	const height = text.split('\n').length
+	const dimensions = { width, height }
+	cache.set(text, dimensions)
 
-	return dimensions;
-};
+	return dimensions
+}
 
-export default measureText;
+export default measureText

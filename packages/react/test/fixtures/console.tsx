@@ -1,19 +1,19 @@
-import React, {useEffect} from 'react';
-import {Text, render} from '@wolfie/react';
+import React, { useEffect } from 'react'
+import { Text, render } from '@wolfie/react'
 
 function App() {
 	useEffect(() => {
-		const timer = setTimeout(() => {}, 1000);
+		const timer = setTimeout(() => {}, 1000)
 
 		return () => {
-			clearTimeout(timer);
-		};
-	}, []);
+			clearTimeout(timer)
+		}
+	}, [])
 
-	return <Text>Hello World</Text>;
+	return <Text>Hello World</Text>
 }
 
-const {unmount} = render(<App />);
-console.log('First log');
-unmount();
-console.log('Second log');
+const { unmount } = render(<App />)
+console.log('First log')
+unmount()
+console.log('Second log')

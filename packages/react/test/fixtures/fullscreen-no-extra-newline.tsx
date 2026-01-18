@@ -1,23 +1,23 @@
-import process from 'node:process';
-import React, {useEffect} from 'react';
-import {Box, Text, render, useApp} from '@wolfie/react';
+import process from 'node:process'
+import React, { useEffect } from 'react'
+import { Box, Text, render, useApp } from '@wolfie/react'
 
 function Fullscreen() {
-	const {exit} = useApp();
+	const { exit } = useApp()
 
 	useEffect(() => {
 		// Exit after first render to check the output
 		const timer = setTimeout(() => {
-			exit();
-		}, 100);
+			exit()
+		}, 100)
 
 		return () => {
-			clearTimeout(timer);
-		};
-	}, [exit]);
+			clearTimeout(timer)
+		}
+	}, [exit])
 
 	// Force the root to occupy exactly terminal rows
-	const rows = Number(process.argv[2]) || 5;
+	const rows = Number(process.argv[2]) || 5
 
 	return (
 		<Box height={rows} flexDirection="column">
@@ -26,10 +26,10 @@ function Fullscreen() {
 			</Box>
 			<Text>Bottom line (should be usable)</Text>
 		</Box>
-	);
+	)
 }
 
 // Set terminal size from argument
-process.stdout.rows = Number(process.argv[2]) || 5;
+process.stdout.rows = Number(process.argv[2]) || 5
 
-render(<Fullscreen />);
+render(<Fullscreen />)

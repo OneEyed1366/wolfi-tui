@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
 	render,
 	Box,
@@ -6,24 +6,24 @@ import {
 	useFocus,
 	useInput,
 	useFocusManager,
-} from '../../src/index.js';
+} from '../../src/index.js'
 
 function Focus() {
-	const {focus} = useFocusManager();
+	const { focus } = useFocusManager()
 
-	useInput(input => {
+	useInput((input) => {
 		if (input === '1') {
-			focus('1');
+			focus('1')
 		}
 
 		if (input === '2') {
-			focus('2');
+			focus('2')
 		}
 
 		if (input === '3') {
-			focus('3');
+			focus('3')
 		}
-	});
+	})
 
 	return (
 		<Box flexDirection="column" padding={1}>
@@ -37,22 +37,22 @@ function Focus() {
 			<Item id="2" label="Press 2 to focus" />
 			<Item id="3" label="Press 3 to focus" />
 		</Box>
-	);
+	)
 }
 
 type ItemProperties = {
-	readonly id: number;
-	readonly label: string;
-};
+	readonly id: number
+	readonly label: string
+}
 
-function Item({label, id}: ItemProperties) {
-	const {isFocused} = useFocus({id});
+function Item({ label, id }: ItemProperties) {
+	const { isFocused } = useFocus({ id })
 
 	return (
 		<Text>
 			{label} {isFocused && <Text color="green">(focused)</Text>}
 		</Text>
-	);
+	)
 }
 
-render(<Focus />);
+render(<Focus />)

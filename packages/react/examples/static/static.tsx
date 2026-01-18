@@ -1,43 +1,43 @@
-import React from 'react';
-import {Box, Text, render, Static} from '../../src/index.js';
+import React from 'react'
+import { Box, Text, render, Static } from '../../src/index.js'
 
 function Example() {
 	const [tests, setTests] = React.useState<
 		Array<{
-			id: number;
-			title: string;
+			id: number
+			title: string
 		}>
-	>([]);
+	>([])
 
 	React.useEffect(() => {
-		let completedTests = 0;
-		let timer: NodeJS.Timeout | undefined;
+		let completedTests = 0
+		let timer: NodeJS.Timeout | undefined
 
 		const run = () => {
 			if (completedTests++ < 10) {
-				setTests(previousTests => [
+				setTests((previousTests) => [
 					...previousTests,
 					{
 						id: previousTests.length,
 						title: `Test #${previousTests.length + 1}`,
 					},
-				]);
+				])
 
-				timer = setTimeout(run, 100);
+				timer = setTimeout(run, 100)
 			}
-		};
+		}
 
-		run();
+		run()
 
 		return () => {
-			clearTimeout(timer);
-		};
-	}, []);
+			clearTimeout(timer)
+		}
+	}, [])
 
 	return (
 		<>
 			<Static items={tests}>
-				{test => (
+				{(test) => (
 					<Box key={test.id}>
 						<Text color="green">✔ {test.title}</Text>
 					</Box>
@@ -48,7 +48,7 @@ function Example() {
 				<Text dimColor>Completed tests: {tests.length}</Text>
 			</Box>
 		</>
-	);
+	)
 }
 
-render(<Example />);
+render(<Example />)

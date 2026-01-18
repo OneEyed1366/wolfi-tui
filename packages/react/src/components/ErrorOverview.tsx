@@ -1,40 +1,40 @@
-import * as fs from 'node:fs';
-import {cwd} from 'node:process';
-import React from 'react';
-import StackUtils from 'stack-utils';
-import codeExcerpt, {type CodeExcerpt} from 'code-excerpt';
-import Box from './Box.js';
-import Text from './Text.js';
+import * as fs from 'node:fs'
+import { cwd } from 'node:process'
+import React from 'react'
+import StackUtils from 'stack-utils'
+import codeExcerpt, { type CodeExcerpt } from 'code-excerpt'
+import Box from './Box.js'
+import Text from './Text.js'
 
 // Error's source file is reported as file:///home/user/file.js
 // This function removes the file://[cwd] part
 const cleanupPath = (path: string | undefined): string | undefined => {
-	return path?.replace(`file://${cwd()}/`, '');
-};
+	return path?.replace(`file://${cwd()}/`, '')
+}
 
 const stackUtils = new StackUtils({
 	cwd: cwd(),
 	internals: StackUtils.nodeInternals(),
-});
+})
 
 type Props = {
-	readonly error: Error;
-};
+	readonly error: Error
+}
 
-export default function ErrorOverview({error}: Props) {
-	const stack = error.stack ? error.stack.split('\n').slice(1) : undefined;
-	const origin = stack ? stackUtils.parseLine(stack[0]!) : undefined;
-	const filePath = cleanupPath(origin?.file);
-	let excerpt: CodeExcerpt[] | undefined;
-	let lineWidth = 0;
+export default function ErrorOverview({ error }: Props) {
+	const stack = error.stack ? error.stack.split('\n').slice(1) : undefined
+	const origin = stack ? stackUtils.parseLine(stack[0]!) : undefined
+	const filePath = cleanupPath(origin?.file)
+	let excerpt: CodeExcerpt[] | undefined
+	let lineWidth = 0
 
 	if (filePath && origin?.line && fs.existsSync(filePath)) {
-		const sourceCode = fs.readFileSync(filePath, 'utf8');
-		excerpt = codeExcerpt(sourceCode, origin.line);
+		const sourceCode = fs.readFileSync(filePath, 'utf8')
+		excerpt = codeExcerpt(sourceCode, origin.line)
 
 		if (excerpt) {
-			for (const {line} of excerpt) {
-				lineWidth = Math.max(lineWidth, String(line).length);
+			for (const { line } of excerpt) {
+				lineWidth = Math.max(lineWidth, String(line).length)
 			}
 		}
 	}
@@ -60,7 +60,7 @@ export default function ErrorOverview({error}: Props) {
 
 			{origin && excerpt && (
 				<Box marginTop={1} flexDirection="column">
-					{excerpt.map(({line, value}) => (
+					{excerpt.map(({ line, value }) => (
 						<Box key={line}>
 							<Box width={lineWidth + 1}>
 								<Text
@@ -94,8 +94,8 @@ export default function ErrorOverview({error}: Props) {
 					{error.stack
 						.split('\n')
 						.slice(1)
-						.map(line => {
-							const parsedLine = stackUtils.parseLine(line);
+						.map((line) => {
+							const parsedLine = stackUtils.parseLine(line)
 
 							// If the line from the stack cannot be parsed, we print out the unparsed line.
 							if (!parsedLine) {
@@ -107,7 +107,7 @@ export default function ErrorOverview({error}: Props) {
 											\t{' '}
 										</Text>
 									</Box>
-								);
+								)
 							}
 
 							return (
@@ -128,10 +128,10 @@ export default function ErrorOverview({error}: Props) {
 										{parsedLine.column})
 									</Text>
 								</Box>
-							);
+							)
 						})}
 				</Box>
 			)}
 		</Box>
-	);
+	)
 }

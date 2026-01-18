@@ -1,38 +1,38 @@
-import React from 'react';
-import {render, Box, Text, Static} from '../../src/index.js';
+import React from 'react'
+import { render, Box, Text, Static } from '../../src/index.js'
 
 function App() {
 	const [items, setItems] = React.useState<
 		Array<{
-			id: number;
+			id: number
 		}>
-	>([]);
-	const itemCountReference = React.useRef(0);
+	>([])
+	const itemCountReference = React.useRef(0)
 
 	React.useEffect(() => {
-		let timer: NodeJS.Timeout | undefined;
+		let timer: NodeJS.Timeout | undefined
 
 		const run = () => {
 			if (itemCountReference.current++ > 1000) {
-				return;
+				return
 			}
 
-			setItems(previousItems => [
+			setItems((previousItems) => [
 				...previousItems,
 				{
 					id: previousItems.length,
 				},
-			]);
+			])
 
-			timer = setTimeout(run, 10);
-		};
+			timer = setTimeout(run, 10)
+		}
 
-		run();
+		run()
 
 		return () => {
-			clearTimeout(timer);
-		};
-	}, []);
+			clearTimeout(timer)
+		}
+	}, [])
 
 	return (
 		<Box flexDirection="column">
@@ -47,7 +47,7 @@ function App() {
 
 			<Box flexDirection="column" padding={1}>
 				<Text underline bold color="red">
-					{/* eslint-disable-next-line react/jsx-curly-brace-presence */}
+					{ }
 					{'Hello World'}
 				</Text>
 
@@ -80,7 +80,7 @@ function App() {
 				</Box>
 			</Box>
 		</Box>
-	);
+	)
 }
 
-render(<App />);
+render(<App />)

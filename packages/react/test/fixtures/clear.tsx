@@ -1,5 +1,5 @@
-import React from 'react';
-import {Box, Text, render} from '@wolfie/react';
+import React from 'react'
+import { Box, Text, render } from '@wolfie/react'
 
 function Clear() {
 	return (
@@ -8,8 +8,8 @@ function Clear() {
 			<Text>B</Text>
 			<Text>C</Text>
 		</Box>
-	);
+	)
 }
 
-const {clear} = render(<Clear />);
-clear();
+const { clear } = render(<Clear />)
+clear()

@@ -1,19 +1,19 @@
-import React, {forwardRef, useContext, type PropsWithChildren} from 'react';
-import {type Except} from 'type-fest';
-import {type Styles, type DOMElement} from '@wolfie/core';
-import {accessibilityContext} from './AccessibilityContext.js';
-import {backgroundContext} from './BackgroundContext.js';
+import React, { forwardRef, useContext, type PropsWithChildren } from 'react'
+import { type Except } from 'type-fest'
+import { type Styles, type DOMElement } from '@wolfie/core'
+import { accessibilityContext } from './AccessibilityContext.js'
+import { backgroundContext } from './BackgroundContext.js'
 
 export type Props = Except<Styles, 'textWrap'> & {
 	/**
 	A label for the element for screen readers.
 	*/
-	readonly 'aria-label'?: string;
+	readonly 'aria-label'?: string
 
 	/**
 	Hide the element from screen readers.
 	*/
-	readonly 'aria-hidden'?: boolean;
+	readonly 'aria-hidden'?: boolean
 
 	/**
 	The role of the element.
@@ -36,23 +36,23 @@ export type Props = Except<Styles, 'textWrap'> & {
 		| 'table'
 		| 'textbox'
 		| 'timer'
-		| 'toolbar';
+		| 'toolbar'
 
 	/**
 	The state of the element.
 	*/
 	readonly 'aria-state'?: {
-		readonly busy?: boolean;
-		readonly checked?: boolean;
-		readonly disabled?: boolean;
-		readonly expanded?: boolean;
-		readonly multiline?: boolean;
-		readonly multiselectable?: boolean;
-		readonly readonly?: boolean;
-		readonly required?: boolean;
-		readonly selected?: boolean;
-	};
-};
+		readonly busy?: boolean
+		readonly checked?: boolean
+		readonly disabled?: boolean
+		readonly expanded?: boolean
+		readonly multiline?: boolean
+		readonly multiselectable?: boolean
+		readonly readonly?: boolean
+		readonly required?: boolean
+		readonly selected?: boolean
+	}
+}
 
 /**
 `<Box>` is an essential Ink component to build your layout. It's like `<div style="display: flex">` in the browser.
@@ -68,12 +68,12 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 			'aria-state': ariaState,
 			...style
 		},
-		ref,
+		ref
 	) => {
-		const {isScreenReaderEnabled} = useContext(accessibilityContext);
-		const label = ariaLabel ? <ink-text>{ariaLabel}</ink-text> : undefined;
+		const { isScreenReaderEnabled } = useContext(accessibilityContext)
+		const label = ariaLabel ? <ink-text>{ariaLabel}</ink-text> : undefined
 		if (isScreenReaderEnabled && ariaHidden) {
-			return null;
+			return null
 		}
 
 		const boxElement = (
@@ -96,7 +96,7 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 			>
 				{isScreenReaderEnabled && label ? label : children}
 			</ink-box>
-		);
+		)
 
 		// If this Box has a background color, provide it to children via context
 		if (backgroundColor) {
@@ -104,13 +104,13 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 				<backgroundContext.Provider value={backgroundColor}>
 					{boxElement}
 				</backgroundContext.Provider>
-			);
+			)
 		}
 
-		return boxElement;
-	},
-);
+		return boxElement
+	}
+)
 
-Box.displayName = 'Box';
+Box.displayName = 'Box'
 
-export default Box;
+export default Box

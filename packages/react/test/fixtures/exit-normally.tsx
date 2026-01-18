@@ -1,7 +1,7 @@
-import React from 'react';
-import {Text, render} from '@wolfie/react';
+import React from 'react'
+import { Text, render } from '@wolfie/react'
 
-const {waitUntilExit} = render(<Text>Hello World</Text>);
+const { waitUntilExit } = render(<Text>Hello World</Text>)
 
-await waitUntilExit();
-console.log('exited');
+await waitUntilExit()
+console.log('exited')

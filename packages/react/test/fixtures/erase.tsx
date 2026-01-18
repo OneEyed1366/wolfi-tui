@@ -1,6 +1,6 @@
-import process from 'node:process';
-import React from 'react';
-import {Box, Text, render} from '@wolfie/react';
+import process from 'node:process'
+import React from 'react'
+import { Box, Text, render } from '@wolfie/react'
 
 function Erase() {
 	return (
@@ -9,8 +9,8 @@ function Erase() {
 			<Text>B</Text>
 			<Text>C</Text>
 		</Box>
-	);
+	)
 }
 
-process.stdout.rows = Number(process.argv[2]);
-render(<Erase />);
+process.stdout.rows = Number(process.argv[2])
+render(<Erase />)

@@ -1,7 +1,7 @@
-import {useEffect} from 'react';
-import {parseKeypress, nonAlphanumericKeys} from '@wolfie/core';
-import reconciler from '../reconciler.js';
-import useStdin from './use-stdin.js';
+import { useEffect } from 'react'
+import { parseKeypress, nonAlphanumericKeys } from '@wolfie/core'
+import reconciler from '../reconciler.js'
+import useStdin from './use-stdin.js'
 
 /**
 Handy information about a key that was pressed.
@@ -10,85 +10,85 @@ export type Key = {
 	/**
 	Up arrow key was pressed.
 	*/
-	upArrow: boolean;
+	upArrow: boolean
 
 	/**
 	Down arrow key was pressed.
 	*/
-	downArrow: boolean;
+	downArrow: boolean
 
 	/**
 	Left arrow key was pressed.
 	*/
-	leftArrow: boolean;
+	leftArrow: boolean
 
 	/**
 	Right arrow key was pressed.
 	*/
-	rightArrow: boolean;
+	rightArrow: boolean
 
 	/**
 	Page Down key was pressed.
 	*/
-	pageDown: boolean;
+	pageDown: boolean
 
 	/**
 	Page Up key was pressed.
 	*/
-	pageUp: boolean;
+	pageUp: boolean
 
 	/**
 	Home key was pressed.
 	*/
-	home: boolean;
+	home: boolean
 
 	/**
 	End key was pressed.
 	*/
-	end: boolean;
+	end: boolean
 
 	/**
 	Return (Enter) key was pressed.
 	*/
-	return: boolean;
+	return: boolean
 
 	/**
 	Escape key was pressed.
 	*/
-	escape: boolean;
+	escape: boolean
 
 	/**
 	Ctrl key was pressed.
 	*/
-	ctrl: boolean;
+	ctrl: boolean
 
 	/**
 	Shift key was pressed.
 	*/
-	shift: boolean;
+	shift: boolean
 
 	/**
 	Tab key was pressed.
 	*/
-	tab: boolean;
+	tab: boolean
 
 	/**
 	Backspace key was pressed.
 	*/
-	backspace: boolean;
+	backspace: boolean
 
 	/**
 	Delete key was pressed.
 	*/
-	delete: boolean;
+	delete: boolean
 
 	/**
 	[Meta key](https://en.wikipedia.org/wiki/Meta_key) was pressed.
 	*/
-	meta: boolean;
-};
+	meta: boolean
+}
 
-type Handler = (input: string, key: Key) => void;
+type Handler = (input: string, key: Key) => void
 
 type Options = {
 	/**
@@ -96,8 +96,8 @@ type Options = {
 
 	@default true
 	*/
-	isActive?: boolean;
-};
+	isActive?: boolean
+}
 
 /**
 This hook is used for handling user input. It's a more convenient alternative to using `StdinContext` and listening for `data` events. The callback you pass to `useInput` is called for each character when the user enters any input. However, if the user pastes text and it's more than one character, the callback will be called only once, and the whole string will be passed as `input`.
@@ -121,28 +121,28 @@ const UserInput = () => {
 ```
 */
 const useInput = (inputHandler: Handler, options: Options = {}) => {
-	const {stdin, setRawMode, internal_exitOnCtrlC, internal_eventEmitter} =
-		useStdin();
+	const { stdin, setRawMode, internal_exitOnCtrlC, internal_eventEmitter } =
+		useStdin()
 
 	useEffect(() => {
 		if (options.isActive === false) {
-			return;
+			return
 		}
 
-		setRawMode(true);
+		setRawMode(true)
 
 		return () => {
-			setRawMode(false);
-		};
-	}, [options.isActive, setRawMode]);
+			setRawMode(false)
+		}
+	}, [options.isActive, setRawMode])
 
 	useEffect(() => {
 		if (options.isActive === false) {
-			return;
+			return
 		}
 
 		const handleData = (data: string) => {
-			const keypress = parseKeypress(data);
+			const keypress = parseKeypress(data)
 
 			const key = {
 				upArrow: keypress.name === 'up',
@@ -165,18 +165,18 @@ const useInput = (inputHandler: Handler, options: Options = {}) => {
 				// to avoid breaking changes in Ink.
 				// TODO(vadimdemedes): consider removing this in the next major version.
 				meta: keypress.meta || keypress.name === 'escape' || keypress.option,
-			};
+			}
 
-			let input = keypress.ctrl ? keypress.name : keypress.sequence;
+			let input = keypress.ctrl ? keypress.name : keypress.sequence
 
 			if (nonAlphanumericKeys.includes(keypress.name)) {
-				input = '';
+				input = ''
 			}
 
 			// Strip meta if it's still remaining after `parseKeypress`
 			// TODO(vadimdemedes): remove this in the next major version.
 			if (input.startsWith('\u001B')) {
-				input = input.slice(1);
+				input = input.slice(1)
 			}
 
 			if (
@@ -184,24 +184,24 @@ const useInput = (inputHandler: Handler, options: Options = {}) => {
 				typeof input[0] === 'string' &&
 				/[A-Z]/.test(input[0])
 			) {
-				key.shift = true;
+				key.shift = true
 			}
 
 			// If app is not supposed to exit on Ctrl+C, then let input listener handle it
 			if (!(input === 'c' && key.ctrl) || !internal_exitOnCtrlC) {
 				// @ts-expect-error TypeScript types for `batchedUpdates` require an argument, but React's codebase doesn't provide it and it works without it as expected.
 				reconciler.batchedUpdates(() => {
-					inputHandler(input, key);
-				});
+					inputHandler(input, key)
+				})
 			}
-		};
+		}
 
-		internal_eventEmitter?.on('input', handleData);
+		internal_eventEmitter?.on('input', handleData)
 
 		return () => {
-			internal_eventEmitter?.removeListener('input', handleData);
-		};
-	}, [options.isActive, stdin, internal_exitOnCtrlC, inputHandler]);
-};
+			internal_eventEmitter?.removeListener('input', handleData)
+		}
+	}, [options.isActive, stdin, internal_exitOnCtrlC, inputHandler])
+}
 
-export default useInput;
+export default useInput

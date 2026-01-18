@@ -1,45 +1,45 @@
-import React from 'react';
-import test from 'ava';
-import {Box, Text} from '@wolfie/react';
-import {renderToString} from './helpers/render-to-string.js';
+import React from 'react'
+import { test, expect } from 'vitest'
+import { Box, Text } from '@wolfie/react'
+import { renderToString } from './helpers/render-to-string.js'
 
-test('set width', t => {
+test('set width', () => {
 	const output = renderToString(
 		<Box>
 			<Box width={5}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A    B');
-});
+	expect(output).toBe('A    B')
+})
 
-test('set width in percent', t => {
+test('set width in percent', () => {
 	const output = renderToString(
 		<Box width={10}>
 			<Box width="50%">
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A    B');
-});
+	expect(output).toBe('A    B')
+})
 
-test('set min width', t => {
+test('set min width', () => {
 	const smallerOutput = renderToString(
 		<Box>
 			<Box minWidth={5}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(smallerOutput, 'A    B');
+	expect(smallerOutput).toBe('A    B')
 
 	const largerOutput = renderToString(
 		<Box>
@@ -47,76 +47,76 @@ test('set min width', t => {
 				<Text>AAAAA</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(largerOutput, 'AAAAAB');
-});
+	expect(largerOutput).toBe('AAAAAB')
+})
 
-test.failing('set min width in percent', t => {
+test.fails('set min width in percent', () => {
 	const output = renderToString(
 		<Box width={10}>
 			<Box minWidth="50%">
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A    B');
-});
+	expect(output).toBe('A    B')
+})
 
-test('set height', t => {
+test('set height', () => {
 	const output = renderToString(
 		<Box height={4}>
 			<Text>A</Text>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'AB\n\n\n');
-});
+	expect(output).toBe('AB\n\n\n')
+})
 
-test('set height in percent', t => {
+test('set height in percent', () => {
 	const output = renderToString(
 		<Box height={6} flexDirection="column">
 			<Box height="50%">
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'A\n\n\nB\n\n');
-});
+	expect(output).toBe('A\n\n\nB\n\n')
+})
 
-test('cut text over the set height', t => {
+test('cut text over the set height', () => {
 	const output = renderToString(
 		<Box height={2}>
 			<Text>AAAABBBBCCCC</Text>
 		</Box>,
-		{columns: 4},
-	);
+		{ columns: 4 }
+	)
 
-	t.is(output, 'AAAA\nBBBB');
-});
+	expect(output).toBe('AAAA\nBBBB')
+})
 
-test('set min height', t => {
+test('set min height', () => {
 	const smallerOutput = renderToString(
 		<Box minHeight={4}>
 			<Text>A</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(smallerOutput, 'A\n\n\n');
+	expect(smallerOutput).toBe('A\n\n\n')
 
 	const largerOutput = renderToString(
 		<Box minHeight={2}>
 			<Box height={4}>
 				<Text>A</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(largerOutput, 'A\n\n\n');
-});
+	expect(largerOutput).toBe('A\n\n\n')
+})

@@ -1,28 +1,28 @@
-import React from 'react';
-import {render, Text, useApp, useStdin} from '@wolfie/react';
+import React from 'react'
+import { render, Text, useApp, useStdin } from '@wolfie/react'
 
 class Exit extends React.Component<{
-	onSetRawMode: (value: boolean) => void;
-	onExit: (error: Error) => void;
+	onSetRawMode: (value: boolean) => void
+	onExit: (error: Error) => void
 }> {
 	override render() {
-		return <Text>Hello World</Text>;
+		return <Text>Hello World</Text>
 	}
 
 	override componentDidMount() {
-		this.props.onSetRawMode(true);
-		setTimeout(this.props.onExit, 500);
+		this.props.onSetRawMode(true)
+		setTimeout(this.props.onExit, 500)
 	}
 }
 
 function Test() {
-	const {exit} = useApp();
-	const {setRawMode} = useStdin();
+	const { exit } = useApp()
+	const { setRawMode } = useStdin()
 
-	return <Exit onExit={exit} onSetRawMode={setRawMode} />;
+	return <Exit onExit={exit} onSetRawMode={setRawMode} />
 }
 
-const app = render(<Test />);
+const app = render(<Test />)
 
-await app.waitUntilExit();
-console.log('exited');
+await app.waitUntilExit()
+console.log('exited')

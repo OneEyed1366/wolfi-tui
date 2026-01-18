@@ -1,42 +1,42 @@
-import process from 'node:process';
-import React from 'react';
-import {Text, render, useStdin} from '@wolfie/react';
+import process from 'node:process'
+import React from 'react'
+import { Text, render, useStdin } from '@wolfie/react'
 
 class ExitDoubleRawMode extends React.Component<{
-	setRawMode: (value: boolean) => void;
+	setRawMode: (value: boolean) => void
 }> {
 	override render() {
-		return <Text>Hello World</Text>;
+		return <Text>Hello World</Text>
 	}
 
 	override componentDidMount() {
-		const {setRawMode} = this.props;
+		const { setRawMode } = this.props
 
-		setRawMode(true);
+		setRawMode(true)
 
 		setTimeout(() => {
-			setRawMode(false);
-			setRawMode(true);
+			setRawMode(false)
+			setRawMode(true)
 
 			// Start the test
-			process.stdout.write('s');
-		}, 500);
+			process.stdout.write('s')
+		}, 500)
 	}
 }
 
 function Test() {
-	const {setRawMode} = useStdin();
+	const { setRawMode } = useStdin()
 
-	return <ExitDoubleRawMode setRawMode={setRawMode} />;
+	return <ExitDoubleRawMode setRawMode={setRawMode} />
 }
 
-const {unmount, waitUntilExit} = render(<Test />);
+const { unmount, waitUntilExit } = render(<Test />)
 
-process.stdin.on('data', data => {
+process.stdin.on('data', (data) => {
 	if (String(data) === 'q') {
-		unmount();
+		unmount()
 	}
-});
+})
 
-await waitUntilExit();
-console.log('exited');
+await waitUntilExit()
+console.log('exited')

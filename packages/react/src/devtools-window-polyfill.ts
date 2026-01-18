@@ -1,17 +1,15 @@
 // Ignoring missing types error to avoid adding another dependency for this hack to work
-import ws from 'ws';
+import ws from 'ws'
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const customGlobal = global as any;
+ 
+const customGlobal = global as any
 
 // These things must exist before importing `react-devtools-core`
+customGlobal.WebSocket ||= ws
 
-// eslint-disable-next-line n/no-unsupported-features/node-builtins
-customGlobal.WebSocket ||= ws;
+customGlobal.window ||= global
 
-customGlobal.window ||= global;
-
-customGlobal.self ||= global;
+customGlobal.self ||= global
 
 // Filter out Ink's internal components from devtools for a cleaner view.
 // Also, ince `react-devtools-shared` package isn't published on npm, we can't
@@ -67,4 +65,4 @@ customGlobal.window.__REACT_DEVTOOLS_COMPONENT_FILTERS__ = [
 		isEnabled: true,
 		isValid: true,
 	},
-];
+]

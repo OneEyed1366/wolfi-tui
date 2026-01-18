@@ -1,78 +1,78 @@
-import React from 'react';
-import test from 'ava';
-import {Box, Text} from '@wolfie/react';
-import {renderToString} from './helpers/render-to-string.js';
+import React from 'react'
+import { test, expect } from 'vitest'
+import { Box, Text } from '@wolfie/react'
+import { renderToString } from './helpers/render-to-string.js'
 
-test('row - align text to center', t => {
+test('row - align text to center', () => {
 	const output = renderToString(
 		<Box height={3}>
 			<Box alignSelf="center">
 				<Text>Test</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\nTest\n');
-});
+	expect(output).toBe('\nTest\n')
+})
 
-test('row - align multiple text nodes to center', t => {
+test('row - align multiple text nodes to center', () => {
 	const output = renderToString(
 		<Box height={3}>
 			<Box alignSelf="center">
 				<Text>A</Text>
 				<Text>B</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\nAB\n');
-});
+	expect(output).toBe('\nAB\n')
+})
 
-test('row - align text to bottom', t => {
+test('row - align text to bottom', () => {
 	const output = renderToString(
 		<Box height={3}>
 			<Box alignSelf="flex-end">
 				<Text>Test</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\nTest');
-});
+	expect(output).toBe('\n\nTest')
+})
 
-test('row - align multiple text nodes to bottom', t => {
+test('row - align multiple text nodes to bottom', () => {
 	const output = renderToString(
 		<Box height={3}>
 			<Box alignSelf="flex-end">
 				<Text>A</Text>
 				<Text>B</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\nAB');
-});
+	expect(output).toBe('\n\nAB')
+})
 
-test('column - align text to center', t => {
+test('column - align text to center', () => {
 	const output = renderToString(
 		<Box flexDirection="column" width={10}>
 			<Box alignSelf="center">
 				<Text>Test</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '   Test');
-});
+	expect(output).toBe('   Test')
+})
 
-test('column - align text to right', t => {
+test('column - align text to right', () => {
 	const output = renderToString(
 		<Box flexDirection="column" width={10}>
 			<Box alignSelf="flex-end">
 				<Text>Test</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '      Test');
-});
+	expect(output).toBe('      Test')
+})

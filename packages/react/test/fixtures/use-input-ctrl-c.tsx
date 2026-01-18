@@ -1,22 +1,22 @@
-import React from 'react';
-import {render, useInput, useApp} from '@wolfie/react';
+import React from 'react'
+import { render, useInput, useApp } from '@wolfie/react'
 
 function UserInput() {
-	const {exit} = useApp();
+	const { exit } = useApp()
 
 	useInput((input, key) => {
 		if (input === 'c' && key.ctrl) {
-			exit();
-			return;
+			exit()
+			return
 		}
 
-		throw new Error('Crash');
-	});
+		throw new Error('Crash')
+	})
 
-	return null;
+	return null
 }
 
-const app = render(<UserInput />, {exitOnCtrlC: false});
+const app = render(<UserInput />, { exitOnCtrlC: false })
 
-await app.waitUntilExit();
-console.log('exited');
+await app.waitUntilExit()
+console.log('exited')

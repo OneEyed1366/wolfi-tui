@@ -1,14 +1,14 @@
-import React from 'react';
-import {Box, Text} from '../../src/index.js';
+import React from 'react'
+import { Box, Text } from '../../src/index.js'
 
 type Properties = {
-	readonly isFinished: boolean;
-	readonly passed: number;
-	readonly failed: number;
-	readonly time: string;
-};
+	readonly isFinished: boolean
+	readonly passed: number
+	readonly failed: number
+	readonly time: string
+}
 
-function Summary({isFinished, passed, failed, time}: Properties) {
+function Summary({ isFinished, passed, failed, time }: Properties) {
 	return (
 		<Box flexDirection="column" marginTop={1}>
 			<Box>
@@ -42,7 +42,7 @@ function Summary({isFinished, passed, failed, time}: Properties) {
 				</Box>
 			)}
 		</Box>
-	);
+	)
 }
 
-export default Summary;
+export default Summary

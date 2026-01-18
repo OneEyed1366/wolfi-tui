@@ -1,14 +1,14 @@
-import React from 'react';
-import {faker} from '@faker-js/faker';
-import {Box, Text, render} from '../../src/index.js';
+import React from 'react'
+import { faker } from '@faker-js/faker'
+import { Box, Text, render } from '../../src/index.js'
 
-const users = Array.from({length: 10})
+const users = Array.from({ length: 10 })
 	.fill(true)
 	.map((_, index) => ({
 		id: index,
 		name: faker.internet.username(),
 		email: faker.internet.email(),
-	}));
+	}))
 
 function Table() {
 	return (
@@ -27,7 +27,7 @@ function Table() {
 				</Box>
 			</Box>
 
-			{users.map(user => (
+			{users.map((user) => (
 				<Box key={user.id}>
 					<Box width="10%">
 						<Text>{user.id}</Text>
@@ -43,7 +43,7 @@ function Table() {
 				</Box>
 			))}
 		</Box>
-	);
+	)
 }
 
-render(<Table />);
+render(<Table />)

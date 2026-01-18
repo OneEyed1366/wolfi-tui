@@ -1,35 +1,38 @@
-import React from 'react';
-import {render, Text} from '@wolfie/react';
+import React from 'react'
+import { render, Text } from '@wolfie/react'
 
-class Test extends React.Component<Record<string, unknown>, {counter: number}> {
-	timer?: NodeJS.Timeout;
+class Test extends React.Component<
+	Record<string, unknown>,
+	{ counter: number }
+> {
+	timer?: NodeJS.Timeout
 
 	override state = {
 		counter: 0,
-	};
+	}
 
 	override render() {
-		return <Text>Counter: {this.state.counter}</Text>;
+		return <Text>Counter: {this.state.counter}</Text>
 	}
 
 	override componentDidMount() {
 		this.timer = setInterval(() => {
-			this.setState(prevState => ({
+			this.setState((prevState) => ({
 				counter: prevState.counter + 1,
-			}));
-		}, 100);
+			}))
+		}, 100)
 	}
 
 	override componentWillUnmount() {
-		clearInterval(this.timer);
+		clearInterval(this.timer)
 	}
 }
 
-const app = render(<Test />);
+const app = render(<Test />)
 
 setTimeout(() => {
-	app.unmount();
-}, 500);
+	app.unmount()
+}, 500)
 
-await app.waitUntilExit();
-console.log('exited');
+await app.waitUntilExit()
+console.log('exited')

@@ -1,5 +1,5 @@
-import React from 'react';
-import {render, Box, Text} from '../../src/index.js';
+import React from 'react'
+import { render, Box, Text } from '../../src/index.js'
 
 function JustifyContent() {
 	return (
@@ -53,7 +53,7 @@ function JustifyContent() {
 				<Text>] space-evenly</Text>
 			</Box>
 		</Box>
-	);
+	)
 }
 
-render(<JustifyContent />);
+render(<JustifyContent />)

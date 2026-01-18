@@ -1,25 +1,25 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import {render, useInput, useApp, Text} from '@wolfie/react';
+import React, { useState, useCallback, useEffect } from 'react'
+import { render, useInput, useApp, Text } from '@wolfie/react'
 
 function App() {
-	const {exit} = useApp();
-	const [input, setInput] = useState('');
+	const { exit } = useApp()
+	const [input, setInput] = useState('')
 
 	const handleInput = useCallback((input: string) => {
-		setInput((previousInput: string) => previousInput + input);
-	}, []);
+		setInput((previousInput: string) => previousInput + input)
+	}, [])
 
-	useInput(handleInput);
-	useInput(handleInput, {isActive: false});
+	useInput(handleInput)
+	useInput(handleInput, { isActive: false })
 
 	useEffect(() => {
-		setTimeout(exit, 1000);
-	}, []);
+		setTimeout(exit, 1000)
+	}, [])
 
-	return <Text>{input}</Text>;
+	return <Text>{input}</Text>
 }
 
-const app = render(<App />);
+const app = render(<App />)
 
-await app.waitUntilExit();
-console.log('exited');
+await app.waitUntilExit()
+console.log('exited')

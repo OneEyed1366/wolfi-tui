@@ -1,116 +1,118 @@
-import React from 'react';
-import test from 'ava';
-import boxen from 'boxen';
-import indentString from 'indent-string';
-import cliBoxes from 'cli-boxes';
-import chalk from 'chalk';
-import {render, Box, Text} from '@wolfie/react';
-import {renderToString} from './helpers/render-to-string.js';
-import createStdout from './helpers/create-stdout.js';
+import React from 'react'
+import { test, expect } from 'vitest'
+import boxen from 'boxen'
+import indentString from 'indent-string'
+import cliBoxes from 'cli-boxes'
+import chalk from 'chalk'
+import { render, Box, Text } from '@wolfie/react'
+import { renderToString } from './helpers/render-to-string.js'
+import createStdout from './helpers/create-stdout.js'
 
-test('single node - full width box', t => {
+test('single node - full width box', () => {
 	const output = renderToString(
 		<Box borderStyle="round">
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Hello World', {width: 100, borderStyle: 'round'}));
-});
+	expect(output).toBe(
+		boxen('Hello World', { width: 100, borderStyle: 'round' })
+	)
+})
 
-test('single node - full width box with colorful border', t => {
+test('single node - full width box with colorful border', () => {
 	const output = renderToString(
 		<Box borderStyle="round" borderColor="green">
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		boxen('Hello World', {
 			width: 100,
 			borderStyle: 'round',
 			borderColor: 'green',
-		}),
-	);
-});
+		})
+	)
+})
 
-test('single node - fit-content box', t => {
+test('single node - fit-content box', () => {
 	const output = renderToString(
 		<Box borderStyle="round" alignSelf="flex-start">
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Hello World', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('Hello World', { borderStyle: 'round' }))
+})
 
-test('single node - fit-content box with wide characters', t => {
+test('single node - fit-content box with wide characters', () => {
 	const output = renderToString(
 		<Box borderStyle="round" alignSelf="flex-start">
 			<Text>こんにちは</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('こんにちは', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('こんにちは', { borderStyle: 'round' }))
+})
 
-test('single node - fit-content box with emojis', t => {
+test('single node - fit-content box with emojis', () => {
 	const output = renderToString(
 		<Box borderStyle="round" alignSelf="flex-start">
 			<Text>🌊🌊</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('🌊🌊', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('🌊🌊', { borderStyle: 'round' }))
+})
 
-test('single node - fixed width box', t => {
+test('single node - fixed width box', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={20}>
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Hello World'.padEnd(18, ' '), {borderStyle: 'round'}));
-});
+	expect(output).toBe(
+		boxen('Hello World'.padEnd(18, ' '), { borderStyle: 'round' })
+	)
+})
 
-test('single node - fixed width and height box', t => {
+test('single node - fixed width and height box', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={20} height={20}>
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		boxen('Hello World'.padEnd(18, ' ') + '\n'.repeat(17), {
 			borderStyle: 'round',
-		}),
-	);
-});
+		})
+	)
+})
 
-test('single node - box with padding', t => {
+test('single node - box with padding', () => {
 	const output = renderToString(
 		<Box borderStyle="round" padding={1} alignSelf="flex-start">
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('\n Hello World \n', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('\n Hello World \n', { borderStyle: 'round' }))
+})
 
-test('single node - box with horizontal alignment', t => {
+test('single node - box with horizontal alignment', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={20} justifyContent="center">
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('   Hello World    ', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('   Hello World    ', { borderStyle: 'round' }))
+})
 
-test('single node - box with vertical alignment', t => {
+test('single node - box with vertical alignment', () => {
 	const output = renderToString(
 		<Box
 			borderStyle="round"
@@ -119,108 +121,109 @@ test('single node - box with vertical alignment', t => {
 			alignSelf="flex-start"
 		>
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		boxen('\n'.repeat(8) + 'Hello World' + '\n'.repeat(9), {
 			borderStyle: 'round',
-		}),
-	);
-});
+		})
+	)
+})
 
-test('single node - box with wrapping', t => {
+test('single node - box with wrapping', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={10}>
 			<Text>Hello World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Hello   \nWorld', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('Hello   \nWorld', { borderStyle: 'round' }))
+})
 
-test('multiple nodes - full width box', t => {
+test('multiple nodes - full width box', () => {
 	const output = renderToString(
 		<Box borderStyle="round">
 			<Text>{'Hello '}World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Hello World', {width: 100, borderStyle: 'round'}));
-});
+	expect(output).toBe(
+		boxen('Hello World', { width: 100, borderStyle: 'round' })
+	)
+})
 
-test('multiple nodes - full width box with colorful border', t => {
+test('multiple nodes - full width box with colorful border', () => {
 	const output = renderToString(
 		<Box borderStyle="round" borderColor="green">
 			<Text>{'Hello '}World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		boxen('Hello World', {
 			width: 100,
 			borderStyle: 'round',
 			borderColor: 'green',
-		}),
-	);
-});
+		})
+	)
+})
 
-test('multiple nodes - fit-content box', t => {
+test('multiple nodes - fit-content box', () => {
 	const output = renderToString(
 		<Box borderStyle="round" alignSelf="flex-start">
 			<Text>{'Hello '}World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Hello World', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('Hello World', { borderStyle: 'round' }))
+})
 
-test('multiple nodes - fixed width box', t => {
+test('multiple nodes - fixed width box', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={20}>
 			<Text>{'Hello '}World</Text>
-		</Box>,
-	);
-	t.is(output, boxen('Hello World'.padEnd(18, ' '), {borderStyle: 'round'}));
-});
+		</Box>
+	)
+	expect(output).toBe(
+		boxen('Hello World'.padEnd(18, ' '), { borderStyle: 'round' })
+	)
+})
 
-test('multiple nodes - fixed width and height box', t => {
+test('multiple nodes - fixed width and height box', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={20} height={20}>
 			<Text>{'Hello '}World</Text>
-		</Box>,
-	);
-	t.is(
-		output,
+		</Box>
+	)
+	expect(output).toBe(
 		boxen('Hello World'.padEnd(18, ' ') + '\n'.repeat(17), {
 			borderStyle: 'round',
-		}),
-	);
-});
+		})
+	)
+})
 
-test('multiple nodes - box with padding', t => {
+test('multiple nodes - box with padding', () => {
 	const output = renderToString(
 		<Box borderStyle="round" padding={1} alignSelf="flex-start">
 			<Text>{'Hello '}World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('\n Hello World \n', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('\n Hello World \n', { borderStyle: 'round' }))
+})
 
-test('multiple nodes - box with horizontal alignment', t => {
+test('multiple nodes - box with horizontal alignment', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={20} justifyContent="center">
 			<Text>{'Hello '}World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('   Hello World    ', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('   Hello World    ', { borderStyle: 'round' }))
+})
 
-test('multiple nodes - box with vertical alignment', t => {
+test('multiple nodes - box with vertical alignment', () => {
 	const output = renderToString(
 		<Box
 			borderStyle="round"
@@ -229,68 +232,68 @@ test('multiple nodes - box with vertical alignment', t => {
 			alignSelf="flex-start"
 		>
 			<Text>{'Hello '}World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		boxen('\n'.repeat(8) + 'Hello World' + '\n'.repeat(9), {
 			borderStyle: 'round',
-		}),
-	);
-});
+		})
+	)
+})
 
-test('multiple nodes - box with wrapping', t => {
+test('multiple nodes - box with wrapping', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={10}>
 			<Text>{'Hello '}World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Hello   \nWorld', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('Hello   \nWorld', { borderStyle: 'round' }))
+})
 
-test('multiple nodes - box with wrapping and long first node', t => {
+test('multiple nodes - box with wrapping and long first node', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={10}>
 			<Text>{'Helloooooo'} World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Helloooo\noo World', {borderStyle: 'round'}));
-});
+	expect(output).toBe(boxen('Helloooo\noo World', { borderStyle: 'round' }))
+})
 
-test('multiple nodes - box with wrapping and very long first node', t => {
+test('multiple nodes - box with wrapping and very long first node', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={10}>
 			<Text>{'Hellooooooooooooo'} World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Helloooo\noooooooo\no World', {borderStyle: 'round'}));
-});
+	expect(output).toBe(
+		boxen('Helloooo\noooooooo\no World', { borderStyle: 'round' })
+	)
+})
 
-test('nested boxes', t => {
+test('nested boxes', () => {
 	const output = renderToString(
 		<Box borderStyle="round" width={40} padding={1}>
 			<Box borderStyle="round" justifyContent="center" padding={1}>
 				<Text>Hello World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
 	const nestedBox = indentString(
-		boxen('\n Hello World \n', {borderStyle: 'round'}),
-		1,
-	);
+		boxen('\n Hello World \n', { borderStyle: 'round' }),
+		1
+	)
 
-	t.is(
-		output,
-		boxen(`${' '.repeat(38)}\n${nestedBox}\n`, {borderStyle: 'round'}),
-	);
-});
+	expect(output).toBe(
+		boxen(`${' '.repeat(38)}\n${nestedBox}\n`, { borderStyle: 'round' })
+	)
+})
 
-test('nested boxes - fit-content box with wide characters on flex-direction row', t => {
+test('nested boxes - fit-content box with wide characters on flex-direction row', () => {
 	const output = renderToString(
 		<Box borderStyle="round" alignSelf="flex-start">
 			<Box borderStyle="round">
@@ -302,28 +305,28 @@ test('nested boxes - fit-content box with wide characters on flex-direction row'
 			<Box borderStyle="round">
 				<Text>カーク船長</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	const box1 = boxen('ミスター', {borderStyle: 'round'});
-	const box2 = boxen('スポック', {borderStyle: 'round'});
-	const box3 = boxen('カーク船長', {borderStyle: 'round'});
+	const box1 = boxen('ミスター', { borderStyle: 'round' })
+	const box2 = boxen('スポック', { borderStyle: 'round' })
+	const box3 = boxen('カーク船長', { borderStyle: 'round' })
 
 	const expected = boxen(
 		box1
 			.split('\n')
 			.map(
 				(line, index) =>
-					line + box2.split('\n')[index]! + box3.split('\n')[index]!,
+					line + box2.split('\n')[index]! + box3.split('\n')[index]!
 			)
 			.join('\n'),
-		{borderStyle: 'round'},
-	);
+		{ borderStyle: 'round' }
+	)
 
-	t.is(output, expected);
-});
+	expect(output).toBe(expected)
+})
 
-test('nested boxes - fit-content box with emojis on flex-direction row', t => {
+test('nested boxes - fit-content box with emojis on flex-direction row', () => {
 	const output = renderToString(
 		<Box borderStyle="round" alignSelf="flex-start">
 			<Box borderStyle="round">
@@ -335,28 +338,28 @@ test('nested boxes - fit-content box with emojis on flex-direction row', t => {
 			<Box borderStyle="round">
 				<Text>😋</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	const box1 = boxen('🦾', {borderStyle: 'round'});
-	const box2 = boxen('🌏', {borderStyle: 'round'});
-	const box3 = boxen('😋', {borderStyle: 'round'});
+	const box1 = boxen('🦾', { borderStyle: 'round' })
+	const box2 = boxen('🌏', { borderStyle: 'round' })
+	const box3 = boxen('😋', { borderStyle: 'round' })
 
 	const expected = boxen(
 		box1
 			.split('\n')
 			.map(
 				(line, index) =>
-					line + box2.split('\n')[index]! + box3.split('\n')[index]!,
+					line + box2.split('\n')[index]! + box3.split('\n')[index]!
 			)
 			.join('\n'),
-		{borderStyle: 'round'},
-	);
+		{ borderStyle: 'round' }
+	)
 
-	t.is(output, expected);
-});
+	expect(output).toBe(expected)
+})
 
-test('nested boxes - fit-content box with wide characters on flex-direction column', t => {
+test('nested boxes - fit-content box with wide characters on flex-direction column', () => {
 	const output = renderToString(
 		<Box borderStyle="round" alignSelf="flex-start" flexDirection="column">
 			<Box borderStyle="round">
@@ -368,22 +371,22 @@ test('nested boxes - fit-content box with wide characters on flex-direction colu
 			<Box borderStyle="round">
 				<Text>カーク船長</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
 	const expected = boxen(
-		boxen('ミスター  ', {borderStyle: 'round'}) +
+		boxen('ミスター  ', { borderStyle: 'round' }) +
 			'\n' +
-			boxen('スポック  ', {borderStyle: 'round'}) +
+			boxen('スポック  ', { borderStyle: 'round' }) +
 			'\n' +
-			boxen('カーク船長', {borderStyle: 'round'}),
-		{borderStyle: 'round'},
-	);
+			boxen('カーク船長', { borderStyle: 'round' }),
+		{ borderStyle: 'round' }
+	)
 
-	t.is(output, expected);
-});
+	expect(output).toBe(expected)
+})
 
-test('nested boxes - fit-content box with emojis on flex-direction column', t => {
+test('nested boxes - fit-content box with emojis on flex-direction column', () => {
 	const output = renderToString(
 		<Box borderStyle="round" alignSelf="flex-start" flexDirection="column">
 			<Box borderStyle="round">
@@ -395,65 +398,62 @@ test('nested boxes - fit-content box with emojis on flex-direction column', t =>
 			<Box borderStyle="round">
 				<Text>😋</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
 	const expected = boxen(
-		boxen('🦾', {borderStyle: 'round'}) +
+		boxen('🦾', { borderStyle: 'round' }) +
 			'\n' +
-			boxen('🌏', {borderStyle: 'round'}) +
+			boxen('🌏', { borderStyle: 'round' }) +
 			'\n' +
-			boxen('😋', {borderStyle: 'round'}),
-		{borderStyle: 'round'},
-	);
+			boxen('😋', { borderStyle: 'round' }),
+		{ borderStyle: 'round' }
+	)
 
-	t.is(output, expected);
-});
+	expect(output).toBe(expected)
+})
 
-test('render border after update', t => {
-	const stdout = createStdout();
+test('render border after update', () => {
+	const stdout = createStdout()
 
-	function Test({borderColor}: {readonly borderColor?: string}) {
+	function Test({ borderColor }: { readonly borderColor?: string }) {
 		return (
 			<Box borderStyle="round" borderColor={borderColor}>
 				<Text>Hello World</Text>
 			</Box>
-		);
+		)
 	}
 
-	const {rerender} = render(<Test />, {
+	const { rerender } = render(<Test />, {
 		stdout,
 		debug: true,
-	});
+	})
 
-	t.is(
-		(stdout.write as any).lastCall.args[0],
-		boxen('Hello World', {width: 100, borderStyle: 'round'}),
-	);
+	expect((stdout.write as any).lastCall.args[0]).toBe(
+		boxen('Hello World', { width: 100, borderStyle: 'round' })
+	)
 
-	rerender(<Test borderColor="green" />);
+	rerender(<Test borderColor="green" />)
 
-	t.is(
-		(stdout.write as any).lastCall.args[0],
+	expect((stdout.write as any).lastCall.args[0]).toBe(
 		boxen('Hello World', {
 			width: 100,
 			borderStyle: 'round',
 			borderColor: 'green',
-		}),
-	);
+		})
+	)
 
-	rerender(<Test />);
+	rerender(<Test />)
 
-	t.is(
-		(stdout.write as any).lastCall.args[0],
+	expect((stdout.write as any).lastCall.args[0]).toBe(
 		boxen('Hello World', {
 			width: 100,
 			borderStyle: 'round',
-		}),
-	);
-});
+		})
+	)
+})
 
-test('hide top border', t => {
+test('hide top border', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -461,11 +461,10 @@ test('hide top border', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.left}Content${cliBoxes.round.right}`,
@@ -473,11 +472,11 @@ test('hide top border', t => {
 				cliBoxes.round.bottomRight
 			}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('hide bottom border', t => {
+test('hide bottom border', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -485,11 +484,10 @@ test('hide bottom border', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
@@ -497,11 +495,11 @@ test('hide bottom border', t => {
 			}`,
 			`${cliBoxes.round.left}Content${cliBoxes.round.right}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('hide top and bottom borders', t => {
+test('hide top and bottom borders', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -509,20 +507,19 @@ test('hide top and bottom borders', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.left}Content${cliBoxes.round.right}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('hide left border', t => {
+test('hide left border', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -530,22 +527,21 @@ test('hide left border', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.top.repeat(7)}${cliBoxes.round.topRight}`,
 			`Content${cliBoxes.round.right}`,
 			`${cliBoxes.round.bottom.repeat(7)}${cliBoxes.round.bottomRight}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('hide right border', t => {
+test('hide right border', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -553,22 +549,21 @@ test('hide right border', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}`,
 			`${cliBoxes.round.left}Content`,
 			`${cliBoxes.round.bottomLeft}${cliBoxes.round.bottom.repeat(7)}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('hide left and right border', t => {
+test('hide left and right border', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -576,22 +571,21 @@ test('hide left and right border', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			cliBoxes.round.top.repeat(7),
 			'Content',
 			cliBoxes.round.bottom.repeat(7),
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('hide all borders', t => {
+test('hide all borders', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -605,13 +599,13 @@ test('hide all borders', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, ['Above', 'Content', 'Below'].join('\n'));
-});
+	expect(output).toBe(['Above', 'Content', 'Below'].join('\n'))
+})
 
-test('change color of top border', t => {
+test('change color of top border', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -619,28 +613,27 @@ test('change color of top border', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			chalk.green(
 				`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
 					cliBoxes.round.topRight
-				}`,
+				}`
 			),
 			`${cliBoxes.round.left}Content${cliBoxes.round.right}`,
 			`${cliBoxes.round.bottomLeft}${cliBoxes.round.bottom.repeat(7)}${
 				cliBoxes.round.bottomRight
 			}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('change color of bottom border', t => {
+test('change color of bottom border', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -648,11 +641,10 @@ test('change color of bottom border', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
@@ -662,14 +654,14 @@ test('change color of bottom border', t => {
 			chalk.green(
 				`${cliBoxes.round.bottomLeft}${cliBoxes.round.bottom.repeat(7)}${
 					cliBoxes.round.bottomRight
-				}`,
+				}`
 			),
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('change color of left border', t => {
+test('change color of left border', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -677,11 +669,10 @@ test('change color of left border', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
@@ -692,11 +683,11 @@ test('change color of left border', t => {
 				cliBoxes.round.bottomRight
 			}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('change color of right border', t => {
+test('change color of right border', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -704,11 +695,10 @@ test('change color of right border', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
@@ -719,11 +709,11 @@ test('change color of right border', t => {
 				cliBoxes.round.bottomRight
 			}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('custom border style', t => {
+test('custom border style', () => {
 	const output = renderToString(
 		<Box
 			borderStyle={{
@@ -738,30 +728,29 @@ test('custom border style', t => {
 			}}
 		>
 			<Text>Content</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, boxen('Content', {width: 100, borderStyle: 'arrow'}));
-});
+	expect(output).toBe(boxen('Content', { width: 100, borderStyle: 'arrow' }))
+})
 
-test('dim border color', t => {
+test('dim border color', () => {
 	const output = renderToString(
 		<Box borderDimColor borderStyle="round">
 			<Text>Content</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		boxen('Content', {
 			width: 100,
 			borderStyle: 'round',
 			dimBorder: true,
-		}),
-	);
-});
+		})
+	)
+})
 
-test('dim top border color', t => {
+test('dim top border color', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -769,28 +758,27 @@ test('dim top border color', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			chalk.dim(
 				`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
 					cliBoxes.round.topRight
-				}`,
+				}`
 			),
 			`${cliBoxes.round.left}Content${cliBoxes.round.right}`,
 			`${cliBoxes.round.bottomLeft}${cliBoxes.round.bottom.repeat(7)}${
 				cliBoxes.round.bottomRight
 			}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('dim bottom border color', t => {
+test('dim bottom border color', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -798,11 +786,10 @@ test('dim bottom border color', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
@@ -812,14 +799,14 @@ test('dim bottom border color', t => {
 			chalk.dim(
 				`${cliBoxes.round.bottomLeft}${cliBoxes.round.bottom.repeat(7)}${
 					cliBoxes.round.bottomRight
-				}`,
+				}`
 			),
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('dim left border color', t => {
+test('dim left border color', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -827,11 +814,10 @@ test('dim left border color', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
@@ -842,11 +828,11 @@ test('dim left border color', t => {
 				cliBoxes.round.bottomRight
 			}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})
 
-test('dim right border color', t => {
+test('dim right border color', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-start">
 			<Text>Above</Text>
@@ -854,11 +840,10 @@ test('dim right border color', t => {
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(
-		output,
+	expect(output).toBe(
 		[
 			'Above',
 			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
@@ -869,6 +854,6 @@ test('dim right border color', t => {
 				cliBoxes.round.bottomRight
 			}`,
 			'Below',
-		].join('\n'),
-	);
-});
+		].join('\n')
+	)
+})

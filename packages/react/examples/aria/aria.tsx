@@ -1,14 +1,14 @@
-import React, {useState} from 'react';
-import {render, Text, Box, useInput} from '../../src/index.js';
+import React, { useState } from 'react'
+import { render, Text, Box, useInput } from '../../src/index.js'
 
 function AriaExample() {
-	const [checked, setChecked] = useState(false);
+	const [checked, setChecked] = useState(false)
 
-	useInput(key => {
+	useInput((key) => {
 		if (key === ' ') {
-			setChecked(!checked);
+			setChecked(!checked)
 		}
-	});
+	})
 
 	return (
 		<Box flexDirection="column">
@@ -17,7 +17,7 @@ function AriaExample() {
 				with a screen reader.
 			</Text>
 			<Box marginTop={1}>
-				<Box aria-role="checkbox" aria-state={{checked}}>
+				<Box aria-role="checkbox" aria-state={{ checked }}>
 					<Text>{checked ? '[x]' : '[ ]'}</Text>
 				</Box>
 			</Box>
@@ -25,7 +25,7 @@ function AriaExample() {
 				<Text aria-hidden="true">This text is hidden from screen readers.</Text>
 			</Box>
 		</Box>
-	);
+	)
 }
 
-render(<AriaExample />);
+render(<AriaExample />)

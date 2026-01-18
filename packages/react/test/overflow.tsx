@@ -1,100 +1,100 @@
-import React from 'react';
-import test from 'ava';
-import boxen, {type Options} from 'boxen';
-import sliceAnsi from 'slice-ansi';
-import {Box, Text} from '@wolfie/react';
-import {renderToString} from './helpers/render-to-string.js';
+import React from 'react'
+import { test, expect } from 'vitest'
+import boxen, { type Options } from 'boxen'
+import sliceAnsi from 'slice-ansi'
+import { Box, Text } from '@wolfie/react'
+import { renderToString } from './helpers/render-to-string.js'
 
 const box = (text: string, options?: Options): string => {
 	return boxen(text, {
 		...options,
 		borderStyle: 'round',
-	});
-};
+	})
+}
 
 const clipX = (text: string, columns: number): string => {
 	return text
 		.split('\n')
-		.map(line => sliceAnsi(line, 0, columns).trim())
-		.join('\n');
-};
+		.map((line) => sliceAnsi(line, 0, columns).trim())
+		.join('\n')
+}
 
-test('overflowX - single text node in a box inside overflow container', t => {
+test('overflowX - single text node in a box inside overflow container', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden">
 			<Box width={16} flexShrink={0}>
 				<Text>Hello World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'Hello');
-});
+	expect(output).toBe('Hello')
+})
 
-test('overflowX - single text node inside overflow container with border', t => {
+test('overflowX - single text node inside overflow container with border', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden" borderStyle="round">
 			<Box width={16} flexShrink={0}>
 				<Text>Hello World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box('Hell'));
-});
+	expect(output).toBe(box('Hell'))
+})
 
-test('overflowX - single text node in a box with border inside overflow container', t => {
+test('overflowX - single text node in a box with border inside overflow container', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden">
 			<Box width={16} flexShrink={0} borderStyle="round">
 				<Text>Hello World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, clipX(box('Hello'), 6));
-});
+	expect(output).toBe(clipX(box('Hello'), 6))
+})
 
-test('overflowX - multiple text nodes in a box inside overflow container', t => {
+test('overflowX - multiple text nodes in a box inside overflow container', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden">
 			<Box width={12} flexShrink={0}>
 				<Text>Hello </Text>
 				<Text>World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'Hello');
-});
+	expect(output).toBe('Hello')
+})
 
-test('overflowX - multiple text nodes in a box inside overflow container with border', t => {
+test('overflowX - multiple text nodes in a box inside overflow container with border', () => {
 	const output = renderToString(
 		<Box width={8} overflowX="hidden" borderStyle="round">
 			<Box width={12} flexShrink={0}>
 				<Text>Hello </Text>
 				<Text>World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box('Hello '));
-});
+	expect(output).toBe(box('Hello '))
+})
 
-test('overflowX - multiple text nodes in a box with border inside overflow container', t => {
+test('overflowX - multiple text nodes in a box with border inside overflow container', () => {
 	const output = renderToString(
 		<Box width={8} overflowX="hidden">
 			<Box width={12} flexShrink={0} borderStyle="round">
 				<Text>Hello </Text>
 				<Text>World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, clipX(box('HelloWo\n'), 8));
-});
+	expect(output).toBe(clipX(box('HelloWo\n'), 8))
+})
 
-test('overflowX - multiple boxes inside overflow container', t => {
+test('overflowX - multiple boxes inside overflow container', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden">
 			<Box width={6} flexShrink={0}>
@@ -103,13 +103,13 @@ test('overflowX - multiple boxes inside overflow container', t => {
 			<Box width={6} flexShrink={0}>
 				<Text>World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'Hello');
-});
+	expect(output).toBe('Hello')
+})
 
-test('overflowX - multiple boxes inside overflow container with border', t => {
+test('overflowX - multiple boxes inside overflow container with border', () => {
 	const output = renderToString(
 		<Box width={8} overflowX="hidden" borderStyle="round">
 			<Box width={6} flexShrink={0}>
@@ -118,105 +118,105 @@ test('overflowX - multiple boxes inside overflow container with border', t => {
 			<Box width={6} flexShrink={0}>
 				<Text>World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box('Hello '));
-});
+	expect(output).toBe(box('Hello '))
+})
 
-test('overflowX - box before left edge of overflow container', t => {
+test('overflowX - box before left edge of overflow container', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden">
 			<Box marginLeft={-12} width={6} flexShrink={0}>
 				<Text>Hello</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '');
-});
+	expect(output).toBe('')
+})
 
-test('overflowX - box before left edge of overflow container with border', t => {
+test('overflowX - box before left edge of overflow container with border', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden" borderStyle="round">
 			<Box marginLeft={-12} width={6} flexShrink={0}>
 				<Text>Hello</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box(' '.repeat(4)));
-});
+	expect(output).toBe(box(' '.repeat(4)))
+})
 
-test('overflowX - box intersecting with left edge of overflow container', t => {
+test('overflowX - box intersecting with left edge of overflow container', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden">
 			<Box marginLeft={-3} width={12} flexShrink={0}>
 				<Text>Hello World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'lo Wor');
-});
+	expect(output).toBe('lo Wor')
+})
 
-test('overflowX - box intersecting with left edge of overflow container with border', t => {
+test('overflowX - box intersecting with left edge of overflow container with border', () => {
 	const output = renderToString(
 		<Box width={8} overflowX="hidden" borderStyle="round">
 			<Box marginLeft={-3} width={12} flexShrink={0}>
 				<Text>Hello World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box('lo Wor'));
-});
+	expect(output).toBe(box('lo Wor'))
+})
 
-test('overflowX - box after right edge of overflow container', t => {
+test('overflowX - box after right edge of overflow container', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden">
 			<Box marginLeft={6} width={6} flexShrink={0}>
 				<Text>Hello</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '');
-});
+	expect(output).toBe('')
+})
 
-test('overflowX - box intersecting with right edge of overflow container', t => {
+test('overflowX - box intersecting with right edge of overflow container', () => {
 	const output = renderToString(
 		<Box width={6} overflowX="hidden">
 			<Box marginLeft={3} width={6} flexShrink={0}>
 				<Text>Hello</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '   Hel');
-});
+	expect(output).toBe('   Hel')
+})
 
-test('overflowY - single text node inside overflow container', t => {
+test('overflowY - single text node inside overflow container', () => {
 	const output = renderToString(
 		<Box height={1} overflowY="hidden">
 			<Text>Hello{'\n'}World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'Hello');
-});
+	expect(output).toBe('Hello')
+})
 
-test('overflowY - single text node inside overflow container with border', t => {
+test('overflowY - single text node inside overflow container with border', () => {
 	const output = renderToString(
 		<Box width={20} height={3} overflowY="hidden" borderStyle="round">
 			<Text>Hello{'\n'}World</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box('Hello'.padEnd(18, ' ')));
-});
+	expect(output).toBe(box('Hello'.padEnd(18, ' ')))
+})
 
-test('overflowY - multiple boxes inside overflow container', t => {
+test('overflowY - multiple boxes inside overflow container', () => {
 	const output = renderToString(
 		<Box height={2} overflowY="hidden" flexDirection="column">
 			<Box flexShrink={0}>
@@ -231,13 +231,13 @@ test('overflowY - multiple boxes inside overflow container', t => {
 			<Box flexShrink={0}>
 				<Text>Line #4</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'Line #1\nLine #2');
-});
+	expect(output).toBe('Line #1\nLine #2')
+})
 
-test('overflowY - multiple boxes inside overflow container with border', t => {
+test('overflowY - multiple boxes inside overflow container with border', () => {
 	const output = renderToString(
 		<Box
 			width={9}
@@ -258,109 +258,109 @@ test('overflowY - multiple boxes inside overflow container with border', t => {
 			<Box flexShrink={0}>
 				<Text>Line #4</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box('Line #1\nLine #2'));
-});
+	expect(output).toBe(box('Line #1\nLine #2'))
+})
 
-test('overflowY - box above top edge of overflow container', t => {
+test('overflowY - box above top edge of overflow container', () => {
 	const output = renderToString(
 		<Box height={1} overflowY="hidden">
 			<Box marginTop={-2} height={2} flexShrink={0}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '');
-});
+	expect(output).toBe('')
+})
 
-test('overflowY - box above top edge of overflow container with border', t => {
+test('overflowY - box above top edge of overflow container with border', () => {
 	const output = renderToString(
 		<Box width={7} height={3} overflowY="hidden" borderStyle="round">
 			<Box marginTop={-3} height={2} flexShrink={0}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box(' '.repeat(5)));
-});
+	expect(output).toBe(box(' '.repeat(5)))
+})
 
-test('overflowY - box intersecting with top edge of overflow container', t => {
+test('overflowY - box intersecting with top edge of overflow container', () => {
 	const output = renderToString(
 		<Box height={1} overflowY="hidden">
 			<Box marginTop={-1} height={2} flexShrink={0}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'World');
-});
+	expect(output).toBe('World')
+})
 
-test('overflowY - box intersecting with top edge of overflow container with border', t => {
+test('overflowY - box intersecting with top edge of overflow container with border', () => {
 	const output = renderToString(
 		<Box width={7} height={3} overflowY="hidden" borderStyle="round">
 			<Box marginTop={-1} height={2} flexShrink={0}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box('World'));
-});
+	expect(output).toBe(box('World'))
+})
 
-test('overflowY - box below bottom edge of overflow container', t => {
+test('overflowY - box below bottom edge of overflow container', () => {
 	const output = renderToString(
 		<Box height={1} overflowY="hidden">
 			<Box marginTop={1} height={2} flexShrink={0}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '');
-});
+	expect(output).toBe('')
+})
 
-test('overflowY - box below bottom edge of overflow container with border', t => {
+test('overflowY - box below bottom edge of overflow container with border', () => {
 	const output = renderToString(
 		<Box width={7} height={3} overflowY="hidden" borderStyle="round">
 			<Box marginTop={2} height={2} flexShrink={0}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box(' '.repeat(5)));
-});
+	expect(output).toBe(box(' '.repeat(5)))
+})
 
-test('overflowY - box intersecting with bottom edge of overflow container', t => {
+test('overflowY - box intersecting with bottom edge of overflow container', () => {
 	const output = renderToString(
 		<Box height={1} overflowY="hidden">
 			<Box height={2} flexShrink={0}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'Hello');
-});
+	expect(output).toBe('Hello')
+})
 
-test('overflowY - box intersecting with bottom edge of overflow container with border', t => {
+test('overflowY - box intersecting with bottom edge of overflow container with border', () => {
 	const output = renderToString(
 		<Box width={7} height={3} overflowY="hidden" borderStyle="round">
 			<Box height={2} flexShrink={0}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, box('Hello'));
-});
+	expect(output).toBe(box('Hello'))
+})
 
-test('overflow - single text node inside overflow container', t => {
+test('overflow - single text node inside overflow container', () => {
 	const output = renderToString(
 		<Box paddingBottom={1}>
 			<Box width={6} height={1} overflow="hidden">
@@ -368,13 +368,13 @@ test('overflow - single text node inside overflow container', t => {
 					<Text>Hello{'\n'}World</Text>
 				</Box>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'Hello\n');
-});
+	expect(output).toBe('Hello\n')
+})
 
-test('overflow - single text node inside overflow container with border', t => {
+test('overflow - single text node inside overflow container with border', () => {
 	const output = renderToString(
 		<Box paddingBottom={1}>
 			<Box width={8} height={3} overflow="hidden" borderStyle="round">
@@ -382,13 +382,13 @@ test('overflow - single text node inside overflow container with border', t => {
 					<Text>Hello{'\n'}World</Text>
 				</Box>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, `${box('Hello ')}\n`);
-});
+	expect(output).toBe(`${box('Hello ')}\n`)
+})
 
-test('overflow - multiple boxes inside overflow container', t => {
+test('overflow - multiple boxes inside overflow container', () => {
 	const output = renderToString(
 		<Box paddingBottom={1}>
 			<Box width={4} height={1} overflow="hidden">
@@ -399,13 +399,13 @@ test('overflow - multiple boxes inside overflow container', t => {
 					<Text>TR{'\n'}BR</Text>
 				</Box>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'TLTR\n');
-});
+	expect(output).toBe('TLTR\n')
+})
 
-test('overflow - multiple boxes inside overflow container with border', t => {
+test('overflow - multiple boxes inside overflow container with border', () => {
 	const output = renderToString(
 		<Box paddingBottom={1}>
 			<Box width={6} height={3} overflow="hidden" borderStyle="round">
@@ -416,13 +416,13 @@ test('overflow - multiple boxes inside overflow container with border', t => {
 					<Text>TR{'\n'}BR</Text>
 				</Box>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, `${box('TLTR')}\n`);
-});
+	expect(output).toBe(`${box('TLTR')}\n`)
+})
 
-test('overflow - box intersecting with top left edge of overflow container', t => {
+test('overflow - box intersecting with top left edge of overflow container', () => {
 	const output = renderToString(
 		<Box width={4} height={4} overflow="hidden">
 			<Box marginTop={-2} marginLeft={-2} width={4} height={4} flexShrink={0}>
@@ -430,13 +430,13 @@ test('overflow - box intersecting with top left edge of overflow container', t =
 					AAAA{'\n'}BBBB{'\n'}CCCC{'\n'}DDDD
 				</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'CC\nDD\n\n');
-});
+	expect(output).toBe('CC\nDD\n\n')
+})
 
-test('overflow - box intersecting with top right edge of overflow container', t => {
+test('overflow - box intersecting with top right edge of overflow container', () => {
 	const output = renderToString(
 		<Box width={4} height={4} overflow="hidden">
 			<Box marginTop={-2} marginLeft={2} width={4} height={4} flexShrink={0}>
@@ -444,13 +444,13 @@ test('overflow - box intersecting with top right edge of overflow container', t 
 					AAAA{'\n'}BBBB{'\n'}CCCC{'\n'}DDDD
 				</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '  CC\n  DD\n\n');
-});
+	expect(output).toBe('  CC\n  DD\n\n')
+})
 
-test('overflow - box intersecting with bottom left edge of overflow container', t => {
+test('overflow - box intersecting with bottom left edge of overflow container', () => {
 	const output = renderToString(
 		<Box width={4} height={4} overflow="hidden">
 			<Box marginTop={2} marginLeft={-2} width={4} height={4} flexShrink={0}>
@@ -458,13 +458,13 @@ test('overflow - box intersecting with bottom left edge of overflow container', 
 					AAAA{'\n'}BBBB{'\n'}CCCC{'\n'}DDDD
 				</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\nAA\nBB');
-});
+	expect(output).toBe('\n\nAA\nBB')
+})
 
-test('overflow - box intersecting with bottom right edge of overflow container', t => {
+test('overflow - box intersecting with bottom right edge of overflow container', () => {
 	const output = renderToString(
 		<Box width={4} height={4} overflow="hidden">
 			<Box marginTop={2} marginLeft={2} width={4} height={4} flexShrink={0}>
@@ -472,13 +472,13 @@ test('overflow - box intersecting with bottom right edge of overflow container',
 					AAAA{'\n'}BBBB{'\n'}CCCC{'\n'}DDDD
 				</Text>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\n  AA\n  BB');
-});
+	expect(output).toBe('\n\n  AA\n  BB')
+})
 
-test('nested overflow', t => {
+test('nested overflow', () => {
 	const output = renderToString(
 		<Box paddingBottom={1}>
 			<Box width={4} height={4} overflow="hidden" flexDirection="column">
@@ -496,18 +496,18 @@ test('nested overflow', t => {
 					</Text>
 				</Box>
 			</Box>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, 'AA\nBB\nXXXX\nYYYY\n');
-});
+	expect(output).toBe('AA\nBB\nXXXX\nYYYY\n')
+})
 
 // See https://github.com/vadimdemedes/ink/pull/564#issuecomment-1637022742
-test('out of bounds writes do not crash', t => {
+test('out of bounds writes do not crash', () => {
 	const output = renderToString(
 		<Box width={12} height={10} borderStyle="round" />,
-		{columns: 10},
-	);
+		{ columns: 10 }
+	)
 
 	const expected = boxen('', {
 		width: 12,
@@ -518,9 +518,9 @@ test('out of bounds writes do not crash', t => {
 		.map((line, index) => {
 			return index === 0 || index === 9
 				? line
-				: `${line.slice(0, 10)}${line[11] ?? ''}`;
+				: `${line.slice(0, 10)}${line[11] ?? ''}`
 		})
-		.join('\n');
+		.join('\n')
 
-	t.is(output, expected);
-});
+	expect(output).toBe(expected)
+})

@@ -1,32 +1,32 @@
-import React from 'react';
-import {Box, Text} from '../../src/index.js';
+import React from 'react'
+import { Box, Text } from '../../src/index.js'
 
 const getBackgroundForStatus = (status: string): string | undefined => {
 	switch (status) {
 		case 'runs': {
-			return 'yellow';
+			return 'yellow'
 		}
 
 		case 'pass': {
-			return 'green';
+			return 'green'
 		}
 
 		case 'fail': {
-			return 'red';
+			return 'red'
 		}
 
 		default: {
-			return undefined;
+			return undefined
 		}
 	}
-};
+}
 
 type Properties = {
-	readonly status: string;
-	readonly path: string;
-};
+	readonly status: string
+	readonly path: string
+}
 
-function Test({status, path}: Properties) {
+function Test({ status, path }: Properties) {
 	return (
 		<Box>
 			<Text color="black" backgroundColor={getBackgroundForStatus(status)}>
@@ -41,7 +41,7 @@ function Test({status, path}: Properties) {
 				</Text>
 			</Box>
 		</Box>
-	);
+	)
 }
 
-export default Test;
+export default Test

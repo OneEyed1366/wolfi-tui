@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react'
 import {
 	render,
 	Text,
@@ -6,7 +6,7 @@ import {
 	useInput,
 	useStdout,
 	useApp,
-} from '../../src/index.js';
+} from '../../src/index.js'
 
 const rows = [
 	'Server Authentication Module - Handles JWT token validation, OAuth2 flows, and session management across distributed systems',
@@ -39,10 +39,10 @@ const rows = [
 	'Image Processing Pipeline - Resizes and optimizes uploaded images using Sharp with multiple format outputs',
 	'Geolocation Service - Resolves IP addresses to geographic coordinates using MaxMind GeoIP2 database',
 	'Recommendation Engine - Generates personalized content suggestions using collaborative filtering algorithms',
-];
+]
 
 const generateLogLine = (index: number, value: number) => {
-	const timestamp = new Date().toLocaleTimeString();
+	const timestamp = new Date().toLocaleTimeString()
 	const actions = [
 		'PROCESSING',
 		'COMPLETED',
@@ -50,15 +50,15 @@ const generateLogLine = (index: number, value: number) => {
 		'SYNCING',
 		'VALIDATING',
 		'EXECUTING',
-	];
-	const action = actions[Math.floor(Math.random() * actions.length)];
-	return `[${timestamp}] Worker-${index} ${action}: Batch=${value} Throughput=${(Math.random() * 1000).toFixed(0)}req/s Memory=${(Math.random() * 512).toFixed(1)}MB CPU=${(Math.random() * 100).toFixed(1)}%`;
-};
+	]
+	const action = actions[Math.floor(Math.random() * actions.length)]
+	return `[${timestamp}] Worker-${index} ${action}: Batch=${value} Throughput=${(Math.random() * 1000).toFixed(0)}req/s Memory=${(Math.random() * 512).toFixed(1)}MB CPU=${(Math.random() * 100).toFixed(1)}%`
+}
 
 function IncrementalRendering() {
-	const {exit} = useApp();
-	const {stdout} = useStdout();
-	const terminalHeight = stdout.rows || 24; // Default to 24 if not available
+	const { exit } = useApp()
+	const { stdout } = useStdout()
+	const terminalHeight = stdout.rows || 24 // Default to 24 if not available
 
 	// Calculate available space for dynamic content
 	// Header box: ~9 lines (border + content)
@@ -67,99 +67,99 @@ function IncrementalRendering() {
 	// Footer box: ~3 lines
 	// Margins: ~3 lines
 	// Total fixed: ~15 lines, so available = terminalHeight - 15
-	const availableLines = Math.max(terminalHeight - 15, 10);
+	const availableLines = Math.max(terminalHeight - 15, 10)
 
 	// Split available space: ~30% for logs, ~70% for services
-	const logLineCount = Math.max(Math.floor(availableLines * 0.3), 3);
+	const logLineCount = Math.max(Math.floor(availableLines * 0.3), 3)
 	const serviceCount = Math.min(
 		Math.max(Math.floor(availableLines * 0.7), 5),
-		rows.length,
-	);
+		rows.length
+	)
 
-	const [selectedIndex, setSelectedIndex] = useState(0);
-	const [timestamp, setTimestamp] = useState(new Date().toLocaleTimeString());
-	const [counter, setCounter] = useState(0);
-	const [fps, setFps] = useState(0);
-	const [progress1, setProgress1] = useState(0);
-	const [progress2, setProgress2] = useState(0);
-	const [progress3, setProgress3] = useState(0);
-	const [randomValue, setRandomValue] = useState(0);
+	const [selectedIndex, setSelectedIndex] = useState(0)
+	const [timestamp, setTimestamp] = useState(new Date().toLocaleTimeString())
+	const [counter, setCounter] = useState(0)
+	const [fps, setFps] = useState(0)
+	const [progress1, setProgress1] = useState(0)
+	const [progress2, setProgress2] = useState(0)
+	const [progress3, setProgress3] = useState(0)
+	const [randomValue, setRandomValue] = useState(0)
 	const [logLines, setLogLines] = useState(
-		Array.from({length: logLineCount}, (_, i) => generateLogLine(i, 0)),
-	);
+		Array.from({ length: logLineCount }, (_, i) => generateLogLine(i, 0))
+	)
 
 	// Update timestamp and counter every second to show live updates
 	useEffect(() => {
 		const timer = setInterval(() => {
-			setTimestamp(new Date().toLocaleTimeString());
-			setCounter(previous => previous + 1);
-		}, 1000);
+			setTimestamp(new Date().toLocaleTimeString())
+			setCounter((previous) => previous + 1)
+		}, 1000)
 
 		return () => {
-			clearInterval(timer);
-		};
-	}, []);
+			clearInterval(timer)
+		}
+	}, [])
 
 	// Rapid updates to degrade performance - updates every 16ms (~60fps)
 	useEffect(() => {
-		let frameCount = 0;
-		let lastTime = Date.now();
+		let frameCount = 0
+		let lastTime = Date.now()
 
 		const timer = setInterval(() => {
-			setProgress1(previous => (previous + 1) % 101);
-			setProgress2(previous => (previous + 2) % 101);
-			setProgress3(previous => (previous + 3) % 101);
-			setRandomValue(Math.floor(Math.random() * 1000));
+			setProgress1((previous) => (previous + 1) % 101)
+			setProgress2((previous) => (previous + 2) % 101)
+			setProgress3((previous) => (previous + 3) % 101)
+			setRandomValue(Math.floor(Math.random() * 1000))
 
 			// Update only 1-2 log lines each frame (simulating real log updates)
-			setLogLines(previous => {
-				const newLines = [...previous];
-				const updateIndex = Math.floor(Math.random() * newLines.length);
+			setLogLines((previous) => {
+				const newLines = [...previous]
+				const updateIndex = Math.floor(Math.random() * newLines.length)
 				newLines[updateIndex] = generateLogLine(
 					updateIndex,
-					Math.floor(Math.random() * 1000),
-				);
-				return newLines;
-			});
+					Math.floor(Math.random() * 1000)
+				)
+				return newLines
+			})
 
 			// Calculate FPS
-			frameCount++;
-			const now = Date.now();
+			frameCount++
+			const now = Date.now()
 			if (now - lastTime >= 1000) {
-				setFps(frameCount);
-				frameCount = 0;
-				lastTime = now;
+				setFps(frameCount)
+				frameCount = 0
+				lastTime = now
 			}
-		}, 16); // ~60 updates per second
+		}, 16) // ~60 updates per second
 
 		return () => {
-			clearInterval(timer);
-		};
-	}, []);
+			clearInterval(timer)
+		}
+	}, [])
 
 	useInput((input, key) => {
 		if (key.upArrow) {
-			setSelectedIndex(previousIndex =>
-				previousIndex === 0 ? serviceCount - 1 : previousIndex - 1,
-			);
+			setSelectedIndex((previousIndex) =>
+				previousIndex === 0 ? serviceCount - 1 : previousIndex - 1
+			)
 		}
 
 		if (key.downArrow) {
-			setSelectedIndex(previousIndex =>
-				previousIndex === serviceCount - 1 ? 0 : previousIndex + 1,
-			);
+			setSelectedIndex((previousIndex) =>
+				previousIndex === serviceCount - 1 ? 0 : previousIndex + 1
+			)
 		}
 
 		if (input === 'q') {
-			exit();
+			exit()
 		}
-	});
+	})
 
 	const progressBar = (value: number) => {
-		const filled = Math.floor(value / 5);
-		const empty = 20 - filled;
-		return '█'.repeat(filled) + '░'.repeat(empty);
-	};
+		const filled = Math.floor(value / 5)
+		const empty = 20 - filled
+		return '█'.repeat(filled) + '░'.repeat(empty)
+	}
 
 	return (
 		<Box flexDirection="column" height="100%">
@@ -202,7 +202,7 @@ function IncrementalRendering() {
 					<Text bold color="yellow">
 						Live Logs (only 1-2 lines update per frame):
 					</Text>
-					{logLines.map(line => (
+					{logLines.map((line) => (
 						<Text key={line} color="green">
 							{line}
 						</Text>
@@ -223,13 +223,13 @@ function IncrementalRendering() {
 					System Services Monitor ({serviceCount} of {rows.length} services):
 				</Text>
 				{rows.slice(0, serviceCount).map((row, index) => {
-					const isSelected = index === selectedIndex;
+					const isSelected = index === selectedIndex
 					return (
 						<Text key={row} color={isSelected ? 'blue' : 'white'}>
 							{isSelected ? '> ' : '  '}
 							{row}
 						</Text>
-					);
+					)
 				})}
 			</Box>
 
@@ -242,7 +242,7 @@ function IncrementalRendering() {
 				</Text>
 			</Box>
 		</Box>
-	);
+	)
 }
 
-render(<IncrementalRendering />, {incrementalRendering: true});
+render(<IncrementalRendering />, { incrementalRendering: true })

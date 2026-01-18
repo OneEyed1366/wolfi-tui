@@ -1,19 +1,19 @@
-import process from 'node:process';
-import React, {useEffect, useState} from 'react';
-import {Box, Text, render} from '@wolfie/react';
+import process from 'node:process'
+import React, { useEffect, useState } from 'react'
+import { Box, Text, render } from '@wolfie/react'
 
 function Erase() {
-	const [show, setShow] = useState(true);
+	const [show, setShow] = useState(true)
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			setShow(false);
-		});
+			setShow(false)
+		})
 
 		return () => {
-			clearTimeout(timer);
-		};
-	}, []);
+			clearTimeout(timer)
+		}
+	}, [])
 
 	return (
 		<Box flexDirection="column">
@@ -25,8 +25,8 @@ function Erase() {
 				</>
 			)}
 		</Box>
-	);
+	)
 }
 
-process.stdout.rows = Number(process.argv[2]);
-render(<Erase />);
+process.stdout.rows = Number(process.argv[2])
+render(<Erase />)

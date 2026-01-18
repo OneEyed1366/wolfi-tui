@@ -1,10 +1,10 @@
 // Copied from https://github.com/enquirer/enquirer/blob/36785f3399a41cd61e9d28d1eb9c2fcd73d69b4c/lib/keypress.js
-import {Buffer} from 'node:buffer';
+import { Buffer } from 'node:buffer'
 
-const metaKeyCodeRe = /^(?:\x1b)([a-zA-Z0-9])$/;
+const metaKeyCodeRe = /^(?:\x1b)([a-zA-Z0-9])$/
 
 const fnKeyRe =
-	/^(?:\x1b+)(O|N|\[|\[\[)(?:(\d+)(?:;(\d+))?([~^$])|(?:1;)?(\d+)?([a-zA-Z]))/;
+	/^(?:\x1b+)(O|N|\[|\[\[)(?:(\d+)(?:;(\d+))?([~^$])|(?:1;)?(\d+)?([a-zA-Z]))/
 
 const keyName: Record<string, string> = {
 	/* xterm/gnome ESC O letter */
@@ -89,9 +89,9 @@ const keyName: Record<string, string> = {
 	'[8^': 'end',
 	/* misc. */
 	'[Z': 'tab',
-};
+}
 
-export const nonAlphanumericKeys = [...Object.values(keyName), 'backspace'];
+export const nonAlphanumericKeys = [...Object.values(keyName), 'backspace']
 
 const isShiftKey = (code: string) => {
 	return [
@@ -107,8 +107,8 @@ const isShiftKey = (code: string) => {
 		'[7$',
 		'[8$',
 		'[Z',
-	].includes(code);
-};
+	].includes(code)
+}
 
 const isCtrlKey = (code: string) => {
 	return [
@@ -123,34 +123,34 @@ const isCtrlKey = (code: string) => {
 		'[6^',
 		'[7^',
 		'[8^',
-	].includes(code);
-};
+	].includes(code)
+}
 
 type ParsedKey = {
-	name: string;
-	ctrl: boolean;
-	meta: boolean;
-	shift: boolean;
-	option: boolean;
-	sequence: string;
-	raw: string | undefined;
-	code?: string;
-};
+	name: string
+	ctrl: boolean
+	meta: boolean
+	shift: boolean
+	option: boolean
+	sequence: string
+	raw: string | undefined
+	code?: string
+}
 
 const parseKeypress = (s: Buffer | string = ''): ParsedKey => {
-	let parts;
+	let parts
 
 	if (Buffer.isBuffer(s)) {
 		if (s[0]! > 127 && s[1] === undefined) {
-			(s[0] as unknown as number) -= 128;
-			s = '\x1b' + String(s);
+			;(s[0] as unknown as number) -= 128
+			s = '\x1b' + String(s)
 		} else {
-			s = String(s);
+			s = String(s)
 		}
 	} else if (s !== undefined && typeof s !== 'string') {
-		s = String(s);
+		s = String(s)
 	} else if (!s) {
-		s = '';
+		s = ''
 	}
 
 	const key: ParsedKey = {
@@ -161,59 +161,59 @@ const parseKeypress = (s: Buffer | string = ''): ParsedKey => {
 		option: false,
 		sequence: s,
 		raw: s,
-	};
+	}
 
-	key.sequence = key.sequence || s || key.name;
+	key.sequence = key.sequence || s || key.name
 
 	if (s === '\r') {
 		// carriage return
-		key.raw = undefined;
-		key.name = 'return';
+		key.raw = undefined
+		key.name = 'return'
 	} else if (s === '\n') {
 		// enter, should have been called linefeed
-		key.name = 'enter';
+		key.name = 'enter'
 	} else if (s === '\t') {
 		// tab
-		key.name = 'tab';
+		key.name = 'tab'
 	} else if (s === '\b' || s === '\x1b\b') {
 		// backspace or ctrl+h
-		key.name = 'backspace';
-		key.meta = s.charAt(0) === '\x1b';
+		key.name = 'backspace'
+		key.meta = s.charAt(0) === '\x1b'
 	} else if (s === '\x7f' || s === '\x1b\x7f') {
 		// TODO(vadimdemedes): `enquirer` detects delete key as backspace, but I had to split them up to avoid breaking changes in Ink. Merge them back together in the next major version.
 		// delete
-		key.name = 'delete';
-		key.meta = s.charAt(0) === '\x1b';
+		key.name = 'delete'
+		key.meta = s.charAt(0) === '\x1b'
 	} else if (s === '\x1b' || s === '\x1b\x1b') {
 		// escape key
-		key.name = 'escape';
-		key.meta = s.length === 2;
+		key.name = 'escape'
+		key.meta = s.length === 2
 	} else if (s === ' ' || s === '\x1b ') {
-		key.name = 'space';
-		key.meta = s.length === 2;
+		key.name = 'space'
+		key.meta = s.length === 2
 	} else if (s.length === 1 && s <= '\x1a') {
 		// ctrl+letter
-		key.name = String.fromCharCode(s.charCodeAt(0) + 'a'.charCodeAt(0) - 1);
-		key.ctrl = true;
+		key.name = String.fromCharCode(s.charCodeAt(0) + 'a'.charCodeAt(0) - 1)
+		key.ctrl = true
 	} else if (s.length === 1 && s >= '0' && s <= '9') {
 		// number
-		key.name = 'number';
+		key.name = 'number'
 	} else if (s.length === 1 && s >= 'a' && s <= 'z') {
 		// lowercase letter
-		key.name = s;
+		key.name = s
 	} else if (s.length === 1 && s >= 'A' && s <= 'Z') {
 		// shift+letter
-		key.name = s.toLowerCase();
-		key.shift = true;
+		key.name = s.toLowerCase()
+		key.shift = true
 	} else if ((parts = metaKeyCodeRe.exec(s))) {
 		// meta+character key
-		key.meta = true;
-		key.shift = /^[A-Z]$/.test(parts[1]!);
+		key.meta = true
+		key.shift = /^[A-Z]$/.test(parts[1]!)
 	} else if ((parts = fnKeyRe.exec(s))) {
-		const segs = [...s];
+		const segs = [...s]
 
 		if (segs[0] === '\u001b' && segs[1] === '\u001b') {
-			key.option = true;
+			key.option = true
 		}
 
 		// ansi escape sequence
@@ -221,22 +221,22 @@ const parseKeypress = (s: Buffer | string = ''): ParsedKey => {
 		// the modifier key bitflag and any meaningless "1;" sequence
 		const code = [parts[1], parts[2], parts[4], parts[6]]
 			.filter(Boolean)
-			.join('');
+			.join('')
 
-		const modifier = ((parts[3] || parts[5] || 1) as number) - 1;
+		const modifier = ((parts[3] || parts[5] || 1) as number) - 1
 
 		// Parse the key modifier
-		key.ctrl = !!(modifier & 4);
-		key.meta = !!(modifier & 10);
-		key.shift = !!(modifier & 1);
-		key.code = code;
+		key.ctrl = !!(modifier & 4)
+		key.meta = !!(modifier & 10)
+		key.shift = !!(modifier & 1)
+		key.code = code
 
-		key.name = keyName[code]!;
-		key.shift = isShiftKey(code) || key.shift;
-		key.ctrl = isCtrlKey(code) || key.ctrl;
+		key.name = keyName[code]!
+		key.shift = isShiftKey(code) || key.shift
+		key.ctrl = isCtrlKey(code) || key.ctrl
 	}
 
-	return key;
-};
+	return key
+}
 
-export default parseKeypress;
+export default parseKeypress

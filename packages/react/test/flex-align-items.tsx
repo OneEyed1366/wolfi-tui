@@ -1,66 +1,66 @@
-import React from 'react';
-import test from 'ava';
-import {Box, Text} from '@wolfie/react';
-import {renderToString} from './helpers/render-to-string.js';
+import React from 'react'
+import { test, expect } from 'vitest'
+import { Box, Text } from '@wolfie/react'
+import { renderToString } from './helpers/render-to-string.js'
 
-test('row - align text to center', t => {
+test('row - align text to center', () => {
 	const output = renderToString(
 		<Box alignItems="center" height={3}>
 			<Text>Test</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\nTest\n');
-});
+	expect(output).toBe('\nTest\n')
+})
 
-test('row - align multiple text nodes to center', t => {
+test('row - align multiple text nodes to center', () => {
 	const output = renderToString(
 		<Box alignItems="center" height={3}>
 			<Text>A</Text>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\nAB\n');
-});
+	expect(output).toBe('\nAB\n')
+})
 
-test('row - align text to bottom', t => {
+test('row - align text to bottom', () => {
 	const output = renderToString(
 		<Box alignItems="flex-end" height={3}>
 			<Text>Test</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\nTest');
-});
+	expect(output).toBe('\n\nTest')
+})
 
-test('row - align multiple text nodes to bottom', t => {
+test('row - align multiple text nodes to bottom', () => {
 	const output = renderToString(
 		<Box alignItems="flex-end" height={3}>
 			<Text>A</Text>
 			<Text>B</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '\n\nAB');
-});
+	expect(output).toBe('\n\nAB')
+})
 
-test('column - align text to center', t => {
+test('column - align text to center', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="center" width={10}>
 			<Text>Test</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '   Test');
-});
+	expect(output).toBe('   Test')
+})
 
-test('column - align text to right', t => {
+test('column - align text to right', () => {
 	const output = renderToString(
 		<Box flexDirection="column" alignItems="flex-end" width={10}>
 			<Text>Test</Text>
-		</Box>,
-	);
+		</Box>
+	)
 
-	t.is(output, '      Test');
-});
+	expect(output).toBe('      Test')
+})

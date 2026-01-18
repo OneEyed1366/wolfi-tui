@@ -1,11 +1,11 @@
-import React from 'react';
-import {render, Box, Text} from '../../src/index.js';
+import React from 'react'
+import { render, Box, Text } from '../../src/index.js'
 
 function App() {
 	return (
 		<Box flexDirection="column" padding={1}>
 			<Text underline bold color="red">
-				{/* eslint-disable-next-line react/jsx-curly-brace-presence */}
+				{ }
 				{'Hello World'}
 			</Text>
 
@@ -35,11 +35,11 @@ function App() {
 				</Box>
 			</Box>
 		</Box>
-	);
+	)
 }
 
-const {rerender} = render(<App />);
+const { rerender } = render(<App />)
 
 for (let index = 0; index < 100_000; index++) {
-	rerender(<App />);
+	rerender(<App />)
 }

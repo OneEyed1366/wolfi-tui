@@ -1,21 +1,21 @@
-import React, {useState} from 'react';
-import {render, Box, Text, useInput} from '../../src/index.js';
+import React, { useState } from 'react'
+import { render, Box, Text, useInput } from '../../src/index.js'
 
 function TerminalResizeTest() {
-	const [value, setValue] = useState('');
+	const [value, setValue] = useState('')
 
-	useInput(input => {
+	useInput((input) => {
 		if (input === '\r') {
 			// Enter key - clear input
-			setValue('');
+			setValue('')
 		} else if (input === '\u007F' || input === '\b') {
 			// Backspace
-			setValue(previous => previous.slice(0, -1));
+			setValue((previous) => previous.slice(0, -1))
 		} else {
 			// Regular character
-			setValue(previous => previous + input);
+			setValue((previous) => previous + input)
 		}
-	});
+	})
 
 	return (
 		<Box flexDirection="column" padding={1}>
@@ -31,10 +31,10 @@ function TerminalResizeTest() {
 				<Text dimColor>Press Ctrl+C to exit</Text>
 			</Box>
 		</Box>
-	);
+	)
 }
 
 render(<TerminalResizeTest />, {
 	patchConsole: true,
 	exitOnCtrlC: true,
-});
+})
