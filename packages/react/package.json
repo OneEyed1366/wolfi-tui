@@ -1,0 +1,163 @@
+{
+	"name": "@wolfie/react",
+	"version": "0.10.0",
+	"description": "React adapter for Wolfie",
+	"license": "MIT",
+	"repository": "?",
+	"author": {
+		"name": "A.Prokopenko",
+		"email": "psevdoproger@gmail.com",
+		"url": "?"
+	},
+	"type": "module",
+	"exports": {
+		"types": "./build/index.d.ts",
+		"default": "./build/index.js"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"dev": "tsc --watch",
+		"build": "tsc",
+		"prepare": "npm run build",
+		"test": "tsc --noEmit && xo && FORCE_COLOR=true ava",
+		"example": "NODE_NO_WARNINGS=1 node --loader ts-node/esm",
+		"benchmark": "NODE_NO_WARNINGS=1 node --loader ts-node/esm"
+	},
+	"files": [
+		"build"
+	],
+	"keywords": [
+		"react",
+		"cli",
+		"jsx",
+		"stdout",
+		"components",
+		"command-line",
+		"preact",
+		"redux",
+		"print",
+		"render",
+		"colors",
+		"text"
+	],
+	"dependencies": {
+		"@wolfie/core": "workspace:*",
+		"ansi-escapes": "^7.2.0",
+		"ansi-styles": "^6.2.1",
+		"auto-bind": "^5.0.1",
+		"chalk": "^5.6.0",
+		"cli-boxes": "^3.0.0",
+		"cli-cursor": "^4.0.0",
+		"cli-truncate": "^5.1.1",
+		"code-excerpt": "^4.0.0",
+		"es-toolkit": "^1.39.10",
+		"indent-string": "^5.0.0",
+		"is-in-ci": "^2.0.0",
+		"patch-console": "^2.0.0",
+		"signal-exit": "^3.0.7",
+		"stack-utils": "^2.0.6",
+		"type-fest": "^4.27.0",
+		"wrap-ansi": "^9.0.0",
+		"yoga-layout": "~3.2.1"
+	},
+	"peerDependencies": {
+		"@types/react": ">=19.0.0",
+		"react": ">=19.0.0",
+		"react-devtools-core": "^6.1.2",
+		"react-reconciler": "^0.33.0"
+	},
+	"peerDependenciesMeta": {
+		"@types/react": {
+			"optional": true
+		},
+		"react-devtools-core": {
+			"optional": true
+		}
+	},
+	"ava": {
+		"workerThreads": false,
+		"serial": true,
+		"files": [
+			"test/**/*",
+			"!test/helpers/**/*",
+			"!test/fixtures/**/*"
+		],
+		"extensions": {
+			"ts": "module",
+			"tsx": "module"
+		},
+		"nodeArguments": [
+			"--loader=ts-node/esm"
+		]
+	},
+	"xo": {
+		"extends": [
+			"xo-react"
+		],
+		"plugins": [
+			"react"
+		],
+		"prettier": true,
+		"rules": {
+			"react/no-unescaped-entities": "off",
+			"react/state-in-constructor": "off",
+			"react/jsx-indent": "off",
+			"react/prop-types": "off",
+			"unicorn/import-index": "off",
+			"import/no-useless-path-segments": "off",
+			"react-hooks/exhaustive-deps": "off",
+			"complexity": "off"
+		},
+		"ignores": [
+			"../../src/parse-keypress.ts",
+			"build/**"
+		],
+		"overrides": [
+			{
+				"files": [
+					"src/**/*.{ts,tsx}",
+					"test/**/*.{ts,tsx}"
+				],
+				"rules": {
+					"no-unused-expressions": "off",
+					"camelcase": [
+						"error",
+						{
+							"allow": [
+								"^unstable__",
+								"^internal_"
+							]
+						}
+					],
+					"@typescript-eslint/naming-convention": "off",
+					"@typescript-eslint/consistent-type-definitions": "off",
+					"unicorn/filename-case": "off",
+					"react/default-props-match-prop-types": "off",
+					"unicorn/prevent-abbreviations": "off",
+					"react/require-default-props": "off",
+					"react/jsx-curly-brace-presence": "off",
+					"@typescript-eslint/no-empty-function": "off",
+					"@typescript-eslint/promise-function-async": "warn",
+					"@typescript-eslint/explicit-function-return": "off",
+					"@typescript-eslint/explicit-function-return-type": "off",
+					"dot-notation": "off",
+					"react/boolean-prop-naming": "off",
+					"unicorn/prefer-dom-node-remove": "off",
+					"unicorn/prefer-event-target": "off"
+				}
+			},
+			{
+				"files": [
+					"./examples/**/*.{ts,tsx}",
+					"./benchmark/**/*.{ts,tsx}"
+				],
+				"rules": {
+					"import/no-unassigned-import": "off"
+				}
+			}
+		]
+	},
+	"prettier": "@vdemedes/prettier-config"
+}

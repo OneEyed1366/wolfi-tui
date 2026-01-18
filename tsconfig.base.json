@@ -1,0 +1,18 @@
+{
+	"extends": "@sindresorhus/tsconfig",
+	"compilerOptions": {
+		"lib": [
+			"DOM",
+			"DOM.Iterable",
+			"ES2023"
+		],
+		"sourceMap": true,
+		"isolatedModules": true
+	},
+	"ts-node": {
+		"transpileOnly": true,
+		"files": true,
+		"experimentalResolver": true,
+		"experimentalSpecifierResolution": "node"
+	}
+}
