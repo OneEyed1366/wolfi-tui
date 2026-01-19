@@ -1,1 +1,1 @@
-import './email-input.js'
+import './email-input'

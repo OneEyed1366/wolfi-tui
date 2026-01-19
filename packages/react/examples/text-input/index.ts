@@ -1,1 +1,1 @@
-import './text-input.js'
+import './text-input'

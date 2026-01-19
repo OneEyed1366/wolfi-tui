@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
-import Box from '../../Box.js'
-import Text from '../../Text.js'
-import { useComponentTheme } from '../../../theme/theme.js'
-import type { Option } from '../types.js'
-import { SelectOption } from './SelectOption.js'
-import { useSelectState } from './use-select-state.js'
-import { useSelect } from './use-select.js'
-import type { Theme } from './theme.js'
+import Box from '../../Box'
+import Text from '../../Text'
+import { useComponentTheme } from '../../../theme/theme'
+import type { Option } from '../types'
+import { SelectOption } from './SelectOption'
+import { useSelectState } from './use-select-state'
+import { useSelect } from './use-select'
+import type { Theme } from './theme'
 
 //#region Types
 export type SelectProps = {

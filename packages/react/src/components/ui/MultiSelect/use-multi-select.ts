@@ -1,5 +1,5 @@
-import useInput from '../../../hooks/use-input.js'
-import type { MultiSelectState } from './use-multi-select-state.js'
+import useInput from '../../../hooks/use-input'
+import type { MultiSelectState } from './use-multi-select-state'
 
 //#region Types
 export type UseMultiSelectProps = {

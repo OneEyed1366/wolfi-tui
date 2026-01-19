@@ -1,8 +1,5 @@
 export { OrderedList, type OrderedListProps } from './OrderedList'
-export {
-	OrderedListItem,
-	type OrderedListItemProps,
-} from './OrderedListItem'
+export { OrderedListItem, type OrderedListItemProps } from './OrderedListItem'
 export {
 	OrderedListContext,
 	type OrderedListContextProps,

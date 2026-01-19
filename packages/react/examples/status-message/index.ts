@@ -1,1 +1,1 @@
-import './status-message.js'
+import './status-message'

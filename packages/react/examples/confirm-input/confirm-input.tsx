@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { render, Box, Text, ConfirmInput, useApp } from '../../src/index.js'
+import { render, Box, Text, ConfirmInput, useApp } from '../../src/index'
 
 function ConfirmInputDemo() {
 	const { exit } = useApp()
@@ -22,7 +22,9 @@ function ConfirmInputDemo() {
 	return (
 		<Box flexDirection="column" padding={1}>
 			<Text color="cyan">Confirm Input Demo</Text>
-			<Text dimColor>Press Y to confirm, N to cancel, or Enter for default</Text>
+			<Text dimColor>
+				Press Y to confirm, N to cancel, or Enter for default
+			</Text>
 
 			<Box marginTop={1} gap={1}>
 				<Text>Do you want to proceed?</Text>

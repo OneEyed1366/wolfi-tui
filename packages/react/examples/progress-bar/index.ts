@@ -1,1 +1,1 @@
-import './progress-bar.js'
+import './progress-bar'

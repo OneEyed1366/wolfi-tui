@@ -7,8 +7,8 @@ import {
 	useState,
 	useEffect,
 } from 'react'
-import type { Option } from '../types.js'
-import OptionMap from '../../../lib/option-map.js'
+import type { Option } from '../types'
+import OptionMap from '../../../lib/option-map'
 
 //#region Types
 type State = {
@@ -155,8 +155,7 @@ const reducer: Reducer<State, Action> = (state, action) => {
 				state.visibleToIndex + 1
 			)
 
-			const nextVisibleFromIndex =
-				nextVisibleToIndex - state.visibleOptionCount
+			const nextVisibleFromIndex = nextVisibleToIndex - state.visibleOptionCount
 
 			return {
 				...state,
@@ -194,8 +193,7 @@ const reducer: Reducer<State, Action> = (state, action) => {
 
 			const nextVisibleFromIndex = Math.max(0, state.visibleFromIndex - 1)
 
-			const nextVisibleToIndex =
-				nextVisibleFromIndex + state.visibleOptionCount
+			const nextVisibleToIndex = nextVisibleFromIndex + state.visibleOptionCount
 
 			return {
 				...state,

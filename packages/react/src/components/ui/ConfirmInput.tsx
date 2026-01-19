@@ -1,8 +1,8 @@
-import Text from '../Text.js'
-import useInput from '../../hooks/use-input.js'
-import { useComponentTheme } from '../../theme/theme.js'
-import type { Props as TextProps } from '../Text.js'
-import type { ComponentTheme } from '../../theme/theme.js'
+import Text from '../Text'
+import useInput from '../../hooks/use-input'
+import { useComponentTheme } from '../../theme/theme'
+import type { Props as TextProps } from '../Text'
+import type { ComponentTheme } from '../../theme/theme'
 
 //#region Theme
 type ConfirmInputTheme = ComponentTheme & {

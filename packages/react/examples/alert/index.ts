@@ -1,1 +1,1 @@
-import './alert.js'
+import './alert'

@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { render, Box, Text, MultiSelect, useApp, type Option } from '../../src/index.js'
+import {
+	render,
+	Box,
+	Text,
+	MultiSelect,
+	useApp,
+	type Option,
+} from '../../src/index'
 
 const featureOptions: Option[] = [
 	{ label: 'TypeScript', value: 'typescript' },
@@ -38,7 +45,9 @@ function MultiSelectExample() {
 
 	return (
 		<Box flexDirection="column" gap={1}>
-			<Text bold>Select features to include (Space to toggle, Enter to confirm):</Text>
+			<Text bold>
+				Select features to include (Space to toggle, Enter to confirm):
+			</Text>
 
 			<MultiSelect
 				options={featureOptions}

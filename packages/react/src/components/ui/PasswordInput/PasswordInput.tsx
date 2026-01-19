@@ -1,8 +1,8 @@
-import Text from '../../Text.js'
-import { useComponentTheme } from '../../../theme/theme.js'
-import { usePasswordInputState } from './use-password-input-state.js'
-import { usePasswordInput } from './use-password-input.js'
-import type { Theme } from './theme.js'
+import Text from '../../Text'
+import { useComponentTheme } from '../../../theme/theme'
+import { usePasswordInputState } from './use-password-input-state'
+import { usePasswordInput } from './use-password-input'
+import type { Theme } from './theme'
 
 export type PasswordInputProps = {
 	/**

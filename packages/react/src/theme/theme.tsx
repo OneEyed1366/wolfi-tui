@@ -1,5 +1,6 @@
 import { type ReactNode, createContext, useContext } from 'react'
-import deepmerge from 'deepmerge'
+import * as deepmergeModule from 'deepmerge'
+const deepmerge = deepmergeModule.default ?? deepmergeModule
 import { badgeTheme } from '../components/ui/Badge'
 import { spinnerTheme } from '../components/ui/Spinner'
 import { progressBarTheme } from '../components/ui/ProgressBar'

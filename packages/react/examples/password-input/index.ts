@@ -1,1 +1,1 @@
-import './password-input.js'
+import './password-input'

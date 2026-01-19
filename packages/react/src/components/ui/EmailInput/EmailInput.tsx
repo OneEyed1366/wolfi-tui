@@ -1,8 +1,8 @@
-import Text from '../../Text.js'
-import { useComponentTheme } from '../../../theme/theme.js'
-import { useEmailInputState } from './use-email-input-state.js'
-import { useEmailInput } from './use-email-input.js'
-import type { Theme } from './theme.js'
+import Text from '../../Text'
+import { useComponentTheme } from '../../../theme/theme'
+import { useEmailInputState } from './use-email-input-state'
+import { useEmailInput } from './use-email-input'
+import type { Theme } from './theme'
 
 export type EmailInputProps = {
 	/**

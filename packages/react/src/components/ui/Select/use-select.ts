@@ -1,5 +1,5 @@
-import useInput from '../../../hooks/use-input.js'
-import type { SelectState } from './use-select-state.js'
+import useInput from '../../../hooks/use-input'
+import type { SelectState } from './use-select-state'
 
 //#region Types
 export type UseSelectProps = {

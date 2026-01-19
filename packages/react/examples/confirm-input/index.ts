@@ -1,1 +1,1 @@
-import './confirm-input.js'
+import './confirm-input'

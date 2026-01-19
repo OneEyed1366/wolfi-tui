@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { render, Box, Text, EmailInput, useApp } from '../../src/index.js'
+import { render, Box, Text, EmailInput, useApp } from '../../src/index'
 
 function EmailInputDemo() {
 	const { exit } = useApp()
@@ -38,9 +38,7 @@ function EmailInputDemo() {
 					/>
 				</Box>
 
-				<Text dimColor>
-					Current: {currentValue || '(empty)'}
-				</Text>
+				<Text dimColor>Current: {currentValue || '(empty)'}</Text>
 			</Box>
 		</Box>
 	)

@@ -1,4 +1,4 @@
-import type { Option } from '../components/ui/types.js'
+import type { Option } from '../components/ui/types'
 
 type OptionMapItem = Option & {
 	previous: OptionMapItem | undefined

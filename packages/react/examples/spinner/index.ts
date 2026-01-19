@@ -1,1 +1,1 @@
-import './spinner.js'
+import './spinner'

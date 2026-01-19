@@ -1,1 +1,1 @@
-import './badge.js'
+import './badge'

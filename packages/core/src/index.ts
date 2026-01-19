@@ -21,10 +21,7 @@ export { default as Output } from './output'
 export { default as renderer } from './renderer'
 export type { Styles } from './styles'
 export { default as applyStyles } from './styles'
-export {
-	default as parseKeypress,
-	nonAlphanumericKeys,
-} from './parse-keypress'
+export { default as parseKeypress, nonAlphanumericKeys } from './parse-keypress'
 export { default as measureElement } from './measure-element'
 export { default as measureText } from './measure-text'
 export { default as wrapText } from './wrap-text'

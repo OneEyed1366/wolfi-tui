@@ -1,1 +1,1 @@
-import './ordered-list.js'
+import './ordered-list'

@@ -1,4 +1,4 @@
-import { render, Box, Text, OrderedList } from '../../src/index.js'
+import { render, Box, Text, OrderedList } from '../../src/index'
 
 function OrderedListDemo() {
 	return (

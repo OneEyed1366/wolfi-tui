@@ -1,4 +1,4 @@
-import { render, Box, Text, UnorderedList } from '../../src/index.js'
+import { render, Box, Text, UnorderedList } from '../../src/index'
 
 function UnorderedListDemo() {
 	return (

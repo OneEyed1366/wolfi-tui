@@ -17,12 +17,7 @@ export {
 	type StatusMessageProps,
 	type StatusMessageVariant,
 } from './StatusMessage'
-export {
-	Alert,
-	alertTheme,
-	type AlertProps,
-	type AlertVariant,
-} from './Alert'
+export { Alert, alertTheme, type AlertProps, type AlertVariant } from './Alert'
 export {
 	OrderedList,
 	orderedListTheme,

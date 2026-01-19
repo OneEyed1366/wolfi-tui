@@ -1,1 +1,1 @@
-import './unordered-list.js'
+import './unordered-list'

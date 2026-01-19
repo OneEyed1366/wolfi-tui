@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
-import Box from '../../Box.js'
-import Text from '../../Text.js'
-import { useComponentTheme } from '../../../theme/theme.js'
-import type { Option } from '../types.js'
-import { MultiSelectOption } from './MultiSelectOption.js'
-import { useMultiSelectState } from './use-multi-select-state.js'
-import { useMultiSelect } from './use-multi-select.js'
-import type { Theme } from './theme.js'
+import Box from '../../Box'
+import Text from '../../Text'
+import { useComponentTheme } from '../../../theme/theme'
+import type { Option } from '../types'
+import { MultiSelectOption } from './MultiSelectOption'
+import { useMultiSelectState } from './use-multi-select-state'
+import { useMultiSelect } from './use-multi-select'
+import type { Theme } from './theme'
 
 //#region Types
 export type MultiSelectProps = {

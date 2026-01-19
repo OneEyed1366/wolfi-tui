@@ -1,1 +1,1 @@
-import './multi-select.js'
+import './multi-select'

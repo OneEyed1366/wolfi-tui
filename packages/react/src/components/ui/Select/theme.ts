@@ -1,6 +1,6 @@
-import type { Props as BoxProps } from '../../Box.js'
-import type { Props as TextProps } from '../../Text.js'
-import type { ComponentTheme } from '../../../theme/theme.js'
+import type { Props as BoxProps } from '../../Box'
+import type { Props as TextProps } from '../../Text'
+import type { ComponentTheme } from '../../../theme/theme'
 
 const theme = {
 	styles: {

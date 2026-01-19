@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { render, Box, Text, PasswordInput, useApp } from '../../src/index.js'
+import { render, Box, Text, PasswordInput, useApp } from '../../src/index'
 
 function PasswordInputDemo() {
 	const { exit } = useApp()
@@ -35,9 +35,7 @@ function PasswordInputDemo() {
 					/>
 				</Box>
 
-				<Text dimColor>
-					Characters entered: {charCount}
-				</Text>
+				<Text dimColor>Characters entered: {charCount}</Text>
 			</Box>
 		</Box>
 	)

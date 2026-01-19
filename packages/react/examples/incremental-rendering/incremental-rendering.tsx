@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-	render,
-	Text,
-	Box,
-	useInput,
-	useStdout,
-	useApp,
-} from '../../src/index'
+import { render, Text, Box, useInput, useStdout, useApp } from '../../src/index'
 
 const rows = [
 	'Server Authentication Module - Handles JWT token validation, OAuth2 flows, and session management across distributed systems',

@@ -1,8 +1,8 @@
-import Text from '../../Text.js'
-import { useComponentTheme } from '../../../theme/theme.js'
-import { useTextInputState } from './use-text-input-state.js'
-import { useTextInput } from './use-text-input.js'
-import type { Theme } from './theme.js'
+import Text from '../../Text'
+import { useComponentTheme } from '../../../theme/theme'
+import { useTextInputState } from './use-text-input-state'
+import { useTextInput } from './use-text-input'
+import type { Theme } from './theme'
 
 export type TextInputProps = {
 	/**

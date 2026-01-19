@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 import figures from 'figures'
-import Box from '../../Box.js'
-import Text from '../../Text.js'
-import { useComponentTheme } from '../../../theme/theme.js'
-import type { Theme } from './theme.js'
+import Box from '../../Box'
+import Text from '../../Text'
+import { useComponentTheme } from '../../../theme/theme'
+import type { Theme } from './theme'
 
 //#region Types
 export type SelectOptionProps = {
@@ -34,9 +34,7 @@ export function SelectOption({
 
 	return (
 		<Box {...styles.option({ isFocused })}>
-			{isFocused && (
-				<Text {...styles.focusIndicator()}>{figures.pointer}</Text>
-			)}
+			{isFocused && <Text {...styles.focusIndicator()}>{figures.pointer}</Text>}
 
 			<Text {...styles.label({ isFocused, isSelected })}>{children}</Text>
 
