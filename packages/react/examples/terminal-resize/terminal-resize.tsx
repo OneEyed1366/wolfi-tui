@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { render, Box, Text, useInput } from '../../src/index.js'
+import { render, Box, Text, useInput } from '../../src/index'
 
 function TerminalResizeTest() {
 	const [value, setValue] = useState('')

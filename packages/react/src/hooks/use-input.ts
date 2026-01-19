@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { parseKeypress, nonAlphanumericKeys } from '@wolfie/core'
-import reconciler from '../reconciler.js'
-import useStdin from './use-stdin.js'
+import reconciler from '../reconciler'
+import useStdin from './use-stdin'
 
 /**
 Handy information about a key that was pressed.

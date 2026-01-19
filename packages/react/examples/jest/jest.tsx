@@ -2,21 +2,21 @@ import React from 'react'
 import PQueue from 'p-queue'
 import delay from 'delay'
 import ms from 'ms'
-import { Static, Box, render } from '../../src/index.js'
-import Summary from './summary.jsx'
-import Test from './test.js'
+import { Static, Box, render } from '../../src/index'
+import Summary from './summaryx'
+import Test from './test'
 
 const paths = [
-	'tests/login.js',
-	'tests/signup.js',
-	'tests/forgot-password.js',
-	'tests/reset-password.js',
-	'tests/view-profile.js',
-	'tests/edit-profile.js',
-	'tests/delete-profile.js',
-	'tests/posts.js',
-	'tests/post.js',
-	'tests/comments.js',
+	'tests/login',
+	'tests/signup',
+	'tests/forgot-password',
+	'tests/reset-password',
+	'tests/view-profile',
+	'tests/edit-profile',
+	'tests/delete-profile',
+	'tests/posts',
+	'tests/post',
+	'tests/comments',
 ]
 
 type State = {

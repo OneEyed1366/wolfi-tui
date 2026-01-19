@@ -1,47 +1,48 @@
-import {useMemo, type ReactNode, useContext} from 'react';
-import Box from '../../Box.js';
-import {useComponentTheme} from '../../../theme/theme.js';
-import {UnorderedListItem} from './UnorderedListItem.js';
-import {UnorderedListContext} from './UnorderedListContext.js';
-import {UnorderedListItemContext} from './UnorderedListItemContext.js';
-import type {UnorderedListTheme} from './theme.js';
-import {defaultMarker} from './constants.js';
+import { useMemo, type ReactNode, useContext } from 'react'
+import Box from '../../Box'
+import { useComponentTheme } from '../../../theme/theme'
+import { UnorderedListItem } from './UnorderedListItem'
+import { UnorderedListContext } from './UnorderedListContext'
+import { UnorderedListItemContext } from './UnorderedListItemContext'
+import type { UnorderedListTheme } from './theme'
+import { defaultMarker } from './constants'
 
 export type UnorderedListProps = {
 	/**
 	 * List items.
 	 */
-	readonly children: ReactNode;
-};
+	readonly children: ReactNode
+}
 
-function UnorderedListComponent({children}: UnorderedListProps) {
-	const {depth} = useContext(UnorderedListContext);
-	const {styles, config} = useComponentTheme<UnorderedListTheme>('UnorderedList');
+function UnorderedListComponent({ children }: UnorderedListProps) {
+	const { depth } = useContext(UnorderedListContext)
+	const { styles, config } =
+		useComponentTheme<UnorderedListTheme>('UnorderedList')
 
 	const listContext = useMemo(
 		() => ({
 			depth: depth + 1,
 		}),
-		[depth],
-	);
+		[depth]
+	)
 
 	const listItemContext = useMemo(() => {
-		const {marker} = config();
+		const { marker } = config()
 
 		if (typeof marker === 'string') {
-			return {marker};
+			return { marker }
 		}
 
 		if (Array.isArray(marker)) {
 			return {
 				marker: marker[depth] ?? marker.at(-1) ?? defaultMarker,
-			};
+			}
 		}
 
 		return {
 			marker: defaultMarker,
-		};
-	}, [config, depth]);
+		}
+	}, [config, depth])
 
 	return (
 		<UnorderedListContext.Provider value={listContext}>
@@ -49,9 +50,9 @@ function UnorderedListComponent({children}: UnorderedListProps) {
 				<Box {...styles.list()}>{children}</Box>
 			</UnorderedListItemContext.Provider>
 		</UnorderedListContext.Provider>
-	);
+	)
 }
 
 export const UnorderedList = Object.assign(UnorderedListComponent, {
 	Item: UnorderedListItem,
-});
+})

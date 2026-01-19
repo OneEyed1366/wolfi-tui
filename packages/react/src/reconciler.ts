@@ -3,7 +3,7 @@ import createReconciler, { type ReactContext } from 'react-reconciler'
 import {
 	DefaultEventPriority,
 	NoEventPriority,
-} from 'react-reconciler/constants.js'
+} from 'react-reconciler/constants'
 import Yoga, { type Node as YogaNode } from 'yoga-layout'
 import { createContext } from 'react'
 import {
@@ -29,7 +29,7 @@ import {
 // See https://github.com/vadimdemedes/ink/issues/384
 if (process.env['DEV'] === 'true') {
 	try {
-		await import('./devtools.js')
+		await import('./devtools')
 	} catch (error: any) {
 		if (error.code === 'ERR_MODULE_NOT_FOUND') {
 			console.warn(
@@ -43,7 +43,6 @@ $ npm install --save-dev react-devtools-core
 				`.trim() + '\n'
 			)
 		} else {
-			 
 			throw error
 		}
 	}

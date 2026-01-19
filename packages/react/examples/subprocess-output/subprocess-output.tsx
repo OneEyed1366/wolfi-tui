@@ -2,7 +2,7 @@ import childProcess from 'node:child_process'
 import type Buffer from 'node:buffer'
 import React from 'react'
 import stripAnsi from 'strip-ansi'
-import { render, Text, Box } from '../../src/index.js'
+import { render, Text, Box } from '../../src/index'
 
 function SubprocessOutput() {
 	const [output, setOutput] = React.useState('')

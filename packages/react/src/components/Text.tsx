@@ -2,8 +2,8 @@ import React, { useContext, type ReactNode } from 'react'
 import chalk, { type ForegroundColorName } from 'chalk'
 import { type LiteralUnion } from 'type-fest'
 import { colorize, type Styles } from '@wolfie/core'
-import { accessibilityContext } from './AccessibilityContext.js'
-import { backgroundContext } from './BackgroundContext.js'
+import { accessibilityContext } from './AccessibilityContext'
+import { backgroundContext } from './BackgroundContext'
 
 export type Props = {
 	/**

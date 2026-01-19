@@ -2,12 +2,12 @@ import { EventEmitter } from 'node:events'
 import process from 'node:process'
 import React, { PureComponent, type ReactNode } from 'react'
 import cliCursor from 'cli-cursor'
-import AppContext from './AppContext.js'
-import StdinContext from './StdinContext.js'
-import StdoutContext from './StdoutContext.js'
-import StderrContext from './StderrContext.js'
-import FocusContext from './FocusContext.js'
-import ErrorOverview from './ErrorOverview.js'
+import AppContext from './AppContext'
+import StdinContext from './StdinContext'
+import StdoutContext from './StdoutContext'
+import StderrContext from './StderrContext'
+import FocusContext from './FocusContext'
+import ErrorOverview from './ErrorOverview'
 
 const tab = '\t'
 const shiftTab = '\u001B[Z'
@@ -66,13 +66,11 @@ export default class App extends PureComponent<Props, State> {
 	override render() {
 		return (
 			<AppContext.Provider
-				 
 				value={{
 					exit: this.handleExit,
 				}}
 			>
 				<StdinContext.Provider
-					 
 					value={{
 						stdin: this.props.stdin,
 						setRawMode: this.handleSetRawMode,
@@ -82,21 +80,18 @@ export default class App extends PureComponent<Props, State> {
 					}}
 				>
 					<StdoutContext.Provider
-						 
 						value={{
 							stdout: this.props.stdout,
 							write: this.props.writeToStdout,
 						}}
 					>
 						<StderrContext.Provider
-							 
 							value={{
 								stderr: this.props.stderr,
 								write: this.props.writeToStderr,
 							}}
 						>
 							<FocusContext.Provider
-								 
 								value={{
 									activeId: this.state.activeFocusId,
 									add: this.addFocusable,

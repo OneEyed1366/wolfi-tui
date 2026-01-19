@@ -1,12 +1,12 @@
-import {createContext} from 'react';
+import { createContext } from 'react'
 
 export type UnorderedListContextProps = {
 	/**
 	 * Depth of the list.
 	 */
-	depth: number;
-};
+	depth: number
+}
 
 export const UnorderedListContext = createContext<UnorderedListContextProps>({
 	depth: 0,
-});
+})

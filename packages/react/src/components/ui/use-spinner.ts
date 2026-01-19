@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import spinners, {type SpinnerName} from 'cli-spinners';
+import { useEffect, useState } from 'react'
+import spinners, { type SpinnerName } from 'cli-spinners'
 
 //#region Types
 export type UseSpinnerProps = {
@@ -9,34 +9,36 @@ export type UseSpinnerProps = {
 	 *
 	 * @default dots
 	 */
-	type?: SpinnerName;
-};
+	type?: SpinnerName
+}
 
 export type UseSpinnerResult = {
-	frame: string;
-};
+	frame: string
+}
 //#endregion Types
 
 //#region Hook
-export function useSpinner({type = 'dots'}: UseSpinnerProps = {}): UseSpinnerResult {
-	const [frame, setFrame] = useState(0);
-	const spinner = spinners[type];
+export function useSpinner({
+	type = 'dots',
+}: UseSpinnerProps = {}): UseSpinnerResult {
+	const [frame, setFrame] = useState(0)
+	const spinner = spinners[type]
 
 	useEffect(() => {
 		const timer = setInterval(() => {
-			setFrame(previousFrame => {
-				const isLastFrame = previousFrame === spinner.frames.length - 1;
-				return isLastFrame ? 0 : previousFrame + 1;
-			});
-		}, spinner.interval);
+			setFrame((previousFrame) => {
+				const isLastFrame = previousFrame === spinner.frames.length - 1
+				return isLastFrame ? 0 : previousFrame + 1
+			})
+		}, spinner.interval)
 
 		return () => {
-			clearInterval(timer);
-		};
-	}, [spinner]);
+			clearInterval(timer)
+		}
+	}, [spinner])
 
 	return {
 		frame: spinner.frames[frame] ?? '',
-	};
+	}
 }
 //#endregion Hook

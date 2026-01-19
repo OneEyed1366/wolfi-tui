@@ -5,8 +5,8 @@ import indentString from 'indent-string'
 import cliBoxes from 'cli-boxes'
 import chalk from 'chalk'
 import { render, Box, Text } from '@wolfie/react'
-import { renderToString } from './helpers/render-to-string.js'
-import createStdout from './helpers/create-stdout.js'
+import { renderToString } from './helpers/render-to-string'
+import createStdout from './helpers/create-stdout'
 
 test('single node - full width box', () => {
 	const output = renderToString(

@@ -6,7 +6,7 @@ import {
 	useFocus,
 	useInput,
 	useFocusManager,
-} from '../../src/index.js'
+} from '../../src/index'
 
 function Focus() {
 	const { focus } = useFocusManager()

@@ -6,7 +6,7 @@ import isInCi from 'is-in-ci'
 import autoBind from 'auto-bind'
 import signalExit from 'signal-exit'
 import patchConsole from 'patch-console'
-import { LegacyRoot } from 'react-reconciler/constants.js'
+import { LegacyRoot } from 'react-reconciler/constants'
 import { type FiberRoot } from 'react-reconciler'
 import Yoga from 'yoga-layout'
 import wrapAnsi from 'wrap-ansi'
@@ -17,10 +17,10 @@ import {
 	type DOMElement,
 	type LogUpdate,
 } from '@wolfie/core'
-import reconciler from './reconciler.js'
-import instances from './instances.js'
-import App from './components/App.js'
-import { accessibilityContext as AccessibilityContext } from './components/AccessibilityContext.js'
+import reconciler from './reconciler'
+import instances from './instances'
+import App from './components/App'
+import { accessibilityContext as AccessibilityContext } from './components/AccessibilityContext'
 
 const noop = () => {}
 
@@ -114,7 +114,6 @@ export default class Ink {
 		// so that it's rerendered every time, not just new static parts, like in non-debug mode
 		this.fullStaticOutput = ''
 
-		 
 		this.container = reconciler.createContainer(
 			this.rootNode,
 			LegacyRoot,
@@ -316,10 +315,10 @@ export default class Ink {
 		)
 
 		// @ts-expect-error the types for `react-reconciler` are not up to date with the library.
-		 
+
 		reconciler.updateContainerSync(tree, this.container, null, noop)
 		// @ts-expect-error the types for `react-reconciler` are not up to date with the library.
-		 
+
 		reconciler.flushSyncWork()
 	}
 
@@ -392,10 +391,10 @@ export default class Ink {
 		this.isUnmounted = true
 
 		// @ts-expect-error the types for `react-reconciler` are not up to date with the library.
-		 
+
 		reconciler.updateContainerSync(null, this.container, null, noop)
 		// @ts-expect-error the types for `react-reconciler` are not up to date with the library.
-		 
+
 		reconciler.flushSyncWork()
 		instances.delete(this.options.stdout)
 

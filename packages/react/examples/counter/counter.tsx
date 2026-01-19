@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, Text } from '../../src/index.js'
+import { render, Text } from '../../src/index'
 
 function Counter() {
 	const [counter, setCounter] = React.useState(0)

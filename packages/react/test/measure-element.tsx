@@ -9,7 +9,7 @@ import {
 	measureElement,
 	type DOMElement,
 } from '@wolfie/react'
-import createStdout from './helpers/create-stdout.js'
+import createStdout from './helpers/create-stdout'
 
 test('measure element', async () => {
 	const stdout = createStdout()

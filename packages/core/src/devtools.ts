@@ -1,7 +1,7 @@
 /* eslint-disable import/order */
 
 // eslint-disable-next-line import/no-unassigned-import
-import './devtools-window-polyfill.js'
+import './devtools-window-polyfill'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error

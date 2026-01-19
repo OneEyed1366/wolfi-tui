@@ -3,7 +3,7 @@ import delay from 'delay'
 import stripAnsi from 'strip-ansi'
 import React from 'react'
 import { render, Box, Text } from '@wolfie/react'
-import createStdout from './helpers/create-stdout.js'
+import createStdout from './helpers/create-stdout'
 
 test('clear screen when terminal width decreases', async () => {
 	const stdout = createStdout(100)

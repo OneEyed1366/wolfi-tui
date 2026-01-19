@@ -2,9 +2,9 @@ import React from 'react'
 import { test, expect, beforeAll, afterAll } from 'vitest'
 import chalk from 'chalk'
 import { render, Box, Text } from '@wolfie/react'
-import { renderToString } from './helpers/render-to-string.js'
-import createStdout from './helpers/create-stdout.js'
-import { enableTestColors, disableTestColors } from './helpers/force-colors.js'
+import { renderToString } from './helpers/render-to-string'
+import createStdout from './helpers/create-stdout'
+import { enableTestColors, disableTestColors } from './helpers/force-colors'
 
 // ANSI escape sequences for background colors
 // Note: We test against raw ANSI codes rather than chalk predicates because:

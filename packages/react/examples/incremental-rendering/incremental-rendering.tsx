@@ -6,7 +6,7 @@ import {
 	useInput,
 	useStdout,
 	useApp,
-} from '../../src/index.js'
+} from '../../src/index'
 
 const rows = [
 	'Server Authentication Module - Handles JWT token validation, OAuth2 flows, and session management across distributed systems',

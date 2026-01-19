@@ -1,16 +1,16 @@
-import type {Props as BoxProps} from '../../Box.js';
-import type {Props as TextProps} from '../../Text.js';
-import type {ComponentTheme} from '../../../theme/theme.js';
+import type { Props as BoxProps } from '../../Box'
+import type { Props as TextProps } from '../../Text'
+import type { ComponentTheme } from '../../../theme/theme'
 
 //#region Types
 export type OrderedListTheme = {
 	styles: {
-		list: () => Partial<BoxProps>;
-		listItem: () => Partial<BoxProps>;
-		marker: () => Partial<TextProps>;
-		content: () => Partial<BoxProps>;
-	};
-};
+		list: () => Partial<BoxProps>
+		listItem: () => Partial<BoxProps>
+		marker: () => Partial<TextProps>
+		content: () => Partial<BoxProps>
+	}
+}
 //#endregion Types
 
 //#region Theme
@@ -30,5 +30,5 @@ export const orderedListTheme = {
 			marginLeft: 1,
 		}),
 	},
-} satisfies ComponentTheme;
+} satisfies ComponentTheme
 //#endregion Theme

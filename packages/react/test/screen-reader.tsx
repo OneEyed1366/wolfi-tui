@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest'
 import React from 'react'
 import { Box, Text } from '@wolfie/react'
-import { renderToString } from './helpers/render-to-string.js'
+import { renderToString } from './helpers/render-to-string'
 
 test('render text for screen readers', () => {
 	const output = renderToString(
@@ -93,7 +93,7 @@ test('render aria-label only Box for screen readers', () => {
 test('omit ANSI styling in screen-reader output', () => {
 	const output = renderToString(
 		<Box>
-			{ }
+			{}
 			<Text bold color="green" inverse underline>
 				Styled content
 			</Text>

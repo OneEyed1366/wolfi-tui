@@ -1,4 +1,4 @@
-import { type DOMElement } from './dom.js'
+import { type DOMElement } from './dom'
 
 type Output = {
 	/**

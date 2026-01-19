@@ -1,5 +1,5 @@
 import React, { useContext, type ReactNode } from 'react'
-import { accessibilityContext } from './AccessibilityContext.js'
+import { accessibilityContext } from './AccessibilityContext'
 
 export type Props = {
 	/**

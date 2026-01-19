@@ -14,9 +14,9 @@ import {
 	Transform,
 	useStdin,
 } from '@wolfie/react'
-import createStdout from './helpers/create-stdout.js'
-import { renderToString } from './helpers/render-to-string.js'
-import { run } from './helpers/run.js'
+import createStdout from './helpers/create-stdout'
+import { renderToString } from './helpers/render-to-string'
+import { run } from './helpers/run'
 
 test('text', () => {
 	const output = renderToString(<Text>Hello World</Text>)
@@ -58,7 +58,7 @@ test('text with component', () => {
 test('text with fragment', () => {
 	const output = renderToString(
 		<Text>
-			Hello <>World</> { }
+			Hello <>World</> {}
 		</Text>
 	)
 
@@ -244,7 +244,6 @@ test('remesure text dimensions on text change', () => {
 
 test('fragment', () => {
 	const output = renderToString(
-		 
 		<>
 			<Text>Hello World</Text>
 		</>
@@ -497,7 +496,7 @@ test('disable raw mode when all input components are unmounted', () => {
 
 	const { rerender } = render(
 		<Test renderFirstInput renderSecondInput />,
-		 
+
 		options as any
 	)
 
@@ -622,7 +621,7 @@ test('render different component based on whether stdin is a TTY or not', () => 
 
 	const { rerender } = render(
 		<Test renderFirstInput renderSecondInput />,
-		 
+
 		options as any
 	)
 
@@ -640,7 +639,6 @@ test('render different component based on whether stdin is a TTY or not', () => 
 // TODO: CI environment detection differs in Vitest
 test.todo('render only last frame when run in CI', async () => {
 	const output = await run('ci', {
-		 
 		env: { CI: 'true' },
 		columns: 0,
 	})
@@ -653,17 +651,19 @@ test.todo('render only last frame when run in CI', async () => {
 })
 
 // TODO: CI environment detection differs in Vitest
-test.todo('render all frames if CI environment variable equals false', async () => {
-	const output = await run('ci', {
-		 
-		env: { CI: 'false' },
-		columns: 0,
-	})
+test.todo(
+	'render all frames if CI environment variable equals false',
+	async () => {
+		const output = await run('ci', {
+			env: { CI: 'false' },
+			columns: 0,
+		})
 
-	for (const num of [0, 1, 2, 3, 4, 5]) {
-		expect(output.includes(`Counter: ${num}`)).toBe(true)
+		for (const num of [0, 1, 2, 3, 4, 5]) {
+			expect(output.includes(`Counter: ${num}`)).toBe(true)
+		}
 	}
-})
+)
 
 test("reset prop when it's removed from the element", () => {
 	const stdout = createStdout()

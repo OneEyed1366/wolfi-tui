@@ -1,7 +1,7 @@
 import React from 'react'
 import { test, expect } from 'vitest'
 import { Box, Text } from '@wolfie/react'
-import { renderToString } from './helpers/render-to-string.js'
+import { renderToString } from './helpers/render-to-string'
 
 test('direction row', () => {
 	const output = renderToString(

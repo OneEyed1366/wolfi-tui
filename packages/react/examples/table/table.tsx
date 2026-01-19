@@ -1,6 +1,6 @@
 import React from 'react'
 import { faker } from '@faker-js/faker'
-import { Box, Text, render } from '../../src/index.js'
+import { Box, Text, render } from '../../src/index'
 
 const users = Array.from({ length: 10 })
 	.fill(true)

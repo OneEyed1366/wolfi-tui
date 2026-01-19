@@ -1,56 +1,56 @@
-import React, {type ReactNode, useContext, isValidElement} from 'react';
-import Box from '../../Box.js';
-import {useComponentTheme} from '../../../theme/theme.js';
-import {OrderedListItem} from './OrderedListItem.js';
-import {OrderedListContext} from './OrderedListContext.js';
-import {OrderedListItemContext} from './OrderedListItemContext.js';
-import type {OrderedListTheme} from './theme.js';
+import React, { type ReactNode, useContext, isValidElement } from 'react'
+import Box from '../../Box'
+import { useComponentTheme } from '../../../theme/theme'
+import { OrderedListItem } from './OrderedListItem'
+import { OrderedListContext } from './OrderedListContext'
+import { OrderedListItemContext } from './OrderedListItemContext'
+import type { OrderedListTheme } from './theme'
 
 export type OrderedListProps = {
 	/**
 	 * List items.
 	 */
-	readonly children: ReactNode;
-};
+	readonly children: ReactNode
+}
 
-function OrderedListComponent({children}: OrderedListProps) {
-	const {marker: parentMarker} = useContext(OrderedListContext);
-	const {styles} = useComponentTheme<OrderedListTheme>('OrderedList');
+function OrderedListComponent({ children }: OrderedListProps) {
+	const { marker: parentMarker } = useContext(OrderedListContext)
+	const { styles } = useComponentTheme<OrderedListTheme>('OrderedList')
 
-	let numberOfItems = 0;
+	let numberOfItems = 0
 
 	for (const child of React.Children.toArray(children)) {
 		if (!isValidElement(child) || child.type !== OrderedListItem) {
-			continue;
+			continue
 		}
 
-		numberOfItems++;
+		numberOfItems++
 	}
 
-	const maxMarkerWidth = String(numberOfItems).length;
+	const maxMarkerWidth = String(numberOfItems).length
 
 	return (
 		<Box {...styles.list()}>
 			{React.Children.map(children, (child, index) => {
 				if (!isValidElement(child) || child.type !== OrderedListItem) {
-					return child;
+					return child
 				}
 
-				const paddedMarker = `${String(index + 1).padStart(maxMarkerWidth)}.`;
-				const marker = `${parentMarker}${paddedMarker}`;
+				const paddedMarker = `${String(index + 1).padStart(maxMarkerWidth)}.`
+				const marker = `${parentMarker}${paddedMarker}`
 
 				return (
-					<OrderedListContext.Provider value={{marker}}>
-						<OrderedListItemContext.Provider value={{marker}}>
+					<OrderedListContext.Provider value={{ marker }}>
+						<OrderedListItemContext.Provider value={{ marker }}>
 							{child}
 						</OrderedListItemContext.Provider>
 					</OrderedListContext.Provider>
-				);
+				)
 			})}
 		</Box>
-	);
+	)
 }
 
 export const OrderedList = Object.assign(OrderedListComponent, {
 	Item: OrderedListItem,
-});
+})

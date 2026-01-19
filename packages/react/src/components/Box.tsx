@@ -1,8 +1,8 @@
 import React, { forwardRef, useContext, type PropsWithChildren } from 'react'
 import { type Except } from 'type-fest'
 import { type Styles, type DOMElement } from '@wolfie/core'
-import { accessibilityContext } from './AccessibilityContext.js'
-import { backgroundContext } from './BackgroundContext.js'
+import { accessibilityContext } from './AccessibilityContext'
+import { backgroundContext } from './BackgroundContext'
 
 export type Props = Except<Styles, 'textWrap'> & {
 	/**

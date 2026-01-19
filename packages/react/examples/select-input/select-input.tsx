@@ -5,7 +5,7 @@ import {
 	Box,
 	useInput,
 	useIsScreenReaderEnabled,
-} from '../../src/index.js'
+} from '../../src/index'
 
 const items = ['Red', 'Green', 'Blue', 'Yellow', 'Magenta', 'Cyan']
 

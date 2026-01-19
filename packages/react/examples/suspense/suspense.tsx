@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, Text } from '../../src/index.js'
+import { render, Text } from '../../src/index'
 
 let promise: Promise<void> | undefined
 let state: string | undefined
@@ -20,7 +20,6 @@ const read = () => {
 	}
 
 	if (state === 'pending') {
-		 
 		throw promise
 	}
 

@@ -4,7 +4,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import { test, expect, describe } from 'vitest'
 import stripAnsi from 'strip-ansi'
-import { nodePtyAvailable } from './helpers/run.js'
+import { nodePtyAvailable } from './helpers/run'
 
 const require = createRequire(import.meta.url)
 
@@ -13,7 +13,6 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 // Try to load node-pty (may not be available on ARM64)
 let spawn: typeof import('node-pty').spawn | undefined
 try {
-	 
 	const pty = require('node-pty') as typeof import('node-pty')
 	spawn = pty.spawn
 } catch {
@@ -35,9 +34,9 @@ const term = (fixture: string, args: string[] = []) => {
 
 	const env: Record<string, string> = {
 		...process.env,
-		 
+
 		NODE_NO_WARNINGS: '1',
-		 
+
 		CI: 'false',
 	}
 

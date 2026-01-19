@@ -1,5 +1,5 @@
 import { render } from '@wolfie/react'
-import createStdout from './create-stdout.js'
+import createStdout from './create-stdout'
 
 export const renderToString: (
 	node: React.JSX.Element,

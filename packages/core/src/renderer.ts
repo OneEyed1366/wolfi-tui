@@ -1,8 +1,8 @@
 import renderNodeToOutput, {
 	renderNodeToScreenReaderOutput,
-} from './render-node-to-output.js'
-import Output from './output.js'
-import { type DOMElement } from './dom.js'
+} from './render-node-to-output'
+import Output from './output'
+import { type DOMElement } from './dom'
 
 type Result = {
 	output: string

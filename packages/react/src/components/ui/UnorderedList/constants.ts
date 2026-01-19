@@ -1,3 +1,3 @@
-import figures from 'figures';
+import figures from 'figures'
 
-export const defaultMarker = figures.line;
+export const defaultMarker = figures.line

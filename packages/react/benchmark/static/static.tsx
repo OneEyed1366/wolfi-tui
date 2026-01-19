@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, Box, Text, Static } from '../../src/index.js'
+import { render, Box, Text, Static } from '../../src/index'
 
 function App() {
 	const [items, setItems] = React.useState<
@@ -47,7 +47,7 @@ function App() {
 
 			<Box flexDirection="column" padding={1}>
 				<Text underline bold color="red">
-					{ }
+					{}
 					{'Hello World'}
 				</Text>
 

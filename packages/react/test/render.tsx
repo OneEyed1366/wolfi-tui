@@ -13,8 +13,8 @@ import boxen from 'boxen'
 import delay from 'delay'
 import { render, Box, Text, useInput } from '@wolfie/react'
 import { type RenderMetrics } from '@wolfie/react'
-import createStdout from './helpers/create-stdout.js'
-import { nodePtyAvailable } from './helpers/run.js'
+import createStdout from './helpers/create-stdout'
+import { nodePtyAvailable } from './helpers/run'
 
 const require = createRequire(import.meta.url)
 
@@ -23,7 +23,6 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 // Try to load node-pty (may not be available on ARM64)
 let spawn: typeof import('node-pty').spawn | undefined
 try {
-	 
 	const pty = require('node-pty') as typeof import('node-pty')
 	spawn = pty.spawn
 } catch {
@@ -43,13 +42,11 @@ const createStdin = () => {
 }
 
 const emitReadable = (stdin: NodeJS.WriteStream, chunk: string) => {
-	 
 	const read = stdin.read as ReturnType<typeof stub>
 	read.onCall(0).returns(chunk)
 	read.onCall(1).returns(null)
 	stdin.emit('readable')
 	read.reset()
-	 
 }
 
 const term = (fixture: string, args: string[] = []) => {
@@ -67,7 +64,7 @@ const term = (fixture: string, args: string[] = []) => {
 
 	const env = {
 		...process.env,
-		 
+
 		NODE_NO_WARNINGS: '1',
 	}
 
@@ -391,7 +388,6 @@ test('no throttled renders after unmount', () => {
 		rerender(<ThrottleTestComponent text="Baz" />)
 		unmount()
 
-		 
 		const callCountAfterUnmount = (stdout.write as any).callCount
 
 		// Regression test for https://github.com/vadimdemedes/ink/issues/692

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Text, render, useFocus } from '../../src/index.js'
+import { Box, Text, render, useFocus } from '../../src/index'
 
 function Focus() {
 	return (

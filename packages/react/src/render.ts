@@ -1,8 +1,8 @@
 import { Stream } from 'node:stream'
 import process from 'node:process'
 import type { ReactNode } from 'react'
-import Ink, { type Options as InkOptions, type RenderMetrics } from './ink.js'
-import instances from './instances.js'
+import Ink, { type Options as InkOptions, type RenderMetrics } from './ink'
+import instances from './instances'
 
 export type RenderOptions = {
 	/**

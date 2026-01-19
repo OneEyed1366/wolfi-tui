@@ -12,7 +12,6 @@ let spawn: typeof import('node-pty').spawn | undefined
 export let nodePtyAvailable = false
 
 try {
-	 
 	const pty = require('node-pty') as typeof import('node-pty')
 	spawn = pty.spawn
 	nodePtyAvailable = true
@@ -32,10 +31,10 @@ export const run: Run = async (fixture, props) => {
 
 	const env: Record<string, string> = {
 		...(process.env as Record<string, string>),
-		 
+
 		CI: 'false',
 		...props?.env,
-		 
+
 		NODE_NO_WARNINGS: '1',
 	}
 

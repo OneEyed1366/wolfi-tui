@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest'
 import ansiEscapes from 'ansi-escapes'
 import { logUpdate } from '@wolfie/core'
-import createStdout from './helpers/create-stdout.js'
+import createStdout from './helpers/create-stdout'
 
 test('standard rendering - renders and updates output', () => {
 	const stdout = createStdout()

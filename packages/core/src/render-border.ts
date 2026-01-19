@@ -1,8 +1,8 @@
 import cliBoxes from 'cli-boxes'
 import chalk from 'chalk'
-import colorize from './colorize.js'
-import { type DOMNode } from './dom.js'
-import type Output from './output.js'
+import colorize from './colorize'
+import { type DOMNode } from './dom'
+import type Output from './output'
 
 const renderBorder = (
 	x: number,

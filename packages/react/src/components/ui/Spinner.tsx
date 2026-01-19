@@ -1,23 +1,23 @@
-import Box, {type Props as BoxProps} from '../Box.js';
-import Text, {type Props as TextProps} from '../Text.js';
-import {useComponentTheme, type ComponentTheme} from '../../theme/theme.js';
-import {useSpinner, type UseSpinnerProps} from './use-spinner.js';
+import Box, { type Props as BoxProps } from '../Box'
+import Text, { type Props as TextProps } from '../Text'
+import { useComponentTheme, type ComponentTheme } from '../../theme/theme'
+import { useSpinner, type UseSpinnerProps } from './use-spinner'
 
 //#region Types
 export type SpinnerProps = UseSpinnerProps & {
 	/**
 	 * Label to show near the spinner.
 	 */
-	readonly label?: string;
-};
+	readonly label?: string
+}
 
 type SpinnerTheme = {
 	styles: {
-		container: () => Partial<BoxProps>;
-		frame: () => Partial<TextProps>;
-		label: () => Partial<TextProps>;
-	};
-};
+		container: () => Partial<BoxProps>
+		frame: () => Partial<TextProps>
+		label: () => Partial<TextProps>
+	}
+}
 //#endregion Types
 
 //#region Theme
@@ -31,19 +31,19 @@ export const spinnerTheme = {
 		}),
 		label: (): Partial<TextProps> => ({}),
 	},
-} satisfies ComponentTheme;
+} satisfies ComponentTheme
 //#endregion Theme
 
 //#region Component
-export function Spinner({label, type}: SpinnerProps) {
-	const {frame} = useSpinner({type});
-	const {styles} = useComponentTheme<SpinnerTheme>('Spinner');
+export function Spinner({ label, type }: SpinnerProps) {
+	const { frame } = useSpinner({ type })
+	const { styles } = useComponentTheme<SpinnerTheme>('Spinner')
 
 	return (
 		<Box {...styles.container()}>
 			<Text {...styles.frame()}>{frame}</Text>
 			{label && <Text {...styles.label()}>{label}</Text>}
 		</Box>
-	);
+	)
 }
 //#endregion Component

@@ -4,7 +4,7 @@ import delay from 'delay'
 import { test, expect } from 'vitest'
 import { spy, stub } from 'sinon'
 import { render, Box, Text, useFocus, useFocusManager } from '@wolfie/react'
-import createStdout from './helpers/create-stdout.js'
+import createStdout from './helpers/create-stdout'
 
 const createStdin = () => {
 	const stdin = new EventEmitter() as unknown as NodeJS.WriteStream
@@ -19,13 +19,11 @@ const createStdin = () => {
 }
 
 const emitReadable = (stdin: NodeJS.WriteStream, chunk: string) => {
-	 
 	const read = stdin.read as ReturnType<typeof stub>
 	read.onCall(0).returns(chunk)
 	read.onCall(1).returns(null)
 	stdin.emit('readable')
 	read.reset()
-	 
 }
 
 type TestProps = {

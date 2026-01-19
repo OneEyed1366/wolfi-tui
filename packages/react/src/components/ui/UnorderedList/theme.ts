@@ -1,20 +1,20 @@
-import figures from 'figures';
-import type {Props as BoxProps} from '../../Box.js';
-import type {Props as TextProps} from '../../Text.js';
-import type {ComponentTheme} from '../../../theme/theme.js';
+import figures from 'figures'
+import type { Props as BoxProps } from '../../Box'
+import type { Props as TextProps } from '../../Text'
+import type { ComponentTheme } from '../../../theme/theme'
 
 //#region Types
 export type UnorderedListTheme = {
 	styles: {
-		list: () => Partial<BoxProps>;
-		listItem: () => Partial<BoxProps>;
-		marker: () => Partial<TextProps>;
-		content: () => Partial<BoxProps>;
-	};
+		list: () => Partial<BoxProps>
+		listItem: () => Partial<BoxProps>
+		marker: () => Partial<TextProps>
+		content: () => Partial<BoxProps>
+	}
 	config: () => {
-		marker: string | string[];
-	};
-};
+		marker: string | string[]
+	}
+}
 //#endregion Types
 
 //#region Theme
@@ -37,7 +37,7 @@ export const unorderedListTheme = {
 	config() {
 		return {
 			marker: [figures.bullet, figures.line, figures.pointer],
-		};
+		}
 	},
-} satisfies ComponentTheme;
+} satisfies ComponentTheme
 //#endregion Theme

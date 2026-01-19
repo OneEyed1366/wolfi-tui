@@ -3,7 +3,7 @@ import * as path from 'node:path'
 import url from 'node:url'
 import { createRequire } from 'node:module'
 import { test, expect, describe } from 'vitest'
-import { run, nodePtyAvailable } from './helpers/run.js'
+import { run, nodePtyAvailable } from './helpers/run'
 
 const require = createRequire(import.meta.url)
 
@@ -12,7 +12,6 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 // Try to load node-pty (may not be available on ARM64)
 let spawn: typeof import('node-pty').spawn | undefined
 try {
-	 
 	const pty = require('node-pty') as typeof import('node-pty')
 	spawn = pty.spawn
 } catch {
@@ -74,7 +73,7 @@ describe.skipIf(!nodePtyAvailable)('PTY exit tests', () => {
 		await new Promise<void>((resolve, _reject) => {
 			const env: Record<string, string> = {
 				...process.env,
-				 
+
 				NODE_NO_WARNINGS: '1',
 			}
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Text } from '../../src/index.js'
+import { Box, Text } from '../../src/index'
 
 type Properties = {
 	readonly isFinished: boolean

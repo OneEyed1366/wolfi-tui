@@ -1,11 +1,11 @@
 import React from 'react'
-import { render, Box, Text } from '../../src/index.js'
+import { render, Box, Text } from '../../src/index'
 
 function App() {
 	return (
 		<Box flexDirection="column" padding={1}>
 			<Text underline bold color="red">
-				{ }
+				{}
 				{'Hello World'}
 			</Text>
 

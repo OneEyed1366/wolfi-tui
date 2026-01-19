@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { render, Box, Text } from '../../src/index.js'
+import { render, Box, Text } from '../../src/index'
 
 function App() {
 	const [count, setCount] = useState(0)

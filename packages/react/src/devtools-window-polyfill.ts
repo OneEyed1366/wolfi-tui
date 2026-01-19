@@ -1,7 +1,6 @@
 // Ignoring missing types error to avoid adding another dependency for this hack to work
 import ws from 'ws'
 
- 
 const customGlobal = global as any
 
 // These things must exist before importing `react-devtools-core`

@@ -7,7 +7,7 @@ import {
 	styledCharsToString,
 	tokenize,
 } from '@alcalzone/ansi-tokenize'
-import { type OutputTransformer } from './render-node-to-output.js'
+import { type OutputTransformer } from './render-node-to-output'
 
 /**
 "Virtual" output class

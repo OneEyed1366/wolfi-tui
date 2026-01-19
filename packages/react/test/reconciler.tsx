@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 import { test, expect } from 'vitest'
 import chalk from 'chalk'
 import { Box, Text, render } from '@wolfie/react'
-import createStdout from './helpers/create-stdout.js'
+import createStdout from './helpers/create-stdout'
 
 test('update child', () => {
 	function Test({ update }: { readonly update?: boolean }) {
@@ -334,7 +334,6 @@ test('support suspense', async () => {
 			return value
 		}
 
-		 
 		throw promise
 	}
 
