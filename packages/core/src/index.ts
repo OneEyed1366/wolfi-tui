@@ -34,3 +34,10 @@ export { type OutputTransformer } from './render-node-to-output'
 export { default as renderNodeToOutput } from './render-node-to-output'
 export { default as logUpdate } from './log-update'
 export type { LogUpdate } from './log-update'
+
+// Phase 2: Taffy/Yoga layout helpers
+export {
+	getComputedLayout,
+	isDisplayNone,
+	type ComputedLayout,
+} from './get-computed-layout'

@@ -1,19 +1,37 @@
+// Phase 2: Migrate from Yoga to Taffy
+// NOTE: This file now supports both layout engines
+
 import colorize from './colorize'
 import { type DOMNode } from './dom'
 import type Output from './output'
+import type { ComputedLayout } from './layout-types'
 
+/**
+ * Render background color for a node.
+ * Uses Taffy computed layout if available, falls back to Yoga.
+ *
+ * @param x - X position
+ * @param y - Y position
+ * @param node - The DOM node
+ * @param output - The output buffer
+ * @param computedLayout - Optional computed layout from Taffy
+ */
 const renderBackground = (
 	x: number,
 	y: number,
 	node: DOMNode,
-	output: Output
+	output: Output,
+	computedLayout?: ComputedLayout
 ): void => {
 	if (!node.style.backgroundColor) {
 		return
 	}
 
-	const width = node.yogaNode!.getComputedWidth()
-	const height = node.yogaNode!.getComputedHeight()
+	// Phase 2: Use Taffy computed layout if available, fallback to Yoga
+	const width =
+		computedLayout?.width ?? node.yogaNode?.getComputedWidth() ?? 0
+	const height =
+		computedLayout?.height ?? node.yogaNode?.getComputedHeight() ?? 0
 
 	// Calculate the actual content area considering borders
 	const leftBorderWidth =

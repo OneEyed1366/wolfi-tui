@@ -3,6 +3,7 @@ import { type Boxes, type BoxStyle } from 'cli-boxes'
 import { type LiteralUnion } from 'type-fest'
 import { type ForegroundColorName } from 'ansi-styles' // Note: We import directly from `ansi-styles` to avoid a bug in TypeScript.
 import Yoga, { type Node as YogaNode } from 'yoga-layout'
+import type { LayoutStyle, LayoutTree, Dimension, Edges } from './layout-types'
 
 export type Styles = {
 	readonly textWrap?:
@@ -581,5 +582,115 @@ const styles = (node: YogaNode, style: Styles = {}): void => {
 	applyBorderStyles(node, style)
 	applyGapStyles(node, style)
 }
+
+//#region Taffy Layout Style Conversion
+
+/**
+ * Helper to convert dimension values to Taffy Dimension format
+ */
+const toDimension = (value: number | string | undefined): Dimension | undefined => {
+	if (value === undefined) return undefined
+	if (typeof value === 'number') return { value, unit: 'px' }
+	if (typeof value === 'string' && value.endsWith('%')) {
+		return { value: parseFloat(value), unit: '%' }
+	}
+	return { value: 0, unit: 'auto' }
+}
+
+/**
+ * Convert wolf-tui Styles to Taffy LayoutStyle
+ * Pure conversion function - no side effects
+ */
+export const toLayoutStyle = (style: Styles): LayoutStyle => {
+	const result: LayoutStyle = {}
+
+	// Position
+	if (style.position) result.position = style.position
+
+	// Display
+	if (style.display) result.display = style.display
+
+	// Overflow
+	if (style.overflow) result.overflow = style.overflow
+
+	// Dimensions
+	result.width = toDimension(style.width)
+	result.height = toDimension(style.height)
+	result.minWidth = toDimension(style.minWidth)
+	result.minHeight = toDimension(style.minHeight)
+
+	// Flex
+	if (style.flexDirection) result.flexDirection = style.flexDirection
+	if (style.flexWrap) result.flexWrap = style.flexWrap
+	if (typeof style.flexGrow === 'number') result.flexGrow = style.flexGrow
+	if (typeof style.flexShrink === 'number') result.flexShrink = style.flexShrink
+	result.flexBasis = toDimension(style.flexBasis)
+
+	// Alignment
+	if (style.alignItems) result.alignItems = style.alignItems
+	if (style.alignSelf) result.alignSelf = style.alignSelf
+	if (style.justifyContent) result.justifyContent = style.justifyContent
+
+	// Margin (expand shorthands)
+	const hasMargin = style.margin !== undefined || style.marginX !== undefined ||
+		style.marginY !== undefined || style.marginTop !== undefined ||
+		style.marginRight !== undefined || style.marginBottom !== undefined ||
+		style.marginLeft !== undefined
+	if (hasMargin) {
+		result.margin = {
+			top: style.marginTop ?? style.marginY ?? style.margin ?? 0,
+			right: style.marginRight ?? style.marginX ?? style.margin ?? 0,
+			bottom: style.marginBottom ?? style.marginY ?? style.margin ?? 0,
+			left: style.marginLeft ?? style.marginX ?? style.margin ?? 0,
+		}
+	}
+
+	// Padding (expand shorthands)
+	const hasPadding = style.padding !== undefined || style.paddingX !== undefined ||
+		style.paddingY !== undefined || style.paddingTop !== undefined ||
+		style.paddingRight !== undefined || style.paddingBottom !== undefined ||
+		style.paddingLeft !== undefined
+	if (hasPadding) {
+		result.padding = {
+			top: style.paddingTop ?? style.paddingY ?? style.padding ?? 0,
+			right: style.paddingRight ?? style.paddingX ?? style.padding ?? 0,
+			bottom: style.paddingBottom ?? style.paddingY ?? style.padding ?? 0,
+			left: style.paddingLeft ?? style.paddingX ?? style.padding ?? 0,
+		}
+	}
+
+	// Border (from borderStyle presence)
+	if (style.borderStyle) {
+		result.border = {
+			top: style.borderTop !== false ? 1 : 0,
+			right: style.borderRight !== false ? 1 : 0,
+			bottom: style.borderBottom !== false ? 1 : 0,
+			left: style.borderLeft !== false ? 1 : 0,
+		}
+	}
+
+	// Gap
+	if (typeof style.gap === 'number') result.gap = style.gap
+	if (typeof style.columnGap === 'number') result.columnGap = style.columnGap
+	if (typeof style.rowGap === 'number') result.rowGap = style.rowGap
+
+	return result
+}
+
+/**
+ * Apply styles to Taffy layout tree
+ * Equivalent to applyStyles (default export) but for Taffy
+ */
+export const applyLayoutStyle = (
+	layoutTree: LayoutTree,
+	nodeId: number,
+	style: Styles = {}
+): void => {
+	layoutTree.setStyle(nodeId, toLayoutStyle(style))
+}
+
+//#endregion
+
+export type { LayoutStyle, Dimension, Edges }
 
 export default styles

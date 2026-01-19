@@ -1,18 +1,36 @@
+// Phase 2: Migrate from Yoga to Taffy
+// NOTE: This file now supports both layout engines
+
 import cliBoxes from 'cli-boxes'
 import chalk from 'chalk'
 import colorize from './colorize'
 import { type DOMNode } from './dom'
 import type Output from './output'
+import type { ComputedLayout } from './layout-types'
 
+/**
+ * Render border for a node.
+ * Uses Taffy computed layout if available, falls back to Yoga.
+ *
+ * @param x - X position
+ * @param y - Y position
+ * @param node - The DOM node
+ * @param output - The output buffer
+ * @param computedLayout - Optional computed layout from Taffy
+ */
 const renderBorder = (
 	x: number,
 	y: number,
 	node: DOMNode,
-	output: Output
+	output: Output,
+	computedLayout?: ComputedLayout
 ): void => {
 	if (node.style.borderStyle) {
-		const width = node.yogaNode!.getComputedWidth()
-		const height = node.yogaNode!.getComputedHeight()
+		// Phase 2: Use Taffy computed layout if available, fallback to Yoga
+		const width =
+			computedLayout?.width ?? node.yogaNode?.getComputedWidth() ?? 0
+		const height =
+			computedLayout?.height ?? node.yogaNode?.getComputedHeight() ?? 0
 		const box =
 			typeof node.style.borderStyle === 'string'
 				? cliBoxes[node.style.borderStyle]
