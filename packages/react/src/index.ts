@@ -28,3 +28,9 @@ export { default as useIsScreenReaderEnabled } from './hooks/use-is-screen-reade
 export { nonAlphanumericKeys } from '@wolfie/core'
 export { measureElement } from '@wolfie/core'
 export type { DOMElement } from '@wolfie/core'
+
+// Theme system
+export * from './theme/theme.js'
+
+// UI Components
+export * from './components/ui/index.js'
