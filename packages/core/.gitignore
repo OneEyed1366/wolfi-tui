@@ -1,6 +1,9 @@
 # Rust build artifacts
 target/
 *.node
+Cargo.lock
 
 # napi-rs generated
+index.cjs
+index.d.ts
 index.node
