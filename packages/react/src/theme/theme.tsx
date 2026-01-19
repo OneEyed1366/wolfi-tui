@@ -1,5 +1,10 @@
 import {type ReactNode, createContext, useContext} from 'react';
 import deepmerge from 'deepmerge';
+import {badgeTheme} from '../components/ui/Badge.js';
+import {spinnerTheme} from '../components/ui/Spinner.js';
+import {progressBarTheme} from '../components/ui/ProgressBar.js';
+import {statusMessageTheme} from '../components/ui/StatusMessage.js';
+import {alertTheme} from '../components/ui/Alert.js';
 
 export type Theme = {
 	components: Record<string, ComponentTheme>;
@@ -13,7 +18,13 @@ export type ComponentTheme = {
 export type ComponentStyles = Record<string, unknown>;
 
 export const defaultTheme: Theme = {
-	components: {},
+	components: {
+		Badge: badgeTheme,
+		Spinner: spinnerTheme,
+		ProgressBar: progressBarTheme,
+		StatusMessage: statusMessageTheme,
+		Alert: alertTheme,
+	},
 };
 
 export const ThemeContext = createContext<Theme>(defaultTheme);
