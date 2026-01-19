@@ -11,11 +11,7 @@ import renderBorder from './render-border'
 import renderBackground from './render-background'
 import { type DOMElement } from './dom'
 import type Output from './output'
-import {
-	getComputedLayout,
-	isDisplayNone,
-	type ComputedLayout,
-} from './get-computed-layout'
+import { getComputedLayout, isDisplayNone } from './get-computed-layout'
 import type { LayoutTree } from './layout-types'
 
 // If parent container is `<Box>`, text nodes will be treated as separate nodes in
