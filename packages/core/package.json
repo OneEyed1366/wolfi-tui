@@ -1,22 +1,40 @@
 {
 	"name": "@wolfie/core",
-	"version": "0.1.0",
+	"version": "2.0.0",
 	"description": "Framework-agnostic TUI core library",
 	"license": "MIT",
 	"type": "module",
+	"napi": {
+		"binaryName": "wolfie-core",
+		"targets": [
+			"aarch64-unknown-linux-gnu"
+		]
+	},
 	"exports": {
-		"types": "./build/index.d.ts",
-		"default": "./build/index.js"
+		".": {
+			"types": "./build/index.d.ts",
+			"default": "./build/index.js"
+		},
+		"./layout": {
+			"types": "./layout.d.ts",
+			"default": "./layout.js"
+		}
 	},
 	"engines": {
 		"node": ">=20"
 	},
 	"scripts": {
 		"dev": "vite build --watch",
-		"build": "vite build"
+		"build": "napi build --platform --release && vite build",
+		"build:rust": "napi build --platform --release"
 	},
 	"files": [
-		"build"
+		"build",
+		"*.node",
+		"*.cjs",
+		"layout.js",
+		"layout.d.ts",
+		"index.d.ts"
 	],
 	"dependencies": {
 		"@alcalzone/ansi-tokenize": "^0.2.1",
@@ -41,5 +59,8 @@
 		"wrap-ansi": "^9.0.0",
 		"ws": "^8.18.0",
 		"yoga-layout": "~3.2.1"
+	},
+	"devDependencies": {
+		"@napi-rs/cli": "^3.0.0-alpha"
 	}
 }

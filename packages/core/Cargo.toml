@@ -1,0 +1,17 @@
+[package]
+name = "wolfie-core"
+version = "2.0.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+path = "rust/lib.rs"
+
+[dependencies]
+napi = { version = "3", default-features = false, features = ["napi4", "serde-json"] }
+napi-derive = "3"
+taffy = { version = "0.6", features = ["flexbox", "grid", "std"] }
+serde = { version = "1", features = ["derive"] }
+
+[build-dependencies]
+napi-build = "2"
