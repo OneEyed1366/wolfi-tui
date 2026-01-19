@@ -46,7 +46,6 @@
 		"ansi-escapes": "^7.2.0",
 		"ansi-styles": "^6.2.1",
 		"auto-bind": "^5.0.1",
-		"chalk": "^5.6.0",
 		"cli-boxes": "^3.0.0",
 		"cli-cursor": "^4.0.0",
 		"cli-truncate": "^5.1.1",
@@ -58,14 +57,15 @@
 		"signal-exit": "^3.0.7",
 		"stack-utils": "^2.0.6",
 		"type-fest": "^4.27.0",
-		"wrap-ansi": "^9.0.0",
-		"yoga-layout": "~3.2.1"
+		"wrap-ansi": "^9.0.0"
 	},
 	"peerDependencies": {
 		"@types/react": ">=19.0.0",
+		"chalk": "^5.0.0",
 		"react": ">=19.0.0",
-		"react-devtools-core": "^6.1.2",
-		"react-reconciler": "^0.33.0"
+		"react-devtools-core": "^7.0.0",
+		"react-reconciler": "^0.33.0",
+		"yoga-layout": "^3.0.0"
 	},
 	"peerDependenciesMeta": {
 		"@types/react": {
