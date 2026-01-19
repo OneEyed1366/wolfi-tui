@@ -16,12 +16,14 @@ import {
 	createNode,
 	setAttribute,
 	applyStyles,
+	applyLayoutStyle,
 	type DOMNodeAttribute,
 	type TextNode,
 	type ElementNames,
 	type DOMElement,
 	type Styles,
 	type OutputTransformer,
+	type LayoutTree,
 } from '@wolfie/core'
 
 // We need to conditionally perform devtools connection to avoid
@@ -88,7 +90,63 @@ const cleanupYogaNode = (node?: YogaNode): void => {
 	node?.freeRecursive()
 }
 
+// Taffy cleanup - removes node from layout tree
+const cleanupLayoutNode = (
+	nodeId: number | undefined,
+	layoutTree?: LayoutTree
+): void => {
+	if (nodeId !== undefined && layoutTree) {
+		layoutTree.removeNode(nodeId)
+	}
+}
+
 type Props = Record<string, unknown>
+
+//#region LayoutTree Registry
+// The reconciler is a singleton but needs access to per-instance LayoutTree.
+// We use a WeakMap keyed by rootNode to store the layout tree for each instance.
+const layoutTreeRegistry = new WeakMap<DOMElement, LayoutTree>()
+
+/**
+ * Register a LayoutTree for a root node.
+ * Called by Ink class when creating a new instance.
+ */
+export const registerLayoutTree = (
+	rootNode: DOMElement,
+	layoutTree: LayoutTree
+): void => {
+	layoutTreeRegistry.set(rootNode, layoutTree)
+}
+
+/**
+ * Unregister a LayoutTree when an instance is unmounted.
+ */
+export const unregisterLayoutTree = (rootNode: DOMElement): void => {
+	layoutTreeRegistry.delete(rootNode)
+}
+
+/**
+ * Get LayoutTree for a node by traversing up to find its root.
+ * Works for both DOMElement and TextNode since both have parentNode.
+ */
+const getLayoutTree = (
+	node: DOMElement | TextNode
+): LayoutTree | undefined => {
+	// Find root node by traversing up the tree
+	let current: DOMElement | undefined = node.parentNode
+	while (current?.parentNode) {
+		current = current.parentNode
+	}
+	return current ? layoutTreeRegistry.get(current) : undefined
+}
+
+/**
+ * Get LayoutTree for a root node directly.
+ */
+const getLayoutTreeForRoot = (rootNode: DOMElement): LayoutTree | undefined => {
+	return layoutTreeRegistry.get(rootNode)
+}
+//#endregion
 
 type HostContext = {
 	isInsideText: boolean
@@ -154,7 +212,7 @@ export default createReconciler<
 	shouldSetTextContent: () => false,
 	createInstance(originalType, newProps, rootNode, hostContext) {
 		if (hostContext.isInsideText && originalType === 'ink-box') {
-			throw new Error(`<Box> can’t be nested inside <Text> component`)
+			throw new Error(`<Box> can't be nested inside <Text> component`)
 		}
 
 		const type =
@@ -162,7 +220,9 @@ export default createReconciler<
 				? 'ink-virtual-text'
 				: originalType
 
-		const node = createNode(type)
+		// Get layoutTree from registry for this root
+		const layoutTree = getLayoutTreeForRoot(rootNode)
+		const node = createNode(type, layoutTree)
 
 		for (const [key, value] of Object.entries(newProps)) {
 			if (key === 'children') {
@@ -172,8 +232,14 @@ export default createReconciler<
 			if (key === 'style') {
 				setStyle(node, value as Styles)
 
+				// Yoga (legacy)
 				if (node.yogaNode) {
 					applyStyles(node.yogaNode, value as Styles)
+				}
+
+				// Taffy (new)
+				if (layoutTree && node.layoutNodeId !== undefined) {
+					applyLayoutStyle(layoutTree, node.layoutNodeId, value as Styles)
 				}
 
 				continue
@@ -218,14 +284,37 @@ export default createReconciler<
 	},
 	getPublicInstance: (instance) => instance,
 	hideInstance(node) {
+		// Yoga (legacy)
 		node.yogaNode?.setDisplay(Yoga.DISPLAY_NONE)
+
+		// Taffy (new)
+		const layoutTree = getLayoutTree(node)
+		if (layoutTree && node.layoutNodeId !== undefined) {
+			layoutTree.setDisplayNone(node.layoutNodeId)
+		}
 	},
 	unhideInstance(node) {
+		// Yoga (legacy)
 		node.yogaNode?.setDisplay(Yoga.DISPLAY_FLEX)
+
+		// Taffy (new)
+		const layoutTree = getLayoutTree(node)
+		if (layoutTree && node.layoutNodeId !== undefined) {
+			layoutTree.setDisplayFlex(node.layoutNodeId)
+		}
 	},
-	appendInitialChild: appendChildNode,
-	appendChild: appendChildNode,
-	insertBefore: insertBeforeNode,
+	appendInitialChild(parentNode: DOMElement, childNode: DOMElement) {
+		const layoutTree = getLayoutTree(parentNode)
+		appendChildNode(parentNode, childNode, layoutTree)
+	},
+	appendChild(parentNode: DOMElement, childNode: DOMElement) {
+		const layoutTree = getLayoutTree(parentNode)
+		appendChildNode(parentNode, childNode, layoutTree)
+	},
+	insertBefore(parentNode: DOMElement, childNode: DOMElement, beforeChildNode) {
+		const layoutTree = getLayoutTree(parentNode)
+		insertBeforeNode(parentNode, childNode, beforeChildNode, layoutTree)
+	},
 	finalizeInitialChildren() {
 		return false
 	},
@@ -242,11 +331,23 @@ export default createReconciler<
 	getInstanceFromNode: () => null,
 	prepareScopeUpdate() {},
 	getInstanceFromScope: () => null,
-	appendChildToContainer: appendChildNode,
-	insertInContainerBefore: insertBeforeNode,
+	appendChildToContainer(containerNode: DOMElement, childNode: DOMElement) {
+		const layoutTree = getLayoutTreeForRoot(containerNode)
+		appendChildNode(containerNode, childNode, layoutTree)
+	},
+	insertInContainerBefore(
+		containerNode: DOMElement,
+		childNode: DOMElement,
+		beforeChildNode
+	) {
+		const layoutTree = getLayoutTreeForRoot(containerNode)
+		insertBeforeNode(containerNode, childNode, beforeChildNode, layoutTree)
+	},
 	removeChildFromContainer(node, removeNode) {
-		removeChildNode(node, removeNode)
+		const layoutTree = getLayoutTreeForRoot(node)
+		removeChildNode(node, removeNode, layoutTree)
 		cleanupYogaNode(removeNode.yogaNode)
+		cleanupLayoutNode(removeNode.layoutNodeId, layoutTree)
 	},
 	commitUpdate(node, _type, oldProps, newProps) {
 		if (currentRootNode && node.internal_static) {
@@ -282,16 +383,28 @@ export default createReconciler<
 			}
 		}
 
-		if (style && node.yogaNode) {
-			applyStyles(node.yogaNode, style)
+		if (style) {
+			// Yoga (legacy)
+			if (node.yogaNode) {
+				applyStyles(node.yogaNode, style)
+			}
+
+			// Taffy (new)
+			const layoutTree = getLayoutTree(node)
+			if (layoutTree && node.layoutNodeId !== undefined) {
+				applyLayoutStyle(layoutTree, node.layoutNodeId, style)
+			}
 		}
 	},
 	commitTextUpdate(node, _oldText, newText) {
-		setTextNodeValue(node, newText)
+		const layoutTree = getLayoutTree(node)
+		setTextNodeValue(node, newText, layoutTree)
 	},
 	removeChild(node, removeNode) {
-		removeChildNode(node, removeNode)
+		const layoutTree = getLayoutTree(node)
+		removeChildNode(node, removeNode, layoutTree)
 		cleanupYogaNode(removeNode.yogaNode)
+		cleanupLayoutNode(removeNode.layoutNodeId, layoutTree)
 	},
 	setCurrentUpdatePriority(newPriority: number) {
 		currentUpdatePriority = newPriority

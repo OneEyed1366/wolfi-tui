@@ -41,3 +41,5 @@ export {
 	isDisplayNone,
 	type ComputedLayout,
 } from './get-computed-layout'
+export { applyLayoutStyle, toLayoutStyle } from './styles'
+export type { LayoutTree, LayoutStyle } from './layout-types'

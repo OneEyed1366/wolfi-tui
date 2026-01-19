@@ -16,8 +16,12 @@ import {
 	logUpdate,
 	type DOMElement,
 	type LogUpdate,
+	type LayoutTree,
 } from '@wolfie/core'
-import reconciler from './reconciler'
+import reconciler, {
+	registerLayoutTree,
+	unregisterLayoutTree,
+} from './reconciler'
 import instances from './instances'
 import App from './components/App'
 import { accessibilityContext as AccessibilityContext } from './components/AccessibilityContext'
@@ -61,6 +65,8 @@ export default class Ink {
 	private lastTerminalWidth: number
 	private readonly container: FiberRoot
 	private readonly rootNode: DOMElement
+	// Phase 2: Taffy layout tree (optional - only used if LayoutTree implementation is available)
+	private readonly layoutTree?: LayoutTree
 	// This variable is used only in debug mode to store full static output
 	// so that it's rerendered every time, not just new static parts, like in non-debug mode
 	private fullStaticOutput: string
@@ -72,7 +78,19 @@ export default class Ink {
 		autoBind(this)
 
 		this.options = options
-		this.rootNode = createNode('ink-root')
+
+		// Phase 2: Try to create LayoutTree for Taffy support
+		// Note: layoutTree will be undefined until Taffy bindings are integrated
+		// This is expected during the migration phase
+		this.layoutTree = undefined // Will be: new TaffyLayoutTree() when available
+
+		this.rootNode = createNode('ink-root', this.layoutTree)
+
+		// Register layoutTree with reconciler if available
+		if (this.layoutTree) {
+			registerLayoutTree(this.rootNode, this.layoutTree)
+		}
+
 		this.rootNode.onComputeLayout = this.calculateLayout
 
 		this.isScreenReaderEnabled =
@@ -182,13 +200,21 @@ export default class Ink {
 	calculateLayout = () => {
 		const terminalWidth = this.getTerminalWidth()
 
+		// Yoga (legacy)
 		this.rootNode.yogaNode!.setWidth(terminalWidth)
-
 		this.rootNode.yogaNode!.calculateLayout(
 			undefined,
 			undefined,
 			Yoga.DIRECTION_LTR
 		)
+
+		// Taffy (new)
+		if (this.layoutTree && this.rootNode.layoutNodeId !== undefined) {
+			this.layoutTree.setStyle(this.rootNode.layoutNodeId, {
+				width: { value: terminalWidth, unit: 'px' },
+			})
+			this.layoutTree.computeLayout(this.rootNode.layoutNodeId, terminalWidth)
+		}
 	}
 
 	onRender: () => void = () => {
@@ -199,7 +225,8 @@ export default class Ink {
 		const startTime = performance.now()
 		const { output, outputHeight, staticOutput } = renderer(
 			this.rootNode,
-			this.isScreenReaderEnabled
+			this.isScreenReaderEnabled,
+			this.layoutTree
 		)
 
 		this.options.onRender?.({ renderTime: performance.now() - startTime })
@@ -397,6 +424,9 @@ export default class Ink {
 
 		reconciler.flushSyncWork()
 		instances.delete(this.options.stdout)
+
+		// Phase 2: Unregister layoutTree from reconciler
+		unregisterLayoutTree(this.rootNode)
 
 		if (error instanceof Error) {
 			this.rejectExitPromise(error)
