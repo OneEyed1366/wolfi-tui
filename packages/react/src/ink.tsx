@@ -14,6 +14,9 @@ import {
 	renderer,
 	createNode,
 	logUpdate,
+	squashTextNodes,
+	measureText,
+	wrapText,
 	type DOMElement,
 	type LogUpdate,
 	type LayoutTree,
@@ -197,10 +200,56 @@ export default class Ink {
 	rejectExitPromise: (reason?: Error) => void = () => {}
 	unsubscribeExit: () => void = () => {}
 
+	/**
+	 * Pre-measure all text nodes for Taffy layout.
+	 * Must be called before computeLayout() since Taffy doesn't support measure callbacks.
+	 *
+	 * Key difference from Yoga:
+	 * - Yoga: measureFunc callback called DURING calculateLayout() with actual available width
+	 * - Taffy: dimensions must be set BEFORE computeLayout() - no callbacks
+	 *
+	 * TODO: For complex layouts where text width depends on parent width (which isn't
+	 * known until after first layout pass), implement a two-pass approach:
+	 * 1. First pass: measure with max width
+	 * 2. After layout: check if actual available width differs
+	 * 3. If different, re-measure and re-layout
+	 * For now, using terminal width as max width (single-pass).
+	 */
+	private preMeasureTextNodes(node: DOMElement, maxWidth: number): void {
+		if (!this.layoutTree) return
+
+		// For ink-text nodes, measure the text content
+		if (node.nodeName === 'ink-text' && node.layoutNodeId !== undefined) {
+			const text = squashTextNodes(node)
+			const textWrap = node.style?.textWrap ?? 'wrap'
+
+			// Measure or wrap text based on available width
+			let dimensions = measureText(text)
+
+			if (dimensions.width > maxWidth) {
+				const wrappedText = wrapText(text, maxWidth, textWrap)
+				dimensions = measureText(wrappedText)
+			}
+
+			this.layoutTree.setTextDimensions(
+				node.layoutNodeId,
+				dimensions.width,
+				dimensions.height
+			)
+		}
+
+		// Recurse into children
+		for (const child of node.childNodes) {
+			if ('childNodes' in child) {
+				this.preMeasureTextNodes(child as DOMElement, maxWidth)
+			}
+		}
+	}
+
 	calculateLayout = () => {
 		const terminalWidth = this.getTerminalWidth()
 
-		// Yoga (legacy)
+		// Yoga (legacy) - uses measureFunc callback during calculateLayout
 		this.rootNode.yogaNode!.setWidth(terminalWidth)
 		this.rootNode.yogaNode!.calculateLayout(
 			undefined,
@@ -208,8 +257,11 @@ export default class Ink {
 			Yoga.DIRECTION_LTR
 		)
 
-		// Taffy (new)
+		// Taffy (new) - requires pre-measurement before computeLayout
 		if (this.layoutTree && this.rootNode.layoutNodeId !== undefined) {
+			// Pre-measure text nodes before layout (Taffy has no measure callbacks)
+			this.preMeasureTextNodes(this.rootNode, terminalWidth)
+
 			this.layoutTree.setStyle(this.rootNode.layoutNodeId, {
 				width: { value: terminalWidth, unit: 'px' },
 			})
