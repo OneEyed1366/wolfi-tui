@@ -5,6 +5,8 @@ import {spinnerTheme} from '../components/ui/Spinner.js';
 import {progressBarTheme} from '../components/ui/ProgressBar.js';
 import {statusMessageTheme} from '../components/ui/StatusMessage.js';
 import {alertTheme} from '../components/ui/Alert.js';
+import {orderedListTheme} from '../components/ui/OrderedList/index.js';
+import {unorderedListTheme} from '../components/ui/UnorderedList/index.js';
 
 export type Theme = {
 	components: Record<string, ComponentTheme>;
@@ -24,6 +26,8 @@ export const defaultTheme: Theme = {
 		ProgressBar: progressBarTheme,
 		StatusMessage: statusMessageTheme,
 		Alert: alertTheme,
+		OrderedList: orderedListTheme,
+		UnorderedList: unorderedListTheme,
 	},
 };
 

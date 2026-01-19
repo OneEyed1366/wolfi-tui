@@ -5,3 +5,5 @@ export { useSpinner, type UseSpinnerProps, type UseSpinnerResult } from './use-s
 export { ProgressBar, progressBarTheme, type ProgressBarProps } from './ProgressBar.js';
 export { StatusMessage, statusMessageTheme, type StatusMessageProps, type StatusMessageVariant } from './StatusMessage.js';
 export { Alert, alertTheme, type AlertProps, type AlertVariant } from './Alert.js';
+export { OrderedList, orderedListTheme, type OrderedListProps } from './OrderedList/index.js';
+export { UnorderedList, unorderedListTheme, type UnorderedListProps } from './UnorderedList/index.js';
