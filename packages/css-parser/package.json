@@ -1,0 +1,50 @@
+{
+	"name": "@wolf-tui/css-parser",
+	"version": "0.1.0",
+	"description": "CSS/SCSS/Less/Stylus parser and code generator for wolf-tui",
+	"license": "MIT",
+	"type": "module",
+	"bin": {
+		"wolf-css": "./build/cli.js"
+	},
+	"exports": {
+		".": {
+			"types": "./build/index.d.ts",
+			"default": "./build/index.js"
+		},
+		"./vite": {
+			"types": "./build/vite.d.ts",
+			"default": "./build/vite.js"
+		},
+		"./esbuild": {
+			"types": "./build/esbuild.d.ts",
+			"default": "./build/esbuild.js"
+		}
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"dev": "vite build --watch",
+		"build": "vite build"
+	},
+	"files": [
+		"build"
+	],
+	"dependencies": {
+		"postcss": "^8.4.49"
+	},
+	"devDependencies": {
+		"sass": "^1.83.0",
+		"less": "^4.2.1",
+		"stylus": "^0.64.0"
+	},
+	"peerDependencies": {
+		"@wolfie/core": "workspace:*"
+	},
+	"peerDependenciesMeta": {
+		"@wolfie/core": {
+			"optional": false
+		}
+	}
+}
