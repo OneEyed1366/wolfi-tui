@@ -4,83 +4,93 @@
  * Transforms CSS imports into wolf-tui style objects at build time
  */
 
+import type { Plugin } from 'vite';
 import type { VitePluginOptions } from './types.js';
-import { parse } from './parser.js';
-import { generate } from './generator.js';
-import { compile, type PreprocessorType } from './preprocessors.js';
+import { parseCSS } from './parser.js';
+import { compile, detectLanguage } from './preprocessors.js';
+import { generateTypeScript, generateJavaScript } from './generator.js';
+
+//#region Helpers
+
+/**
+ * Check if a file path matches a pattern or array of patterns
+ */
+function matchesPattern(
+	id: string,
+	pattern: string | RegExp | (string | RegExp)[]
+): boolean {
+	const patterns = Array.isArray(pattern) ? pattern : [pattern];
+	return patterns.some((p) => {
+		if (typeof p === 'string') return id.includes(p);
+		return p.test(id);
+	});
+}
+
+//#endregion Helpers
 
 //#region Vite Plugin
 
-export interface WolfCssVitePlugin {
-	name: string;
-	transform?: (code: string, id: string) => Promise<{ code: string; map?: null } | null>;
-}
-
-export function wolfCssVite(options: VitePluginOptions = {}): WolfCssVitePlugin {
+/**
+ * Vite plugin for wolf-tui CSS transformation
+ *
+ * Transforms CSS/SCSS/Less/Stylus files into wolf-tui style objects.
+ *
+ * @example
+ * // vite.config.ts
+ * import { wolfTuiCSS } from '@wolf-tui/css-parser/vite'
+ *
+ * export default {
+ *   plugins: [
+ *     wolfTuiCSS({
+ *       mode: 'module',  // CSS Modules pattern (default)
+ *       // mode: 'global', // Global styles with registerStyles
+ *     })
+ *   ]
+ * }
+ */
+export function wolfTuiCSS(options: VitePluginOptions = {}): Plugin {
 	const {
-		include = ['**/*.css', '**/*.scss', '**/*.less', '**/*.styl'],
-		exclude = ['**/node_modules/**'],
-		preprocessor = 'none',
+		mode = 'module',
+		javascript = false,
+		include = /\.(css|scss|sass|less|styl|stylus)$/,
+		exclude = /node_modules/,
 	} = options;
 
 	return {
-		name: 'wolf-css',
+		name: 'wolf-tui-css',
+		enforce: 'pre', // Run before other CSS plugins
 
 		async transform(code: string, id: string) {
-			// Check if this file should be processed
-			const shouldInclude = include.some((pattern) => matchGlob(id, pattern));
-			const shouldExclude = exclude.some((pattern) => matchGlob(id, pattern));
-
-			if (!shouldInclude || shouldExclude) {
+			// Check if file should be processed
+			if (!matchesPattern(id, include) || matchesPattern(id, exclude)) {
 				return null;
 			}
 
-			// Determine preprocessor from file extension if not specified
-			const ext = id.split('.').pop() ?? '';
-			const preprocessorType = preprocessor !== 'none' ? preprocessor : getPreprocessorFromExt(ext);
+			// Detect mode from filename (.module.css → module mode)
+			const isModule = id.includes('.module.') || mode === 'module';
 
-			// Compile preprocessor to CSS if needed
-			const css = await compile(code, preprocessorType as PreprocessorType, id);
+			// Detect preprocessor and compile to CSS
+			const lang = detectLanguage(id);
+			const css = await compile(code, lang, id);
 
-			// Parse CSS
-			const stylesheet = parse(css, id);
+			// Parse CSS to styles
+			const styles = parseCSS(css, { filename: id });
 
-			// Generate code
-			const { code: generatedCode } = generate(stylesheet, { format: 'esm' });
+			// Generate output code
+			const generator = javascript ? generateJavaScript : generateTypeScript;
+			const output = generator(styles, {
+				mode: isModule ? 'module' : 'global',
+			});
 
 			return {
-				code: generatedCode,
-				map: null,
+				code: output,
+				map: null, // No source map for now
 			};
 		},
 	};
 }
 
-function matchGlob(path: string, pattern: string): boolean {
-	// TODO: Implement proper glob matching
-	if (pattern.startsWith('**/*.')) {
-		const ext = pattern.slice(4);
-		return path.endsWith(ext);
-	}
-	return path.includes(pattern);
-}
-
-function getPreprocessorFromExt(ext: string): 'sass' | 'less' | 'stylus' | 'none' {
-	switch (ext) {
-		case 'scss':
-		case 'sass':
-			return 'sass';
-		case 'less':
-			return 'less';
-		case 'styl':
-		case 'stylus':
-			return 'stylus';
-		default:
-			return 'none';
-	}
-}
-
 //#endregion Vite Plugin
 
 export { type VitePluginOptions };
-export default wolfCssVite;
+export default wolfTuiCSS;

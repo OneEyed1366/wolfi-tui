@@ -78,15 +78,28 @@ export interface GeneratedOutput {
 
 //#region Plugin Types
 
+/**
+ * Options for the Vite plugin
+ */
 export interface VitePluginOptions {
-	include?: string[];
-	exclude?: string[];
-	preprocessor?: 'sass' | 'less' | 'stylus' | 'none';
+	/** Output mode: 'module' for CSS Modules, 'global' for side-effect imports */
+	mode?: 'module' | 'global';
+	/** Generate JavaScript instead of TypeScript */
+	javascript?: boolean;
+	/** File patterns to process (default: all CSS/preprocessor files) */
+	include?: string | RegExp | (string | RegExp)[];
+	/** File patterns to exclude */
+	exclude?: string | RegExp | (string | RegExp)[];
 }
 
+/**
+ * Options for the esbuild plugin
+ */
 export interface EsbuildPluginOptions {
+	/** Output mode: 'module' for CSS Modules, 'global' for side-effect imports */
+	mode?: 'module' | 'global';
+	/** Filter pattern for CSS/preprocessor files */
 	filter?: RegExp;
-	preprocessor?: 'sass' | 'less' | 'stylus' | 'none';
 }
 
 //#endregion Plugin Types

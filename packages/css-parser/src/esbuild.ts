@@ -4,53 +4,65 @@
  * Transforms CSS imports into wolf-tui style objects at build time
  */
 
+import type { Plugin } from 'esbuild';
+import fs from 'node:fs';
 import type { EsbuildPluginOptions } from './types.js';
-import { parse } from './parser.js';
-import { generate } from './generator.js';
-import { compile, type PreprocessorType } from './preprocessors.js';
+import { parseCSS } from './parser.js';
+import { compile, detectLanguage } from './preprocessors.js';
+import { generateJavaScript } from './generator.js';
 
 //#region esbuild Plugin
 
-export interface WolfCssEsbuildPlugin {
-	name: string;
-	setup: (build: EsbuildBuild) => void;
-}
-
-interface EsbuildBuild {
-	onLoad: (
-		options: { filter: RegExp; namespace?: string },
-		callback: (args: { path: string }) => Promise<{ contents: string; loader: string } | undefined>
-	) => void;
-}
-
-export function wolfCssEsbuild(options: EsbuildPluginOptions = {}): WolfCssEsbuildPlugin {
-	const { filter = /\.(css|scss|less|styl)$/, preprocessor = 'none' } = options;
+/**
+ * esbuild plugin for wolf-tui CSS transformation
+ *
+ * Transforms CSS/SCSS/Less/Stylus files into wolf-tui style objects.
+ *
+ * @example
+ * // esbuild.config.js
+ * import { wolfTuiCSS } from '@wolf-tui/css-parser/esbuild'
+ *
+ * await esbuild.build({
+ *   // ...
+ *   plugins: [
+ *     wolfTuiCSS({
+ *       mode: 'module',  // CSS Modules pattern (default)
+ *       // mode: 'global', // Global styles with registerStyles
+ *     })
+ *   ]
+ * })
+ */
+export function wolfTuiCSS(options: EsbuildPluginOptions = {}): Plugin {
+	const {
+		mode = 'module',
+		filter = /\.(css|scss|sass|less|styl|stylus)$/,
+	} = options;
 
 	return {
-		name: 'wolf-css',
+		name: 'wolf-tui-css',
 
-		setup(build: EsbuildBuild) {
+		setup(build) {
+			// Handle CSS and preprocessor files
 			build.onLoad({ filter }, async (args) => {
-				const fs = await import('node:fs/promises');
-				const path = await import('node:path');
+				const source = await fs.promises.readFile(args.path, 'utf-8');
 
-				const code = await fs.readFile(args.path, 'utf-8');
-				const ext = path.extname(args.path).slice(1);
+				// Detect mode from filename (.module.css → module mode)
+				const isModule = args.path.includes('.module.') || mode === 'module';
 
-				// Determine preprocessor from file extension if not specified
-				const preprocessorType = preprocessor !== 'none' ? preprocessor : getPreprocessorFromExt(ext);
+				// Detect preprocessor and compile to CSS
+				const lang = detectLanguage(args.path);
+				const css = await compile(source, lang, args.path);
 
-				// Compile preprocessor to CSS if needed
-				const css = await compile(code, preprocessorType as PreprocessorType, args.path);
+				// Parse CSS to styles
+				const styles = parseCSS(css, { filename: args.path });
 
-				// Parse CSS
-				const stylesheet = parse(css, args.path);
-
-				// Generate code
-				const { code: generatedCode } = generate(stylesheet, { format: 'esm' });
+				// Generate JavaScript output (esbuild handles transpilation)
+				const output = generateJavaScript(styles, {
+					mode: isModule ? 'module' : 'global',
+				});
 
 				return {
-					contents: generatedCode,
+					contents: output,
 					loader: 'js',
 				};
 			});
@@ -58,22 +70,7 @@ export function wolfCssEsbuild(options: EsbuildPluginOptions = {}): WolfCssEsbui
 	};
 }
 
-function getPreprocessorFromExt(ext: string): 'sass' | 'less' | 'stylus' | 'none' {
-	switch (ext) {
-		case 'scss':
-		case 'sass':
-			return 'sass';
-		case 'less':
-			return 'less';
-		case 'styl':
-		case 'stylus':
-			return 'stylus';
-		default:
-			return 'none';
-	}
-}
-
 //#endregion esbuild Plugin
 
 export { type EsbuildPluginOptions };
-export default wolfCssEsbuild;
+export default wolfTuiCSS;
