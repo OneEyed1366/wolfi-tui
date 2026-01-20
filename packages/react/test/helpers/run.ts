@@ -14,9 +14,20 @@ export let nodePtyAvailable = false
 try {
 	const pty = require('node-pty') as typeof import('node-pty')
 	spawn = pty.spawn
+
+	// Runtime check: actually try to spawn a PTY process
+	// This catches environments where the module loads but posix_spawnp fails
+	// (e.g., running inside NeoVim's terminal, some containers, CI environments)
+	const testPty = spawn('echo', ['test'], {
+		name: 'xterm',
+		cols: 80,
+		rows: 24,
+	})
+	testPty.kill()
 	nodePtyAvailable = true
 } catch {
-	// node-pty not available
+	// node-pty not available or PTY spawning not supported in this environment
+	spawn = undefined
 }
 
 type Run = (
