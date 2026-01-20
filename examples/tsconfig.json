@@ -1,0 +1,10 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"types": ["vite/client", "node"],
+		"jsx": "react-jsx",
+		"moduleResolution": "bundler"
+	},
+	"include": ["**/*"],
+	"exclude": ["node_modules", "**/dist", "**/build"]
+}

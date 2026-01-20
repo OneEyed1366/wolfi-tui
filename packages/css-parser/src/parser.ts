@@ -49,8 +49,11 @@ export function extractClassName(selector: string): string | null {
 	}
 
 	// Allow element selectors for WPT compatibility and standard CSS support
+	// In Wolfie, we only support classes, IDs, and attributes, so we skip element selectors
+	// to avoid polluting the styles object with generic tags like 'div', 'span', etc.
+	// unless they are part of a compound selector.
 	if (/^[a-z]+$/i.test(trimmed)) {
-		return trimmed
+		return null
 	}
 
 	// Skip universal selector

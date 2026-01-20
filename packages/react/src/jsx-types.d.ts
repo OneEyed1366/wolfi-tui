@@ -2,6 +2,8 @@ import { type ReactNode, type Key, type LegacyRef } from 'react'
 import { type Except } from 'type-fest'
 import { type DOMElement, type Styles } from '@wolfie/core'
 
+/// <reference types="vite/client" />
+
 declare namespace Ink {
 	type Box = {
 		readonly internal_static?: boolean

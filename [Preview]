@@ -1,4 +1,0 @@
-|22| ├── core/     # @wolfie/core - Framework-agnostic TUI rendering engine
-|23| └── react/    # @wolfie/react - React adapter/bindings
-|26| **Core** (`@wolfie/core`): Zero React dependencies. Provides DOM abstraction, Yoga layout, ANSI output.
-|28| **React** (`@wolfie/react`): React reconciler binding. Depends on core via `workspace:*`.
