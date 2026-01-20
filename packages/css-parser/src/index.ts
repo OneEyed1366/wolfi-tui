@@ -19,11 +19,15 @@ export {
 
 export {
 	preprocess,
+	compile,
+	compileScss,
 	compileSass,
 	compileLess,
 	compileStylus,
+	detectLanguage,
 	type PreprocessorType,
 	type PreprocessorResult,
+	type PreprocessOptions,
 } from './preprocessors.js';
 
 //#endregion Preprocessor Exports

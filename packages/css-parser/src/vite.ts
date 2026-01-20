@@ -7,7 +7,7 @@
 import type { VitePluginOptions } from './types.js';
 import { parse } from './parser.js';
 import { generate } from './generator.js';
-import { preprocess } from './preprocessors.js';
+import { compile, type PreprocessorType } from './preprocessors.js';
 
 //#region Vite Plugin
 
@@ -39,8 +39,8 @@ export function wolfCssVite(options: VitePluginOptions = {}): WolfCssVitePlugin 
 			const ext = id.split('.').pop() ?? '';
 			const preprocessorType = preprocessor !== 'none' ? preprocessor : getPreprocessorFromExt(ext);
 
-			// Preprocess if needed
-			const { css } = await preprocess(code, preprocessorType, id);
+			// Compile preprocessor to CSS if needed
+			const css = await compile(code, preprocessorType as PreprocessorType, id);
 
 			// Parse CSS
 			const stylesheet = parse(css, id);
