@@ -1,5 +1,5 @@
-// Phase 2: Migrate from Yoga to Taffy
-// NOTE: This file now supports both layout engines via getComputedLayout helper
+// Taffy-based renderer
+// Yoga has been removed - Taffy is now the only layout engine
 
 import renderNodeToOutput, {
 	renderNodeToScreenReaderOutput,
@@ -20,9 +20,8 @@ const renderer = (
 	isScreenReaderEnabled: boolean,
 	layoutTree?: LayoutTree
 ): Result => {
-	// Phase 2: Check for either layout engine
 	const rootLayout = getComputedLayout(node, layoutTree)
-	if (!rootLayout && !node.yogaNode) {
+	if (!rootLayout) {
 		return {
 			output: '',
 			outputHeight: 0,
@@ -54,9 +53,8 @@ const renderer = (
 		}
 	}
 
-	// Phase 2: Use Taffy computed layout if available, fallback to Yoga
-	const width = rootLayout?.width ?? node.yogaNode?.getComputedWidth() ?? 0
-	const height = rootLayout?.height ?? node.yogaNode?.getComputedHeight() ?? 0
+	const width = rootLayout.width
+	const height = rootLayout.height
 
 	const output = new Output({
 		width,
@@ -74,15 +72,9 @@ const renderer = (
 		? getComputedLayout(node.staticNode, layoutTree)
 		: undefined
 
-	if (staticNodeLayout || node.staticNode?.yogaNode) {
-		const staticWidth =
-			staticNodeLayout?.width ??
-			node.staticNode?.yogaNode?.getComputedWidth() ??
-			0
-		const staticHeight =
-			staticNodeLayout?.height ??
-			node.staticNode?.yogaNode?.getComputedHeight() ??
-			0
+	if (staticNodeLayout) {
+		const staticWidth = staticNodeLayout.width
+		const staticHeight = staticNodeLayout.height
 
 		staticOutput = new Output({
 			width: staticWidth,

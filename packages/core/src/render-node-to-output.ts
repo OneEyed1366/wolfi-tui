@@ -1,9 +1,8 @@
-// Phase 2: Migrate from Yoga to Taffy
-// NOTE: This file now supports both layout engines via getComputedLayout helper
+// Taffy-based render node to output
+// Yoga has been removed - Taffy is now the only layout engine
 
 import widestLine from 'widest-line'
 import indentString from 'indent-string'
-import Yoga from 'yoga-layout'
 import wrapText from './wrap-text'
 import getMaxWidth from './get-max-width'
 import squashTextNodes from './squash-text-nodes'
@@ -28,17 +27,11 @@ const applyPaddingToText = (
 	const firstChild = node.childNodes[0]
 	if (!firstChild) return text
 
-	// Phase 2: Use Taffy computed layout if available, fallback to Yoga
 	const childLayout = getComputedLayout(firstChild, layoutTree)
 
 	if (childLayout) {
 		const offsetX = childLayout.x
 		const offsetY = childLayout.y
-		text = '\n'.repeat(offsetY) + indentString(text, offsetX)
-	} else if (firstChild.yogaNode) {
-		// Yoga fallback
-		const offsetX = firstChild.yogaNode.getComputedLeft()
-		const offsetY = firstChild.yogaNode.getComputedTop()
 		text = '\n'.repeat(offsetY) + indentString(text, offsetX)
 	}
 
@@ -59,7 +52,6 @@ export const renderNodeToScreenReaderOutput = (
 		return ''
 	}
 
-	// Phase 2: Use isDisplayNone helper for both Taffy and Yoga
 	if (isDisplayNone(node, options.layoutTree)) {
 		return ''
 	}
@@ -141,24 +133,20 @@ const renderNodeToOutput = (
 		return
 	}
 
-	// Phase 2: Use isDisplayNone helper for both Taffy and Yoga
 	if (isDisplayNone(node, layoutTree)) {
 		return
 	}
 
-	// Phase 2: Get computed layout from either Taffy or Yoga
 	const computedLayout = getComputedLayout(node, layoutTree)
-	const { yogaNode } = node
 
-	// Need either computed layout (from Taffy) or yogaNode (from Yoga)
-	if (!computedLayout && !yogaNode) {
+	// Need computed layout from Taffy
+	if (!computedLayout) {
 		return
 	}
 
 	// Left and top positions are relative to parent node
-	// Phase 2: Use Taffy computed layout if available, fallback to Yoga
-	const x = offsetX + (computedLayout?.x ?? yogaNode?.getComputedLeft() ?? 0)
-	const y = offsetY + (computedLayout?.y ?? yogaNode?.getComputedTop() ?? 0)
+	const x = offsetX + computedLayout.x
+	const y = offsetY + computedLayout.y
 
 	// Transformers are functions that transform final text output of each component
 	// See Output class for logic that applies transformers
@@ -173,8 +161,7 @@ const renderNodeToOutput = (
 
 		if (text.length > 0) {
 			const currentWidth = widestLine(text)
-			// Phase 2: Pass layout info to getMaxWidth
-			const maxWidth = getMaxWidth(yogaNode, computedLayout)
+			const maxWidth = getMaxWidth(computedLayout)
 
 			if (currentWidth > maxWidth) {
 				const textWrap = node.style.textWrap ?? 'wrap'
@@ -192,7 +179,6 @@ const renderNodeToOutput = (
 	let clipped = false
 
 	if (node.nodeName === 'ink-box') {
-		// Phase 2: Pass layout info to render helpers
 		renderBackground(x, y, node, output, computedLayout)
 		renderBorder(x, y, node, output, computedLayout)
 
@@ -202,34 +188,12 @@ const renderNodeToOutput = (
 			node.style.overflowY === 'hidden' || node.style.overflow === 'hidden'
 
 		if (clipHorizontally || clipVertically) {
-			// Phase 2: Use Taffy computed layout if available, fallback to Yoga
-			const borderLeft =
-				computedLayout?.borderLeft ??
-				yogaNode?.getComputedBorder(Yoga.EDGE_LEFT) ??
-				0
-			const borderRight =
-				computedLayout?.borderRight ??
-				yogaNode?.getComputedBorder(Yoga.EDGE_RIGHT) ??
-				0
-			const borderTop =
-				computedLayout?.borderTop ??
-				yogaNode?.getComputedBorder(Yoga.EDGE_TOP) ??
-				0
-			const borderBottom =
-				computedLayout?.borderBottom ??
-				yogaNode?.getComputedBorder(Yoga.EDGE_BOTTOM) ??
-				0
-			const width =
-				computedLayout?.width ?? yogaNode?.getComputedWidth() ?? 0
-			const height =
-				computedLayout?.height ?? yogaNode?.getComputedHeight() ?? 0
+			const { borderLeft, borderRight, borderTop, borderBottom, width, height } =
+				computedLayout
 
 			const x1 = clipHorizontally ? x + borderLeft : undefined
-
 			const x2 = clipHorizontally ? x + width - borderRight : undefined
-
 			const y1 = clipVertically ? y + borderTop : undefined
-
 			const y2 = clipVertically ? y + height - borderBottom : undefined
 
 			output.clip({ x1, x2, y1, y2 })

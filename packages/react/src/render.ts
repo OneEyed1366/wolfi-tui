@@ -1,6 +1,7 @@
 import { Stream } from 'node:stream'
 import process from 'node:process'
 import type { ReactNode } from 'react'
+import { LayoutTree } from '@wolfie/core/layout'
 import Ink, { type Options as InkOptions, type RenderMetrics } from './ink'
 import instances from './instances'
 
@@ -101,12 +102,15 @@ export type Instance = {
 }
 
 /**
-Mount a component and render the output.
+Mount a component and render the output using the Taffy layout engine.
 */
 const render = (
 	node: ReactNode,
 	options?: NodeJS.WriteStream | RenderOptions
 ): Instance => {
+	// Create a new Taffy layout tree for layout calculations
+	const layoutTree = new LayoutTree()
+
 	const inkOptions: InkOptions = {
 		stdout: process.stdout,
 		stdin: process.stdin,
@@ -117,6 +121,7 @@ const render = (
 		maxFps: 30,
 		incrementalRendering: false,
 		...getOptions(options),
+		layoutTree,
 	}
 
 	const instance: Ink = getInstance(

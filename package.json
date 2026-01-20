@@ -55,7 +55,6 @@
 		"vite": "^6.0.7",
 		"vite-node": "^3.0.4",
 		"vite-plugin-dts": "^4.4.0",
-		"vitest": "^3.0.4",
-		"yoga-layout": "~3.2.1"
+		"vitest": "^3.0.4"
 	}
 }

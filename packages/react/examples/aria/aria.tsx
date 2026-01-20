@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { render, Text, Box, useInput } from '../../src/index'
+import render from '../../src/render'
+import { Text, Box, useInput } from '../../src/index'
 
 function AriaExample() {
 	const [checked, setChecked] = useState(false)

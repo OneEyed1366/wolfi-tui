@@ -1,5 +1,5 @@
-// Phase 2: Migrate from Yoga to Taffy
-// NOTE: This file now supports both layout engines
+// Taffy-based border rendering
+// Yoga has been removed - Taffy is now the only layout engine
 
 import cliBoxes from 'cli-boxes'
 import chalk from 'chalk'
@@ -10,13 +10,12 @@ import type { ComputedLayout } from './layout-types'
 
 /**
  * Render border for a node.
- * Uses Taffy computed layout if available, falls back to Yoga.
  *
  * @param x - X position
  * @param y - Y position
  * @param node - The DOM node
  * @param output - The output buffer
- * @param computedLayout - Optional computed layout from Taffy
+ * @param computedLayout - Computed layout from Taffy
  */
 const renderBorder = (
 	x: number,
@@ -25,12 +24,9 @@ const renderBorder = (
 	output: Output,
 	computedLayout?: ComputedLayout
 ): void => {
-	if (node.style.borderStyle) {
-		// Phase 2: Use Taffy computed layout if available, fallback to Yoga
-		const width =
-			computedLayout?.width ?? node.yogaNode?.getComputedWidth() ?? 0
-		const height =
-			computedLayout?.height ?? node.yogaNode?.getComputedHeight() ?? 0
+	if (node.style.borderStyle && computedLayout) {
+		const width = computedLayout.width
+		const height = computedLayout.height
 		const box =
 			typeof node.style.borderStyle === 'string'
 				? cliBoxes[node.style.borderStyle]
@@ -60,8 +56,10 @@ const renderBorder = (
 		const showLeftBorder = node.style.borderLeft !== false
 		const showRightBorder = node.style.borderRight !== false
 
-		const contentWidth =
+		const contentWidth = Math.max(
+			0,
 			width - (showLeftBorder ? 1 : 0) - (showRightBorder ? 1 : 0)
+		)
 
 		let topBorder = showTopBorder
 			? colorize(
@@ -86,6 +84,9 @@ const renderBorder = (
 		if (showBottomBorder) {
 			verticalBorderHeight -= 1
 		}
+
+		// Guard against negative values (can happen with very small computed heights)
+		verticalBorderHeight = Math.max(0, verticalBorderHeight)
 
 		let leftBorder = (
 			colorize(box.left, leftBorderColor, 'foreground') + '\n'

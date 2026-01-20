@@ -1,18 +1,12 @@
-// Phase 2: Migrate from Yoga to Taffy
-// NOTE: yoga-layout import kept for backwards compatibility during migration
-// TODO: Remove yoga-layout import once migration is complete
-import Yoga, { type Node as YogaNode } from 'yoga-layout'
 import { type LayoutTree } from './layout-types'
-import measureText from './measure-text'
 import { type Styles } from './styles'
-import wrapText from './wrap-text'
-import squashTextNodes from './squash-text-nodes'
 import { type OutputTransformer } from './render-node-to-output'
 
 type InkNode = {
 	parentNode: DOMElement | undefined
-	yogaNode?: YogaNode
 	layoutNodeId?: number
+	// Direct reference to layout tree for Taffy (avoids root traversal during reconciliation)
+	layoutTree?: LayoutTree
 	internal_static?: boolean
 	style: Styles
 }
@@ -101,21 +95,16 @@ export const createNode = (
 		attributes: {},
 		childNodes: [],
 		parentNode: undefined,
-		// Yoga (legacy) - will be removed after migration
-		yogaNode: nodeName === 'ink-virtual-text' ? undefined : Yoga.Node.create(),
-		// Taffy (new) - layoutNodeId for tree-centric layout
 		layoutNodeId:
 			nodeName === 'ink-virtual-text' || !layoutTree
 				? undefined
 				: layoutTree.createNode({}),
+		// Store direct reference to layoutTree for use in appendChild/insertBefore
+		layoutTree,
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		internal_accessibility: {},
 	}
 
-	// Yoga measure func - kept for backwards compatibility
-	if (nodeName === 'ink-text') {
-		node.yogaNode?.setMeasureFunc(measureTextNode.bind(null, node))
-	}
 	// Note: Text measurement for Taffy handled via setTextDimensions() called from renderer
 
 	return node
@@ -124,38 +113,38 @@ export const createNode = (
 export const appendChildNode = (
 	node: DOMElement,
 	childNode: DOMElement,
-	layoutTree?: LayoutTree
+	_layoutTree?: LayoutTree // Kept for API compatibility, but node.layoutTree is preferred
 ): void => {
+	// Use node's layoutTree directly (avoids traversal during initial render)
+	const effectiveLayoutTree = node.layoutTree ?? _layoutTree
+
 	if (childNode.parentNode) {
-		removeChildNode(childNode.parentNode, childNode, layoutTree)
+		removeChildNode(childNode.parentNode, childNode, effectiveLayoutTree)
 	}
 
 	childNode.parentNode = node
 	node.childNodes.push(childNode)
 
-	// Yoga (legacy)
-	if (childNode.yogaNode) {
-		node.yogaNode?.insertChild(
-			childNode.yogaNode,
-			node.yogaNode.getChildCount()
-		)
+	// Propagate layoutTree to child if it doesn't have one
+	if (!childNode.layoutTree && effectiveLayoutTree) {
+		childNode.layoutTree = effectiveLayoutTree
 	}
 
-	// Taffy (new)
 	if (
 		childNode.layoutNodeId !== undefined &&
 		node.layoutNodeId !== undefined &&
-		layoutTree
+		effectiveLayoutTree
 	) {
-		layoutTree.insertChild(
+		const index = effectiveLayoutTree.getChildCount(node.layoutNodeId)
+		effectiveLayoutTree.insertChild(
 			node.layoutNodeId,
 			childNode.layoutNodeId,
-			layoutTree.getChildCount(node.layoutNodeId)
+			index
 		)
 	}
 
 	if (node.nodeName === 'ink-text' || node.nodeName === 'ink-virtual-text') {
-		markNodeAsDirty(node, layoutTree)
+		markNodeAsDirty(node, effectiveLayoutTree)
 	}
 }
 
@@ -163,63 +152,60 @@ export const insertBeforeNode = (
 	node: DOMElement,
 	newChildNode: DOMNode,
 	beforeChildNode: DOMNode,
-	layoutTree?: LayoutTree
+	_layoutTree?: LayoutTree
 ): void => {
+	// Use node's layoutTree directly (avoids traversal during initial render)
+	const effectiveLayoutTree = node.layoutTree ?? _layoutTree
+
 	if (newChildNode.parentNode) {
-		removeChildNode(newChildNode.parentNode, newChildNode, layoutTree)
+		removeChildNode(newChildNode.parentNode, newChildNode, effectiveLayoutTree)
 	}
 
 	newChildNode.parentNode = node
+
+	// Propagate layoutTree to child if it doesn't have one
+	if (!newChildNode.layoutTree && effectiveLayoutTree) {
+		newChildNode.layoutTree = effectiveLayoutTree
+	}
 
 	const index = node.childNodes.indexOf(beforeChildNode)
 	if (index >= 0) {
 		node.childNodes.splice(index, 0, newChildNode)
 
-		// Yoga (legacy)
-		if (newChildNode.yogaNode) {
-			node.yogaNode?.insertChild(newChildNode.yogaNode, index)
-		}
-
-		// Taffy (new)
 		if (
 			newChildNode.layoutNodeId !== undefined &&
 			node.layoutNodeId !== undefined &&
-			layoutTree
+			effectiveLayoutTree
 		) {
-			layoutTree.insertChild(node.layoutNodeId, newChildNode.layoutNodeId, index)
+			effectiveLayoutTree.insertChild(
+				node.layoutNodeId,
+				newChildNode.layoutNodeId,
+				index
+			)
 		}
 
 		if (node.nodeName === 'ink-text' || node.nodeName === 'ink-virtual-text') {
-			markNodeAsDirty(node, layoutTree)
+			markNodeAsDirty(node, effectiveLayoutTree)
 		}
 		return
 	}
 
 	node.childNodes.push(newChildNode)
 
-	// Yoga (legacy)
-	if (newChildNode.yogaNode) {
-		node.yogaNode?.insertChild(
-			newChildNode.yogaNode,
-			node.yogaNode.getChildCount()
-		)
-	}
-
-	// Taffy (new)
 	if (
 		newChildNode.layoutNodeId !== undefined &&
 		node.layoutNodeId !== undefined &&
-		layoutTree
+		effectiveLayoutTree
 	) {
-		layoutTree.insertChild(
+		effectiveLayoutTree.insertChild(
 			node.layoutNodeId,
 			newChildNode.layoutNodeId,
-			layoutTree.getChildCount(node.layoutNodeId)
+			effectiveLayoutTree.getChildCount(node.layoutNodeId)
 		)
 	}
 
 	if (node.nodeName === 'ink-text' || node.nodeName === 'ink-virtual-text') {
-		markNodeAsDirty(node, layoutTree)
+		markNodeAsDirty(node, effectiveLayoutTree)
 	}
 }
 
@@ -228,12 +214,6 @@ export const removeChildNode = (
 	removeNode: DOMNode,
 	layoutTree?: LayoutTree
 ): void => {
-	// Yoga (legacy)
-	if (removeNode.yogaNode) {
-		removeNode.parentNode?.yogaNode?.removeChild(removeNode.yogaNode)
-	}
-
-	// Taffy (new)
 	if (
 		removeNode.layoutNodeId !== undefined &&
 		removeNode.parentNode?.layoutNodeId !== undefined &&
@@ -278,7 +258,6 @@ export const createTextNode = (text: string): TextNode => {
 	const node: TextNode = {
 		nodeName: '#text',
 		nodeValue: text,
-		yogaNode: undefined,
 		layoutNodeId: undefined, // Text nodes don't have layout nodes
 		parentNode: undefined,
 		style: {},
@@ -289,42 +268,6 @@ export const createTextNode = (text: string): TextNode => {
 	return node
 }
 
-const measureTextNode = function (
-	node: DOMNode,
-	width: number
-): { width: number; height: number } {
-	const text =
-		node.nodeName === '#text' ? node.nodeValue : squashTextNodes(node)
-
-	const dimensions = measureText(text)
-
-	// Text fits into container, no need to wrap
-	if (dimensions.width <= width) {
-		return dimensions
-	}
-
-	// This is happening when <Box> is shrinking child nodes and Yoga asks
-	// if we can fit this text node in a <1px space, so we just tell Yoga "no"
-	if (dimensions.width >= 1 && width > 0 && width < 1) {
-		return dimensions
-	}
-
-	const textWrap = node.style?.textWrap ?? 'wrap'
-	const wrappedText = wrapText(text, width, textWrap)
-
-	return measureText(wrappedText)
-}
-
-// Yoga (legacy) - find closest ancestor with a yoga node
-const findClosestYogaNode = (node?: DOMNode): YogaNode | undefined => {
-	if (!node?.parentNode) {
-		return undefined
-	}
-
-	return node.yogaNode ?? findClosestYogaNode(node.parentNode)
-}
-
-// Taffy (new) - find closest ancestor with a layout node ID
 const findClosestLayoutNodeId = (node?: DOMNode): number | undefined => {
 	if (!node?.parentNode) {
 		return undefined
@@ -334,12 +277,6 @@ const findClosestLayoutNodeId = (node?: DOMNode): number | undefined => {
 }
 
 const markNodeAsDirty = (node?: DOMNode, layoutTree?: LayoutTree): void => {
-	// Mark closest Yoga node as dirty to measure text dimensions again
-	// Yoga (legacy)
-	const yogaNode = findClosestYogaNode(node)
-	yogaNode?.markDirty()
-
-	// Taffy (new)
 	if (layoutTree) {
 		const layoutNodeId = findClosestLayoutNodeId(node)
 		if (layoutNodeId !== undefined) {

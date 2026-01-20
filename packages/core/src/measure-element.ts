@@ -1,5 +1,5 @@
-// Phase 2: Migrate from Yoga to Taffy
-// NOTE: This file now supports both layout engines via getComputedLayout helper
+// Taffy-based element measurement
+// Yoga has been removed - Taffy is now the only layout engine
 
 import { type DOMElement } from './dom'
 import { getComputedLayout } from './get-computed-layout'
@@ -19,19 +19,19 @@ type Output = {
 
 /**
  * Measure the dimensions of a particular `<Box>` element.
- * Uses Taffy computed layout if available, falls back to Yoga.
  *
  * @param node - The DOM element to measure
- * @param layoutTree - Optional LayoutTree for Taffy-based layout
+ * @param layoutTree - LayoutTree for Taffy-based layout (optional, uses node.layoutTree if not provided)
  * @returns The computed width and height
  */
 const measureElement = (node: DOMElement, layoutTree?: LayoutTree): Output => {
-	// Phase 2: Use Taffy computed layout if available, fallback to Yoga
-	const computedLayout = getComputedLayout(node, layoutTree)
+	// Use provided layoutTree or fall back to node's layoutTree
+	const effectiveLayoutTree = layoutTree ?? node.layoutTree
+	const computedLayout = getComputedLayout(node, effectiveLayoutTree)
 
 	return {
-		width: computedLayout?.width ?? node.yogaNode?.getComputedWidth() ?? 0,
-		height: computedLayout?.height ?? node.yogaNode?.getComputedHeight() ?? 0,
+		width: computedLayout?.width ?? 0,
+		height: computedLayout?.height ?? 0,
 	}
 }
 

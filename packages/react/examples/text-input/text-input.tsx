@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { render, Box, Text, TextInput, useApp } from '../../src/index'
+import render from '../../src/render'
+import { Box, Text, TextInput, useApp } from '../../src/index'
 
 function TextInputDemo() {
 	const { exit } = useApp()

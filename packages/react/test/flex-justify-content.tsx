@@ -58,6 +58,9 @@ test('row - align two text nodes on the edges', () => {
 })
 
 test('row - space evenly two text nodes', () => {
+	// space-evenly distributes space equally: 3 gaps for 2 items in width 10
+	// (10 - 2) / 3 = 2.67, Taffy rounds to 3 before A, 2 between, 3 after
+	// With right edge at width boundary, trailing space is trimmed.
 	const output = renderToString(
 		<Box justifyContent="space-evenly" width={10}>
 			<Text>A</Text>
@@ -65,12 +68,11 @@ test('row - space evenly two text nodes', () => {
 		</Box>
 	)
 
-	expect(output).toBe('  A   B')
+	expect(output).toBe('   A  B')
 })
 
-// Yoga has a bug, where first child in a container with space-around doesn't have
-// the correct X coordinate and measure function is used on that child node
-test.fails('row - align two text nodes with equal space around them', () => {
+// Note: Yoga had a bug with space-around but Taffy handles it correctly
+test('row - align two text nodes with equal space around them', () => {
 	const output = renderToString(
 		<Box justifyContent="space-around" width={5}>
 			<Text>A</Text>
@@ -122,9 +124,8 @@ test('column - align two text nodes on the edges', () => {
 	expect(output).toBe('A\n\n\nB')
 })
 
-// Yoga has a bug, where first child in a container with space-around doesn't have
-// the correct X coordinate and measure function is used on that child node
-test.fails('column - align two text nodes with equal space around them', () => {
+// Note: Yoga had a bug with space-around but Taffy handles it correctly
+test('column - align two text nodes with equal space around them', () => {
 	const output = renderToString(
 		<Box flexDirection="column" justifyContent="space-around" height={5}>
 			<Text>A</Text>

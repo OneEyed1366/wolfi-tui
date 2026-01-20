@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { render, Box, Text, EmailInput, useApp } from '../../src/index'
+import render from '../../src/render'
+import { Box, Text, EmailInput, useApp } from '../../src/index'
 
 function EmailInputDemo() {
 	const { exit } = useApp()

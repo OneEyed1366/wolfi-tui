@@ -1,3 +1,6 @@
+// Taffy-based core exports
+// Yoga has been removed - Taffy is now the only layout engine
+
 export type {
 	DOMElement,
 	DOMNode,
@@ -20,7 +23,7 @@ export {
 export { default as Output } from './output'
 export { default as renderer } from './renderer'
 export type { Styles } from './styles'
-export { default as applyStyles } from './styles'
+export { applyLayoutStyle, toLayoutStyle } from './styles'
 export { default as parseKeypress, nonAlphanumericKeys } from './parse-keypress'
 export { default as measureElement } from './measure-element'
 export { default as measureText } from './measure-text'
@@ -35,11 +38,10 @@ export { default as renderNodeToOutput } from './render-node-to-output'
 export { default as logUpdate } from './log-update'
 export type { LogUpdate } from './log-update'
 
-// Phase 2: Taffy/Yoga layout helpers
+// Taffy layout helpers
 export {
 	getComputedLayout,
 	isDisplayNone,
 	type ComputedLayout,
 } from './get-computed-layout'
-export { applyLayoutStyle, toLayoutStyle } from './styles'
 export type { LayoutTree, LayoutStyle } from './layout-types'

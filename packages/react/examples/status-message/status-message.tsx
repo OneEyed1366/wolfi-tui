@@ -1,4 +1,5 @@
-import { render, Box, Text, StatusMessage } from '../../src/index'
+import render from '../../src/render'
+import { Box, Text, StatusMessage } from '../../src/index'
 
 function Demo() {
 	return (

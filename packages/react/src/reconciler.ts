@@ -4,7 +4,6 @@ import {
 	DefaultEventPriority,
 	NoEventPriority,
 } from 'react-reconciler/constants'
-import Yoga, { type Node as YogaNode } from 'yoga-layout'
 import { createContext } from 'react'
 import {
 	createTextNode,
@@ -15,7 +14,6 @@ import {
 	setTextNodeValue,
 	createNode,
 	setAttribute,
-	applyStyles,
 	applyLayoutStyle,
 	type DOMNodeAttribute,
 	type TextNode,
@@ -85,11 +83,6 @@ const diff = (before: AnyObject, after: AnyObject): AnyObject | undefined => {
 	return isChanged ? changed : undefined
 }
 
-const cleanupYogaNode = (node?: YogaNode): void => {
-	node?.unsetMeasureFunc()
-	node?.freeRecursive()
-}
-
 // Taffy cleanup - removes node from layout tree
 const cleanupLayoutNode = (
 	nodeId: number | undefined,
@@ -132,8 +125,14 @@ export const unregisterLayoutTree = (rootNode: DOMElement): void => {
 const getLayoutTree = (
 	node: DOMElement | TextNode
 ): LayoutTree | undefined => {
+	// Start from the node itself if it's a DOMElement
+	let current: DOMElement | undefined
+	if (node.nodeName !== '#text') {
+		current = node
+	} else {
+		current = node.parentNode
+	}
 	// Find root node by traversing up the tree
-	let current: DOMElement | undefined = node.parentNode
 	while (current?.parentNode) {
 		current = current.parentNode
 	}
@@ -232,12 +231,7 @@ export default createReconciler<
 			if (key === 'style') {
 				setStyle(node, value as Styles)
 
-				// Yoga (legacy)
-				if (node.yogaNode) {
-					applyStyles(node.yogaNode, value as Styles)
-				}
-
-				// Taffy (new)
+				// Taffy layout
 				if (layoutTree && node.layoutNodeId !== undefined) {
 					applyLayoutStyle(layoutTree, node.layoutNodeId, value as Styles)
 				}
@@ -284,20 +278,12 @@ export default createReconciler<
 	},
 	getPublicInstance: (instance) => instance,
 	hideInstance(node) {
-		// Yoga (legacy)
-		node.yogaNode?.setDisplay(Yoga.DISPLAY_NONE)
-
-		// Taffy (new)
 		const layoutTree = getLayoutTree(node)
 		if (layoutTree && node.layoutNodeId !== undefined) {
 			layoutTree.setDisplayNone(node.layoutNodeId)
 		}
 	},
 	unhideInstance(node) {
-		// Yoga (legacy)
-		node.yogaNode?.setDisplay(Yoga.DISPLAY_FLEX)
-
-		// Taffy (new)
 		const layoutTree = getLayoutTree(node)
 		if (layoutTree && node.layoutNodeId !== undefined) {
 			layoutTree.setDisplayFlex(node.layoutNodeId)
@@ -346,7 +332,6 @@ export default createReconciler<
 	removeChildFromContainer(node, removeNode) {
 		const layoutTree = getLayoutTreeForRoot(node)
 		removeChildNode(node, removeNode, layoutTree)
-		cleanupYogaNode(removeNode.yogaNode)
 		cleanupLayoutNode(removeNode.layoutNodeId, layoutTree)
 	},
 	commitUpdate(node, _type, oldProps, newProps) {
@@ -356,9 +341,9 @@ export default createReconciler<
 
 		const props = diff(oldProps, newProps)
 
-		const style = diff(oldProps['style'] as Styles, newProps['style'] as Styles)
+		const styleDiff = diff(oldProps['style'] as Styles, newProps['style'] as Styles)
 
-		if (!props && !style) {
+		if (!props && !styleDiff) {
 			return
 		}
 
@@ -383,16 +368,12 @@ export default createReconciler<
 			}
 		}
 
-		if (style) {
-			// Yoga (legacy)
-			if (node.yogaNode) {
-				applyStyles(node.yogaNode, style)
-			}
-
-			// Taffy (new)
+		if (styleDiff) {
+			// When updating layout styles, we must pass the FULL new style,
+			// not just the diff, because setStyle replaces rather than merges.
 			const layoutTree = getLayoutTree(node)
 			if (layoutTree && node.layoutNodeId !== undefined) {
-				applyLayoutStyle(layoutTree, node.layoutNodeId, style)
+				applyLayoutStyle(layoutTree, node.layoutNodeId, newProps['style'] as Styles)
 			}
 		}
 	},
@@ -403,7 +384,6 @@ export default createReconciler<
 	removeChild(node, removeNode) {
 		const layoutTree = getLayoutTree(node)
 		removeChildNode(node, removeNode, layoutTree)
-		cleanupYogaNode(removeNode.yogaNode)
 		cleanupLayoutNode(removeNode.layoutNodeId, layoutTree)
 	},
 	setCurrentUpdatePriority(newPriority: number) {

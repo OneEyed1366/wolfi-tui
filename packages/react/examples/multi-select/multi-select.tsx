@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import {
-	render,
-	Box,
+import render from '../../src/render'
+import { Box,
 	Text,
 	MultiSelect,
 	useApp,
-	type Option,
-} from '../../src/index'
+	type Option, } from '../../src/index'
 
 const featureOptions: Option[] = [
 	{ label: 'TypeScript', value: 'typescript' },

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { render, Box, Text, PasswordInput, useApp } from '../../src/index'
+import render from '../../src/render'
+import { Box, Text, PasswordInput, useApp } from '../../src/index'
 
 function PasswordInputDemo() {
 	const { exit } = useApp()

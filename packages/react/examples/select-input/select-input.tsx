@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
-import {
-	render,
-	Text,
+import render from '../../src/render'
+import { Text,
 	Box,
 	useInput,
-	useIsScreenReaderEnabled,
-} from '../../src/index'
+	useIsScreenReaderEnabled, } from '../../src/index'
 
 const items = ['Red', 'Green', 'Blue', 'Yellow', 'Magenta', 'Cyan']
 

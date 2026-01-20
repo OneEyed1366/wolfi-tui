@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { render, Box, Text, Select, type Option } from '../../src/index'
+import render from '../../src/render'
+import { Box, Text, Select, type Option } from '../../src/index'
 
 const colorOptions: Option[] = [
 	{ label: 'Red', value: 'red' },

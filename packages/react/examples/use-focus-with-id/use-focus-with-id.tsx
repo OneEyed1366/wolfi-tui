@@ -1,12 +1,10 @@
 import React from 'react'
-import {
-	render,
-	Box,
+import render from '../../src/render'
+import { Box,
 	Text,
 	useFocus,
 	useInput,
-	useFocusManager,
-} from '../../src/index'
+	useFocusManager, } from '../../src/index'
 
 function Focus() {
 	const { focus } = useFocusManager()

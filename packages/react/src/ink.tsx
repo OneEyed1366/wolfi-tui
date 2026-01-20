@@ -8,7 +8,6 @@ import signalExit from 'signal-exit'
 import patchConsole from 'patch-console'
 import { LegacyRoot } from 'react-reconciler/constants'
 import { type FiberRoot } from 'react-reconciler'
-import Yoga from 'yoga-layout'
 import wrapAnsi from 'wrap-ansi'
 import {
 	renderer,
@@ -53,6 +52,11 @@ export type Options = {
 	waitUntilExit?: () => Promise<void>
 	maxFps?: number
 	incrementalRendering?: boolean
+	/**
+	 * Taffy layout tree for layout calculations.
+	 * Required for proper layout functionality.
+	 */
+	layoutTree?: LayoutTree
 }
 
 export default class Ink {
@@ -82,16 +86,27 @@ export default class Ink {
 
 		this.options = options
 
-		// Phase 2: Try to create LayoutTree for Taffy support
-		// Note: layoutTree will be undefined until Taffy bindings are integrated
-		// This is expected during the migration phase
-		this.layoutTree = undefined // Will be: new TaffyLayoutTree() when available
+		// Phase 2: Use Taffy layout tree if provided via options
+		this.layoutTree = options.layoutTree
 
 		this.rootNode = createNode('ink-root', this.layoutTree)
+
+		// Set default style for root node to match Yoga behavior
+		// flexDirection: 'column' makes the main axis vertical, so alignItems: 'stretch'
+		// stretches children horizontally (along the cross-axis = width)
+		this.rootNode.style = { flexDirection: 'column', alignItems: 'stretch' }
 
 		// Register layoutTree with reconciler if available
 		if (this.layoutTree) {
 			registerLayoutTree(this.rootNode, this.layoutTree)
+
+			// Apply default style to Taffy layout node
+			if (this.rootNode.layoutNodeId !== undefined) {
+				this.layoutTree.setStyle(this.rootNode.layoutNodeId, {
+					flexDirection: 'column',
+					alignItems: 'stretch',
+				})
+			}
 		}
 
 		this.rootNode.onComputeLayout = this.calculateLayout
@@ -204,19 +219,24 @@ export default class Ink {
 	 * Pre-measure all text nodes for Taffy layout.
 	 * Must be called before computeLayout() since Taffy doesn't support measure callbacks.
 	 *
-	 * Key difference from Yoga:
-	 * - Yoga: measureFunc callback called DURING calculateLayout() with actual available width
-	 * - Taffy: dimensions must be set BEFORE computeLayout() - no callbacks
-	 *
-	 * TODO: For complex layouts where text width depends on parent width (which isn't
-	 * known until after first layout pass), implement a two-pass approach:
-	 * 1. First pass: measure with max width
-	 * 2. After layout: check if actual available width differs
-	 * 3. If different, re-measure and re-layout
-	 * For now, using terminal width as max width (single-pass).
+	 * Note: Taffy requires dimensions to be set BEFORE computeLayout() - no callbacks.
+	 * We propagate constraints from parent nodes with explicit widths to enable
+	 * proper text wrapping within constrained containers.
 	 */
 	private preMeasureTextNodes(node: DOMElement, maxWidth: number): void {
 		if (!this.layoutTree) return
+
+		// Determine the effective max width for this node
+		// If the node has an explicit width, use that for children
+		let effectiveMaxWidth = maxWidth
+		const nodeWidth = node.style?.width
+		if (typeof nodeWidth === 'number') {
+			// Account for padding and border
+			const paddingH = (node.style?.paddingLeft ?? node.style?.paddingX ?? node.style?.padding ?? 0) +
+				(node.style?.paddingRight ?? node.style?.paddingX ?? node.style?.padding ?? 0)
+			const borderH = node.style?.borderStyle ? 2 : 0  // 1 char each side if border
+			effectiveMaxWidth = Math.max(0, nodeWidth - paddingH - borderH)
+		}
 
 		// For ink-text nodes, measure the text content
 		if (node.nodeName === 'ink-text' && node.layoutNodeId !== undefined) {
@@ -226,8 +246,8 @@ export default class Ink {
 			// Measure or wrap text based on available width
 			let dimensions = measureText(text)
 
-			if (dimensions.width > maxWidth) {
-				const wrappedText = wrapText(text, maxWidth, textWrap)
+			if (dimensions.width > effectiveMaxWidth) {
+				const wrappedText = wrapText(text, effectiveMaxWidth, textWrap)
 				dimensions = measureText(wrappedText)
 			}
 
@@ -238,10 +258,10 @@ export default class Ink {
 			)
 		}
 
-		// Recurse into children
+		// Recurse into children with the effective max width
 		for (const child of node.childNodes) {
 			if ('childNodes' in child) {
-				this.preMeasureTextNodes(child as DOMElement, maxWidth)
+				this.preMeasureTextNodes(child as DOMElement, effectiveMaxWidth)
 			}
 		}
 	}
@@ -249,20 +269,15 @@ export default class Ink {
 	calculateLayout = () => {
 		const terminalWidth = this.getTerminalWidth()
 
-		// Yoga (legacy) - uses measureFunc callback during calculateLayout
-		this.rootNode.yogaNode!.setWidth(terminalWidth)
-		this.rootNode.yogaNode!.calculateLayout(
-			undefined,
-			undefined,
-			Yoga.DIRECTION_LTR
-		)
-
-		// Taffy (new) - requires pre-measurement before computeLayout
+		// Taffy layout - requires pre-measurement before computeLayout
 		if (this.layoutTree && this.rootNode.layoutNodeId !== undefined) {
 			// Pre-measure text nodes before layout (Taffy has no measure callbacks)
 			this.preMeasureTextNodes(this.rootNode, terminalWidth)
 
+			// Set root style (setStyle replaces entire style, so include all properties)
 			this.layoutTree.setStyle(this.rootNode.layoutNodeId, {
+				flexDirection: 'column',
+				alignItems: 'stretch',
 				width: { value: terminalWidth, unit: 'px' },
 			})
 			this.layoutTree.computeLayout(this.rootNode.layoutNodeId, terminalWidth)

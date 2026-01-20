@@ -103,16 +103,20 @@ test('single node - box with padding', () => {
 })
 
 test('single node - box with horizontal alignment', () => {
+	// justifyContent="center" centers 11-char text in 18-char inner width.
+	// 7 chars of space split as 4 left, 3 right (Taffy rounds up for left).
 	const output = renderToString(
 		<Box borderStyle="round" width={20} justifyContent="center">
 			<Text>Hello World</Text>
 		</Box>
 	)
 
-	expect(output).toBe(boxen('   Hello World    ', { borderStyle: 'round' }))
+	expect(output).toBe(boxen('    Hello World   ', { borderStyle: 'round' }))
 })
 
 test('single node - box with vertical alignment', () => {
+	// alignItems="center" centers 1-line text in 18-line inner height.
+	// 17 lines of space split as 9 above, 8 below (Taffy rounds up for top).
 	const output = renderToString(
 		<Box
 			borderStyle="round"
@@ -125,7 +129,7 @@ test('single node - box with vertical alignment', () => {
 	)
 
 	expect(output).toBe(
-		boxen('\n'.repeat(8) + 'Hello World' + '\n'.repeat(9), {
+		boxen('\n'.repeat(9) + 'Hello World' + '\n'.repeat(8), {
 			borderStyle: 'round',
 		})
 	)
@@ -214,16 +218,18 @@ test('multiple nodes - box with padding', () => {
 })
 
 test('multiple nodes - box with horizontal alignment', () => {
+	// Same as single node - 4 spaces left, 3 spaces right
 	const output = renderToString(
 		<Box borderStyle="round" width={20} justifyContent="center">
 			<Text>{'Hello '}World</Text>
 		</Box>
 	)
 
-	expect(output).toBe(boxen('   Hello World    ', { borderStyle: 'round' }))
+	expect(output).toBe(boxen('    Hello World   ', { borderStyle: 'round' }))
 })
 
 test('multiple nodes - box with vertical alignment', () => {
+	// Same as single node - 9 lines above, 8 lines below
 	const output = renderToString(
 		<Box
 			borderStyle="round"
@@ -236,7 +242,7 @@ test('multiple nodes - box with vertical alignment', () => {
 	)
 
 	expect(output).toBe(
-		boxen('\n'.repeat(8) + 'Hello World' + '\n'.repeat(9), {
+		boxen('\n'.repeat(9) + 'Hello World' + '\n'.repeat(8), {
 			borderStyle: 'round',
 		})
 	)

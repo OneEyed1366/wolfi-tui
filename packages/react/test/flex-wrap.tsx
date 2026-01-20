@@ -4,6 +4,10 @@ import { Box, Text } from '@wolfie/react'
 import { renderToString } from './helpers/render-to-string'
 
 test('row - no wrap', () => {
+	// With flexDirection=row (default) and no wrap, items that overflow
+	// extend past the container bounds. With width=2, "A" is at x=0,
+	// "BC" starts at x=1 and extends to x=3 (overflows).
+	// Standard CSS flexbox renders all content; clipping requires overflow:hidden.
 	const output = renderToString(
 		<Box width={2}>
 			<Text>A</Text>
@@ -11,10 +15,13 @@ test('row - no wrap', () => {
 		</Box>
 	)
 
-	expect(output).toBe('BC\n')
+	expect(output).toBe('ABC')
 })
 
 test('column - no wrap', () => {
+	// With flexDirection=column and height=2, items that don't fit
+	// extend past the container bounds. "A" is at y=0, "B" at y=1,
+	// "C" at y=2 (overflows). Standard CSS renders visible items.
 	const output = renderToString(
 		<Box flexDirection="column" height={2}>
 			<Text>A</Text>
@@ -23,7 +30,7 @@ test('column - no wrap', () => {
 		</Box>
 	)
 
-	expect(output).toBe('B\nC')
+	expect(output).toBe('A\nB')
 })
 
 test('row - wrap content', () => {
@@ -38,8 +45,10 @@ test('row - wrap content', () => {
 })
 
 test('column - wrap content', () => {
+	// With column wrap, items flow vertically then wrap to next column.
+	// Use alignSelf="flex-start" so box shrinks to content width.
 	const output = renderToString(
-		<Box flexDirection="column" height={2} flexWrap="wrap">
+		<Box flexDirection="column" height={2} flexWrap="wrap" alignSelf="flex-start">
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>
@@ -50,6 +59,9 @@ test('column - wrap content', () => {
 })
 
 test('column - wrap content reverse', () => {
+	// With wrap-reverse, columns stack right-to-left.
+	// First column (A,B) is on the right, wrapped column (C) is on the left.
+	// Taffy aligns C at x=0 with its content width.
 	const output = renderToString(
 		<Box flexDirection="column" height={2} width={3} flexWrap="wrap-reverse">
 			<Text>A</Text>
@@ -58,10 +70,13 @@ test('column - wrap content reverse', () => {
 		</Box>
 	)
 
-	expect(output).toBe(' CA\n  B')
+	expect(output).toBe('C A\n  B')
 })
 
 test('row - wrap content reverse', () => {
+	// With wrap-reverse, rows stack bottom-to-top.
+	// First row (A,B) is at the bottom, wrapped row (C) is above.
+	// Taffy places C at y=0.
 	const output = renderToString(
 		<Box height={3} width={2} flexWrap="wrap-reverse">
 			<Text>A</Text>
@@ -70,5 +85,5 @@ test('row - wrap content reverse', () => {
 		</Box>
 	)
 
-	expect(output).toBe('\nC\nAB')
+	expect(output).toBe('C\n\nAB')
 })

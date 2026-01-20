@@ -1,5 +1,6 @@
 import React from 'react'
-import { render, Box, Text, ProgressBar } from '../../src/index'
+import render from '../../src/render'
+import { Box, Text, ProgressBar } from '../../src/index'
 
 function Demo() {
 	const [progress, setProgress] = React.useState(0)

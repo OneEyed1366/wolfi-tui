@@ -1,5 +1,6 @@
 import React from 'react'
-import { render, Text } from '../../src/index'
+import render from '../../src/render'
+import { Text } from '../../src/index'
 
 let promise: Promise<void> | undefined
 let state: string | undefined

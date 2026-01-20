@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, Text, render, Static } from '../../src/index'
+import render from '../../src/render'
+import { Box, Text, Static } from '../../src/index'
 
 function Example() {
 	const [tests, setTests] = React.useState<

@@ -1,5 +1,6 @@
 import React from 'react'
-import { render, Box, Text } from '../../src/index'
+import render from '../../src/render'
+import { Box, Text } from '../../src/index'
 
 function JustifyContent() {
 	return (

@@ -53,7 +53,8 @@ test('set min width', () => {
 	expect(largerOutput).toBe('AAAAAB')
 })
 
-test.fails('set min width in percent', () => {
+// Note: Yoga had a bug with percent minWidth but Taffy handles it correctly
+test('set min width in percent', () => {
 	const output = renderToString(
 		<Box width={10}>
 			<Box minWidth="50%">
