@@ -1,16 +1,9 @@
-/**
- * Vite Plugin for wolf-tui CSS
- *
- * Transforms CSS imports into wolf-tui style objects at build time
- */
-
-import type { Plugin } from 'vite';
-import type { VitePluginOptions } from './types.js';
-import { parseCSS } from './parser.js';
-import { compile, detectLanguage } from './preprocessors.js';
-import { generateTypeScript, generateJavaScript } from './generator.js';
-
-//#region Helpers
+import type { Plugin } from 'vite'
+import type { VitePluginOptions } from './types'
+import { compile, detectLanguage } from './preprocessors'
+import { parseCSS } from './parser'
+import { generateJavaScript, generateTypeScript } from './generator'
+import { readFileSync, existsSync } from 'node:fs'
 
 /**
  * Check if a file path matches a pattern or array of patterns
@@ -19,78 +12,87 @@ function matchesPattern(
 	id: string,
 	pattern: string | RegExp | (string | RegExp)[]
 ): boolean {
-	const patterns = Array.isArray(pattern) ? pattern : [pattern];
+	const patterns = Array.isArray(pattern) ? pattern : [pattern]
 	return patterns.some((p) => {
-		if (typeof p === 'string') return id.includes(p);
-		return p.test(id);
-	});
+		if (typeof p === 'string') return id.includes(p)
+		return p.test(id)
+	})
 }
-
-//#endregion Helpers
-
-//#region Vite Plugin
 
 /**
- * Vite plugin for wolf-tui CSS transformation
- *
- * Transforms CSS/SCSS/Less/Stylus files into wolf-tui style objects.
- *
- * @example
- * // vite.config.ts
- * import { wolfTuiCSS } from '@wolf-tui/css-parser/vite'
- *
- * export default {
- *   plugins: [
- *     wolfTuiCSS({
- *       mode: 'module',  // CSS Modules pattern (default)
- *       // mode: 'global', // Global styles with registerStyles
- *     })
- *   ]
- * }
+ * Vite Plugin for wolfie CSS
  */
-export function wolfTuiCSS(options: VitePluginOptions = {}): Plugin {
+export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 	const {
 		mode = 'module',
-		javascript = false,
+		javascript = true, // Default to true for better compatibility with vite-node/SSR
 		include = /\.(css|scss|sass|less|styl|stylus)$/,
 		exclude = /node_modules/,
-	} = options;
+	} = options
+
+	const virtualPrefix = '\0wolfie:'
 
 	return {
-		name: 'wolf-tui-css',
-		enforce: 'pre', // Run before other CSS plugins
+		name: 'wolfie-css',
+		enforce: 'pre',
 
-		async transform(code: string, id: string) {
-			// Check if file should be processed
-			if (!matchesPattern(id, include) || matchesPattern(id, exclude)) {
-				return null;
+		async resolveId(id, importer) {
+			const cleanId = id.split('?')[0]!
+
+			// Skip if already virtual or excluded
+			if (id.startsWith(virtualPrefix) || matchesPattern(cleanId, exclude)) {
+				return null
 			}
 
-			// Detect mode from filename (.module.css → module mode)
-			const isModule = id.includes('.module.') || mode === 'module';
-
-			// Detect preprocessor and compile to CSS
-			const lang = detectLanguage(id);
-			const css = await compile(code, lang, id);
-
-			// Parse CSS to styles
-			const styles = parseCSS(css, { filename: id });
-
-			// Generate output code
-			const generator = javascript ? generateJavaScript : generateTypeScript;
-			const output = generator(styles, {
-				mode: isModule ? 'module' : 'global',
-			});
-
-			return {
-				code: output,
-				map: null, // No source map for now
-			};
+			if (matchesPattern(cleanId, include)) {
+				const resolved = await this.resolve(id, importer, { skipSelf: true })
+				if (resolved) {
+					// Redirect to a virtual path with .js suffix to force execution
+					// We use .js even for TS projects to bypass complex TS config issues in virtual modules
+					return virtualPrefix + resolved.id + '.js'
+				}
+			}
+			return null
 		},
-	};
+
+		async load(id) {
+			if (!id.startsWith(virtualPrefix)) {
+				return null
+			}
+
+			// Extract the real absolute path
+			const absolutePath = id.slice(virtualPrefix.length).replace(/\.js$/, '')
+
+			if (!existsSync(absolutePath)) {
+				return null
+			}
+
+			const isModule = absolutePath.includes('.module.') || mode === 'module'
+			const lang = detectLanguage(absolutePath)
+
+			try {
+				const source = readFileSync(absolutePath, 'utf-8')
+				const compiled = await compile(source, lang, absolutePath)
+				const styles = parseCSS(compiled, { filename: absolutePath })
+
+				// Use requested generator (defaulting to JS for runtime compatibility)
+				const generator = javascript ? generateJavaScript : generateTypeScript
+				const code = generator(styles, {
+					mode: isModule ? 'module' : 'global',
+				})
+
+				return {
+					code,
+					moduleType: 'js',
+					map: { mappings: '' },
+				}
+			} catch (error) {
+				this.error(`[wolfie-css] Error loading ${absolutePath}: ${error}`)
+				return null
+			}
+		},
+	}
 }
 
-//#endregion Vite Plugin
-
-export { type VitePluginOptions };
-export default wolfTuiCSS;
+export { type VitePluginOptions }
+export default wolfieCSS

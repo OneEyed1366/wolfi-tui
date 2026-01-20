@@ -1,7 +1,7 @@
 {
-	"name": "@wolf-tui/css-parser",
+	"name": "@wolfie/css-parser",
 	"version": "0.1.0",
-	"description": "CSS/SCSS/Less/Stylus parser and code generator for wolf-tui",
+	"description": "CSS/SCSS/Less/Stylus parser and code generator for wolfie",
 	"license": "MIT",
 	"type": "module",
 	"bin": {
@@ -36,9 +36,11 @@
 		"postcss": "^8.4.49"
 	},
 	"devDependencies": {
+		"@types/jsdom": "^27.0.0",
 		"@types/less": "^3.0.8",
 		"@types/stylus": "^0.48.43",
 		"esbuild": "^0.24.2",
+		"jsdom": "^27.4.0",
 		"less": "^4.2.1",
 		"sass": "^1.83.0",
 		"stylus": "^0.64.0",

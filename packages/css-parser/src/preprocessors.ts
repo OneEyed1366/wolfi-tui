@@ -6,8 +6,8 @@ import * as path from 'node:path';
 import * as sass from 'sass';
 import less from 'less';
 import stylus from 'stylus';
-import { parseCSS } from './parser.js';
-import type { ParsedStyles, PreprocessorType, CSSParserOptions } from './types.js';
+import { parseCSS } from './parser';
+import type { ParsedStyles, PreprocessorType, CSSParserOptions } from './types';
 
 //#region Types
 

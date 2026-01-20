@@ -1,45 +1,45 @@
 /**
- * esbuild Plugin for wolf-tui CSS
+ * esbuild Plugin for wolfie CSS
  *
- * Transforms CSS imports into wolf-tui style objects at build time
+ * Transforms CSS imports into wolfie style objects at build time
  */
 
 import type { Plugin } from 'esbuild';
 import fs from 'node:fs';
-import type { EsbuildPluginOptions } from './types.js';
-import { parseCSS } from './parser.js';
-import { compile, detectLanguage } from './preprocessors.js';
-import { generateJavaScript } from './generator.js';
+import type { EsbuildPluginOptions } from './types';
+import { parseCSS } from './parser';
+import { compile, detectLanguage } from './preprocessors';
+import { generateJavaScript } from './generator';
 
 //#region esbuild Plugin
 
 /**
- * esbuild plugin for wolf-tui CSS transformation
+ * esbuild plugin for wolfie CSS transformation
  *
- * Transforms CSS/SCSS/Less/Stylus files into wolf-tui style objects.
+ * Transforms CSS/SCSS/Less/Stylus files into wolfie style objects.
  *
  * @example
  * // esbuild.config.js
- * import { wolfTuiCSS } from '@wolf-tui/css-parser/esbuild'
+ * import { wolfieCSS } from '@wolfie/css-parser/esbuild'
  *
  * await esbuild.build({
  *   // ...
  *   plugins: [
- *     wolfTuiCSS({
+ *     wolfieCSS({
  *       mode: 'module',  // CSS Modules pattern (default)
  *       // mode: 'global', // Global styles with registerStyles
  *     })
  *   ]
  * })
  */
-export function wolfTuiCSS(options: EsbuildPluginOptions = {}): Plugin {
+export function wolfieCSS(options: EsbuildPluginOptions = {}): Plugin {
 	const {
 		mode = 'module',
 		filter = /\.(css|scss|sass|less|styl|stylus)$/,
 	} = options;
 
 	return {
-		name: 'wolf-tui-css',
+		name: 'wolfie-css',
 
 		setup(build) {
 			// Handle CSS and preprocessor files
@@ -73,4 +73,4 @@ export function wolfTuiCSS(options: EsbuildPluginOptions = {}): Plugin {
 //#endregion esbuild Plugin
 
 export { type EsbuildPluginOptions };
-export default wolfTuiCSS;
+export default wolfieCSS;

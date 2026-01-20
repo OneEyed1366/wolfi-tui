@@ -1,0 +1,13 @@
+.button {
+	border-style: single;
+	border-color: green;
+	padding-x: 1;
+}
+
+.button:hover {
+	border-color: bright-green;
+}
+
+.text {
+	color: green;
+}

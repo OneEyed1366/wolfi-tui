@@ -317,7 +317,7 @@ const toDimension = (value: number | string | undefined): Dimension | undefined 
 }
 
 /**
- * Convert wolf-tui Styles to Taffy LayoutStyle
+ * Convert wolfie Styles to Taffy LayoutStyle
  * Pure conversion function - no side effects
  */
 export const toLayoutStyle = (style: Styles): LayoutStyle => {

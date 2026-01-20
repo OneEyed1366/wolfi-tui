@@ -1,7 +1,7 @@
 /**
  * CSS Value Transformations
  *
- * Transforms CSS values to wolf-tui compatible values
+ * Transforms CSS values to wolfie compatible values
  */
 
 //#region ANSI Color Mapping
@@ -157,7 +157,7 @@ const CSS_TO_ANSI_COLORS: Record<string, string> = {
 //#region Border Style Mapping
 
 /**
- * CSS border-style values mapped to wolf-tui borderStyle (cli-boxes)
+ * CSS border-style values mapped to wolfie borderStyle (cli-boxes)
  */
 const CSS_TO_WOLF_BORDER: Record<string, string> = {
 	solid: 'single',
@@ -206,7 +206,7 @@ export function parseNumeric(value: string): number {
 export function parseNumericOrPercent(value: string): number | string {
 	const trimmed = value.trim().toLowerCase();
 
-	// Handle 'auto' keyword - wolf-tui doesn't support it, return undefined-like
+	// Handle 'auto' keyword - wolfie doesn't support it, return undefined-like
 	if (trimmed === 'auto' || trimmed === 'initial' || trimmed === 'inherit') {
 		return 0;
 	}
@@ -265,7 +265,7 @@ export function parseColor(value: string): string {
 }
 
 /**
- * Parse a CSS border-style value to wolf-tui borderStyle
+ * Parse a CSS border-style value to wolfie borderStyle
  */
 export function parseBorderStyle(value: string): string | null {
 	const trimmed = value.trim().toLowerCase();
@@ -284,7 +284,7 @@ export function parseBorderStyle(value: string): string | null {
 //#region Legacy Value Transformers (for backward compatibility)
 
 /**
- * Transform a CSS dimension value (e.g., "10px", "50%") to a wolf-tui value
+ * Transform a CSS dimension value (e.g., "10px", "50%") to a wolfie value
  * @deprecated Use parseNumericOrPercent instead
  */
 export function transformDimension(value: string): string | number {
@@ -292,7 +292,7 @@ export function transformDimension(value: string): string | number {
 }
 
 /**
- * Transform a CSS color value to a wolf-tui color
+ * Transform a CSS color value to a wolfie color
  * @deprecated Use parseColor instead
  */
 export function transformColor(value: string): string {

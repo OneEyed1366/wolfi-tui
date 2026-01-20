@@ -3,6 +3,6 @@ export {
 	clearGlobalStyles,
 	getGlobalStyle,
 	resolveClassName,
-} from './registry.js'
+} from './registry'
 
-export type { ClassNameValue } from './registry.js'
+export type { ClassNameValue } from './registry'

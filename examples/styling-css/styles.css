@@ -1,0 +1,14 @@
+.container {
+	padding: 1;
+	border-style: double;
+	border-color: yellow;
+}
+
+.title {
+	color: cyan;
+	font-weight: bold;
+}
+
+.description {
+	color: gray;
+}

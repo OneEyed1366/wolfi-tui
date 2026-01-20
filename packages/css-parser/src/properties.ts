@@ -1,7 +1,7 @@
 /**
  * CSS Property Definitions and Mappings
  *
- * Maps CSS properties to wolf-tui/core style properties
+ * Maps CSS properties to wolfie/core style properties
  */
 
 import type { Styles } from '@wolfie/core';
@@ -13,12 +13,12 @@ import {
 	expandSpacingShorthand,
 	expandFlexShorthand,
 	expandGapShorthand,
-} from './values.js';
+} from './values';
 
 //#region Property Map
 
 /**
- * Mapping from CSS property names to wolf-tui style property names
+ * Mapping from CSS property names to wolfie style property names
  */
 export const PROPERTY_MAP: Record<string, string> = {
 	// Layout
@@ -121,7 +121,7 @@ export function isValidProperty(cssProperty: string): boolean {
 //#region CSS Property Mapper
 
 /**
- * Map a CSS property and value to wolf-tui Styles
+ * Map a CSS property and value to wolfie Styles
  * Returns null if the property is not supported
  */
 export function mapCSSProperty(prop: string, value: string): Partial<Styles> | null {
@@ -262,12 +262,12 @@ export function mapCSSProperty(prop: string, value: string): Partial<Styles> | n
 	}
 
 	if (normalizedProp === 'max-width') {
-		// wolf-tui doesn't have maxWidth, but parse it anyway for potential future support
+		// wolfie doesn't have maxWidth, but parse it anyway for potential future support
 		return null;
 	}
 
 	if (normalizedProp === 'max-height') {
-		// wolf-tui doesn't have maxHeight, but parse it anyway for potential future support
+		// wolfie doesn't have maxHeight, but parse it anyway for potential future support
 		return null;
 	}
 
@@ -465,7 +465,7 @@ export function mapCSSProperty(prop: string, value: string): Partial<Styles> | n
 	if (normalizedProp === 'opacity') {
 		const opacity = parseFloat(trimmedValue);
 		if (!isNaN(opacity) && opacity < 1) {
-			// Note: wolf-tui doesn't have dimColor on Styles directly
+			// Note: wolfie doesn't have dimColor on Styles directly
 			// This would need to be handled at the text level
 			return null;
 		}
@@ -503,7 +503,7 @@ export function mapCSSProperty(prop: string, value: string): Partial<Styles> | n
 
 	// text-wrap / white-space → textWrap
 	if (normalizedProp === 'text-wrap' || normalizedProp === 'white-space') {
-		// Map CSS values to wolf-tui textWrap values
+		// Map CSS values to wolfie textWrap values
 		const wrapMap: Record<string, Styles['textWrap']> = {
 			'wrap': 'wrap',
 			'nowrap': 'truncate',

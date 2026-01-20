@@ -23,7 +23,7 @@ export interface ParsedStylesheet {
 }
 
 /**
- * Mapping of class names to wolf-tui Styles objects
+ * Mapping of class names to wolfie Styles objects
  */
 export interface ParsedStyles {
 	[className: string]: Partial<Styles>;

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { generateTypeScript, generateJavaScript, sanitizeIdentifier } from '../src/generator.js'
-import type { ParsedStyles } from '../src/types.js'
+import { generateTypeScript, generateJavaScript, sanitizeIdentifier } from '../src/generator'
+import type { ParsedStyles } from '../src/types'
 
 describe('Code Generator - sanitizeIdentifier', () => {
 	it('removes leading dot', () => {

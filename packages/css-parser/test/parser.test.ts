@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseCSS } from '../src/parser.js'
+import { parseCSS } from '../src/parser'
 
 //#region Basic Parsing
 

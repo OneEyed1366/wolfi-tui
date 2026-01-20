@@ -4,7 +4,7 @@ import {
 	clearGlobalStyles,
 	getGlobalStyle,
 	resolveClassName,
-} from '../../src/styles/registry.js'
+} from '../../src/styles/registry'
 
 describe('Style Registry', () => {
 	beforeEach(() => {

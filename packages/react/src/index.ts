@@ -27,7 +27,7 @@ export { default as useFocusManager } from './hooks/use-focus-manager'
 export { default as useIsScreenReaderEnabled } from './hooks/use-is-screen-reader-enabled'
 export { nonAlphanumericKeys } from '@wolfie/core'
 export { measureElement } from '@wolfie/core'
-export type { DOMElement } from '@wolfie/core'
+export { type DOMElement } from '@wolfie/core'
 
 // Theme system
 export * from './theme/theme'
@@ -38,8 +38,8 @@ export {
 	clearGlobalStyles,
 	getGlobalStyle,
 	resolveClassName,
-} from './styles/index.js'
-export type { ClassNameValue } from './styles/index.js'
+} from './styles/index'
+export type { ClassNameValue } from './styles/index'
 
 // UI Components
 export * from './components/ui/index'

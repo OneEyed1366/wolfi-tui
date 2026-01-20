@@ -4,7 +4,7 @@ import { type LiteralUnion } from 'type-fest'
 import { colorize, type Styles } from '@wolfie/core'
 import { accessibilityContext } from './AccessibilityContext'
 import { backgroundContext } from './BackgroundContext'
-import { resolveClassName, type ClassNameValue } from '../styles/index.js'
+import { resolveClassName, type ClassNameValue } from '../styles/index'
 
 export type Props = {
 	/**

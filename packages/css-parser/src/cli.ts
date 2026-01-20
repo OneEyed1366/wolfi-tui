@@ -2,15 +2,15 @@
 /**
  * wolf-css CLI
  *
- * Command-line interface for CSS/SCSS/Less/Stylus compilation to wolf-tui styles
+ * Command-line interface for CSS/SCSS/Less/Stylus compilation to wolfie styles
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { parseCSS } from './parser.js';
-import { compile, detectLanguage } from './preprocessors.js';
-import { generateTypeScript, generateJavaScript } from './generator.js';
-import type { CodeGeneratorOptions } from './types.js';
+import { parseCSS } from './parser';
+import { compile, detectLanguage } from './preprocessors';
+import { generateTypeScript, generateJavaScript } from './generator';
+import type { CodeGeneratorOptions } from './types';
 
 //#region Types
 
@@ -81,7 +81,7 @@ function parseArgs(args: string[]): { options: CLIOptions; inputFiles: string[] 
 
 function printHelp(): void {
 	console.log(`
-wolf-css - CSS/SCSS/Less/Stylus to wolf-tui styles compiler
+wolf-css - CSS/SCSS/Less/Stylus to wolfie styles compiler
 
 USAGE:
   wolf-css <input.css> [options]
@@ -156,7 +156,7 @@ async function processFile(inputFile: string, options: CLIOptions): Promise<void
 	const output = generator(styles, generatorOptions);
 
 	// Determine output path
-	const ext = options.javascript ? '.js' : '.ts';
+	const ext = options.javascript ? '' : '.ts';
 	const outputPath = options.output ?? inputFile + ext;
 	const absoluteOutputPath = path.resolve(outputPath);
 

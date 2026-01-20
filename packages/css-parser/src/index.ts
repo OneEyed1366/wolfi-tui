@@ -1,7 +1,7 @@
 /**
- * @wolf-tui/css-parser
+ * @wolfie/css-parser
  *
- * CSS/SCSS/Less/Stylus parser and code generator for wolf-tui
+ * CSS/SCSS/Less/Stylus parser and code generator for wolfie
  */
 
 //#region Parser Exports
@@ -11,7 +11,7 @@ export {
 	parseRule,
 	parseCSS,
 	extractClassName,
-} from './parser.js';
+} from './parser';
 
 //#endregion Parser Exports
 
@@ -28,7 +28,7 @@ export {
 	type PreprocessorType,
 	type PreprocessorResult,
 	type PreprocessOptions,
-} from './preprocessors.js';
+} from './preprocessors';
 
 //#endregion Preprocessor Exports
 
@@ -39,7 +39,7 @@ export {
 	mapPropertyName,
 	isValidProperty,
 	mapCSSProperty,
-} from './properties.js';
+} from './properties';
 
 //#endregion Property Exports
 
@@ -57,7 +57,7 @@ export {
 	transformColor,
 	expandFlexShorthand,
 	expandSpacingShorthand,
-} from './values.js';
+} from './values';
 
 //#endregion Value Exports
 
@@ -68,7 +68,7 @@ export {
 	generateTypeScript,
 	generateJavaScript,
 	sanitizeIdentifier,
-} from './generator.js';
+} from './generator';
 
 //#endregion Generator Exports
 
@@ -85,6 +85,6 @@ export type {
 	CodeGeneratorOptions,
 	VitePluginOptions,
 	EsbuildPluginOptions,
-} from './types.js';
+} from './types';
 
 //#endregion Type Exports

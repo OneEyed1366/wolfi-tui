@@ -3,7 +3,7 @@ import { type Except } from 'type-fest'
 import { type Styles, type DOMElement } from '@wolfie/core'
 import { accessibilityContext } from './AccessibilityContext'
 import { backgroundContext } from './BackgroundContext'
-import { resolveClassName, type ClassNameValue } from '../styles/index.js'
+import { resolveClassName, type ClassNameValue } from '../styles/index'
 
 export type Props = Except<Styles, 'textWrap'> & {
 	/**
