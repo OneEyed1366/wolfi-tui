@@ -63,7 +63,12 @@ export {
 
 //#region Generator Exports
 
-export { generate } from './generator.js';
+export {
+	generate,
+	generateTypeScript,
+	generateJavaScript,
+	sanitizeIdentifier,
+} from './generator.js';
 
 //#endregion Generator Exports
 
@@ -77,6 +82,7 @@ export type {
 	CSSParserOptions,
 	GeneratorOptions,
 	GeneratedOutput,
+	CodeGeneratorOptions,
 	VitePluginOptions,
 	EsbuildPluginOptions,
 } from './types.js';

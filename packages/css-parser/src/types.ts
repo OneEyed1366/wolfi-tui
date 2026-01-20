@@ -56,6 +56,18 @@ export interface GeneratorOptions {
 	typeDeclarations: boolean;
 }
 
+/**
+ * Options for the new generateTypeScript/generateJavaScript functions
+ */
+export interface CodeGeneratorOptions {
+	/** 'module' for CSS Modules (default export), 'global' for side-effect import (registerStyles) */
+	mode: 'module' | 'global';
+	/** Generate TypeScript (.ts) or JavaScript (.js) output */
+	typescript?: boolean;
+	/** Compact output without extra whitespace */
+	minify?: boolean;
+}
+
 export interface GeneratedOutput {
 	code: string;
 	declarations?: string;
