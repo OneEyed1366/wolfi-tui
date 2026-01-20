@@ -4,8 +4,19 @@ import { type LiteralUnion } from 'type-fest'
 import { colorize, type Styles } from '@wolfie/core'
 import { accessibilityContext } from './AccessibilityContext'
 import { backgroundContext } from './BackgroundContext'
+import { resolveClassName, type ClassNameValue } from '../styles/index.js'
 
 export type Props = {
+	/**
+	CSS-like class name for styling. Supports:
+	- String class name: 'text-bold'
+	- Space-separated classes: 'text-red underline'
+	- Style object (from CSS Modules): { color: 'red' }
+	- Array of the above: ['base', { bold: true }]
+
+	The inline props take precedence over className when both are provided.
+	*/
+	readonly className?: ClassNameValue
 	/**
 	A label for the element for screen readers.
 	*/
@@ -68,15 +79,16 @@ export type Props = {
 This component can display text and change its style to make it bold, underlined, italic, or strikethrough.
 */
 export default function Text({
+	className,
 	color,
 	backgroundColor,
-	dimColor = false,
-	bold = false,
-	italic = false,
-	underline = false,
-	strikethrough = false,
-	inverse = false,
-	wrap = 'wrap',
+	dimColor,
+	bold,
+	italic,
+	underline,
+	strikethrough,
+	inverse,
+	wrap,
 	children,
 	'aria-label': ariaLabel,
 	'aria-hidden': ariaHidden = false,
@@ -90,38 +102,56 @@ export default function Text({
 		return null
 	}
 
+	// Resolve className styles and merge with explicit props (explicit props win)
+	const resolvedClassName = resolveClassName(className)
+
+	// Merge className styles with explicit props - explicit props override
+	// Note: Styles type has backgroundColor but not color (color is a Text-specific prop)
+	const effectiveColor = color
+	const effectiveBackgroundColor =
+		backgroundColor ??
+		(resolvedClassName.backgroundColor as typeof backgroundColor)
+	const effectiveDimColor = dimColor ?? false
+	const effectiveBold = bold ?? false
+	const effectiveItalic = italic ?? false
+	const effectiveUnderline = underline ?? false
+	const effectiveStrikethrough = strikethrough ?? false
+	const effectiveInverse = inverse ?? false
+	const effectiveWrap = wrap ?? (resolvedClassName.textWrap as typeof wrap) ?? 'wrap'
+
 	const transform = (children: string): string => {
-		if (dimColor) {
+		if (effectiveDimColor) {
 			children = chalk.dim(children)
 		}
 
-		if (color) {
-			children = colorize(children, color, 'foreground')
+		if (effectiveColor) {
+			children = colorize(children, effectiveColor, 'foreground')
 		}
 
 		// Use explicit backgroundColor if provided, otherwise use inherited from parent Box
-		const effectiveBackgroundColor = backgroundColor ?? inheritedBackgroundColor
-		if (effectiveBackgroundColor) {
-			children = colorize(children, effectiveBackgroundColor, 'background')
+		const finalBackgroundColor =
+			effectiveBackgroundColor ?? inheritedBackgroundColor
+		if (finalBackgroundColor) {
+			children = colorize(children, finalBackgroundColor, 'background')
 		}
 
-		if (bold) {
+		if (effectiveBold) {
 			children = chalk.bold(children)
 		}
 
-		if (italic) {
+		if (effectiveItalic) {
 			children = chalk.italic(children)
 		}
 
-		if (underline) {
+		if (effectiveUnderline) {
 			children = chalk.underline(children)
 		}
 
-		if (strikethrough) {
+		if (effectiveStrikethrough) {
 			children = chalk.strikethrough(children)
 		}
 
-		if (inverse) {
+		if (effectiveInverse) {
 			children = chalk.inverse(children)
 		}
 
@@ -138,7 +168,8 @@ export default function Text({
 				flexGrow: 0,
 				flexShrink: 1,
 				flexDirection: 'row',
-				textWrap: wrap,
+				textWrap: effectiveWrap,
+				...resolvedClassName,
 			}}
 			internal_transform={transform}
 		>

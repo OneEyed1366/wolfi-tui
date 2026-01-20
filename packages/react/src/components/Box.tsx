@@ -3,8 +3,19 @@ import { type Except } from 'type-fest'
 import { type Styles, type DOMElement } from '@wolfie/core'
 import { accessibilityContext } from './AccessibilityContext'
 import { backgroundContext } from './BackgroundContext'
+import { resolveClassName, type ClassNameValue } from '../styles/index.js'
 
 export type Props = Except<Styles, 'textWrap'> & {
+	/**
+	CSS-like class name for styling. Supports:
+	- String class name: 'container'
+	- Space-separated classes: 'flex gap-2'
+	- Style object (from CSS Modules): { padding: 2 }
+	- Array of the above: ['base', { gap: 4 }]
+
+	The `style` prop takes precedence over className when both are provided.
+	*/
+	readonly className?: ClassNameValue
 	/**
 	A label for the element for screen readers.
 	*/
@@ -61,6 +72,7 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 	(
 		{
 			children,
+			className,
 			backgroundColor,
 			'aria-label': ariaLabel,
 			'aria-hidden': ariaHidden,
@@ -76,6 +88,10 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 			return null
 		}
 
+		// Resolve className and merge with inline styles (inline styles win)
+		const resolvedClassName = resolveClassName(className)
+		const mergedStyle = { ...resolvedClassName, ...style }
+
 		const boxElement = (
 			<ink-box
 				ref={ref}
@@ -84,10 +100,10 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 					flexDirection: 'row',
 					flexGrow: 0,
 					flexShrink: 1,
-					...style,
+					...mergedStyle,
 					backgroundColor,
-					overflowX: style.overflowX ?? style.overflow ?? 'visible',
-					overflowY: style.overflowY ?? style.overflow ?? 'visible',
+					overflowX: mergedStyle.overflowX ?? mergedStyle.overflow ?? 'visible',
+					overflowY: mergedStyle.overflowY ?? mergedStyle.overflow ?? 'visible',
 				}}
 				internal_accessibility={{
 					role,

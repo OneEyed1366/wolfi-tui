@@ -32,5 +32,14 @@ export type { DOMElement } from '@wolfie/core'
 // Theme system
 export * from './theme/theme'
 
+// Style registry for className support
+export {
+	registerStyles,
+	clearGlobalStyles,
+	getGlobalStyle,
+	resolveClassName,
+} from './styles/index.js'
+export type { ClassNameValue } from './styles/index.js'
+
 // UI Components
 export * from './components/ui/index'
