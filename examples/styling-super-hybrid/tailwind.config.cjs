@@ -1,5 +1,10 @@
+const path = require('path')
+
 module.exports = {
-	content: ['./index.tsx'],
+	content: [
+		path.join(__dirname, './index.tsx'),
+		path.join(__dirname, './styles/**/*.{css,scss}'),
+	],
 	theme: {
 		extend: {
 			colors: {
