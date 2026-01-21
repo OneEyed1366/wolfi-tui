@@ -91,7 +91,6 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 		// Resolve className and merge with inline styles (inline styles win)
 		const resolvedClassName = resolveClassName(className)
 		const mergedStyle = { ...resolvedClassName, ...style }
-		console.error('[BOX] mergedStyle:', mergedStyle)
 
 		const boxElement = (
 			<ink-box

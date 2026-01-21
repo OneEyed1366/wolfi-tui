@@ -165,24 +165,8 @@ export async function compile(
 			break
 	}
 
-	console.error(
-		'[PREPROCESSOR] compile() called with:',
-		filePath,
-		'lang:',
-		lang
-	)
-	if (filePath?.includes('tailwind.css')) {
-		console.error(
-			'[PREPROCESSOR] Source CSS preview (first 200 chars):',
-			source.substring(0, 200)
-		)
-	}
-
 	// Always run through PostCSS to handle @import, Tailwind, etc.
 	if (css.includes('@tailwind') || /@import\s+['"]tailwindcss['"]/.test(css)) {
-		console.error(
-			'[PREPROCESSOR] @tailwind directive found, will process with Tailwind'
-		)
 		try {
 			const require = createRequire(filePath || process.cwd())
 			let tailwind: any
@@ -216,10 +200,6 @@ export async function compile(
 					let configPath: string | null = null
 
 					for (let i = 0; i < 3; i++) {
-						console.error(
-							'[PREPROCESSOR] Searching for Tailwind config in:',
-							searchDir
-						)
 						const cjsConfigPath = path.join(searchDir, 'tailwind.config.cjs')
 						if (existsSync(cjsConfigPath)) {
 							configPath = cjsConfigPath
@@ -243,42 +223,16 @@ export async function compile(
 						const configDir = path.dirname(configPath)
 						const loadedConfig = require(configPath)
 
-						console.error(
-							'[PREPROCESSOR] Loaded config keys:',
-							Object.keys(loadedConfig).join(', ')
-						)
-						console.error(
-							'[PREPROCESSOR] Loaded config.content:',
-							loadedConfig.content
-						)
-						console.error(
-							'[PREPROCESSOR] Content type:',
-							Array.isArray(loadedConfig.content)
-								? 'array'
-								: typeof loadedConfig.content
-						)
-
 						// Resolve content paths to be absolute
 						if (loadedConfig.content && Array.isArray(loadedConfig.content)) {
 							loadedConfig.content = loadedConfig.content.map((p: string) =>
 								path.isAbsolute(p) ? p : path.resolve(configDir, p)
 							)
-							console.error(
-								'[PREPROCESSOR] Resolved content paths:',
-								loadedConfig.content
-							)
 						}
 
 						tailwindConfig = loadedConfig
-						console.error('[PREPROCESSOR] Found Tailwind config:', configPath)
-					} else {
-						console.error(
-							'[PREPROCESSOR] No Tailwind config found in file or parent directories!'
-						)
 					}
-				} catch (err) {
-					console.error('[PREPROCESSOR] Error finding Tailwind config:', err)
-				}
+				} catch {}
 
 				let plugin: any
 				try {

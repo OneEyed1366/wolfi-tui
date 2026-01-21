@@ -79,65 +79,27 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 					// But we are in 'pre' hook and virtual module.
 					// Let's try to load the module via Vite to get processed result.
 					try {
-						console.error('[VITE-PLUGIN] Loading CSS via Vite:', absolutePath)
 						// We use ?inline to get string instead of a JS module if possible,
 						// but standard Vite CSS plugin returns JS even for ?inline.
 						// Tailwind v4 plugin however might have already transformed the source.
 						const result = await this.load({ id: absolutePath })
-						console.error('[VITE-PLUGIN] Load result exists:', !!result)
-						console.error('[VITE-PLUGIN] Load result has code:', !!result?.code)
-						if (result?.code) {
-							console.error(
-								'[VITE-PLUGIN] Loaded CSS preview (first 500 chars):',
-								result.code.substring(0, 500)
-							)
-						}
 						if (
 							result &&
 							result.code &&
 							!result.code.includes('export default')
 						) {
 							compiled = result.code
-							console.error(
-								'[VITE-PLUGIN] Using Vite-processed CSS, length:',
-								compiled.length
-							)
 						} else {
 							const source = readFileSync(absolutePath, 'utf-8')
 							compiled = await compile(source, lang, absolutePath)
-							console.error(
-								'[VITE-PLUGIN] Falling back to direct compile, CSS length:',
-								compiled.length
-							)
 						}
-					} catch (err) {
-						console.error(
-							'[VITE-PLUGIN] Load failed, using direct compile, error:',
-							err
-						)
+					} catch {
 						const source = readFileSync(absolutePath, 'utf-8')
 						compiled = await compile(source, lang, absolutePath)
 					}
 				} else {
-					console.error(
-						'[VITE-PLUGIN] Non-CSS or module file, direct compile:',
-						absolutePath
-					)
 					const source = readFileSync(absolutePath, 'utf-8')
 					compiled = await compile(source, lang, absolutePath)
-				}
-
-				console.error(
-					'[VITE-PLUGIN] Final CSS length for',
-					absolutePath,
-					':',
-					compiled.length
-				)
-				if (absolutePath.includes('tailwind.css')) {
-					console.error(
-						'[VITE-PLUGIN] Tailwind CSS preview (first 1000 chars):',
-						compiled.substring(0, 1000)
-					)
 				}
 				const styles = parseCSS(compiled, {
 					filename: absolutePath,

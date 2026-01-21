@@ -62,29 +62,16 @@ export function resolveClassName(className: ClassNameValue): Partial<Styles> {
 	if (!trimmed) return {}
 
 	const exactMatch = globalStyles.get(trimmed)
-	if (exactMatch) {
-		console.error('[REGISTRY] exactMatch found:', trimmed, '→', exactMatch)
-		return exactMatch
-	}
+	if (exactMatch) return exactMatch
 
 	const parts = trimmed.split(/\s+/).filter(Boolean)
-	console.error('[REGISTRY] resolveClassName:', trimmed, 'parts:', parts)
 
 	if (parts.length >= 2 && parts.length <= 4) {
-		const tailwindCheck = parts
-			.map((part) => `${part}: ${isTailwindUtility(part)}`)
-			.join(', ')
-		console.error('[REGISTRY] isTailwindUtility check:', tailwindCheck)
-
 		const hasTailwindUtility = parts.some((part) => isTailwindUtility(part))
-		console.error('[REGISTRY] hasTailwindUtility:', hasTailwindUtility)
 
 		if (!hasTailwindUtility) {
 			const compound = tryCompoundLookup(parts)
-			if (compound) {
-				console.error('[REGISTRY] compound found:', compound)
-				return compound
-			}
+			if (compound) return compound
 		}
 	}
 
@@ -193,41 +180,8 @@ function resolveOne(name: string): Partial<Styles> {
 
 	if (!trimmed) return {}
 
-	console.error('[REGISTRY] resolveOne called with:', trimmed, 'isTailwindUtility:', isTailwindUtility(trimmed))
-
 	const registered = globalStyles.get(trimmed)
-	if (registered) {
-		console.error('[REGISTRY] resolveOne found:', trimmed, '→', registered)
-		return registered
-	}
-
-	console.error('[REGISTRY] resolveOne NOT found:', trimmed)
-	console.error('[REGISTRY] All registered classes:', Array.from(globalStyles.keys()).sort())
-
-	const parts = trimmed.split(/\s+/).filter(Boolean)
-
-	if (parts.length === 1) {
-		return {}
-	}
-
-	const hasTailwindUtility = parts.some((part) => isTailwindUtility(part))
-
-	if (!hasTailwindUtility) {
-		const compound = tryCompoundLookup(parts)
-		if (compound) return compound
-	}
-
-	return parts.reduce<Partial<Styles>>((acc, part) => {
-		const style = globalStyles.get(part)
-		return style ? { ...acc, ...style } : acc
-	}, {})
-}
-
-	console.error('[REGISTRY] resolveOne NOT found:', trimmed)
-	console.error(
-		'[REGISTRY] All registered classes:',
-		Array.from(globalStyles.keys()).sort()
-	)
+	if (registered) return registered
 
 	const parts = trimmed.split(/\s+/).filter(Boolean)
 
