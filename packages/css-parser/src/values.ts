@@ -150,7 +150,7 @@ const CSS_TO_ANSI_COLORS: Record<string, string> = {
 	transparent: 'transparent',
 	inherit: 'inherit',
 	currentcolor: 'inherit',
-};
+}
 
 //#endregion ANSI Color Mapping
 
@@ -170,7 +170,7 @@ const CSS_TO_WOLF_BORDER: Record<string, string> = {
 	outset: 'classic',
 	none: '', // Will be handled specially
 	hidden: '', // Will be handled specially
-};
+}
 
 //#endregion Border Style Mapping
 
@@ -181,22 +181,35 @@ const CSS_TO_WOLF_BORDER: Record<string, string> = {
  * "4" → 4, "4px" → 4, "10em" → 10, "auto" → 0
  */
 export function parseNumeric(value: string): number {
-	const trimmed = value.trim().toLowerCase();
+	const trimmed = value.trim().toLowerCase()
 
 	// Handle 'auto' and other keywords
 	if (trimmed === 'auto' || trimmed === 'initial' || trimmed === 'inherit') {
-		return 0;
+		return 0
 	}
 
 	// Parse number with optional unit
-	const match = trimmed.match(/^(-?\d+(?:\.\d+)?)(px|em|rem|pt|ch|vw|vh|vmin|vmax)?$/);
+	const match = trimmed.match(
+		/^(-?\d+(?:\.\d+)?)(px|em|rem|pt|ch|vw|vh|vmin|vmax)?$/
+	)
 	if (match) {
-		return parseFloat(match[1]!);
+		let val = parseFloat(match[1]!)
+		const unit = match[2]
+
+		// TUI specific scaling: rem/em should probably be scaled up as 1 unit = 1 cell
+		// But Tailwind uses 0.25rem for 1 unit (4px).
+		// So 1rem = 4 units in Tailwind usually.
+		// If we want Tailwind's p-4 (1rem) to be 4 cells, we should multiply rem by 4.
+		if (unit === 'rem' || unit === 'em') {
+			return Math.round(val * 4)
+		}
+
+		return Math.round(val)
 	}
 
 	// Try parsing as plain number
-	const num = parseFloat(trimmed);
-	return isNaN(num) ? 0 : num;
+	const num = parseFloat(trimmed)
+	return isNaN(num) ? 0 : num
 }
 
 /**
@@ -204,20 +217,20 @@ export function parseNumeric(value: string): number {
  * "4" → 4, "4px" → 4, "50%" → "50%"
  */
 export function parseNumericOrPercent(value: string): number | string {
-	const trimmed = value.trim().toLowerCase();
+	const trimmed = value.trim().toLowerCase()
 
 	// Handle 'auto' keyword - wolfie doesn't support it, return undefined-like
 	if (trimmed === 'auto' || trimmed === 'initial' || trimmed === 'inherit') {
-		return 0;
+		return 0
 	}
 
 	// Percentage values stay as strings
 	if (trimmed.endsWith('%')) {
-		return trimmed;
+		return trimmed
 	}
 
 	// Parse as numeric
-	return parseNumeric(trimmed);
+	return parseNumeric(trimmed)
 }
 
 /**
@@ -225,58 +238,76 @@ export function parseNumericOrPercent(value: string): number | string {
  * Supports: named colors, hex (#fff, #ffffff), rgb(), rgba()
  */
 export function parseColor(value: string): string {
-	const trimmed = value.trim().toLowerCase();
+	const trimmed = value.trim().toLowerCase()
 
 	// Check for named color mapping
-	const namedColor = CSS_TO_ANSI_COLORS[trimmed];
+	const namedColor = CSS_TO_ANSI_COLORS[trimmed]
 	if (namedColor) {
-		return namedColor;
+		return namedColor
 	}
 
 	// Hex colors - pass through (chalk/ansi-styles supports hex)
 	if (trimmed.startsWith('#')) {
 		// Normalize 3-char hex to 6-char
 		if (trimmed.length === 4) {
-			const r = trimmed[1];
-			const g = trimmed[2];
-			const b = trimmed[3];
-			return `#${r}${r}${g}${g}${b}${b}`;
+			const r = trimmed[1]
+			const g = trimmed[2]
+			const b = trimmed[3]
+			return `#${r}${r}${g}${g}${b}${b}`
 		}
-		return trimmed;
+		return trimmed
 	}
 
-	// RGB/RGBA - convert to hex
-	const rgbMatch = trimmed.match(/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*[\d.]+)?\s*\)$/);
-	if (rgbMatch) {
-		const r = Math.min(255, parseInt(rgbMatch[1]!, 10));
-		const g = Math.min(255, parseInt(rgbMatch[2]!, 10));
-		const b = Math.min(255, parseInt(rgbMatch[3]!, 10));
-		return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+	// Modern: rgb(255 255 255 / 0.5) or rgb(255 255 255)
+	const rgbMatch = trimmed.match(
+		/^rgba?\s*\(\s*(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)(?:\s*[\/\s]\s*.*)?\)$/
+	)
+	const legacyRgbMatch = trimmed.match(
+		/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*[\d.]+)?\s*\)$/
+	)
+	const match = rgbMatch || legacyRgbMatch
+
+	if (match) {
+		const r = Math.min(255, Math.round(parseFloat(match[1]!)))
+		const g = Math.min(255, Math.round(parseFloat(match[2]!)))
+		const b = Math.min(255, Math.round(parseFloat(match[3]!)))
+		return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+	}
+
+	if (match) {
+		const r = Math.min(255, Math.round(parseFloat(match[1]!)))
+		const g = Math.min(255, Math.round(parseFloat(match[2]!)))
+		const b = Math.min(255, Math.round(parseFloat(match[3]!)))
+		const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+		if (process.env['DEBUG_WOLFIE_CSS']) {
+			console.log(`[wolfie-css]   Matched! Result: ${hex}`)
+		}
+		return hex
 	}
 
 	// HSL - would need conversion, for now return as-is
 	if (trimmed.startsWith('hsl')) {
 		// TODO: HSL to RGB conversion
-		return trimmed;
+		return trimmed
 	}
 
 	// Return as-is for unknown values
-	return trimmed;
+	return trimmed
 }
 
 /**
  * Parse a CSS border-style value to wolfie borderStyle
  */
 export function parseBorderStyle(value: string): string | null {
-	const trimmed = value.trim().toLowerCase();
+	const trimmed = value.trim().toLowerCase()
 
-	const mapped = CSS_TO_WOLF_BORDER[trimmed];
+	const mapped = CSS_TO_WOLF_BORDER[trimmed]
 	if (mapped !== undefined) {
-		return mapped || null; // Return null for 'none'/'hidden'
+		return mapped || null // Return null for 'none'/'hidden'
 	}
 
 	// Return 'single' as default for unknown styles
-	return 'single';
+	return 'single'
 }
 
 //#endregion Value Parsers
@@ -288,7 +319,7 @@ export function parseBorderStyle(value: string): string | null {
  * @deprecated Use parseNumericOrPercent instead
  */
 export function transformDimension(value: string): string | number {
-	return parseNumericOrPercent(value);
+	return parseNumericOrPercent(value)
 }
 
 /**
@@ -296,58 +327,60 @@ export function transformDimension(value: string): string | number {
  * @deprecated Use parseColor instead
  */
 export function transformColor(value: string): string {
-	return parseColor(value);
+	return parseColor(value)
 }
 
 /**
  * Transform a CSS flex shorthand to individual properties
  */
-export function expandFlexShorthand(value: string): Record<string, string | number> {
-	const parts = value.trim().split(/\s+/);
-	const result: Record<string, string | number> = {};
+export function expandFlexShorthand(
+	value: string
+): Record<string, string | number> {
+	const parts = value.trim().split(/\s+/)
+	const result: Record<string, string | number> = {}
 
 	if (parts.length === 1) {
 		// Single value: flex-grow or keyword
-		const val = parts[0]!.toLowerCase();
+		const val = parts[0]!.toLowerCase()
 		if (val === 'none') {
-			result['flexGrow'] = 0;
-			result['flexShrink'] = 0;
-			result['flexBasis'] = 'auto';
+			result['flexGrow'] = 0
+			result['flexShrink'] = 0
+			result['flexBasis'] = 'auto'
 		} else if (val === 'auto') {
-			result['flexGrow'] = 1;
-			result['flexShrink'] = 1;
-			result['flexBasis'] = 'auto';
+			result['flexGrow'] = 1
+			result['flexShrink'] = 1
+			result['flexBasis'] = 'auto'
 		} else if (val === 'initial') {
-			result['flexGrow'] = 0;
-			result['flexShrink'] = 1;
-			result['flexBasis'] = 'auto';
+			result['flexGrow'] = 0
+			result['flexShrink'] = 1
+			result['flexBasis'] = 'auto'
 		} else {
 			// Single number = flex-grow
-			const num = parseFloat(val);
+			const num = parseFloat(val)
 			if (!isNaN(num)) {
-				result['flexGrow'] = num;
+				result['flexGrow'] = num
 			}
 		}
 	} else if (parts.length === 2) {
 		// Two values: flex-grow flex-shrink OR flex-grow flex-basis
-		const first = parseFloat(parts[0]!);
-		const second = parts[1]!;
-		result['flexGrow'] = isNaN(first) ? 0 : first;
+		const first = parseFloat(parts[0]!)
+		const second = parts[1]!
+		result['flexGrow'] = isNaN(first) ? 0 : first
 
-		const secondNum = parseFloat(second);
+		const secondNum = parseFloat(second)
 		if (!isNaN(secondNum) && !second.includes('%') && !second.includes('px')) {
-			result['flexShrink'] = secondNum;
+			result['flexShrink'] = secondNum
 		} else {
-			result['flexBasis'] = parseNumericOrPercent(second);
+			result['flexBasis'] = parseNumericOrPercent(second)
 		}
 	} else if (parts.length >= 3) {
 		// Three values: flex-grow flex-shrink flex-basis
-		result['flexGrow'] = parseFloat(parts[0]!) || 0;
-		result['flexShrink'] = parseFloat(parts[1]!) || 0;
-		result['flexBasis'] = parseNumericOrPercent(parts[2]!);
+		result['flexGrow'] = parseFloat(parts[0]!) || 0
+		result['flexShrink'] = parseFloat(parts[1]!) || 0
+		result['flexBasis'] = parseNumericOrPercent(parts[2]!)
 	}
 
-	return result;
+	return result
 }
 
 /**
@@ -357,56 +390,56 @@ export function expandSpacingShorthand(
 	value: string,
 	prefix: 'margin' | 'padding'
 ): Record<string, string | number> {
-	const parts = value.trim().split(/\s+/);
-	const result: Record<string, string | number> = {};
+	const parts = value.trim().split(/\s+/)
+	const result: Record<string, string | number> = {}
 
 	switch (parts.length) {
 		case 1:
-			result[`${prefix}Top`] = parseNumericOrPercent(parts[0]!);
-			result[`${prefix}Right`] = parseNumericOrPercent(parts[0]!);
-			result[`${prefix}Bottom`] = parseNumericOrPercent(parts[0]!);
-			result[`${prefix}Left`] = parseNumericOrPercent(parts[0]!);
-			break;
+			result[`${prefix}Top`] = parseNumericOrPercent(parts[0]!)
+			result[`${prefix}Right`] = parseNumericOrPercent(parts[0]!)
+			result[`${prefix}Bottom`] = parseNumericOrPercent(parts[0]!)
+			result[`${prefix}Left`] = parseNumericOrPercent(parts[0]!)
+			break
 		case 2:
-			result[`${prefix}Top`] = parseNumericOrPercent(parts[0]!);
-			result[`${prefix}Bottom`] = parseNumericOrPercent(parts[0]!);
-			result[`${prefix}Right`] = parseNumericOrPercent(parts[1]!);
-			result[`${prefix}Left`] = parseNumericOrPercent(parts[1]!);
-			break;
+			result[`${prefix}Top`] = parseNumericOrPercent(parts[0]!)
+			result[`${prefix}Bottom`] = parseNumericOrPercent(parts[0]!)
+			result[`${prefix}Right`] = parseNumericOrPercent(parts[1]!)
+			result[`${prefix}Left`] = parseNumericOrPercent(parts[1]!)
+			break
 		case 3:
-			result[`${prefix}Top`] = parseNumericOrPercent(parts[0]!);
-			result[`${prefix}Right`] = parseNumericOrPercent(parts[1]!);
-			result[`${prefix}Left`] = parseNumericOrPercent(parts[1]!);
-			result[`${prefix}Bottom`] = parseNumericOrPercent(parts[2]!);
-			break;
+			result[`${prefix}Top`] = parseNumericOrPercent(parts[0]!)
+			result[`${prefix}Right`] = parseNumericOrPercent(parts[1]!)
+			result[`${prefix}Left`] = parseNumericOrPercent(parts[1]!)
+			result[`${prefix}Bottom`] = parseNumericOrPercent(parts[2]!)
+			break
 		case 4:
-			result[`${prefix}Top`] = parseNumericOrPercent(parts[0]!);
-			result[`${prefix}Right`] = parseNumericOrPercent(parts[1]!);
-			result[`${prefix}Bottom`] = parseNumericOrPercent(parts[2]!);
-			result[`${prefix}Left`] = parseNumericOrPercent(parts[3]!);
-			break;
+			result[`${prefix}Top`] = parseNumericOrPercent(parts[0]!)
+			result[`${prefix}Right`] = parseNumericOrPercent(parts[1]!)
+			result[`${prefix}Bottom`] = parseNumericOrPercent(parts[2]!)
+			result[`${prefix}Left`] = parseNumericOrPercent(parts[3]!)
+			break
 	}
 
-	return result;
+	return result
 }
 
 /**
  * Expand gap shorthand to row-gap and column-gap
  */
 export function expandGapShorthand(value: string): Record<string, number> {
-	const parts = value.trim().split(/\s+/);
-	const result: Record<string, number> = {};
+	const parts = value.trim().split(/\s+/)
+	const result: Record<string, number> = {}
 
 	if (parts.length === 1) {
-		const val = parseNumeric(parts[0]!);
-		result['rowGap'] = val;
-		result['columnGap'] = val;
+		const val = parseNumeric(parts[0]!)
+		result['rowGap'] = val
+		result['columnGap'] = val
 	} else if (parts.length >= 2) {
-		result['rowGap'] = parseNumeric(parts[0]!);
-		result['columnGap'] = parseNumeric(parts[1]!);
+		result['rowGap'] = parseNumeric(parts[0]!)
+		result['columnGap'] = parseNumeric(parts[1]!)
 	}
 
-	return result;
+	return result
 }
 
 //#endregion Legacy Value Transformers

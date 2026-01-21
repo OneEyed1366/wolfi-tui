@@ -40,7 +40,10 @@ function capitalize(str: string): string {
  * - `[data-theme]` → 'dataTheme' (attribute)
  * - `.my-class-name` → 'myClassName' (kebab to camel)
  */
-export function extractClassName(selector: string): string | null {
+export function extractClassName(
+	selector: string,
+	camelCase = true
+): string | null {
 	const trimmed = selector.trim()
 
 	// Skip pseudo-elements and pseudo-classes (e.g., :root, ::before)
@@ -61,6 +64,9 @@ export function extractClassName(selector: string): string | null {
 		return null
 	}
 
+	// Helper to unescape CSS identifiers
+	const unescape = (str: string) => str.replace(/\\(.)/g, '$1')
+
 	// Handle compound selectors (e.g., .btn.primary, div.card)
 	// Check for multiple classes or element+class
 	if (
@@ -80,10 +86,14 @@ export function extractClassName(selector: string): string | null {
 			}
 
 			// Join all class parts
+			if (!camelCase) {
+				return parts.slice(startIndex).map(unescape).join('.')
+			}
+
 			const className = parts
 				.slice(startIndex)
 				.map((part, i) => {
-					const camelPart = kebabToCamel(part)
+					const camelPart = kebabToCamel(unescape(part))
 					return i === 0 ? camelPart : capitalize(camelPart)
 				})
 				.join('')
@@ -98,19 +108,23 @@ export function extractClassName(selector: string): string | null {
 
 		for (const part of parts) {
 			// Extract class from each part
-			const classMatch = part.match(/\.([a-zA-Z0-9_-]+)/)
+			const classMatch = part.match(/\.((?:[a-zA-Z0-9_-]|\\.)+)/)
 			if (classMatch) {
-				classNames.push(classMatch[1]!)
+				classNames.push(unescape(classMatch[1]!))
 			} else {
 				// Handle ID selectors
-				const idMatch = part.match(/#([a-zA-Z0-9_-]+)/)
+				const idMatch = part.match(/#((?:[a-zA-Z0-9_-]|\\.)+)/)
 				if (idMatch) {
-					classNames.push(idMatch[1]!)
+					classNames.push(unescape(idMatch[1]!))
 				}
 			}
 		}
 
 		if (classNames.length > 0) {
+			if (!camelCase) {
+				return classNames.join(' ')
+			}
+
 			// Join all parts into a single camelCase name
 			return classNames
 				.map((name, i) => {
@@ -123,15 +137,17 @@ export function extractClassName(selector: string): string | null {
 	}
 
 	// Handle single class selector (e.g., .card)
-	const classMatch = trimmed.match(/^\.([a-zA-Z0-9_-]+)/)
+	const classMatch = trimmed.match(/^\.((?:[a-zA-Z0-9_-]|\\.)+)/)
 	if (classMatch) {
-		return kebabToCamel(classMatch[1]!)
+		const name = unescape(classMatch[1]!)
+		return camelCase ? kebabToCamel(name) : name
 	}
 
 	// Handle ID selector (e.g., #header)
-	const idMatch = trimmed.match(/^#([a-zA-Z0-9_-]+)/)
+	const idMatch = trimmed.match(/^#((?:[a-zA-Z0-9_-]|\\.)+)/)
 	if (idMatch) {
-		return kebabToCamel(idMatch[1]!)
+		const name = unescape(idMatch[1]!)
+		return camelCase ? kebabToCamel(name) : name
 	}
 
 	// Handle attribute selector (e.g., [data-theme])
@@ -144,10 +160,6 @@ export function extractClassName(selector: string): string | null {
 	return null
 }
 
-//#endregion Selector Utilities
-
-//#region CSS Parser
-
 /**
  * Parse CSS string into ParsedStyles (className → Styles mapping)
  */
@@ -157,13 +169,14 @@ export function parseCSS(
 ): ParsedStyles {
 	const root = postcss.parse(css, { from: options?.filename })
 	const styles: ParsedStyles = {}
+	const camelCase = options?.camelCaseClasses ?? true
 
 	root.walkRules((rule) => {
 		// Handle multiple selectors (e.g., .btn, .button)
 		const selectors = rule.selector.split(',').map((s) => s.trim())
 
 		for (const selector of selectors) {
-			const className = extractClassName(selector)
+			const className = extractClassName(selector, camelCase)
 			if (!className) continue
 
 			const style: Partial<Styles> = {}

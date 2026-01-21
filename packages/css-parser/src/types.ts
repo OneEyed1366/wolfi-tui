@@ -2,31 +2,31 @@
  * Type definitions for the CSS parser
  */
 
-import type { Styles } from '@wolfie/core';
+import type { Styles } from '@wolfie/core'
 
 //#region Core Types
 
 export interface ParsedRule {
-	selector: string;
-	properties: ParsedProperty[];
+	selector: string
+	properties: ParsedProperty[]
 }
 
 export interface ParsedProperty {
-	name: string;
-	value: string;
-	raw: string;
+	name: string
+	value: string
+	raw: string
 }
 
 export interface ParsedStylesheet {
-	rules: ParsedRule[];
-	sourceFile?: string;
+	rules: ParsedRule[]
+	sourceFile?: string
 }
 
 /**
  * Mapping of class names to wolfie Styles objects
  */
 export interface ParsedStyles {
-	[className: string]: Partial<Styles>;
+	[className: string]: Partial<Styles>
 }
 
 /**
@@ -34,26 +34,26 @@ export interface ParsedStyles {
  */
 export interface CSSParserOptions {
 	/** Source filename for error messages */
-	filename?: string;
+	filename?: string
 	/** Generate source maps */
-	sourceMap?: boolean;
+	sourceMap?: boolean
 	/** Transform selectors to camelCase class names */
-	camelCaseClasses?: boolean;
+	camelCaseClasses?: boolean
 }
 
 /**
  * Supported preprocessor types
  */
-export type PreprocessorType = 'css' | 'scss' | 'less' | 'stylus';
+export type PreprocessorType = 'css' | 'scss' | 'less' | 'stylus'
 
 //#endregion Core Types
 
 //#region Generator Types
 
 export interface GeneratorOptions {
-	outputPath: string;
-	format: 'esm' | 'cjs';
-	typeDeclarations: boolean;
+	outputPath: string
+	format: 'esm' | 'cjs'
+	typeDeclarations: boolean
 }
 
 /**
@@ -61,17 +61,19 @@ export interface GeneratorOptions {
  */
 export interface CodeGeneratorOptions {
 	/** 'module' for CSS Modules (default export), 'global' for side-effect import (registerStyles) */
-	mode: 'module' | 'global';
+	mode: 'module' | 'global'
 	/** Generate TypeScript (.ts) or JavaScript (.js) output */
-	typescript?: boolean;
+	typescript?: boolean
 	/** Compact output without extra whitespace */
-	minify?: boolean;
+	minify?: boolean
+	/** Use camelCase for keys (default: true) */
+	camelCaseClasses?: boolean
 }
 
 export interface GeneratedOutput {
-	code: string;
-	declarations?: string;
-	sourceMap?: string;
+	code: string
+	declarations?: string
+	sourceMap?: string
 }
 
 //#endregion Generator Types
@@ -83,13 +85,15 @@ export interface GeneratedOutput {
  */
 export interface VitePluginOptions {
 	/** Output mode: 'module' for CSS Modules, 'global' for side-effect imports */
-	mode?: 'module' | 'global';
+	mode?: 'module' | 'global'
 	/** Generate JavaScript instead of TypeScript */
-	javascript?: boolean;
+	javascript?: boolean
 	/** File patterns to process (default: all CSS/preprocessor files) */
-	include?: string | RegExp | (string | RegExp)[];
+	include?: string | RegExp | (string | RegExp)[]
 	/** File patterns to exclude */
-	exclude?: string | RegExp | (string | RegExp)[];
+	exclude?: string | RegExp | (string | RegExp)[]
+	/** Transform selectors to camelCase class names (default: true) */
+	camelCaseClasses?: boolean
 }
 
 /**
@@ -97,9 +101,9 @@ export interface VitePluginOptions {
  */
 export interface EsbuildPluginOptions {
 	/** Output mode: 'module' for CSS Modules, 'global' for side-effect imports */
-	mode?: 'module' | 'global';
+	mode?: 'module' | 'global'
 	/** Filter pattern for CSS/preprocessor files */
-	filter?: RegExp;
+	filter?: RegExp
 }
 
 //#endregion Plugin Types

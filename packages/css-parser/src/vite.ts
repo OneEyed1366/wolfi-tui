@@ -28,6 +28,7 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 		javascript = true, // Default to true for better compatibility with vite-node/SSR
 		include = /\.(css|scss|sass|less|styl|stylus)$/,
 		exclude = /node_modules/,
+		camelCaseClasses = true,
 	} = options
 
 	const virtualPrefix = '\0wolfie:'
@@ -71,14 +72,46 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 			const lang = detectLanguage(absolutePath)
 
 			try {
-				const source = readFileSync(absolutePath, 'utf-8')
-				const compiled = await compile(source, lang, absolutePath)
-				const styles = parseCSS(compiled, { filename: absolutePath })
+				let compiled: string
+
+				if (lang === 'css' && !absolutePath.includes('.module.')) {
+					// For standard CSS, we might want to let other plugins (like Tailwind) process it first.
+					// But we are in 'pre' hook and virtual module.
+					// Let's try to load the module via Vite to get processed result.
+					try {
+						// We use ?inline to get the string instead of a JS module if possible,
+						// but standard Vite CSS plugin returns JS even for ?inline.
+						// Tailwind v4 plugin however might have already transformed the source.
+						const result = await this.load({ id: absolutePath })
+						if (
+							result &&
+							result.code &&
+							!result.code.includes('export default')
+						) {
+							compiled = result.code
+						} else {
+							const source = readFileSync(absolutePath, 'utf-8')
+							compiled = await compile(source, lang, absolutePath)
+						}
+					} catch {
+						const source = readFileSync(absolutePath, 'utf-8')
+						compiled = await compile(source, lang, absolutePath)
+					}
+				} else {
+					const source = readFileSync(absolutePath, 'utf-8')
+					compiled = await compile(source, lang, absolutePath)
+				}
+
+				const styles = parseCSS(compiled, {
+					filename: absolutePath,
+					camelCaseClasses,
+				})
 
 				// Use requested generator (defaulting to JS for runtime compatibility)
 				const generator = javascript ? generateJavaScript : generateTypeScript
 				const code = generator(styles, {
 					mode: isModule ? 'module' : 'global',
+					camelCaseClasses,
 				})
 
 				return {

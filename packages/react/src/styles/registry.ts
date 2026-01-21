@@ -71,11 +71,9 @@ export function resolveClassName(className: ClassNameValue): Partial<Styles> {
  * Resolve a single class name
  */
 function resolveOne(name: string): Partial<Styles> {
-	// 1. Check global registry
+	// 1. Check global registry for exact match
 	const registered = globalStyles.get(name)
 	if (registered) return registered
 
-	// 2. Fallback: return empty (Tailwind parsing would go here)
-	// For now, unknown class names are ignored
 	return {}
 }

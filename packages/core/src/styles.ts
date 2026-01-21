@@ -300,6 +300,31 @@ export type Styles = {
 	Accepts the same values as `color` in the `<Text>` component.
 	*/
 	readonly backgroundColor?: LiteralUnion<ForegroundColorName, string>
+
+	/**
+	Foreground color for the text.
+	*/
+	readonly color?: LiteralUnion<ForegroundColorName, string>
+
+	/**
+	Make the text bold.
+	*/
+	readonly fontWeight?: 'bold' | 'normal' | number
+
+	/**
+	Make the text italic.
+	*/
+	readonly fontStyle?: 'italic' | 'normal'
+
+	/**
+	Text decoration (underline, strikethrough).
+	*/
+	readonly textDecoration?: 'underline' | 'line-through' | 'none'
+
+	/**
+	Inverse background and foreground colors.
+	*/
+	readonly inverse?: boolean
 }
 
 //#region Taffy Layout Style Conversion
@@ -307,7 +332,9 @@ export type Styles = {
 /**
  * Helper to convert dimension values to Taffy Dimension format
  */
-const toDimension = (value: number | string | undefined): Dimension | undefined => {
+const toDimension = (
+	value: number | string | undefined
+): Dimension | undefined => {
 	if (value === undefined) return undefined
 	if (typeof value === 'number') return { value, unit: 'px' }
 	if (typeof value === 'string' && value.endsWith('%')) {
@@ -351,9 +378,13 @@ export const toLayoutStyle = (style: Styles): LayoutStyle => {
 	if (style.justifyContent) result.justifyContent = style.justifyContent
 
 	// Margin (expand shorthands)
-	const hasMargin = style.margin !== undefined || style.marginX !== undefined ||
-		style.marginY !== undefined || style.marginTop !== undefined ||
-		style.marginRight !== undefined || style.marginBottom !== undefined ||
+	const hasMargin =
+		style.margin !== undefined ||
+		style.marginX !== undefined ||
+		style.marginY !== undefined ||
+		style.marginTop !== undefined ||
+		style.marginRight !== undefined ||
+		style.marginBottom !== undefined ||
 		style.marginLeft !== undefined
 	if (hasMargin) {
 		result.margin = {
@@ -365,9 +396,13 @@ export const toLayoutStyle = (style: Styles): LayoutStyle => {
 	}
 
 	// Padding (expand shorthands)
-	const hasPadding = style.padding !== undefined || style.paddingX !== undefined ||
-		style.paddingY !== undefined || style.paddingTop !== undefined ||
-		style.paddingRight !== undefined || style.paddingBottom !== undefined ||
+	const hasPadding =
+		style.padding !== undefined ||
+		style.paddingX !== undefined ||
+		style.paddingY !== undefined ||
+		style.paddingTop !== undefined ||
+		style.paddingRight !== undefined ||
+		style.paddingBottom !== undefined ||
 		style.paddingLeft !== undefined
 	if (hasPadding) {
 		result.padding = {

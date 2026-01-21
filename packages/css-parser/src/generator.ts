@@ -16,12 +16,13 @@ import { mapCSSProperty } from './properties'
 //#region Utilities
 
 /**
- * Sanitize a class name to be a valid JavaScript identifier
- * .my-class → myClass
- * .MyClass → MyClass
- * .123-class → _123Class (prefix with _ if starts with digit)
+ * Sanitize a class name to be a valid JavaScript identifier (if possible)
  */
-export function sanitizeIdentifier(name: string): string {
+export function sanitizeIdentifier(name: string, camelCase = true): string {
+	if (!camelCase) {
+		return name
+	}
+
 	// Remove leading dot if present
 	let result = name.replace(/^\./, '')
 
@@ -108,7 +109,8 @@ function generateStylesMap(
 	styles: ParsedStyles,
 	baseIndent: string,
 	minify: boolean,
-	withAsStyles: boolean
+	withAsStyles: boolean,
+	camelCase: boolean
 ): string {
 	const entries = Object.entries(styles)
 	if (entries.length === 0) {
@@ -118,14 +120,15 @@ function generateStylesMap(
 	if (minify) {
 		const props = entries
 			.map(([className, styleObj]) => {
-				const key = sanitizeIdentifier(className)
+				const key = sanitizeIdentifier(className, camelCase)
+				const keyStr = isValidIdentifier(key) ? key : JSON.stringify(key)
 				const value = generateStyleObject(
 					styleObj as Record<string, unknown>,
 					'',
 					true
 				)
 				const suffix = withAsStyles ? ' as Styles' : ''
-				return `${key}:${value}${suffix}`
+				return `${keyStr}:${value}${suffix}`
 			})
 			.join(',')
 		return `{${props}}`
@@ -133,7 +136,8 @@ function generateStylesMap(
 
 	const props = entries
 		.map(([className, styleObj]) => {
-			const key = sanitizeIdentifier(className)
+			const key = sanitizeIdentifier(className, camelCase)
+			const keyStr = isValidIdentifier(key) ? key : JSON.stringify(key)
 			const propIndent = baseIndent + '\t'
 			const value = generateStyleObject(
 				styleObj as Record<string, unknown>,
@@ -141,7 +145,7 @@ function generateStylesMap(
 				false
 			)
 			const suffix = withAsStyles ? ' as Styles' : ''
-			return `${propIndent}${key}: ${value}${suffix}`
+			return `${propIndent}${keyStr}: ${value}${suffix}`
 		})
 		.join(',\n')
 
@@ -180,6 +184,7 @@ export function generateTypeScript(
 		mode: options.mode ?? 'module',
 		typescript: true,
 		minify: options.minify ?? false,
+		camelCaseClasses: options.camelCaseClasses ?? true,
 	}
 
 	return generateCode(styles, opts)
@@ -200,6 +205,7 @@ export function generateJavaScript(
 		mode: options.mode ?? 'module',
 		typescript: false,
 		minify: options.minify ?? false,
+		camelCaseClasses: options.camelCaseClasses ?? true,
 	}
 
 	return generateCode(styles, opts)
@@ -212,9 +218,10 @@ function generateCode(
 	styles: ParsedStyles,
 	options: CodeGeneratorOptions
 ): string {
-	const { mode, typescript, minify } = options
+	const { mode, typescript, minify, camelCaseClasses } = options
 	const isTypeScript = typescript ?? false
 	const isMinified = minify ?? false
+	const camelCase = camelCaseClasses ?? true
 	const lines: string[] = []
 
 	if (mode === 'module') {
@@ -226,7 +233,13 @@ function generateCode(
 			}
 		}
 
-		const stylesMap = generateStylesMap(styles, '', isMinified, isTypeScript)
+		const stylesMap = generateStylesMap(
+			styles,
+			'',
+			isMinified,
+			isTypeScript,
+			camelCase
+		)
 
 		if (isMinified) {
 			lines.push(`const styles=${stylesMap};export default styles`)
@@ -237,12 +250,18 @@ function generateCode(
 		}
 	} else {
 		// Global pattern: registerStyles call
-		lines.push(`import { registerStyles } from '@wolfie/react/styles'`)
+		lines.push(`import { registerStyles } from '@wolfie/react'`)
 		if (!isMinified) {
 			lines.push('')
 		}
 
-		const stylesMap = generateStylesMap(styles, '', isMinified, false)
+		const stylesMap = generateStylesMap(
+			styles,
+			'',
+			isMinified,
+			false,
+			camelCase
+		)
 		lines.push(`registerStyles(${stylesMap})`)
 	}
 
@@ -316,11 +335,12 @@ function generateDeclarations(styles: ParsedStyles): string {
 	lines.push('')
 
 	// Generate specific type with all class names
-	const classNames = Object.keys(styles).map(sanitizeIdentifier)
+	const classNames = Object.keys(styles)
 	if (classNames.length > 0) {
 		lines.push('declare const styles: {')
 		for (const name of classNames) {
-			lines.push(`\treadonly ${name}: Styles`)
+			const key = sanitizeIdentifier(name)
+			lines.push(`\treadonly ${key}: Styles`)
 		}
 		lines.push('}')
 	} else {

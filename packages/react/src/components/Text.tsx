@@ -106,18 +106,21 @@ export default function Text({
 	const resolvedClassName = resolveClassName(className)
 
 	// Merge className styles with explicit props - explicit props override
-	// Note: Styles type has backgroundColor but not color (color is a Text-specific prop)
-	const effectiveColor = color
+	const effectiveColor = color ?? (resolvedClassName.color as typeof color)
 	const effectiveBackgroundColor =
 		backgroundColor ??
 		(resolvedClassName.backgroundColor as typeof backgroundColor)
 	const effectiveDimColor = dimColor ?? false
-	const effectiveBold = bold ?? false
-	const effectiveItalic = italic ?? false
-	const effectiveUnderline = underline ?? false
-	const effectiveStrikethrough = strikethrough ?? false
-	const effectiveInverse = inverse ?? false
-	const effectiveWrap = wrap ?? (resolvedClassName.textWrap as typeof wrap) ?? 'wrap'
+	const effectiveBold = bold ?? resolvedClassName.fontWeight === 'bold'
+	const effectiveItalic = italic ?? resolvedClassName.fontStyle === 'italic'
+	const effectiveUnderline =
+		underline ?? resolvedClassName.textDecoration === 'underline'
+	const effectiveStrikethrough =
+		strikethrough ?? resolvedClassName.textDecoration === 'line-through'
+	const effectiveInverse =
+		inverse ?? (resolvedClassName.inverse as boolean) ?? false
+	const effectiveWrap =
+		wrap ?? (resolvedClassName.textWrap as typeof wrap) ?? 'wrap'
 
 	const transform = (children: string): string => {
 		if (effectiveDimColor) {

@@ -101,7 +101,7 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 					flexGrow: 0,
 					flexShrink: 1,
 					...mergedStyle,
-					backgroundColor,
+					backgroundColor: backgroundColor ?? mergedStyle.backgroundColor,
 					overflowX: mergedStyle.overflowX ?? mergedStyle.overflow ?? 'visible',
 					overflowY: mergedStyle.overflowY ?? mergedStyle.overflow ?? 'visible',
 				}}
@@ -115,9 +115,10 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 		)
 
 		// If this Box has a background color, provide it to children via context
-		if (backgroundColor) {
+		const finalBackgroundColor = backgroundColor ?? mergedStyle.backgroundColor
+		if (finalBackgroundColor) {
 			return (
-				<backgroundContext.Provider value={backgroundColor}>
+				<backgroundContext.Provider value={finalBackgroundColor}>
 					{boxElement}
 				</backgroundContext.Provider>
 			)
