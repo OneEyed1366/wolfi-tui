@@ -276,7 +276,7 @@ describe('CSS Parser - TUI Adaptations', () => {
 describe('CSS Parser - Value Parsing', () => {
 	it('parses numeric values with px unit', () => {
 		const result = parseCSS('.box { width: 100px; }')
-		expect(result.box.width).toBe(100)
+		expect(result.box.width).toBe(25) // 100px / 4 = 25 cells
 	})
 
 	it('parses numeric values without unit', () => {

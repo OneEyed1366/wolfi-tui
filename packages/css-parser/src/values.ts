@@ -192,21 +192,47 @@ export function parseNumeric(value: string): number {
 
 	// Parse number with optional unit
 	const match = trimmed.match(
-		/^(-?\d+(?:\.\d+)?)(px|em|rem|pt|ch|vw|vh|vmin|vmax)?$/
+		/^(-?\d+(?:\.\d+)?)(px|em|rem|pt|pc|in|cm|mm|ch|vw|vh|vmin|vmax)?$/
 	)
 	if (match) {
 		let val = parseFloat(match[1]!)
 		const unit = match[2]
 
-		// TUI specific scaling: rem/em should probably be scaled up as 1 unit = 1 cell
-		// But Tailwind uses 0.25rem for 1 unit (4px).
-		// So 1rem = 4 units in Tailwind usually.
-		// If we want Tailwind's p-4 (1rem) to be 4 cells, we should multiply rem by 4.
-		if (unit === 'rem' || unit === 'em') {
-			return Math.round(val * 4)
-		}
+		// Tailwind / Web → TUI Scaling
+		// Base assumption: 1rem = 16px.
+		// TUI assumption: 1 cell ≈ 4px (so 1rem = 4 cells).
+		// This aligns with Tailwind's spacing scale (w-4 = 1rem = 4 cells).
 
-		return Math.round(val)
+		switch (unit) {
+			case 'rem':
+			case 'em': // Treat em as rem (static context)
+				return Math.round(val * 4)
+			case 'px':
+				return Math.round(val / 4)
+			case 'pt': // 1pt = 1.333px
+				return Math.round((val * 1.333) / 4)
+			case 'pc': // 1pc = 12pt = 16px = 1rem
+				return Math.round(val * 4)
+			case 'in': // 1in = 96px = 6rem
+				return Math.round(val * 24)
+			case 'cm': // 1cm = 37.8px
+				return Math.round((val * 37.8) / 4)
+			case 'mm': // 1mm = 3.78px
+				return Math.round((val * 3.78) / 4)
+			case 'ch':
+				// 1ch = 1 character width = 1 cell
+				return Math.round(val)
+			case 'vw':
+			case 'vh':
+			case 'vmin':
+			case 'vmax':
+				// Viewport units cannot be resolved statically to numbers.
+				// We fallback to 1:1 pass-through (treating them as cells)
+				// or 0. Pass-through is safer for "100vw" -> 100 cells (better than 0).
+				return Math.round(val)
+			default:
+				return Math.round(val)
+		}
 	}
 
 	// Try parsing as plain number
@@ -229,6 +255,22 @@ export function parseNumericOrPercent(value: string): number | string {
 	// Percentage values stay as strings
 	if (trimmed.endsWith('%')) {
 		return trimmed
+	}
+
+	// Viewport units: Map to percentages if possible
+	// This is a heuristic: 50vw -> "50%"
+	// It's accurate for width (if not nested), but inaccurate for height.
+	// However, it's better than resolving to absolute cell numbers (which are usually wrong).
+	if (
+		trimmed.endsWith('vw') ||
+		trimmed.endsWith('vh') ||
+		trimmed.endsWith('vmin') ||
+		trimmed.endsWith('vmax')
+	) {
+		const val = parseFloat(trimmed)
+		if (!isNaN(val)) {
+			return `${val}%`
+		}
 	}
 
 	// Parse as numeric
