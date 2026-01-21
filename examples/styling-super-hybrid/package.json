@@ -1,0 +1,14 @@
+{
+	"name": "styling-super-hybrid",
+	"type": "module",
+	"dependencies": {
+		"@wolfie/react": "workspace:*",
+		"react": "^18.3.1"
+	},
+	"devDependencies": {
+		"tailwindcss": "^3.4.0",
+		"postcss": "^8.4.0",
+		"autoprefixer": "^10.4.0",
+		"sass": "^1.69.0"
+	}
+}

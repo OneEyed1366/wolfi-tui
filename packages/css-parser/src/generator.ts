@@ -250,7 +250,7 @@ function generateCode(
 		}
 	} else {
 		// Global pattern: registerStyles call
-		lines.push(`import { registerStyles } from '@wolfie/react'`)
+		lines.push(`import { registerStyles } from '@wolfie/react/styles'`)
 		if (!isMinified) {
 			lines.push('')
 		}

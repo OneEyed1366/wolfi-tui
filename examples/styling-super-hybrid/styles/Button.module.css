@@ -1,0 +1,14 @@
+/* CSS Module for scoped button styling */
+.button {
+	background-color: #222;
+	border-color: green;
+	padding: 1 2;
+}
+
+.button:hover {
+	border-color: bright-green;
+}
+
+.text {
+	color: green;
+}
