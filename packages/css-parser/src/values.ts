@@ -241,8 +241,8 @@ export function parseNumeric(value: string): number {
 }
 
 /**
- * Parse a CSS dimension value, keeping percentages as strings
- * "4" → 4, "4px" → 4, "50%" → "50%"
+ * Parse a CSS dimension value, keeping percentages and viewport units as strings
+ * "4" → 4, "4px" → 4, "50%" → "50%", "100vw" → "100vw"
  */
 export function parseNumericOrPercent(value: string): number | string {
 	const trimmed = value.trim().toLowerCase()
@@ -257,10 +257,7 @@ export function parseNumericOrPercent(value: string): number | string {
 		return trimmed
 	}
 
-	// Viewport units: Map to percentages if possible
-	// This is a heuristic: 50vw -> "50%"
-	// It's accurate for width (if not nested), but inaccurate for height.
-	// However, it's better than resolving to absolute cell numbers (which are usually wrong).
+	// Viewport units: Keep as-is to be resolved by the renderer based on terminal dimensions
 	if (
 		trimmed.endsWith('vw') ||
 		trimmed.endsWith('vh') ||
@@ -269,7 +266,7 @@ export function parseNumericOrPercent(value: string): number | string {
 	) {
 		const val = parseFloat(trimmed)
 		if (!isNaN(val)) {
-			return `${val}%`
+			return trimmed
 		}
 	}
 

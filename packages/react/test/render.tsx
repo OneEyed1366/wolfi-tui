@@ -239,7 +239,7 @@ describe.skipIf(!nodePtyAvailable)('PTY render tests', () => {
 
 // Tests that don't require node-pty
 test('rerender on resize', async () => {
-	const stdout = createStdout(10)
+	const stdout = createStdout({ columns: 10 })
 
 	function Test() {
 		return (

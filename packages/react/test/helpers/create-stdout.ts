@@ -6,9 +6,13 @@ type FakeStdout = {
 	get: () => string
 } & NodeJS.WriteStream
 
-const createStdout = (columns?: number): FakeStdout => {
+const createStdout = (options?: {
+	columns?: number
+	rows?: number
+}): FakeStdout => {
 	const stdout = new EventEmitter() as unknown as FakeStdout
-	stdout.columns = columns ?? 100
+	stdout.columns = options?.columns ?? 100
+	stdout.rows = options?.rows ?? 24
 
 	const write = spy()
 	stdout.write = write

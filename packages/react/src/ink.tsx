@@ -19,6 +19,8 @@ import {
 	type DOMElement,
 	type LogUpdate,
 	type LayoutTree,
+	resolveViewportUnits,
+	applyLayoutStyle,
 } from '@wolfie/core'
 import reconciler, {
 	registerLayoutTree,
@@ -232,9 +234,16 @@ export default class Ink {
 		const nodeWidth = node.style?.width
 		if (typeof nodeWidth === 'number') {
 			// Account for padding and border
-			const paddingH = (node.style?.paddingLeft ?? node.style?.paddingX ?? node.style?.padding ?? 0) +
-				(node.style?.paddingRight ?? node.style?.paddingX ?? node.style?.padding ?? 0)
-			const borderH = node.style?.borderStyle ? 2 : 0  // 1 char each side if border
+			const paddingH =
+				(node.style?.paddingLeft ??
+					node.style?.paddingX ??
+					node.style?.padding ??
+					0) +
+				(node.style?.paddingRight ??
+					node.style?.paddingX ??
+					node.style?.padding ??
+					0)
+			const borderH = node.style?.borderStyle ? 2 : 0 // 1 char each side if border
 			effectiveMaxWidth = Math.max(0, nodeWidth - paddingH - borderH)
 		}
 
@@ -266,20 +275,78 @@ export default class Ink {
 		}
 	}
 
+	/**
+	 * Resolve viewport units in DOM tree before computing layout
+	 * Traverses the DOM tree and updates styles with resolved values
+	 */
+	private resolveViewportUnitsInTree(node: DOMElement): void {
+		if (!node.style) return
+
+		// Resolve viewport units in this node's style
+		const terminalWidth = this.getTerminalWidth()
+		const terminalHeight = this.options.stdout.rows || 24
+
+		// Check if any viewport units are present in the style
+		const hasViewportUnits = Object.values(node.style).some(
+			(val) =>
+				typeof val === 'string' &&
+				(val.includes('vw') ||
+					val.includes('vh') ||
+					val.includes('vmin') ||
+					val.includes('vmax'))
+		)
+
+		if (hasViewportUnits) {
+			// Resolve viewport units and update style
+			const resolvedStyle = resolveViewportUnits(
+				node.style,
+				terminalWidth,
+				terminalHeight
+			)
+
+			// Update the node's style with resolved values
+			for (const [key, value] of Object.entries(resolvedStyle)) {
+				;(node.style as any)[key] = value
+			}
+
+			// Update the layout tree with resolved style
+			if (this.layoutTree && node.layoutNodeId !== undefined) {
+				applyLayoutStyle(this.layoutTree, node.layoutNodeId, resolvedStyle)
+			}
+		}
+
+		// Recurse into children
+		for (const child of node.childNodes) {
+			if ('childNodes' in child) {
+				this.resolveViewportUnitsInTree(child as DOMElement)
+			}
+		}
+	}
+
 	calculateLayout = () => {
 		const terminalWidth = this.getTerminalWidth()
 
 		// Taffy layout - requires pre-measurement before computeLayout
 		if (this.layoutTree && this.rootNode.layoutNodeId !== undefined) {
+			// Resolve viewport units in the entire tree
+			this.resolveViewportUnitsInTree(this.rootNode)
+
 			// Pre-measure text nodes before layout (Taffy has no measure callbacks)
 			this.preMeasureTextNodes(this.rootNode, terminalWidth)
 
-			// Set root style (setStyle replaces entire style, so include all properties)
-			this.layoutTree.setStyle(this.rootNode.layoutNodeId, {
+			// Set root style, preserving existing width if set
+			// This is important for viewport units like 100vw on root children
+			const rootStyle: any = {
 				flexDirection: 'column',
 				alignItems: 'stretch',
-				width: { value: terminalWidth, unit: 'px' },
-			})
+			}
+
+			// Only set width if root node doesn't have one already (to avoid overriding viewport units)
+			if (!this.rootNode.style?.width) {
+				rootStyle.width = { value: terminalWidth, unit: 'px' }
+			}
+
+			this.layoutTree.setStyle(this.rootNode.layoutNodeId, rootStyle)
 			this.layoutTree.computeLayout(this.rootNode.layoutNodeId, terminalWidth)
 		}
 	}

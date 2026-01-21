@@ -73,11 +73,11 @@ describe('parseNumericOrPercent', () => {
 		expect(parseNumericOrPercent('0%')).toBe('0%')
 	})
 
-	it('converts viewport units to percentages', () => {
-		expect(parseNumericOrPercent('50vw')).toBe('50%')
-		expect(parseNumericOrPercent('100vh')).toBe('100%')
-		expect(parseNumericOrPercent('33.3vmin')).toBe('33.3%')
-		expect(parseNumericOrPercent('25vmax')).toBe('25%')
+	it('preserves viewport units as-is', () => {
+		expect(parseNumericOrPercent('50vw')).toBe('50vw')
+		expect(parseNumericOrPercent('100vh')).toBe('100vh')
+		expect(parseNumericOrPercent('33.3vmin')).toBe('33.3vmin')
+		expect(parseNumericOrPercent('25vmax')).toBe('25vmax')
 	})
 
 	it('handles invalid inputs gracefully', () => {

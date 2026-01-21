@@ -337,8 +337,39 @@ const toDimension = (
 ): Dimension | undefined => {
 	if (value === undefined) return undefined
 	if (typeof value === 'number') return { value, unit: 'px' }
-	if (typeof value === 'string' && value.endsWith('%')) {
-		return { value: parseFloat(value), unit: '%' }
+	if (typeof value === 'string') {
+		if (value.endsWith('%')) {
+			return { value: parseFloat(value), unit: '%' }
+		}
+		// Viewport units: convert to pixel value using terminal dimensions
+		// This is resolved when terminal dimensions are available
+		const trimmed = value.toLowerCase()
+		if (trimmed.endsWith('vw')) {
+			const num = parseFloat(trimmed)
+			if (!isNaN(num)) {
+				// Return the numeric value directly - Taffy will use it as px
+				// The viewport calculation happens in parseNumericOrPercent
+				return { value: num, unit: 'px' }
+			}
+		}
+		if (trimmed.endsWith('vh')) {
+			const num = parseFloat(trimmed)
+			if (!isNaN(num)) {
+				return { value: num, unit: 'px' }
+			}
+		}
+		if (trimmed.endsWith('vmin')) {
+			const num = parseFloat(trimmed)
+			if (!isNaN(num)) {
+				return { value: num, unit: 'px' }
+			}
+		}
+		if (trimmed.endsWith('vmax')) {
+			const num = parseFloat(trimmed)
+			if (!isNaN(num)) {
+				return { value: num, unit: 'px' }
+			}
+		}
 	}
 	return { value: 0, unit: 'auto' }
 }
@@ -441,6 +472,82 @@ export const applyLayoutStyle = (
 	style: Styles = {}
 ): void => {
 	layoutTree.setStyle(nodeId, toLayoutStyle(style))
+}
+
+/**
+ * Resolve viewport units in a style value to actual cell counts
+ * vw -> columns, vh -> rows, vmin -> min(cols, rows), vmax -> max(cols, rows)
+ */
+const resolveViewportUnit = (
+	value: number | string | undefined,
+	terminalWidth: number,
+	terminalHeight: number
+): number | string | undefined => {
+	if (value === undefined) return undefined
+	if (typeof value === 'number') return value
+	if (
+		!value.endsWith('vw') &&
+		!value.endsWith('vh') &&
+		!value.endsWith('vmin') &&
+		!value.endsWith('vmax')
+	) {
+		return value
+	}
+
+	const numValue = parseFloat(value)
+	if (isNaN(numValue)) return value
+
+	if (value.endsWith('vw')) {
+		return Math.round((numValue / 100) * terminalWidth)
+	}
+	if (value.endsWith('vh')) {
+		return Math.round((numValue / 100) * terminalHeight)
+	}
+	if (value.endsWith('vmin')) {
+		return Math.round(
+			(numValue / 100) * Math.min(terminalWidth, terminalHeight)
+		)
+	}
+	if (value.endsWith('vmax')) {
+		return Math.round(
+			(numValue / 100) * Math.max(terminalWidth, terminalHeight)
+		)
+	}
+
+	return value
+}
+
+/**
+ * Resolve viewport units in a Styles object to actual cell counts
+ * Creates a new Styles object with viewport units resolved
+ */
+export const resolveViewportUnits = (
+	style: Styles,
+	terminalWidth: number,
+	terminalHeight: number
+): Styles => {
+	const resolved: Partial<Styles> = {}
+
+	for (const [key, value] of Object.entries(style)) {
+		if (
+			typeof value === 'string' &&
+			(value.includes('vw') ||
+				value.includes('vh') ||
+				value.includes('vmin') ||
+				value.includes('vmax'))
+		) {
+			// For string values, resolve viewport units if present
+			;(resolved as any)[key] = resolveViewportUnit(
+				value as string,
+				terminalWidth,
+				terminalHeight
+			)
+		} else {
+			;(resolved as any)[key] = value
+		}
+	}
+
+	return resolved as Styles
 }
 
 //#endregion

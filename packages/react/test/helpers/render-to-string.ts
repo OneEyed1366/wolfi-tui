@@ -3,9 +3,12 @@ import createStdout from './create-stdout'
 
 export const renderToString: (
 	node: React.JSX.Element,
-	options?: { columns?: number; isScreenReaderEnabled?: boolean }
+	options?: { columns?: number; rows?: number; isScreenReaderEnabled?: boolean }
 ) => string = (node, options) => {
-	const stdout = createStdout(options?.columns ?? 100)
+	const stdout = createStdout({
+		columns: options?.columns ?? 100,
+		rows: options?.rows ?? 24,
+	})
 
 	render(node, {
 		stdout,

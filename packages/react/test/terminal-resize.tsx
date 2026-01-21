@@ -6,7 +6,7 @@ import { render, Box, Text } from '@wolfie/react'
 import createStdout from './helpers/create-stdout'
 
 test('clear screen when terminal width decreases', async () => {
-	const stdout = createStdout(100)
+	const stdout = createStdout({ columns: 100 })
 
 	function Test() {
 		return (
@@ -37,7 +37,7 @@ test('clear screen when terminal width decreases', async () => {
 })
 
 test('no screen clear when terminal width increases', async () => {
-	const stdout = createStdout(50)
+	const stdout = createStdout({ columns: 50 })
 
 	function Test() {
 		return (
@@ -66,7 +66,7 @@ test('no screen clear when terminal width increases', async () => {
 })
 
 test('consecutive width decreases trigger screen clear each time', async () => {
-	const stdout = createStdout(100)
+	const stdout = createStdout({ columns: 100 })
 
 	function Test() {
 		return (
@@ -106,7 +106,7 @@ test('consecutive width decreases trigger screen clear each time', async () => {
 })
 
 test('width decrease clears lastOutput to force rerender', async () => {
-	const stdout = createStdout(100)
+	const stdout = createStdout({ columns: 100 })
 
 	function Test() {
 		return (
