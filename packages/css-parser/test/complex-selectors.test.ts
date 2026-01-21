@@ -93,6 +93,36 @@ describe('Complex Selectors - Tailwind Style', () => {
 			expect(result['flex-row']).toBeDefined()
 			expect(result['flex-row']?.flexDirection).toBe('row')
 		})
+
+		it('parses arbitrary background color utility', () => {
+			const result = parseCSS(
+				'.bg-\\[magenta\\] { background-color: magenta }',
+				{
+					camelCaseClasses: false,
+				}
+			)
+			expect(result['bg-[magenta]']).toBeDefined()
+			expect(result['bg-[magenta]']?.backgroundColor).toBe('magenta')
+		})
+
+		it('parses utility with variant prefix', () => {
+			const result = parseCSS(
+				'.hover\\:bg-blue-500 { background-color: blue }',
+				{
+					camelCaseClasses: false,
+				}
+			)
+			expect(result['hover:bg-blue-500']).toBeDefined()
+			expect(result['hover:bg-blue-500']?.backgroundColor).toBe('blue')
+		})
+
+		it('parses utility with multiple escapes', () => {
+			const result = parseCSS('.text-\\[\\#123456\\] { color: #123456 }', {
+				camelCaseClasses: false,
+			})
+			expect(result['text-[#123456]']).toBeDefined()
+			expect(result['text-[#123456]']?.color).toBe('#123456')
+		})
 	})
 })
 

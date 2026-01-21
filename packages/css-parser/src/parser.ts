@@ -68,13 +68,15 @@ export function extractClassName(
 	const unescape = (str: string) => str.replace(/\\(.)/g, '$1')
 
 	// Handle compound selectors (e.g., .btn.primary, div.card)
-	// Check for multiple classes or element+class
+	// We use a more robust split that respects escaped dots
 	if (
 		trimmed.includes('.') &&
 		!trimmed.includes(' ') &&
 		!trimmed.includes('>')
 	) {
-		const parts = trimmed.split('.').filter(Boolean)
+		// Split by dot but NOT escaped dots
+		// Regex explanation: Split by . if not preceded by \
+		const parts = trimmed.split(/(?<!\\)\./).filter(Boolean)
 		if (parts.length > 0) {
 			// Check if selector starts with element (div.card) vs class (.card or .btn.primary)
 			const startsWithElement = !trimmed.startsWith('.')

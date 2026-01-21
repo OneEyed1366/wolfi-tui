@@ -1,5 +1,5 @@
 module.exports = {
-	content: [require.resolve('./index.tsx')],
+	content: ['./index.tsx'],
 	theme: {
 		extend: {
 			colors: {

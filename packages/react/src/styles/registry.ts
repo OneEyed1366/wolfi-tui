@@ -104,6 +104,8 @@ function isTailwindUtility(name: string): boolean {
 		/^items-[a-z-]+$/, // items-center, items-start
 		/^justify-[a-z-]+$/, // justify-center, justify-between
 		/^(?:min-|max-)?(?:w|h)-\d+$/, // min-w-4, max-h-12
+		/^[a-z]+-\[[^\]]+\]$/, // bg-[magenta], p-[10px]
+		/^[a-z]+:.*$/, // hover:bg-blue-500, focus:text-red
 	]
 
 	return tailwindPatterns.some((pattern) => pattern.test(trimmed))
