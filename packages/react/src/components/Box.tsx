@@ -90,20 +90,37 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 
 		// Resolve className and merge with inline styles (inline styles win)
 		const resolvedClassName = resolveClassName(className)
-		const mergedStyle = { ...resolvedClassName, ...style }
 
 		const boxElement = (
 			<ink-box
 				ref={ref}
 				style={{
+					// LAYER 1: Defaults (lowest priority)
 					flexWrap: 'nowrap',
 					flexDirection: 'row',
 					flexGrow: 0,
 					flexShrink: 1,
-					...mergedStyle,
-					backgroundColor: backgroundColor ?? mergedStyle.backgroundColor,
-					overflowX: mergedStyle.overflowX ?? mergedStyle.overflow ?? 'visible',
-					overflowY: mergedStyle.overflowY ?? mergedStyle.overflow ?? 'visible',
+
+					// LAYER 2: className styles (medium priority)
+					...resolvedClassName,
+
+					// LAYER 3: Inline props (highest priority)
+					...style,
+
+					// Special handling for derived properties
+					backgroundColor: backgroundColor ?? resolvedClassName.backgroundColor,
+					overflowX:
+						(style as any).overflowX ??
+						resolvedClassName.overflowX ??
+						(style as any).overflow ??
+						resolvedClassName.overflow ??
+						'visible',
+					overflowY:
+						(style as any).overflowY ??
+						resolvedClassName.overflowY ??
+						(style as any).overflow ??
+						resolvedClassName.overflow ??
+						'visible',
 				}}
 				internal_accessibility={{
 					role,
@@ -115,7 +132,8 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 		)
 
 		// If this Box has a background color, provide it to children via context
-		const finalBackgroundColor = backgroundColor ?? mergedStyle.backgroundColor
+		const finalBackgroundColor =
+			backgroundColor ?? resolvedClassName.backgroundColor
 		if (finalBackgroundColor) {
 			return (
 				<backgroundContext.Provider value={finalBackgroundColor}>

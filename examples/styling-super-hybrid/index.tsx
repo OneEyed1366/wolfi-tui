@@ -3,23 +3,19 @@ import { render, Box, Text } from '@wolfie/react'
 import './styles/global.css'
 import './styles/components.scss'
 import './styles/tailwind.css'
-// Temporarily disabled CSS Modules due to class name generation issue
-// import buttonStyles from './styles/Button.module.css'
-// import cardStyles from './styles/Card.module.css'
+import buttonStyles from './styles/Button.module.css'
+import cardStyles from './styles/Card.module.css'
 
 /*
- * NOTE: This example currently uses explicit layout props (flexDirection, padding, margin)
- * to ensure stability while Tailwind JIT is being debugged.
+ * Pure CSS Styling Demo
  *
- * FUTURE REFACTOR: Remove explicit props and use pure CSS classes:
- * - Replace flexDirection="column" with className="flex-col"
- * - Replace flexDirection="row" with className="flex-row"
- * - Replace padding={1} with className="p-1"
- * - Replace marginBottom={1} with className="mb-1"
+ * This example demonstrates all CSS approaches without explicit layout props:
+ * - SCSS with nesting (.card, .btn)
+ * - CSS Modules (Button.module.css, Card.module.css)
+ * - Global CSS (global.css)
+ * - Tailwind JIT utilities (flex-col, p-1, w-full, etc.)
  *
- * This requires:
- * 1. Fixing Tailwind content detection (JIT not generating utilities)
- * 2. Migrating custom layout classes to SCSS or Tailwind config
+ * Box defaults apply but are fully overridable by className styles.
  */
 
 const App = () => {
@@ -36,13 +32,9 @@ const App = () => {
 				</Text>
 			</Box>
 
-			<Box className="card flex-col mb-1 w-full">
-				<Text className="card-title">
-					CSS Module Component (temporarily using global class)
-				</Text>
-				<Text className="text-muted">
-					CSS Module styles temporarily disabled
-				</Text>
+			<Box className={[cardStyles.card, 'flex-col mb-1 w-full']}>
+				<Text className={cardStyles.cardTitle}>CSS Module Component</Text>
+				<Text className="text-muted">CSS Module styles working!</Text>
 			</Box>
 
 			<Box className="flex-row gap-2 mb-1 w-full">
@@ -52,11 +44,9 @@ const App = () => {
 				<Box className="btn">
 					<Text>Standard</Text>
 				</Box>
-				{/* CSS Module buttons temporarily disabled
 				<Box className={buttonStyles.button}>
 					<Text className={buttonStyles.text}>Module</Text>
 				</Box>
-				*/}
 			</Box>
 
 			<Box className="card compact border-cyan-500 flex-col p-1 mb-1 w-full">

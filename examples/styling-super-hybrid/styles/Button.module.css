@@ -2,11 +2,12 @@
 .button {
 	background-color: #222;
 	border-color: green;
+	border-style: single;
 	padding: 1 2;
 }
 
 .button:hover {
-	border-color: bright-green;
+	border-color: lime;
 }
 
 .text {
