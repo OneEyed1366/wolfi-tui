@@ -14,3 +14,10 @@ body {
 .text-muted {
 	color: gray;
 }
+
+/* Complex selector test case */
+.bg-\[magenta\]\.border-\[cyan\] {
+	background-color: magenta;
+	border-color: cyan;
+	border-style: single;
+}

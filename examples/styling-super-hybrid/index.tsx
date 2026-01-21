@@ -60,6 +60,19 @@ const App = () => {
 					<Text>+</Text>
 					<Text className="text-magenta-400">CSS Modules</Text>
 				</Box>
+
+				{/* Complex Selector Verification */}
+				<Box className="bg-[magenta].border-[cyan] p-2 mb-2">
+					<Text className="text-base font-bold">
+						Complex Selector: .bg-\[magenta\].border-\[cyan\]
+					</Text>
+				</Box>
+
+				<Box className="p-2 border-yellow-500 border-double">
+					<Text className="text-[cyan]">
+						Tailwind Arbitrary Value: text-[cyan]
+					</Text>
+				</Box>
 			</Box>
 		</Box>
 	)

@@ -62,7 +62,9 @@ export function resolveClassName(className: ClassNameValue): Partial<Styles> {
 	if (!trimmed) return {}
 
 	const exactMatch = globalStyles.get(trimmed)
-	if (exactMatch) return exactMatch
+	if (exactMatch) {
+		return exactMatch
+	}
 
 	const parts = trimmed.split(/\s+/).filter(Boolean)
 
