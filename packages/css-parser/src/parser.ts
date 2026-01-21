@@ -3,6 +3,7 @@
  */
 
 import postcss from 'postcss'
+import valueParser from 'postcss-value-parser'
 import type {
 	ParsedStylesheet,
 	ParsedRule,
@@ -173,6 +174,40 @@ export function parseCSS(
 	const styles: ParsedStyles = {}
 	const camelCase = options?.camelCaseClasses ?? true
 
+	// Step 1: Collect all CSS variables (from :root, @theme, etc.)
+	const variables = new Map<string, string>()
+	root.walkDecls((decl) => {
+		if (decl.prop.startsWith('--')) {
+			variables.set(decl.prop, decl.value)
+		}
+	})
+
+	// Step 2: Helper to resolve variables in a value string
+	const resolveValue = (value: string): string => {
+		if (!value.includes('var(')) return value
+
+		const parsed = valueParser(value)
+		parsed.walk((node) => {
+			if (
+				node.type === 'function' &&
+				node.value === 'var' &&
+				node.nodes.length > 0
+			) {
+				const varName = node.nodes[0]!.value
+				const fallback = node.nodes.length > 2 ? node.nodes[2]!.value : ''
+				const resolved = variables.get(varName) || fallback
+				if (resolved) {
+					// Recursively resolve if the resolved value also contains variables
+					const resolvedValue = resolveValue(resolved)
+					// @ts-expect-error - Mutating node type for simplified replacement
+					node.type = 'word'
+					node.value = resolvedValue
+				}
+			}
+		})
+		return parsed.toString()
+	}
+
 	root.walkRules((rule) => {
 		// Handle multiple selectors (e.g., .btn, .button)
 		const selectors = rule.selector.split(',').map((s) => s.trim())
@@ -184,7 +219,8 @@ export function parseCSS(
 			const style: Partial<Styles> = {}
 
 			rule.walkDecls((decl) => {
-				const mapped = mapCSSProperty(decl.prop, decl.value)
+				const resolvedValue = resolveValue(decl.value)
+				const mapped = mapCSSProperty(decl.prop, resolvedValue)
 				if (mapped) {
 					Object.assign(style, mapped)
 				}

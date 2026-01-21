@@ -11,7 +11,7 @@ const App = () => {
 
 			<Box className="mt-2 p-2 bg-gray-800 rounded">
 				<Text className="text-gray-300">
-					This example uses Tailwind CSS v3 with literal class names.
+					This example uses Tailwind CSS v4 (with shim) & CSS-first config.
 				</Text>
 			</Box>
 
@@ -35,6 +35,9 @@ const App = () => {
 				</Text>
 				<Text className="text-white">- Underline support via className</Text>
 				<Text className="text-white">- Italic support via className</Text>
+				<Text className="text-modern-red font-bold">
+					- Modern Color (OKLCH) support!
+				</Text>
 			</Box>
 		</Box>
 	)

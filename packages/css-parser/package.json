@@ -33,7 +33,9 @@
 		"build"
 	],
 	"dependencies": {
-		"postcss": "^8.4.49"
+		"colorjs.io": "^0.6.1",
+		"postcss": "^8.4.49",
+		"postcss-value-parser": "^4.2.0"
 	},
 	"devDependencies": {
 		"@types/jsdom": "^27.0.0",

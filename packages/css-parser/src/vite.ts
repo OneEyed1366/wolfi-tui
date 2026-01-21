@@ -1,5 +1,6 @@
 import type { Plugin } from 'vite'
 import type { VitePluginOptions } from './types'
+import './shim' // Apply Tailwind v4 patch EARLY
 import { compile, detectLanguage } from './preprocessors'
 import { parseCSS } from './parser'
 import { generateJavaScript, generateTypeScript } from './generator'

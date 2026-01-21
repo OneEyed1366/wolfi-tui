@@ -11,6 +11,7 @@ import postcss from 'postcss'
 import { createRequire } from 'node:module'
 import { parseCSS } from './parser'
 import type { ParsedStyles, PreprocessorType, CSSParserOptions } from './types'
+import './shim' // Apply Tailwind v4 patch
 
 //#region Types
 

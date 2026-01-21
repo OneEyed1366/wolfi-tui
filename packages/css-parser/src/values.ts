@@ -4,6 +4,8 @@
  * Transforms CSS values to wolfie compatible values
  */
 
+import Color from 'colorjs.io'
+
 //#region ANSI Color Mapping
 
 /**
@@ -274,21 +276,25 @@ export function parseColor(value: string): string {
 		return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
 	}
 
-	if (match) {
-		const r = Math.min(255, Math.round(parseFloat(match[1]!)))
-		const g = Math.min(255, Math.round(parseFloat(match[2]!)))
-		const b = Math.min(255, Math.round(parseFloat(match[3]!)))
-		const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
-		if (process.env['DEBUG_WOLFIE_CSS']) {
-			console.log(`[wolfie-css]   Matched! Result: ${hex}`)
+	// Modern Color functions (OKLCH, HSL, P3) via colorjs.io
+	if (
+		trimmed.startsWith('oklch') ||
+		trimmed.startsWith('hsl') ||
+		trimmed.startsWith('color(') ||
+		trimmed.startsWith('lab') ||
+		trimmed.startsWith('lch')
+	) {
+		try {
+			const color = new Color(value)
+			return color.to('srgb').toString({ format: 'hex' })
+		} catch (e) {
+			if (process.env['DEBUG_WOLFIE_CSS']) {
+				console.warn(
+					`[wolfie-css] Failed to parse color with colorjs.io: ${value}`,
+					e
+				)
+			}
 		}
-		return hex
-	}
-
-	// HSL - would need conversion, for now return as-is
-	if (trimmed.startsWith('hsl')) {
-		// TODO: HSL to RGB conversion
-		return trimmed
 	}
 
 	// Return as-is for unknown values
