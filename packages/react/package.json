@@ -11,8 +11,14 @@
 	},
 	"type": "module",
 	"exports": {
-		"types": "./build/index.d.ts",
-		"default": "./build/index.js"
+		".": {
+			"types": "./build/index.d.ts",
+			"default": "./build/index.js"
+		},
+		"./styles": {
+			"types": "./build/styles/index.d.ts",
+			"default": "./build/styles/index.js"
+		}
 	},
 	"engines": {
 		"node": ">=20"

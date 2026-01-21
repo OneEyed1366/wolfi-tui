@@ -21,6 +21,15 @@ export default defineConfig(({ command }) => {
 			minify: false,
 			target: 'node20',
 			rollupOptions: {
+				input: {
+					index: resolve(__dirname, 'src/index.ts'),
+					'styles/index': resolve(__dirname, 'src/styles/index.ts'),
+				},
+				output: {
+					// Maintain file structure
+					entryFileNames: '[name].js',
+					preserveModules: false,
+				},
 				// Externalize all dependencies - library consumers will provide them
 				external: (id) => {
 					if (id.startsWith('node:')) return true

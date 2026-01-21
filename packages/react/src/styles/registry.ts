@@ -63,17 +63,28 @@ export function resolveClassName(className: ClassNameValue): Partial<Styles> {
 
 	const exactMatch = globalStyles.get(trimmed)
 	if (exactMatch) {
+		console.error('[REGISTRY] exactMatch found:', trimmed, '→', exactMatch)
 		return exactMatch
 	}
 
 	const parts = trimmed.split(/\s+/).filter(Boolean)
+	console.error('[REGISTRY] resolveClassName:', trimmed, 'parts:', parts)
 
 	if (parts.length >= 2 && parts.length <= 4) {
+		const tailwindCheck = parts
+			.map((part) => `${part}: ${isTailwindUtility(part)}`)
+			.join(', ')
+		console.error('[REGISTRY] isTailwindUtility check:', tailwindCheck)
+
 		const hasTailwindUtility = parts.some((part) => isTailwindUtility(part))
+		console.error('[REGISTRY] hasTailwindUtility:', hasTailwindUtility)
 
 		if (!hasTailwindUtility) {
 			const compound = tryCompoundLookup(parts)
-			if (compound) return compound
+			if (compound) {
+				console.error('[REGISTRY] compound found:', compound)
+				return compound
+			}
 		}
 	}
 
@@ -92,12 +103,13 @@ function isTailwindUtility(name: string): boolean {
 
 	const tailwindPatterns = [
 		/^w-\d+\/\d+$/, // w-1/2
+		/^w-(?:full|auto|screen|fit|1\/2|1\/3|2\/3|1\/4|3\/4|1\/5|2\/5|3\/5|4\/5|\d+)$/, // w-full, w-auto, w-80, w-[100px]
 		/^h-\d+\/\d+$/, // h-1/2
 		/^p-[xyrltb]?-?\d+$/, // p-4, px-2, pl-1
 		/^m-[xyrltb]?-?\d+$/, // m-4, mx-2, ml-1
 		/^gap-?\d+$/, // gap-2
 		/^bg-[a-z]+-?\d*$/, // bg-blue-500, bg-red
-		/^text-[a-z]+-?\d*$/, // text-xl, text-sm, text-cyan-400
+		/^text-[a-z-]+-?\d*$/, // text-xl, text-sm, text-cyan-400, text-white
 		/^font-(bold|light|medium|normal|thin|semibold|black)$/, // font-bold
 		/^border-[a-z]+-?\d*$/, // border-blue-500
 		/^rounded-?\d*$/, // rounded, rounded-lg
@@ -181,8 +193,41 @@ function resolveOne(name: string): Partial<Styles> {
 
 	if (!trimmed) return {}
 
+	console.error('[REGISTRY] resolveOne called with:', trimmed, 'isTailwindUtility:', isTailwindUtility(trimmed))
+
 	const registered = globalStyles.get(trimmed)
-	if (registered) return registered
+	if (registered) {
+		console.error('[REGISTRY] resolveOne found:', trimmed, '→', registered)
+		return registered
+	}
+
+	console.error('[REGISTRY] resolveOne NOT found:', trimmed)
+	console.error('[REGISTRY] All registered classes:', Array.from(globalStyles.keys()).sort())
+
+	const parts = trimmed.split(/\s+/).filter(Boolean)
+
+	if (parts.length === 1) {
+		return {}
+	}
+
+	const hasTailwindUtility = parts.some((part) => isTailwindUtility(part))
+
+	if (!hasTailwindUtility) {
+		const compound = tryCompoundLookup(parts)
+		if (compound) return compound
+	}
+
+	return parts.reduce<Partial<Styles>>((acc, part) => {
+		const style = globalStyles.get(part)
+		return style ? { ...acc, ...style } : acc
+	}, {})
+}
+
+	console.error('[REGISTRY] resolveOne NOT found:', trimmed)
+	console.error(
+		'[REGISTRY] All registered classes:',
+		Array.from(globalStyles.keys()).sort()
+	)
 
 	const parts = trimmed.split(/\s+/).filter(Boolean)
 

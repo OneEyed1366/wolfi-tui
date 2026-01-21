@@ -1,9 +1,9 @@
-const path = require('path')
-
 module.exports = {
 	content: [
-		path.join(process.cwd(), 'examples/styling-super-hybrid/**/*.{ts,tsx}'),
-		path.join(process.cwd(), 'examples/styling-super-hybrid/index.tsx'),
+		'./index.tsx',
+		'./styles/global.css',
+		'./styles/components.scss',
+		'./styles/tailwind.css',
 	],
 	theme: {
 		extend: {

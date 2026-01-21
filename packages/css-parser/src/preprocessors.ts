@@ -165,8 +165,24 @@ export async function compile(
 			break
 	}
 
+	console.error(
+		'[PREPROCESSOR] compile() called with:',
+		filePath,
+		'lang:',
+		lang
+	)
+	if (filePath?.includes('tailwind.css')) {
+		console.error(
+			'[PREPROCESSOR] Source CSS preview (first 200 chars):',
+			source.substring(0, 200)
+		)
+	}
+
 	// Always run through PostCSS to handle @import, Tailwind, etc.
 	if (css.includes('@tailwind') || /@import\s+['"]tailwindcss['"]/.test(css)) {
+		console.error(
+			'[PREPROCESSOR] @tailwind directive found, will process with Tailwind'
+		)
 		try {
 			const require = createRequire(filePath || process.cwd())
 			let tailwind: any
@@ -195,22 +211,74 @@ export async function compile(
 				// Try to find tailwind config (v3 only)
 				let tailwindConfig: any = undefined
 				try {
-					const configPath = path.join(
-						path.dirname(filePath || process.cwd()),
-						'tailwind.config.cjs'
-					)
-					if (existsSync(configPath)) {
-						tailwindConfig = configPath
-					} else {
-						const jsConfigPath = path.join(
-							path.dirname(filePath || process.cwd()),
-							'tailwind.config.js'
+					// Start with the file's directory, then try parent directories
+					let searchDir = path.dirname(filePath || process.cwd())
+					let configPath: string | null = null
+
+					for (let i = 0; i < 3; i++) {
+						console.error(
+							'[PREPROCESSOR] Searching for Tailwind config in:',
+							searchDir
 						)
-						if (existsSync(jsConfigPath)) {
-							tailwindConfig = jsConfigPath
+						const cjsConfigPath = path.join(searchDir, 'tailwind.config.cjs')
+						if (existsSync(cjsConfigPath)) {
+							configPath = cjsConfigPath
+							break
 						}
+
+						const jsConfigPath = path.join(searchDir, 'tailwind.config.js')
+						if (existsSync(jsConfigPath)) {
+							configPath = jsConfigPath
+							break
+						}
+
+						const parent = path.dirname(searchDir)
+						if (parent === searchDir) break
+						searchDir = parent
 					}
-				} catch {}
+
+					if (configPath) {
+						// Load the config and resolve relative paths from config's directory
+						const require = createRequire(filePath || process.cwd())
+						const configDir = path.dirname(configPath)
+						const loadedConfig = require(configPath)
+
+						console.error(
+							'[PREPROCESSOR] Loaded config keys:',
+							Object.keys(loadedConfig).join(', ')
+						)
+						console.error(
+							'[PREPROCESSOR] Loaded config.content:',
+							loadedConfig.content
+						)
+						console.error(
+							'[PREPROCESSOR] Content type:',
+							Array.isArray(loadedConfig.content)
+								? 'array'
+								: typeof loadedConfig.content
+						)
+
+						// Resolve content paths to be absolute
+						if (loadedConfig.content && Array.isArray(loadedConfig.content)) {
+							loadedConfig.content = loadedConfig.content.map((p: string) =>
+								path.isAbsolute(p) ? p : path.resolve(configDir, p)
+							)
+							console.error(
+								'[PREPROCESSOR] Resolved content paths:',
+								loadedConfig.content
+							)
+						}
+
+						tailwindConfig = loadedConfig
+						console.error('[PREPROCESSOR] Found Tailwind config:', configPath)
+					} else {
+						console.error(
+							'[PREPROCESSOR] No Tailwind config found in file or parent directories!'
+						)
+					}
+				} catch (err) {
+					console.error('[PREPROCESSOR] Error finding Tailwind config:', err)
+				}
 
 				let plugin: any
 				try {

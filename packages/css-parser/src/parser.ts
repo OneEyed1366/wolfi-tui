@@ -174,12 +174,27 @@ export function parseCSS(
 	const camelCase = options?.camelCaseClasses ?? true
 
 	root.walkRules((rule) => {
+		// Debug: log selectors for Tailwind CSS
+		if (options?.filename?.includes('tailwind.css')) {
+			console.error('[PARSER] Processing rule:', rule.selector)
+		}
 		// Handle multiple selectors (e.g., .btn, .button)
 		const selectors = rule.selector.split(',').map((s) => s.trim())
 
 		for (const selector of selectors) {
 			const className = extractClassName(selector, camelCase)
-			if (!className) continue
+			if (!className) {
+				if (options?.filename?.includes('tailwind.css')) {
+					console.error('[PARSER] Skipped selector (no className):', selector)
+				}
+				continue
+			}
+			if (
+				options?.filename?.includes('tailwind.css') &&
+				Object.keys(styles).length < 5
+			) {
+				console.error('[PARSER] Found className:', className)
+			}
 
 			const style: Partial<Styles> = {}
 
