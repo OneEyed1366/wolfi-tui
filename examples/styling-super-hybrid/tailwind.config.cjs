@@ -2,8 +2,8 @@ const path = require('path')
 
 module.exports = {
 	content: [
-		path.join(__dirname, './index.tsx'),
-		path.join(__dirname, './styles/**/*.{css,scss}'),
+		path.join(process.cwd(), 'examples/styling-super-hybrid/**/*.{ts,tsx}'),
+		path.join(process.cwd(), 'examples/styling-super-hybrid/index.tsx'),
 	],
 	theme: {
 		extend: {
@@ -11,9 +11,6 @@ module.exports = {
 				primary: 'magenta',
 				secondary: 'cyan',
 				accent: 'yellow',
-			},
-			spacing: {
-				18: '4.5rem',
 			},
 		},
 	},

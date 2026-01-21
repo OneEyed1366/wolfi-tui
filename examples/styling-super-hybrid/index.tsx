@@ -8,24 +8,36 @@ import cardStyles from './styles/Card.module.css'
 
 const App = () => {
 	return (
-		<Box className="p-1 flex-col" width={80}>
-			<Text className="text-xl font-bold text-base mb-1">
-				Super-Hybrid Styling Demo
-			</Text>
+		<Box padding={1} flexDirection="column" width={80}>
+			<Box marginBottom={1}>
+				<Text color="white" bold>
+					Super-Hybrid Styling Demo
+				</Text>
+			</Box>
 
-			<Box className="card mb-1" width="100%">
+			<Box
+				className="card"
+				width="100%"
+				flexDirection="column"
+				marginBottom={1}
+			>
 				<Text className="card-title">SCSS Nested Selector</Text>
 				<Text className="text-muted">
 					SCSS nesting (.card .title) + Tailwind
 				</Text>
 			</Box>
 
-			<Box className={cardStyles.card + ' mb-1'} width="100%">
+			<Box
+				className={cardStyles.card}
+				width="100%"
+				flexDirection="column"
+				marginBottom={1}
+			>
 				<Text className={cardStyles.cardTitle}>CSS Module Component</Text>
 				<Text className="text-muted">Scoped styles from Card.module.css</Text>
 			</Box>
 
-			<Box className="flex-row gap-2 mb-1" width="100%">
+			<Box flexDirection="row" gap={2} marginBottom={1} width="100%">
 				<Box className="btn primary">
 					<Text>Primary</Text>
 				</Box>
@@ -37,20 +49,38 @@ const App = () => {
 				</Box>
 			</Box>
 
-			<Box className="card compact p-1 mb-1 border-cyan-500" width="100%">
+			<Box
+				className="card compact border-cyan-500"
+				width="100%"
+				flexDirection="column"
+				padding={1}
+				marginBottom={1}
+			>
 				<Text className="text-sm text-accent">
 					Compound: .card.compact + Tailwind
 				</Text>
 			</Box>
 
-			<Box className="bg-[magenta].border-[cyan] p-1 mb-1" width="100%">
-				<Text className="text-base font-bold">
+			<Box
+				className="bg-[magenta].border-[cyan]"
+				width="100%"
+				flexDirection="column"
+				padding={1}
+				marginBottom={1}
+			>
+				<Text color="white" bold>
 					Complex: .bg-\[magenta\].border-\[cyan\]
 				</Text>
 			</Box>
 
-			<Box className="p-1 border-yellow-500 border-double" width="100%">
-				<Text className="text-[cyan]">Tailwind Arbitrary: text-[cyan]</Text>
+			<Box
+				borderStyle="round"
+				borderColor="yellow"
+				width="100%"
+				padding={1}
+				flexDirection="column"
+			>
+				<Text color="cyan">Tailwind Arbitrary: text-[cyan]</Text>
 			</Box>
 		</Box>
 	)
