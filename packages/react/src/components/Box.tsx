@@ -110,15 +110,15 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 					// Special handling for derived properties
 					backgroundColor: backgroundColor ?? resolvedClassName.backgroundColor,
 					overflowX:
-						(style as any).overflowX ??
+						style.overflowX ??
 						resolvedClassName.overflowX ??
-						(style as any).overflow ??
+						style.overflow ??
 						resolvedClassName.overflow ??
 						'visible',
 					overflowY:
-						(style as any).overflowY ??
+						style.overflowY ??
 						resolvedClassName.overflowY ??
-						(style as any).overflow ??
+						style.overflow ??
 						resolvedClassName.overflow ??
 						'visible',
 				}}
