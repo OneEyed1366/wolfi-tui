@@ -46,7 +46,7 @@ test('render select input for screen readers', () => {
 	const items = ['Red', 'Green', 'Blue']
 
 	const output = renderToString(
-		<Box aria-role="list" flexDirection="column">
+		<Box aria-role="list" style={{ flexDirection: 'column' }}>
 			<Text>Select a color:</Text>
 			{items.map((item, index) => {
 				const isSelected = index === 1
@@ -94,7 +94,14 @@ test('omit ANSI styling in screen-reader output', () => {
 	const output = renderToString(
 		<Box>
 			{}
-			<Text bold color="green" inverse underline>
+			<Text
+				style={{
+					color: 'green',
+					fontWeight: 'bold',
+					inverse: true,
+					textDecoration: 'underline',
+				}}
+			>
 				Styled content
 			</Text>
 		</Box>,
@@ -109,7 +116,7 @@ test('omit ANSI styling in screen-reader output', () => {
 test('skip nodes with display:none style in screen-reader output', () => {
 	const output = renderToString(
 		<Box>
-			<Box display="none">
+			<Box style={{ display: 'none' }}>
 				<Text>Hidden</Text>
 			</Box>
 			<Text>Visible</Text>
@@ -122,7 +129,7 @@ test('skip nodes with display:none style in screen-reader output', () => {
 
 test('render multiple Text components', () => {
 	const output = renderToString(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>Hello</Text>
 			<Text>World</Text>
 		</Box>,
@@ -136,7 +143,7 @@ test('render multiple Text components', () => {
 
 test('render nested Box components with Text', () => {
 	const output = renderToString(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>Hello</Text>
 			<Box>
 				<Text>World</Text>
@@ -156,7 +163,7 @@ function NullComponent(): undefined {
 
 test('render component that returns null', () => {
 	const output = renderToString(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>Hello</Text>
 			<NullComponent />
 			<Text>World</Text>
@@ -288,7 +295,7 @@ test('render with aria-state.selected', () => {
 
 test('render multi-line text', () => {
 	const output = renderToString(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>Line 1</Text>
 			<Text>Line 2</Text>
 		</Box>,
@@ -302,8 +309,8 @@ test('render multi-line text', () => {
 
 test('render nested multi-line text', () => {
 	const output = renderToString(
-		<Box flexDirection="row">
-			<Box flexDirection="column">
+		<Box style={{ flexDirection: 'row' }}>
+			<Box style={{ flexDirection: 'column' }}>
 				<Text>Line 1</Text>
 				<Text>Line 2</Text>
 			</Box>
@@ -318,8 +325,8 @@ test('render nested multi-line text', () => {
 
 test('render nested row', () => {
 	const output = renderToString(
-		<Box flexDirection="column">
-			<Box flexDirection="row">
+		<Box style={{ flexDirection: 'column' }}>
+			<Box style={{ flexDirection: 'row' }}>
 				<Text>Line 1</Text>
 				<Text>Line 2</Text>
 			</Box>
@@ -334,7 +341,7 @@ test('render nested row', () => {
 
 test('render multi-line text with roles', () => {
 	const output = renderToString(
-		<Box flexDirection="column" aria-role="list">
+		<Box aria-role="list" style={{ flexDirection: 'column' }}>
 			<Box aria-role="listitem">
 				<Text>Item 1</Text>
 			</Box>
@@ -353,9 +360,9 @@ test('render multi-line text with roles', () => {
 test('render listbox with multiselectable options', () => {
 	const output = renderToString(
 		<Box
-			flexDirection="column"
 			aria-role="listbox"
 			aria-state={{ multiselectable: true }}
+			style={{ flexDirection: 'column' }}
 		>
 			<Box aria-role="option" aria-state={{ selected: true }}>
 				<Text>Option 1</Text>

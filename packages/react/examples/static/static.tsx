@@ -40,13 +40,13 @@ function Example() {
 			<Static items={tests}>
 				{(test) => (
 					<Box key={test.id}>
-						<Text color="green">✔ {test.title}</Text>
+						<Text style={{ color: 'green' }}>✔ {test.title}</Text>
 					</Box>
 				)}
 			</Static>
 
-			<Box marginTop={1}>
-				<Text dimColor>Completed tests: {tests.length}</Text>
+			<Box style={{ marginTop: 1 }}>
+				<Text style={{ color: 'gray' }}>Completed tests: {tests.length}</Text>
 			</Box>
 		</>
 	)

@@ -5,7 +5,7 @@ import styles from './layout.module.scss'
 
 const App = () => {
 	return (
-		<Box className={styles.container} flexDirection="column">
+		<Box className={styles.container} style={{ flexDirection: 'column' }}>
 			<Text className="title">Combined Example</Text>
 			<Text className={styles.item}>SCSS Module Item 1</Text>
 			<Text className={styles.item}>SCSS Module Item 2</Text>

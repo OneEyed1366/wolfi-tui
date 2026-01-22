@@ -4,7 +4,7 @@ import styles from './styles.styl'
 
 const App = () => {
 	return (
-		<Box className={styles.stylusBox} flexDirection="column">
+		<Box className={styles.stylusBox} style={{ flexDirection: 'column' }}>
 			<Text className={styles.content}>Hello from Stylus!</Text>
 		</Box>
 	)

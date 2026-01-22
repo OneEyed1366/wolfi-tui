@@ -20,8 +20,8 @@ function Fullscreen() {
 	const rows = Number(process.argv[2]) || 5
 
 	return (
-		<Box height={rows} flexDirection="column">
-			<Box flexGrow={1}>
+		<Box style={{ height: rows, flexDirection: 'column' }}>
+			<Box style={{ flexGrow: 1 }}>
 				<Text>Full-screen: top</Text>
 			</Box>
 			<Text>Bottom line (should be usable)</Text>

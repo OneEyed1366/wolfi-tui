@@ -23,7 +23,13 @@ export {
 export { default as Output } from './output'
 export { default as renderer } from './renderer'
 export type { Styles } from './styles'
-export { applyLayoutStyle, toLayoutStyle, resolveViewportUnits } from './styles'
+export {
+	applyLayoutStyle,
+	toLayoutStyle,
+	resolveViewportUnits,
+	parseNumericValue,
+	expandStyles,
+} from './styles'
 export { default as parseKeypress, nonAlphanumericKeys } from './parse-keypress'
 export { default as measureElement } from './measure-element'
 export { default as measureText } from './measure-text'

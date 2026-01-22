@@ -9,11 +9,11 @@ function TextInputDemo() {
 
 	if (submitted !== null) {
 		return (
-			<Box flexDirection="column" padding={1}>
-				<Text color="cyan">Text Input Demo - Submitted</Text>
-				<Box marginTop={1}>
+			<Box style={{ flexDirection: 'column', padding: 1 }}>
+				<Text style={{ color: 'cyan' }}>Text Input Demo - Submitted</Text>
+				<Box style={{ marginTop: 1 }}>
 					<Text>
-						You entered: <Text color="green">{submitted || '(empty)'}</Text>
+						You entered: <Text style={{ color: 'green' }}>{submitted || '(empty)'}</Text>
 					</Text>
 				</Box>
 			</Box>
@@ -21,14 +21,14 @@ function TextInputDemo() {
 	}
 
 	return (
-		<Box flexDirection="column" padding={1}>
-			<Text color="cyan">Text Input Demo</Text>
-			<Text dimColor>
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
+			<Text style={{ color: 'cyan' }}>Text Input Demo</Text>
+			<Text style={{ color: 'gray' }}>
 				Type your name, use Tab for suggestions, Enter to submit
 			</Text>
 
-			<Box marginTop={1} flexDirection="column" gap={1}>
-				<Box gap={1}>
+			<Box style={{ marginTop: 1, flexDirection: 'column', gap: 1 }}>
+				<Box style={{ gap: 1 }}>
 					<Text>Name:</Text>
 					<TextInput
 						placeholder="Enter your name..."
@@ -41,7 +41,7 @@ function TextInputDemo() {
 					/>
 				</Box>
 
-				<Text dimColor>Current value: {currentValue || '(empty)'}</Text>
+				<Text style={{ color: 'gray' }}>Current value: {currentValue || '(empty)'}</Text>
 			</Box>
 		</Box>
 	)

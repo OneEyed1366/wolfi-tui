@@ -73,7 +73,7 @@ test('append child', () => {
 	function Test({ append }: { readonly append?: boolean }) {
 		if (append) {
 			return (
-				<Box flexDirection="column">
+				<Box style={{ flexDirection: 'column' }}>
 					<Text>A</Text>
 					<Text>B</Text>
 				</Box>
@@ -81,7 +81,7 @@ test('append child', () => {
 		}
 
 		return (
-			<Box flexDirection="column">
+			<Box style={{ flexDirection: 'column' }}>
 				<Text>A</Text>
 			</Box>
 		)
@@ -96,7 +96,7 @@ test('append child', () => {
 	})
 
 	const expected = render(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 		</Box>,
 		{
@@ -112,7 +112,7 @@ test('append child', () => {
 	actual.rerender(<Test append />)
 
 	expected.rerender(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -127,7 +127,7 @@ test('insert child between other children', () => {
 	function Test({ insert }: { readonly insert?: boolean }) {
 		if (insert) {
 			return (
-				<Box flexDirection="column">
+				<Box style={{ flexDirection: 'column' }}>
 					<Text key="a">A</Text>
 					<Text key="b">B</Text>
 					<Text key="c">C</Text>
@@ -136,7 +136,7 @@ test('insert child between other children', () => {
 		}
 
 		return (
-			<Box flexDirection="column">
+			<Box style={{ flexDirection: 'column' }}>
 				<Text key="a">A</Text>
 				<Text key="c">C</Text>
 			</Box>
@@ -152,7 +152,7 @@ test('insert child between other children', () => {
 	})
 
 	const expected = render(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 			<Text>C</Text>
 		</Box>,
@@ -169,7 +169,7 @@ test('insert child between other children', () => {
 	actual.rerender(<Test insert />)
 
 	expected.rerender(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>
@@ -185,14 +185,14 @@ test('remove child', () => {
 	function Test({ remove }: { readonly remove?: boolean }) {
 		if (remove) {
 			return (
-				<Box flexDirection="column">
+				<Box style={{ flexDirection: 'column' }}>
 					<Text>A</Text>
 				</Box>
 			)
 		}
 
 		return (
-			<Box flexDirection="column">
+			<Box style={{ flexDirection: 'column' }}>
 				<Text>A</Text>
 				<Text>B</Text>
 			</Box>
@@ -208,7 +208,7 @@ test('remove child', () => {
 	})
 
 	const expected = render(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>,
@@ -225,7 +225,7 @@ test('remove child', () => {
 	actual.rerender(<Test remove />)
 
 	expected.rerender(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 		</Box>
 	)
@@ -239,7 +239,7 @@ test('reorder children', () => {
 	function Test({ reorder }: { readonly reorder?: boolean }) {
 		if (reorder) {
 			return (
-				<Box flexDirection="column">
+				<Box style={{ flexDirection: 'column' }}>
 					<Text key="b">B</Text>
 					<Text key="a">A</Text>
 				</Box>
@@ -247,7 +247,7 @@ test('reorder children', () => {
 		}
 
 		return (
-			<Box flexDirection="column">
+			<Box style={{ flexDirection: 'column' }}>
 				<Text key="a">A</Text>
 				<Text key="b">B</Text>
 			</Box>
@@ -263,7 +263,7 @@ test('reorder children', () => {
 	})
 
 	const expected = render(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>,
@@ -280,7 +280,7 @@ test('reorder children', () => {
 	actual.rerender(<Test reorder />)
 
 	expected.rerender(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>B</Text>
 			<Text>A</Text>
 		</Box>
@@ -295,7 +295,7 @@ test('replace child node with text', () => {
 	const stdout = createStdout()
 
 	function Dynamic({ replace }: { readonly replace?: boolean }) {
-		return <Text>{replace ? 'x' : <Text color="green">test</Text>}</Text>
+		return <Text>{replace ? 'x' : <Text style={{ color: 'green' }}>test</Text>}</Text>
 	}
 
 	const { rerender } = render(<Dynamic />, {

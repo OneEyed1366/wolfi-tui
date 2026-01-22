@@ -156,70 +156,56 @@ function IncrementalRendering() {
 	}
 
 	return (
-		<Box flexDirection="column" height="100%">
-			<Box borderStyle="round" borderColor="cyan" paddingX={2} paddingY={1}>
-				<Box flexDirection="column">
-					<Text bold color="cyan">
+		<Box style={{ flexDirection: 'column', height: '100%' }}>
+			<Box style={{ borderStyle: 'round', borderColor: 'cyan', paddingX: 2, paddingY: 1 }}>
+				<Box style={{ flexDirection: 'column' }}>
+					<Text style={{ color: 'cyan', fontWeight: 'bold' }}>
 						Incremental Rendering Demo - incrementalRendering={String(true)}
 					</Text>
-					<Text dimColor>
+					<Text style={{ color: 'gray' }}>
 						Use ↑/↓ arrows to navigate • Press q to quit • FPS: {fps}
 					</Text>
 					<Text>
-						Time: <Text color="green">{timestamp}</Text> • Updates:{' '}
-						<Text color="yellow">{counter}</Text> • Random:{' '}
-						<Text color="cyan">{randomValue}</Text>
+						Time: <Text style={{ color: 'green' }}>{timestamp}</Text> • Updates:{' '}
+						<Text style={{ color: 'yellow' }}>{counter}</Text> • Random:{' '}
+						<Text style={{ color: 'cyan' }}>{randomValue}</Text>
 					</Text>
 					<Text>
-						Progress 1: <Text color="green">{progressBar(progress1)}</Text>{' '}
+						Progress 1: <Text style={{ color: 'green' }}>{progressBar(progress1)}</Text>{' '}
 						{progress1}%
 					</Text>
 					<Text>
-						Progress 2: <Text color="yellow">{progressBar(progress2)}</Text>{' '}
+						Progress 2: <Text style={{ color: 'yellow' }}>{progressBar(progress2)}</Text>{' '}
 						{progress2}%
 					</Text>
 					<Text>
-						Progress 3: <Text color="red">{progressBar(progress3)}</Text>{' '}
+						Progress 3: <Text style={{ color: 'red' }}>{progressBar(progress3)}</Text>{' '}
 						{progress3}%
 					</Text>
 				</Box>
 			</Box>
 
-			<Box
-				borderStyle="single"
-				borderColor="yellow"
-				paddingX={2}
-				paddingY={1}
-				marginTop={1}
-			>
-				<Box flexDirection="column">
-					<Text bold color="yellow">
+			<Box style={{ borderStyle: 'single', borderColor: 'yellow', paddingX: 2, paddingY: 1, marginTop: 1 }}>
+				<Box style={{ flexDirection: 'column' }}>
+					<Text style={{ color: 'yellow', fontWeight: 'bold' }}>
 						Live Logs (only 1-2 lines update per frame):
 					</Text>
 					{logLines.map((line) => (
-						<Text key={line} color="green">
+						<Text key={line} style={{ color: 'green' }}>
 							{line}
 						</Text>
 					))}
 				</Box>
 			</Box>
 
-			<Box
-				borderStyle="single"
-				borderColor="gray"
-				paddingX={2}
-				paddingY={1}
-				marginTop={1}
-				flexGrow={1}
-				flexDirection="column"
-			>
-				<Text bold color="magenta">
+			<Box style={{ borderStyle: 'single', borderColor: 'gray', paddingX: 2, paddingY: 1, marginTop: 1, flexGrow: 1, flexDirection: 'column' }}>
+				<Text style={{ color: 'magenta', fontWeight: 'bold' }}>
 					System Services Monitor ({serviceCount} of {rows.length} services):
 				</Text>
 				{rows.slice(0, serviceCount).map((row, index) => {
 					const isSelected = index === selectedIndex
 					return (
-						<Text key={row} color={isSelected ? 'blue' : 'white'}>
+						<Text key={row} style={{ color: isSelected ? 'blue' : 'white' }}>
 							{isSelected ? '> ' : '  '}
 							{row}
 						</Text>
@@ -227,10 +213,10 @@ function IncrementalRendering() {
 				})}
 			</Box>
 
-			<Box borderStyle="round" borderColor="magenta" paddingX={2} marginTop={1}>
+			<Box style={{ borderStyle: 'round', borderColor: 'magenta', paddingX: 2, marginTop: 1 }}>
 				<Text>
 					Selected:{' '}
-					<Text bold color="magenta">
+					<Text style={{ color: 'magenta', fontWeight: 'bold' }}>
 						{rows.slice(0, serviceCount)[selectedIndex]}
 					</Text>
 				</Text>

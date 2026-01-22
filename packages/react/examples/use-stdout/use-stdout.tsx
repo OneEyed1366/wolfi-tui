@@ -16,19 +16,19 @@ function Example() {
 	}, [])
 
 	return (
-		<Box flexDirection="column" paddingX={2} paddingY={1}>
-			<Text bold underline>
+		<Box style={{ flexDirection: 'column', paddingX: 2, paddingY: 1 }}>
+			<Text style={{ fontWeight: 'bold', underline: true }}>
 				Terminal dimensions:
 			</Text>
 
-			<Box marginTop={1}>
+			<Box style={{ marginTop: 1 }}>
 				<Text>
-					Width: <Text bold>{stdout.columns}</Text>
+					Width: <Text style={{ fontWeight: 'bold' }}>{stdout.columns}</Text>
 				</Text>
 			</Box>
 			<Box>
 				<Text>
-					Height: <Text bold>{stdout.rows}</Text>
+					Height: <Text style={{ fontWeight: 'bold' }}>{stdout.rows}</Text>
 				</Text>
 			</Box>
 		</Box>

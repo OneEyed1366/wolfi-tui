@@ -5,7 +5,7 @@ import { renderToString } from './helpers/render-to-string'
 
 test('row - align text to center', () => {
 	const output = renderToString(
-		<Box alignItems="center" height={3}>
+		<Box style={{ alignItems: 'center', height: 3 }}>
 			<Text>Test</Text>
 		</Box>
 	)
@@ -15,7 +15,7 @@ test('row - align text to center', () => {
 
 test('row - align multiple text nodes to center', () => {
 	const output = renderToString(
-		<Box alignItems="center" height={3}>
+		<Box style={{ alignItems: 'center', height: 3 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -26,7 +26,7 @@ test('row - align multiple text nodes to center', () => {
 
 test('row - align text to bottom', () => {
 	const output = renderToString(
-		<Box alignItems="flex-end" height={3}>
+		<Box style={{ alignItems: 'flex-end', height: 3 }}>
 			<Text>Test</Text>
 		</Box>
 	)
@@ -36,7 +36,7 @@ test('row - align text to bottom', () => {
 
 test('row - align multiple text nodes to bottom', () => {
 	const output = renderToString(
-		<Box alignItems="flex-end" height={3}>
+		<Box style={{ alignItems: 'flex-end', height: 3 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -47,7 +47,7 @@ test('row - align multiple text nodes to bottom', () => {
 
 test('column - align text to center', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="center" width={10}>
+		<Box style={{ flexDirection: 'column', alignItems: 'center', width: 10 }}>
 			<Text>Test</Text>
 		</Box>
 	)
@@ -57,7 +57,7 @@ test('column - align text to center', () => {
 
 test('column - align text to right', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-end" width={10}>
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-end', width: 10 }}>
 			<Text>Test</Text>
 		</Box>
 	)

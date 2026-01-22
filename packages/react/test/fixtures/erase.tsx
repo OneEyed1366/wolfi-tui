@@ -4,7 +4,7 @@ import { Box, Text, render } from '@wolfie/react'
 
 function Erase() {
 	return (
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>

@@ -57,27 +57,37 @@ const iconByVariant: Record<AlertVariant, string> = {
 export const alertTheme = {
 	styles: {
 		container: ({ variant }: { variant: AlertVariant }): Partial<BoxProps> => ({
-			flexGrow: 1,
-			borderStyle: 'round',
-			borderColor: colorByVariant[variant],
-			gap: 1,
-			paddingX: 1,
+			style: {
+				flexGrow: 1,
+				borderStyle: 'round',
+				borderColor: colorByVariant[variant],
+				gap: 1,
+				paddingX: 1,
+			},
 		}),
 		iconContainer: (): Partial<BoxProps> => ({
-			flexShrink: 0,
+			style: {
+				flexShrink: 0,
+			},
 		}),
 		icon: ({ variant }: { variant: AlertVariant }): Partial<TextProps> => ({
-			color: colorByVariant[variant],
+			style: {
+				color: colorByVariant[variant],
+			},
 		}),
 		content: (): Partial<BoxProps> => ({
-			flexShrink: 1,
-			flexGrow: 1,
-			minWidth: 0,
-			flexDirection: 'column',
-			gap: 1,
+			style: {
+				flexShrink: 1,
+				flexGrow: 1,
+				minWidth: 0,
+				flexDirection: 'column',
+				gap: 1,
+			},
 		}),
 		title: (): Partial<TextProps> => ({
-			bold: true,
+			style: {
+				fontWeight: 'bold',
+			},
 		}),
 		message: (): Partial<TextProps> => ({}),
 	},

@@ -17,17 +17,25 @@ export type OrderedListTheme = {
 export const orderedListTheme = {
 	styles: {
 		list: (): Partial<BoxProps> => ({
-			flexDirection: 'column',
+			style: {
+				flexDirection: 'column',
+			},
 		}),
 		listItem: (): Partial<BoxProps> => ({
-			flexDirection: 'row',
+			style: {
+				flexDirection: 'row',
+			},
 		}),
 		marker: (): Partial<TextProps> => ({
-			color: 'green',
+			style: {
+				color: 'green',
+			},
 		}),
 		content: (): Partial<BoxProps> => ({
-			flexDirection: 'column',
-			marginLeft: 1,
+			style: {
+				flexDirection: 'column',
+				marginLeft: 1,
+			},
 		}),
 	},
 } satisfies ComponentTheme

@@ -9,7 +9,7 @@ function EraseWithStatic() {
 				{(item) => <Text key={item}>{item}</Text>}
 			</Static>
 
-			<Box flexDirection="column">
+			<Box style={{ flexDirection: 'column' }}>
 				<Text>D</Text>
 				<Text>E</Text>
 				<Text>F</Text>

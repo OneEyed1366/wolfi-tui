@@ -21,6 +21,7 @@ import {
 	type LayoutTree,
 	resolveViewportUnits,
 	applyLayoutStyle,
+	parseNumericValue,
 } from '@wolfie/core'
 import reconciler, {
 	registerLayoutTree,
@@ -235,14 +236,14 @@ export default class Ink {
 		if (typeof nodeWidth === 'number') {
 			// Account for padding and border
 			const paddingH =
-				(node.style?.paddingLeft ??
-					node.style?.paddingX ??
-					node.style?.padding ??
-					0) +
-				(node.style?.paddingRight ??
-					node.style?.paddingX ??
-					node.style?.padding ??
-					0)
+				parseNumericValue(
+					node.style?.paddingLeft ?? node.style?.paddingX ?? node.style?.padding
+				) +
+				parseNumericValue(
+					node.style?.paddingRight ??
+						node.style?.paddingX ??
+						node.style?.padding
+				)
 			const borderH = node.style?.borderStyle ? 2 : 0 // 1 char each side if border
 			effectiveMaxWidth = Math.max(0, nodeWidth - paddingH - borderH)
 		}

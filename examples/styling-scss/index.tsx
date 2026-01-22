@@ -5,7 +5,7 @@ import './theme.scss'
 
 const App = () => {
 	return (
-		<Box className="base card" flexDirection="column">
+		<Box className="base card" style={{ flexDirection: 'column' }}>
 			<Text className="title">SCSS Example</Text>
 			<Text>This styles come from a mix of CSS and SCSS.</Text>
 		</Box>

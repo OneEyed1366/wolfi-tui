@@ -21,8 +21,8 @@ function SelectExample() {
 	}
 
 	return (
-		<Box flexDirection="column" gap={1}>
-			<Text bold>Select a color (use arrow keys, Enter to confirm):</Text>
+		<Box style={{ flexDirection: 'column', gap: 1 }}>
+			<Text style={{ fontWeight: 'bold' }}>Select a color (use arrow keys, Enter to confirm):</Text>
 
 			<Select
 				options={colorOptions}
@@ -31,15 +31,15 @@ function SelectExample() {
 			/>
 
 			{selectedColor && (
-				<Box marginTop={1}>
+				<Box style={{ marginTop: 1 }}>
 					<Text>
-						Selected: <Text color={selectedColor}>{selectedColor}</Text>
+						Selected: <Text style={{ color: selectedColor }}>{selectedColor}</Text>
 					</Text>
 				</Box>
 			)}
 
-			<Box marginTop={1}>
-				<Text dimColor>Press Ctrl+C to exit</Text>
+			<Box style={{ marginTop: 1 }}>
+				<Text style={{ color: 'gray' }}>Press Ctrl+C to exit</Text>
 			</Box>
 		</Box>
 	)

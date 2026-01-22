@@ -10,7 +10,7 @@ test('clear screen when terminal width decreases', async () => {
 
 	function Test() {
 		return (
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>Hello World</Text>
 			</Box>
 		)
@@ -41,7 +41,7 @@ test('no screen clear when terminal width increases', async () => {
 
 	function Test() {
 		return (
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>Test</Text>
 			</Box>
 		)
@@ -70,7 +70,7 @@ test('consecutive width decreases trigger screen clear each time', async () => {
 
 	function Test() {
 		return (
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>Content</Text>
 			</Box>
 		)
@@ -110,7 +110,7 @@ test('width decrease clears lastOutput to force rerender', async () => {
 
 	function Test() {
 		return (
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>Test Content</Text>
 			</Box>
 		)
@@ -137,7 +137,7 @@ test('width decrease clears lastOutput to force rerender', async () => {
 
 	// Now try to rerender with a different component
 	rerender(
-		<Box borderStyle="round">
+		<Box style={{ borderStyle: 'round' }}>
 			<Text>Updated Content</Text>
 		</Box>
 	)

@@ -47,7 +47,7 @@ afterAll(() => {
 // Text inheritance tests (these work in non-TTY)
 test('Text inherits parent Box background color', () => {
 	const output = renderToString(
-		<Box backgroundColor="green" alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'green', alignSelf: 'flex-start' }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -57,8 +57,8 @@ test('Text inherits parent Box background color', () => {
 
 test('Text explicit background color overrides inherited', () => {
 	const output = renderToString(
-		<Box backgroundColor="red" alignSelf="flex-start">
-			<Text backgroundColor="blue">Hello World</Text>
+		<Box style={{ backgroundColor: 'red', alignSelf: 'flex-start' }}>
+			<Text style={{ backgroundColor: 'blue' }}>Hello World</Text>
 		</Box>
 	)
 
@@ -67,8 +67,8 @@ test('Text explicit background color overrides inherited', () => {
 
 test('Nested Box background inheritance', () => {
 	const output = renderToString(
-		<Box backgroundColor="red" alignSelf="flex-start">
-			<Box backgroundColor="blue">
+		<Box style={{ backgroundColor: 'red', alignSelf: 'flex-start' }}>
+			<Box style={{ backgroundColor: 'blue' }}>
 				<Text>Hello World</Text>
 			</Box>
 		</Box>
@@ -79,7 +79,7 @@ test('Nested Box background inheritance', () => {
 
 test('Text without parent Box background has no inheritance', () => {
 	const output = renderToString(
-		<Box alignSelf="flex-start">
+		<Box style={{ alignSelf: 'flex-start' }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -89,7 +89,7 @@ test('Text without parent Box background has no inheritance', () => {
 
 test('Multiple Text elements inherit same background', () => {
 	const output = renderToString(
-		<Box backgroundColor="yellow" alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'yellow', alignSelf: 'flex-start' }}>
 			<Text>Hello </Text>
 			<Text>World</Text>
 		</Box>
@@ -101,10 +101,10 @@ test('Multiple Text elements inherit same background', () => {
 
 test('Mixed text with and without background inheritance', () => {
 	const output = renderToString(
-		<Box backgroundColor="green" alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'green', alignSelf: 'flex-start' }}>
 			<Text>Inherited </Text>
-			<Text backgroundColor="">No BG </Text>
-			<Text backgroundColor="red">Red BG</Text>
+			<Text style={{ backgroundColor: 'undefined' }}>No BG </Text>
+			<Text style={{ backgroundColor: 'red' }}>Red BG</Text>
 		</Box>
 	)
 
@@ -115,12 +115,12 @@ test('Mixed text with and without background inheritance', () => {
 
 test('Complex nested structure with background inheritance', () => {
 	const output = renderToString(
-		<Box backgroundColor="yellow" alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'yellow', alignSelf: 'flex-start' }}>
 			<Box>
 				<Text>Outer: </Text>
-				<Box backgroundColor="blue">
+				<Box style={{ backgroundColor: 'blue' }}>
 					<Text>Inner: </Text>
-					<Text backgroundColor="red">Explicit</Text>
+					<Text style={{ backgroundColor: 'red' }}>Explicit</Text>
 				</Box>
 			</Box>
 		</Box>
@@ -135,7 +135,7 @@ test('Complex nested structure with background inheritance', () => {
 // Background color tests for different formats
 test('Box background with standard color', () => {
 	const output = renderToString(
-		<Box backgroundColor="red" alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'red', alignSelf: 'flex-start' }}>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -145,7 +145,7 @@ test('Box background with standard color', () => {
 
 test('Box background with hex color', () => {
 	const output = renderToString(
-		<Box backgroundColor="#FF0000" alignSelf="flex-start">
+		<Box style={{ backgroundColor: '#FF0000', alignSelf: 'flex-start' }}>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -155,7 +155,7 @@ test('Box background with hex color', () => {
 
 test('Box background with rgb color', () => {
 	const output = renderToString(
-		<Box backgroundColor="rgb(255, 0, 0)" alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'rgb(255, 0, 0)', alignSelf: 'flex-start' }}>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -165,7 +165,7 @@ test('Box background with rgb color', () => {
 
 test('Box background with ansi256 color', () => {
 	const output = renderToString(
-		<Box backgroundColor="ansi256(9)" alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'ansi256(9)', alignSelf: 'flex-start' }}>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -175,7 +175,7 @@ test('Box background with ansi256 color', () => {
 
 test('Box background with wide characters', () => {
 	const output = renderToString(
-		<Box backgroundColor="yellow" alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'yellow', alignSelf: 'flex-start' }}>
 			<Text>こんにちは</Text>
 		</Box>
 	)
@@ -185,7 +185,7 @@ test('Box background with wide characters', () => {
 
 test('Box background with emojis', () => {
 	const output = renderToString(
-		<Box backgroundColor="red" alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'red', alignSelf: 'flex-start' }}>
 			<Text>🎉🎊</Text>
 		</Box>
 	)
@@ -196,7 +196,7 @@ test('Box background with emojis', () => {
 // Box background space fill tests - these should work with forced colors
 test('Box background fills entire area with standard color', () => {
 	const output = renderToString(
-		<Box backgroundColor="red" width={10} height={3} alignSelf="flex-start">
+		<Box style={{ backgroundColor: 'red', width: 10, height: 3, alignSelf: 'flex-start' }}>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -210,7 +210,7 @@ test('Box background fills entire area with standard color', () => {
 
 test('Box background fills with hex color', () => {
 	const output = renderToString(
-		<Box backgroundColor="#FF0000" width={10} height={3} alignSelf="flex-start">
+		<Box style={{ backgroundColor: '#FF0000', width: 10, height: 3, alignSelf: 'flex-start' }}>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -223,12 +223,7 @@ test('Box background fills with hex color', () => {
 
 test('Box background fills with rgb color', () => {
 	const output = renderToString(
-		<Box
-			backgroundColor="rgb(255, 0, 0)"
-			width={10}
-			height={3}
-			alignSelf="flex-start"
-		>
+		<Box style={{ backgroundColor: 'rgb(255, 0, 0)', width: 10, height: 3, alignSelf: 'flex-start' }}>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -241,12 +236,7 @@ test('Box background fills with rgb color', () => {
 
 test('Box background fills with ansi256 color', () => {
 	const output = renderToString(
-		<Box
-			backgroundColor="ansi256(9)"
-			width={10}
-			height={3}
-			alignSelf="flex-start"
-		>
+		<Box style={{ backgroundColor: 'ansi256(9)', width: 10, height: 3, alignSelf: 'flex-start' }}>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -259,13 +249,7 @@ test('Box background fills with ansi256 color', () => {
 
 test('Box background with border fills content area', () => {
 	const output = renderToString(
-		<Box
-			backgroundColor="cyan"
-			borderStyle="round"
-			width={10}
-			height={5}
-			alignSelf="flex-start"
-		>
+		<Box style={{ backgroundColor: 'cyan', borderStyle: 'round', width: 10, height: 5, alignSelf: 'flex-start' }}>
 			<Text>Hi</Text>
 		</Box>
 	)
@@ -280,13 +264,7 @@ test('Box background with border fills content area', () => {
 
 test('Box background with padding fills entire padded area', () => {
 	const output = renderToString(
-		<Box
-			backgroundColor="magenta"
-			padding={1}
-			width={10}
-			height={5}
-			alignSelf="flex-start"
-		>
+		<Box style={{ backgroundColor: 'magenta', padding: 1, width: 10, height: 5, alignSelf: 'flex-start' }}>
 			<Text>Hi</Text>
 		</Box>
 	)
@@ -299,13 +277,7 @@ test('Box background with padding fills entire padded area', () => {
 
 test('Box background with center alignment fills entire area', () => {
 	const output = renderToString(
-		<Box
-			backgroundColor="blue"
-			width={10}
-			height={3}
-			justifyContent="center"
-			alignSelf="flex-start"
-		>
+		<Box style={{ backgroundColor: 'blue', width: 10, height: 3, justifyContent: 'center', alignSelf: 'flex-start' }}>
 			<Text>Hi</Text>
 		</Box>
 	)
@@ -317,13 +289,7 @@ test('Box background with center alignment fills entire area', () => {
 
 test('Box background with column layout fills entire area', () => {
 	const output = renderToString(
-		<Box
-			backgroundColor="green"
-			flexDirection="column"
-			width={10}
-			height={5}
-			alignSelf="flex-start"
-		>
+		<Box style={{ backgroundColor: 'green', flexDirection: 'column', width: 10, height: 5, alignSelf: 'flex-start' }}>
 			<Text>Line 1</Text>
 			<Text>Line 2</Text>
 		</Box>
@@ -341,7 +307,7 @@ test('Box background updates on rerender', () => {
 
 	function Test({ bgColor }: { readonly bgColor?: string }) {
 		return (
-			<Box backgroundColor={bgColor} alignSelf="flex-start">
+			<Box style={{ backgroundColor: bgColor, alignSelf: 'flex-start' }}>
 				<Text>Hello</Text>
 			</Box>
 		)

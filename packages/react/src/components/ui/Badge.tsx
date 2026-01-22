@@ -1,3 +1,4 @@
+import { type Styles } from '@wolfie/core'
 import { type ReactNode } from 'react'
 import Text, { type Props as TextProps } from '../Text'
 import { useComponentTheme, type ComponentTheme } from '../../theme/theme'
@@ -14,12 +15,12 @@ export type BadgeProps = {
 	 *
 	 * @default "magenta"
 	 */
-	readonly color?: TextProps['color']
+	readonly color?: Styles['color']
 }
 
 type BadgeTheme = {
 	styles: {
-		container: (props: Pick<TextProps, 'color'>) => Partial<TextProps>
+		container: (props: { color?: Styles['color'] }) => Partial<TextProps>
 		label: () => Partial<TextProps>
 	}
 }
@@ -28,11 +29,19 @@ type BadgeTheme = {
 //#region Theme
 export const badgeTheme = {
 	styles: {
-		container: ({ color }: Pick<TextProps, 'color'>): Partial<TextProps> => ({
-			backgroundColor: color,
+		container: ({
+			color,
+		}: {
+			color?: Styles['color']
+		}): Partial<TextProps> => ({
+			style: {
+				backgroundColor: color,
+			},
 		}),
 		label: (): Partial<TextProps> => ({
-			color: 'black',
+			style: {
+				color: 'black',
+			},
 		}),
 	},
 } satisfies ComponentTheme

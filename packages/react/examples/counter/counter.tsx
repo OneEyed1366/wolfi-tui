@@ -15,7 +15,7 @@ function Counter() {
 		}
 	}, [])
 
-	return <Text color="green">{counter} tests passed</Text>
+	return <Text style={{ color: 'green' }}>{counter} tests passed</Text>
 }
 
 render(<Counter />)

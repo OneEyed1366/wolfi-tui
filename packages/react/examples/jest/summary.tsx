@@ -10,18 +10,18 @@ type Properties = {
 
 function Summary({ isFinished, passed, failed, time }: Properties) {
 	return (
-		<Box flexDirection="column" marginTop={1}>
+		<Box style={{ flexDirection: 'column', marginTop: 1 }}>
 			<Box>
-				<Box width={14}>
-					<Text bold>Test Suites:</Text>
+				<Box style={{ width: 14 }}>
+					<Text style={{ fontWeight: 'bold' }}>Test Suites:</Text>
 				</Box>
 				{failed > 0 && (
-					<Text bold color="red">
+					<Text style={{ color: 'red', fontWeight: 'bold' }}>
 						{failed} failed,{' '}
 					</Text>
 				)}
 				{passed > 0 && (
-					<Text bold color="green">
+					<Text style={{ color: 'green', fontWeight: 'bold' }}>
 						{passed} passed,{' '}
 					</Text>
 				)}
@@ -29,8 +29,8 @@ function Summary({ isFinished, passed, failed, time }: Properties) {
 			</Box>
 
 			<Box>
-				<Box width={14}>
-					<Text bold>Time:</Text>
+				<Box style={{ width: 14 }}>
+					<Text style={{ fontWeight: 'bold' }}>Time:</Text>
 				</Box>
 
 				<Text>{time}</Text>
@@ -38,7 +38,7 @@ function Summary({ isFinished, passed, failed, time }: Properties) {
 
 			{isFinished && (
 				<Box>
-					<Text dimColor>Ran all test suites.</Text>
+					<Text style={{ color: 'gray' }}>Ran all test suites.</Text>
 				</Box>
 			)}
 		</Box>

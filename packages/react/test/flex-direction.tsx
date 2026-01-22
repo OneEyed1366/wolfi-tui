@@ -5,7 +5,7 @@ import { renderToString } from './helpers/render-to-string'
 
 test('direction row', () => {
 	const output = renderToString(
-		<Box flexDirection="row">
+		<Box style={{ flexDirection: 'row' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -16,7 +16,7 @@ test('direction row', () => {
 
 test('direction row reverse', () => {
 	const output = renderToString(
-		<Box flexDirection="row-reverse" width={4}>
+		<Box style={{ flexDirection: 'row-reverse', width: 4 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -27,7 +27,7 @@ test('direction row reverse', () => {
 
 test('direction column', () => {
 	const output = renderToString(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -38,7 +38,7 @@ test('direction column', () => {
 
 test('direction column reverse', () => {
 	const output = renderToString(
-		<Box flexDirection="column-reverse" height={4}>
+		<Box style={{ flexDirection: 'column-reverse', height: 4 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -49,7 +49,7 @@ test('direction column reverse', () => {
 
 test("don't squash text nodes when column direction is applied", () => {
 	const output = renderToString(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>

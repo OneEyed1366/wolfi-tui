@@ -76,7 +76,7 @@ function Test({
 	}
 
 	return (
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			{showFirst && (
 				<Item label="First" autoFocus={autoFocus} disabled={disableFirst} />
 			)}

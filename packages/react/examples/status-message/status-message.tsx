@@ -3,10 +3,10 @@ import { Box, Text, StatusMessage } from '../../src/index'
 
 function Demo() {
 	return (
-		<Box flexDirection="column" padding={1} gap={1}>
-			<Text bold>StatusMessage Component Demo</Text>
+		<Box style={{ flexDirection: 'column', padding: 1, gap: 1 }}>
+			<Text style={{ fontWeight: 'bold' }}>StatusMessage Component Demo</Text>
 
-			<Box flexDirection="column" gap={1}>
+			<Box style={{ flexDirection: 'column', gap: 1 }}>
 				<StatusMessage variant="info">
 					Fetching data from the server...
 				</StatusMessage>

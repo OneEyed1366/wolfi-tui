@@ -9,7 +9,7 @@ test('row - no wrap', () => {
 	// "BC" starts at x=1 and extends to x=3 (overflows).
 	// Standard CSS flexbox renders all content; clipping requires overflow:hidden.
 	const output = renderToString(
-		<Box width={2}>
+		<Box style={{ width: 2 }}>
 			<Text>A</Text>
 			<Text>BC</Text>
 		</Box>
@@ -23,7 +23,7 @@ test('column - no wrap', () => {
 	// extend past the container bounds. "A" is at y=0, "B" at y=1,
 	// "C" at y=2 (overflows). Standard CSS renders visible items.
 	const output = renderToString(
-		<Box flexDirection="column" height={2}>
+		<Box style={{ flexDirection: 'column', height: 2 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>
@@ -35,7 +35,7 @@ test('column - no wrap', () => {
 
 test('row - wrap content', () => {
 	const output = renderToString(
-		<Box width={2} flexWrap="wrap">
+		<Box style={{ width: 2, flexWrap: 'wrap' }}>
 			<Text>A</Text>
 			<Text>BC</Text>
 		</Box>
@@ -48,7 +48,7 @@ test('column - wrap content', () => {
 	// With column wrap, items flow vertically then wrap to next column.
 	// Use alignSelf="flex-start" so box shrinks to content width.
 	const output = renderToString(
-		<Box flexDirection="column" height={2} flexWrap="wrap" alignSelf="flex-start">
+		<Box style={{ flexDirection: 'column', height: 2, flexWrap: 'wrap', alignSelf: 'flex-start' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>
@@ -63,7 +63,7 @@ test('column - wrap content reverse', () => {
 	// First column (A,B) is on the right, wrapped column (C) is on the left.
 	// Taffy aligns C at x=0 with its content width.
 	const output = renderToString(
-		<Box flexDirection="column" height={2} width={3} flexWrap="wrap-reverse">
+		<Box style={{ flexDirection: 'column', height: 2, width: 3, flexWrap: 'wrap-reverse' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>
@@ -78,7 +78,7 @@ test('row - wrap content reverse', () => {
 	// First row (A,B) is at the bottom, wrapped row (C) is above.
 	// Taffy places C at y=0.
 	const output = renderToString(
-		<Box height={3} width={2} flexWrap="wrap-reverse">
+		<Box style={{ height: 3, width: 2, flexWrap: 'wrap-reverse' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>

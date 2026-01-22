@@ -19,8 +19,8 @@ function TerminalResizeTest() {
 	})
 
 	return (
-		<Box flexDirection="column" padding={1}>
-			<Text bold color="cyan">
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
+			<Text style={{ color: 'cyan', fontWeight: 'bold' }}>
 				=== Terminal Resize Test ===
 			</Text>
 			<Text>
@@ -28,8 +28,8 @@ function TerminalResizeTest() {
 				Cmd/Ctrl -/+)
 			</Text>
 			<Text>Input: "{value}"</Text>
-			<Box marginTop={1}>
-				<Text dimColor>Press Ctrl+C to exit</Text>
+			<Box style={{ marginTop: 1 }}>
+				<Text style={{ color: 'gray' }}>Press Ctrl+C to exit</Text>
 			</Box>
 		</Box>
 	)

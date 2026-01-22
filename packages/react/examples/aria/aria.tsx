@@ -12,17 +12,17 @@ function AriaExample() {
 	})
 
 	return (
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>
 				Press spacebar to toggle the checkbox. This example is best experienced
 				with a screen reader.
 			</Text>
-			<Box marginTop={1}>
+			<Box style={{ marginTop: 1 }}>
 				<Box aria-role="checkbox" aria-state={{ checked }}>
 					<Text>{checked ? '[x]' : '[ ]'}</Text>
 				</Box>
 			</Box>
-			<Box marginTop={1}>
+			<Box style={{ marginTop: 1 }}>
 				<Text aria-hidden="true">This text is hidden from screen readers.</Text>
 			</Box>
 		</Box>

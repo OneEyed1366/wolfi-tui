@@ -34,14 +34,14 @@ function ChatApp() {
 	})
 
 	return (
-		<Box flexDirection="column" padding={1}>
-			<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
+			<Box style={{ flexDirection: 'column' }}>
 				{messages.map((message) => (
 					<Text key={message.id}>{message.text}</Text>
 				))}
 			</Box>
 
-			<Box marginTop={1}>
+			<Box style={{ marginTop: 1 }}>
 				<Text>Enter your message: {input}</Text>
 			</Box>
 		</Box>

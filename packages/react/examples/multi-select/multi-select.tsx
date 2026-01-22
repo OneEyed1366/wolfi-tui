@@ -32,8 +32,8 @@ function MultiSelectExample() {
 
 	if (submitted) {
 		return (
-			<Box flexDirection="column" gap={1}>
-				<Text color="green" bold>
+			<Box style={{ flexDirection: 'column', gap: 1 }}>
+				<Text style={{ color: 'green', fontWeight: 'bold' }}>
 					Configuration complete!
 				</Text>
 				<Text>Selected features: {selected.join(', ')}</Text>
@@ -42,8 +42,8 @@ function MultiSelectExample() {
 	}
 
 	return (
-		<Box flexDirection="column" gap={1}>
-			<Text bold>
+		<Box style={{ flexDirection: 'column', gap: 1 }}>
+			<Text style={{ fontWeight: 'bold' }}>
 				Select features to include (Space to toggle, Enter to confirm):
 			</Text>
 
@@ -55,15 +55,15 @@ function MultiSelectExample() {
 			/>
 
 			{selected.length > 0 && (
-				<Box marginTop={1}>
-					<Text dimColor>
+				<Box style={{ marginTop: 1 }}>
+					<Text style={{ color: 'gray' }}>
 						Selected ({selected.length}): {selected.join(', ')}
 					</Text>
 				</Box>
 			)}
 
-			<Box marginTop={1}>
-				<Text dimColor>Press Ctrl+C to cancel</Text>
+			<Box style={{ marginTop: 1 }}>
+				<Text style={{ color: 'gray' }}>Press Ctrl+C to cancel</Text>
 			</Box>
 		</Box>
 	)

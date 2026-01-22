@@ -5,7 +5,7 @@ import { renderToString } from './helpers/render-to-string'
 
 test('gap', () => {
 	const output = renderToString(
-		<Box gap={1} width={3} flexWrap="wrap">
+		<Box style={{ gap: 1, width: 3, flexWrap: 'wrap' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>
@@ -17,7 +17,7 @@ test('gap', () => {
 
 test('column gap', () => {
 	const output = renderToString(
-		<Box gap={1}>
+		<Box style={{ gap: 1 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -28,7 +28,7 @@ test('column gap', () => {
 
 test('row gap', () => {
 	const output = renderToString(
-		<Box flexDirection="column" gap={1}>
+		<Box style={{ flexDirection: 'column', gap: 1 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>

@@ -9,11 +9,11 @@ function EmailInputDemo() {
 
 	if (submitted !== null) {
 		return (
-			<Box flexDirection="column" padding={1}>
-				<Text color="cyan">Email Input Demo - Submitted</Text>
-				<Box marginTop={1}>
+			<Box style={{ flexDirection: 'column', padding: 1 }}>
+				<Text style={{ color: 'cyan' }}>Email Input Demo - Submitted</Text>
+				<Box style={{ marginTop: 1 }}>
 					<Text>
-						Email: <Text color="green">{submitted}</Text>
+						Email: <Text style={{ color: 'green' }}>{submitted}</Text>
 					</Text>
 				</Box>
 			</Box>
@@ -21,12 +21,12 @@ function EmailInputDemo() {
 	}
 
 	return (
-		<Box flexDirection="column" padding={1}>
-			<Text color="cyan">Email Input Demo</Text>
-			<Text dimColor>Type email, use Tab for domain autocomplete</Text>
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
+			<Text style={{ color: 'cyan' }}>Email Input Demo</Text>
+			<Text style={{ color: 'gray' }}>Type email, use Tab for domain autocomplete</Text>
 
-			<Box marginTop={1} flexDirection="column" gap={1}>
-				<Box gap={1}>
+			<Box style={{ marginTop: 1, flexDirection: 'column', gap: 1 }}>
+				<Box style={{ gap: 1 }}>
 					<Text>Email:</Text>
 					<EmailInput
 						placeholder="user@example.com"
@@ -39,7 +39,7 @@ function EmailInputDemo() {
 					/>
 				</Box>
 
-				<Text dimColor>Current: {currentValue || '(empty)'}</Text>
+				<Text style={{ color: 'gray' }}>Current: {currentValue || '(empty)'}</Text>
 			</Box>
 		</Box>
 	)

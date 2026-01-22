@@ -50,17 +50,23 @@ const iconByVariant: Record<StatusMessageVariant, string> = {
 export const statusMessageTheme = {
 	styles: {
 		container: (): Partial<BoxProps> => ({
-			gap: 1,
+			style: {
+				gap: 1,
+			},
 		}),
 		iconContainer: (): Partial<BoxProps> => ({
-			flexShrink: 0,
+			style: {
+				flexShrink: 0,
+			},
 		}),
 		icon: ({
 			variant,
 		}: {
 			variant: StatusMessageVariant
 		}): Partial<TextProps> => ({
-			color: colorByVariant[variant],
+			style: {
+				color: colorByVariant[variant],
+			},
 		}),
 		message: (): Partial<TextProps> => ({}),
 	},

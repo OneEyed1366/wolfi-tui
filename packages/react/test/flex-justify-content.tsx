@@ -6,7 +6,7 @@ import { renderToString } from './helpers/render-to-string'
 
 test('row - align text to center', () => {
 	const output = renderToString(
-		<Box justifyContent="center" width={10}>
+		<Box style={{ justifyContent: 'center', width: 10 }}>
 			<Text>Test</Text>
 		</Box>
 	)
@@ -16,7 +16,7 @@ test('row - align text to center', () => {
 
 test('row - align multiple text nodes to center', () => {
 	const output = renderToString(
-		<Box justifyContent="center" width={10}>
+		<Box style={{ justifyContent: 'center', width: 10 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -27,7 +27,7 @@ test('row - align multiple text nodes to center', () => {
 
 test('row - align text to right', () => {
 	const output = renderToString(
-		<Box justifyContent="flex-end" width={10}>
+		<Box style={{ justifyContent: 'flex-end', width: 10 }}>
 			<Text>Test</Text>
 		</Box>
 	)
@@ -37,7 +37,7 @@ test('row - align text to right', () => {
 
 test('row - align multiple text nodes to right', () => {
 	const output = renderToString(
-		<Box justifyContent="flex-end" width={10}>
+		<Box style={{ justifyContent: 'flex-end', width: 10 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -48,7 +48,7 @@ test('row - align multiple text nodes to right', () => {
 
 test('row - align two text nodes on the edges', () => {
 	const output = renderToString(
-		<Box justifyContent="space-between" width={4}>
+		<Box style={{ justifyContent: 'space-between', width: 4 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -62,7 +62,7 @@ test('row - space evenly two text nodes', () => {
 	// (10 - 2) / 3 = 2.67, Taffy rounds to 3 before A, 2 between, 3 after
 	// With right edge at width boundary, trailing space is trimmed.
 	const output = renderToString(
-		<Box justifyContent="space-evenly" width={10}>
+		<Box style={{ justifyContent: 'space-evenly', width: 10 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -74,7 +74,7 @@ test('row - space evenly two text nodes', () => {
 // Note: Yoga had a bug with space-around but Taffy handles it correctly
 test('row - align two text nodes with equal space around them', () => {
 	const output = renderToString(
-		<Box justifyContent="space-around" width={5}>
+		<Box style={{ justifyContent: 'space-around', width: 5 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -85,8 +85,8 @@ test('row - align two text nodes with equal space around them', () => {
 
 test('row - align colored text node when text is squashed', () => {
 	const output = renderToString(
-		<Box justifyContent="flex-end" width={5}>
-			<Text color="green">X</Text>
+		<Box style={{ justifyContent: 'flex-end', width: 5 }}>
+			<Text style={{ color: 'green' }}>X</Text>
 		</Box>
 	)
 
@@ -95,7 +95,7 @@ test('row - align colored text node when text is squashed', () => {
 
 test('column - align text to center', () => {
 	const output = renderToString(
-		<Box flexDirection="column" justifyContent="center" height={3}>
+		<Box style={{ flexDirection: 'column', justifyContent: 'center', height: 3 }}>
 			<Text>Test</Text>
 		</Box>
 	)
@@ -105,7 +105,7 @@ test('column - align text to center', () => {
 
 test('column - align text to bottom', () => {
 	const output = renderToString(
-		<Box flexDirection="column" justifyContent="flex-end" height={3}>
+		<Box style={{ flexDirection: 'column', justifyContent: 'flex-end', height: 3 }}>
 			<Text>Test</Text>
 		</Box>
 	)
@@ -115,7 +115,7 @@ test('column - align text to bottom', () => {
 
 test('column - align two text nodes on the edges', () => {
 	const output = renderToString(
-		<Box flexDirection="column" justifyContent="space-between" height={4}>
+		<Box style={{ flexDirection: 'column', justifyContent: 'space-between', height: 4 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -127,7 +127,7 @@ test('column - align two text nodes on the edges', () => {
 // Note: Yoga had a bug with space-around but Taffy handles it correctly
 test('column - align two text nodes with equal space around them', () => {
 	const output = renderToString(
-		<Box flexDirection="column" justifyContent="space-around" height={5}>
+		<Box style={{ flexDirection: 'column', justifyContent: 'space-around', height: 5 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>

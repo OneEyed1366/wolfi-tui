@@ -14,7 +14,9 @@ type ConfirmInputTheme = ComponentTheme & {
 export const confirmInputTheme = {
 	styles: {
 		input: ({ isFocused }: { isFocused: boolean }): TextProps => ({
-			dimColor: !isFocused,
+			style: {
+				color: isFocused ? undefined : 'gray',
+			},
 		}),
 	},
 } satisfies ComponentTheme

@@ -5,8 +5,8 @@ import { renderToString } from './helpers/render-to-string'
 
 test('row - align text to center', () => {
 	const output = renderToString(
-		<Box height={3}>
-			<Box alignSelf="center">
+		<Box style={{ height: 3 }}>
+			<Box style={{ alignSelf: 'center' }}>
 				<Text>Test</Text>
 			</Box>
 		</Box>
@@ -17,8 +17,8 @@ test('row - align text to center', () => {
 
 test('row - align multiple text nodes to center', () => {
 	const output = renderToString(
-		<Box height={3}>
-			<Box alignSelf="center">
+		<Box style={{ height: 3 }}>
+			<Box style={{ alignSelf: 'center' }}>
 				<Text>A</Text>
 				<Text>B</Text>
 			</Box>
@@ -30,8 +30,8 @@ test('row - align multiple text nodes to center', () => {
 
 test('row - align text to bottom', () => {
 	const output = renderToString(
-		<Box height={3}>
-			<Box alignSelf="flex-end">
+		<Box style={{ height: 3 }}>
+			<Box style={{ alignSelf: 'flex-end' }}>
 				<Text>Test</Text>
 			</Box>
 		</Box>
@@ -42,8 +42,8 @@ test('row - align text to bottom', () => {
 
 test('row - align multiple text nodes to bottom', () => {
 	const output = renderToString(
-		<Box height={3}>
-			<Box alignSelf="flex-end">
+		<Box style={{ height: 3 }}>
+			<Box style={{ alignSelf: 'flex-end' }}>
 				<Text>A</Text>
 				<Text>B</Text>
 			</Box>
@@ -55,8 +55,8 @@ test('row - align multiple text nodes to bottom', () => {
 
 test('column - align text to center', () => {
 	const output = renderToString(
-		<Box flexDirection="column" width={10}>
-			<Box alignSelf="center">
+		<Box style={{ flexDirection: 'column', width: 10 }}>
+			<Box style={{ alignSelf: 'center' }}>
 				<Text>Test</Text>
 			</Box>
 		</Box>
@@ -67,8 +67,8 @@ test('column - align text to center', () => {
 
 test('column - align text to right', () => {
 	const output = renderToString(
-		<Box flexDirection="column" width={10}>
-			<Box alignSelf="flex-end">
+		<Box style={{ flexDirection: 'column', width: 10 }}>
+			<Box style={{ alignSelf: 'flex-end' }}>
 				<Text>Test</Text>
 			</Box>
 		</Box>

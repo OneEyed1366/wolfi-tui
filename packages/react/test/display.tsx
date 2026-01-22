@@ -5,7 +5,7 @@ import { renderToString } from './helpers/render-to-string'
 
 test('display flex', () => {
 	const output = renderToString(
-		<Box display="flex">
+		<Box style={{ display: 'flex' }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -14,8 +14,8 @@ test('display flex', () => {
 
 test('display none', () => {
 	const output = renderToString(
-		<Box flexDirection="column">
-			<Box display="none">
+		<Box style={{ flexDirection: 'column' }}>
+			<Box style={{ display: 'none' }}>
 				<Text>Kitty!</Text>
 			</Box>
 			<Text>Doggo</Text>

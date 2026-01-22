@@ -21,63 +21,63 @@ function Demo() {
 	}, [])
 
 	return (
-		<Box flexDirection="column" padding={1} gap={1}>
-			<Text bold>ProgressBar Component Demo</Text>
+		<Box style={{ flexDirection: 'column', padding: 1, gap: 1 }}>
+			<Text style={{ fontWeight: 'bold' }}>ProgressBar Component Demo</Text>
 
-			<Box flexDirection="column" gap={1}>
+			<Box style={{ flexDirection: 'column', gap: 1 }}>
 				<Box>
-					<Box width={20}>
+					<Box style={{ width: 20 }}>
 						<Text>Animated:</Text>
 					</Box>
-					<Box flexGrow={1}>
+					<Box style={{ flexGrow: 1 }}>
 						<ProgressBar value={progress} />
 					</Box>
-					<Box width={6} justifyContent="flex-end">
+					<Box style={{ width: 6, justifyContent: 'flex-end' }}>
 						<Text>{progress}%</Text>
 					</Box>
 				</Box>
 
 				<Box>
-					<Box width={20}>
+					<Box style={{ width: 20 }}>
 						<Text>0% (empty):</Text>
 					</Box>
-					<Box flexGrow={1}>
+					<Box style={{ flexGrow: 1 }}>
 						<ProgressBar value={0} />
 					</Box>
 				</Box>
 
 				<Box>
-					<Box width={20}>
+					<Box style={{ width: 20 }}>
 						<Text>25%:</Text>
 					</Box>
-					<Box flexGrow={1}>
+					<Box style={{ flexGrow: 1 }}>
 						<ProgressBar value={25} />
 					</Box>
 				</Box>
 
 				<Box>
-					<Box width={20}>
+					<Box style={{ width: 20 }}>
 						<Text>50%:</Text>
 					</Box>
-					<Box flexGrow={1}>
+					<Box style={{ flexGrow: 1 }}>
 						<ProgressBar value={50} />
 					</Box>
 				</Box>
 
 				<Box>
-					<Box width={20}>
+					<Box style={{ width: 20 }}>
 						<Text>75%:</Text>
 					</Box>
-					<Box flexGrow={1}>
+					<Box style={{ flexGrow: 1 }}>
 						<ProgressBar value={75} />
 					</Box>
 				</Box>
 
 				<Box>
-					<Box width={20}>
+					<Box style={{ width: 20 }}>
 						<Text>100% (full):</Text>
 					</Box>
-					<Box flexGrow={1}>
+					<Box style={{ flexGrow: 1 }}>
 						<ProgressBar value={100} />
 					</Box>
 				</Box>

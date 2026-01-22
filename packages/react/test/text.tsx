@@ -16,59 +16,61 @@ test('<Text> with null children', () => {
 })
 
 test('text with standard color', () => {
-	const output = renderToString(<Text color="green">Test</Text>)
+	const output = renderToString(<Text style={{ color: 'green' }}>Test</Text>)
 	expect(output).toBe(chalk.green('Test'))
 })
 
 // TODO: chalk/colorize behavior differs in Vite env - dim+bold not being applied
 test.todo('text with dim+bold', () => {
 	const output = renderToString(
-		<Text dimColor bold>
-			Test
-		</Text>
+		<Text style={{ color: 'gray', fontWeight: 'bold' }}>Test</Text>
 	)
 	// Component applies bold then dim, with single reset at end
 	expect(output).toBe('\u001B[1m\u001B[2mTest\u001B[22m')
 })
 
 test('text with dimmed color', () => {
-	const output = renderToString(
-		<Text dimColor color="green">
-			Test
-		</Text>
-	)
+	const output = renderToString(<Text style={{ color: 'gray' }}>Test</Text>)
 
-	expect(output).toBe(chalk.green.dim('Test'))
+	expect(output).toBe(chalk.gray('Test'))
 })
 
 test('text with hex color', () => {
-	const output = renderToString(<Text color="#FF8800">Test</Text>)
+	const output = renderToString(<Text style={{ color: '#FF8800' }}>Test</Text>)
 	expect(output).toBe(chalk.hex('#FF8800')('Test'))
 })
 
 test('text with rgb color', () => {
-	const output = renderToString(<Text color="rgb(255, 136, 0)">Test</Text>)
+	const output = renderToString(
+		<Text style={{ color: 'rgb(255, 136, 0)' }}>Test</Text>
+	)
 	expect(output).toBe(chalk.rgb(255, 136, 0)('Test'))
 })
 
 test('text with ansi256 color', () => {
-	const output = renderToString(<Text color="ansi256(194)">Test</Text>)
+	const output = renderToString(
+		<Text style={{ color: 'ansi256(194)' }}>Test</Text>
+	)
 	expect(output).toBe(chalk.ansi256(194)('Test'))
 })
 
 test('text with standard background color', () => {
-	const output = renderToString(<Text backgroundColor="green">Test</Text>)
+	const output = renderToString(
+		<Text style={{ backgroundColor: 'green' }}>Test</Text>
+	)
 	expect(output).toBe(chalk.bgGreen('Test'))
 })
 
 test('text with hex background color', () => {
-	const output = renderToString(<Text backgroundColor="#FF8800">Test</Text>)
+	const output = renderToString(
+		<Text style={{ backgroundColor: '#FF8800' }}>Test</Text>
+	)
 	expect(output).toBe(chalk.bgHex('#FF8800')('Test'))
 })
 
 test('text with rgb background color', () => {
 	const output = renderToString(
-		<Text backgroundColor="rgb(255, 136, 0)">Test</Text>
+		<Text style={{ backgroundColor: 'rgb(255, 136, 0)' }}>Test</Text>
 	)
 
 	expect(output).toBe(chalk.bgRgb(255, 136, 0)('Test'))
@@ -76,14 +78,14 @@ test('text with rgb background color', () => {
 
 test('text with ansi256 background color', () => {
 	const output = renderToString(
-		<Text backgroundColor="ansi256(194)">Test</Text>
+		<Text style={{ backgroundColor: 'ansi256(194)' }}>Test</Text>
 	)
 
 	expect(output).toBe(chalk.bgAnsi256(194)('Test'))
 })
 
 test('text with inversion', () => {
-	const output = renderToString(<Text inverse>Test</Text>)
+	const output = renderToString(<Text style={{ inverse: true }}>Test</Text>)
 	expect(output).toBe(chalk.inverse('Test'))
 })
 

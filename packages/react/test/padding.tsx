@@ -5,7 +5,7 @@ import { renderToString } from './helpers/render-to-string'
 
 test('padding', () => {
 	const output = renderToString(
-		<Box padding={2}>
+		<Box style={{ padding: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -16,7 +16,7 @@ test('padding', () => {
 test('padding X', () => {
 	const output = renderToString(
 		<Box>
-			<Box paddingX={2}>
+			<Box style={{ paddingX: 2 }}>
 				<Text>X</Text>
 			</Box>
 			<Text>Y</Text>
@@ -28,7 +28,7 @@ test('padding X', () => {
 
 test('padding Y', () => {
 	const output = renderToString(
-		<Box paddingY={2}>
+		<Box style={{ paddingY: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -38,7 +38,7 @@ test('padding Y', () => {
 
 test('padding top', () => {
 	const output = renderToString(
-		<Box paddingTop={2}>
+		<Box style={{ paddingTop: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -48,7 +48,7 @@ test('padding top', () => {
 
 test('padding bottom', () => {
 	const output = renderToString(
-		<Box paddingBottom={2}>
+		<Box style={{ paddingBottom: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -58,7 +58,7 @@ test('padding bottom', () => {
 
 test('padding left', () => {
 	const output = renderToString(
-		<Box paddingLeft={2}>
+		<Box style={{ paddingLeft: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -69,7 +69,7 @@ test('padding left', () => {
 test('padding right', () => {
 	const output = renderToString(
 		<Box>
-			<Box paddingRight={2}>
+			<Box style={{ paddingRight: 2 }}>
 				<Text>X</Text>
 			</Box>
 			<Text>Y</Text>
@@ -81,8 +81,8 @@ test('padding right', () => {
 
 test('nested padding', () => {
 	const output = renderToString(
-		<Box padding={2}>
-			<Box padding={2}>
+		<Box style={{ padding: 2 }}>
+			<Box style={{ padding: 2 }}>
 				<Text>X</Text>
 			</Box>
 		</Box>
@@ -93,7 +93,7 @@ test('nested padding', () => {
 
 test('padding with multiline string', () => {
 	const output = renderToString(
-		<Box padding={2}>
+		<Box style={{ padding: 2 }}>
 			<Text>{'A\nB'}</Text>
 		</Box>
 	)
@@ -103,7 +103,7 @@ test('padding with multiline string', () => {
 
 test('apply padding to text with newlines', () => {
 	const output = renderToString(
-		<Box padding={1}>
+		<Box style={{ padding: 1 }}>
 			<Text>Hello{'\n'}World</Text>
 		</Box>
 	)
@@ -112,7 +112,7 @@ test('apply padding to text with newlines', () => {
 
 test('apply padding to wrapped text', () => {
 	const output = renderToString(
-		<Box padding={1} width={5}>
+		<Box style={{ padding: 1, width: 5 }}>
 			<Text>Hello World</Text>
 		</Box>
 	)

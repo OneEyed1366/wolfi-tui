@@ -6,7 +6,7 @@ import { renderToString } from './helpers/render-to-string'
 test('set width', () => {
 	const output = renderToString(
 		<Box>
-			<Box width={5}>
+			<Box style={{ width: 5 }}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
@@ -18,8 +18,8 @@ test('set width', () => {
 
 test('set width in percent', () => {
 	const output = renderToString(
-		<Box width={10}>
-			<Box width="50%">
+		<Box style={{ width: 10 }}>
+			<Box style={{ width: '50%' }}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
@@ -32,7 +32,7 @@ test('set width in percent', () => {
 test('set min width', () => {
 	const smallerOutput = renderToString(
 		<Box>
-			<Box minWidth={5}>
+			<Box style={{ minWidth: 5 }}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
@@ -43,7 +43,7 @@ test('set min width', () => {
 
 	const largerOutput = renderToString(
 		<Box>
-			<Box minWidth={2}>
+			<Box style={{ minWidth: 2 }}>
 				<Text>AAAAA</Text>
 			</Box>
 			<Text>B</Text>
@@ -56,8 +56,8 @@ test('set min width', () => {
 // Note: Yoga had a bug with percent minWidth but Taffy handles it correctly
 test('set min width in percent', () => {
 	const output = renderToString(
-		<Box width={10}>
-			<Box minWidth="50%">
+		<Box style={{ width: 10 }}>
+			<Box style={{ minWidth: '50%' }}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
@@ -69,7 +69,7 @@ test('set min width in percent', () => {
 
 test('set height', () => {
 	const output = renderToString(
-		<Box height={4}>
+		<Box style={{ height: 4 }}>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -80,8 +80,8 @@ test('set height', () => {
 
 test('set height in percent', () => {
 	const output = renderToString(
-		<Box height={6} flexDirection="column">
-			<Box height="50%">
+		<Box style={{ height: 6, flexDirection: 'column' }}>
+			<Box style={{ height: '50%' }}>
 				<Text>A</Text>
 			</Box>
 			<Text>B</Text>
@@ -93,7 +93,7 @@ test('set height in percent', () => {
 
 test('cut text over the set height', () => {
 	const output = renderToString(
-		<Box height={2}>
+		<Box style={{ height: 2 }}>
 			<Text>AAAABBBBCCCC</Text>
 		</Box>,
 		{ columns: 4 }
@@ -104,7 +104,7 @@ test('cut text over the set height', () => {
 
 test('set min height', () => {
 	const smallerOutput = renderToString(
-		<Box minHeight={4}>
+		<Box style={{ minHeight: 4 }}>
 			<Text>A</Text>
 		</Box>
 	)
@@ -112,8 +112,8 @@ test('set min height', () => {
 	expect(smallerOutput).toBe('A\n\n\n')
 
 	const largerOutput = renderToString(
-		<Box minHeight={2}>
-			<Box height={4}>
+		<Box style={{ minHeight: 2 }}>
+			<Box style={{ height: 4 }}>
 				<Text>A</Text>
 			</Box>
 		</Box>

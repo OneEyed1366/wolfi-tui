@@ -16,7 +16,7 @@ function Erase() {
 	}, [])
 
 	return (
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			{show && (
 				<>
 					<Text>A</Text>

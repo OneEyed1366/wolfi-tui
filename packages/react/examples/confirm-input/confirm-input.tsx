@@ -8,9 +8,9 @@ function ConfirmInputDemo() {
 
 	if (result) {
 		return (
-			<Box flexDirection="column" padding={1}>
-				<Text color="cyan">Confirm Input Demo - Result</Text>
-				<Box marginTop={1}>
+			<Box style={{ flexDirection: 'column', padding: 1 }}>
+				<Text style={{ color: 'cyan' }}>Confirm Input Demo - Result</Text>
+				<Box style={{ marginTop: 1 }}>
 					<Text>
 						You {result === 'confirmed' ? '✓ confirmed' : '✗ cancelled'} the
 						action.
@@ -21,13 +21,13 @@ function ConfirmInputDemo() {
 	}
 
 	return (
-		<Box flexDirection="column" padding={1}>
-			<Text color="cyan">Confirm Input Demo</Text>
-			<Text dimColor>
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
+			<Text style={{ color: 'cyan' }}>Confirm Input Demo</Text>
+			<Text style={{ color: 'gray' }}>
 				Press Y to confirm, N to cancel, or Enter for default
 			</Text>
 
-			<Box marginTop={1} gap={1}>
+			<Box style={{ marginTop: 1, gap: 1 }}>
 				<Text>Do you want to proceed?</Text>
 				<ConfirmInput
 					defaultChoice="confirm"

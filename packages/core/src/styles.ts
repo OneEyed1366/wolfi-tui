@@ -29,77 +29,77 @@ export type Styles = {
 	/**
 	Size of the gap between an element's columns and rows. A shorthand for `columnGap` and `rowGap`.
 	*/
-	readonly gap?: number
+	readonly gap?: number | string
 
 	/**
 	Margin on all sides. Equivalent to setting `marginTop`, `marginBottom`, `marginLeft`, and `marginRight`.
 	*/
-	readonly margin?: number
+	readonly margin?: number | string
 
 	/**
 	Horizontal margin. Equivalent to setting `marginLeft` and `marginRight`.
 	*/
-	readonly marginX?: number
+	readonly marginX?: number | string
 
 	/**
 	Vertical margin. Equivalent to setting `marginTop` and `marginBottom`.
 	*/
-	readonly marginY?: number
+	readonly marginY?: number | string
 
 	/**
 	Top margin.
 	*/
-	readonly marginTop?: number
+	readonly marginTop?: number | string
 
 	/**
 	Bottom margin.
 	*/
-	readonly marginBottom?: number
+	readonly marginBottom?: number | string
 
 	/**
 	Left margin.
 	*/
-	readonly marginLeft?: number
+	readonly marginLeft?: number | string
 
 	/**
 	Right margin.
 	*/
-	readonly marginRight?: number
+	readonly marginRight?: number | string
 
 	/**
 	Padding on all sides. Equivalent to setting `paddingTop`, `paddingBottom`, `paddingLeft`, and `paddingRight`.
 	*/
-	readonly padding?: number
+	readonly padding?: number | string
 
 	/**
 	Horizontal padding. Equivalent to setting `paddingLeft` and `paddingRight`.
 	*/
-	readonly paddingX?: number
+	readonly paddingX?: number | string
 
 	/**
 	Vertical padding. Equivalent to setting `paddingTop` and `paddingBottom`.
 	*/
-	readonly paddingY?: number
+	readonly paddingY?: number | string
 
 	/**
 	Top padding.
 	*/
-	readonly paddingTop?: number
+	readonly paddingTop?: number | string
 
 	/**
 	Bottom padding.
 	*/
-	readonly paddingBottom?: number
+	readonly paddingBottom?: number | string
 
 	/**
 	Left padding.
 	*/
-	readonly paddingLeft?: number
+	readonly paddingLeft?: number | string
 
 	/**
 	Right padding.
 	*/
-	readonly paddingRight?: number
+	readonly paddingRight?: number | string
 
 	/**
 	This property defines the ability for a flex item to grow if necessary.
@@ -327,6 +327,153 @@ export type Styles = {
 	readonly inverse?: boolean
 }
 
+//#region Shorthand Expansion
+
+/**
+ * Parse a numeric value from a string, handling basic units.
+ * In the core, we treat most units as pixels (cells) unless they are viewport units or percentages.
+ */
+export const parseNumericValue = (
+	value: string | number | undefined
+): number => {
+	if (value === undefined) return 0
+	if (typeof value === 'number') return value
+
+	const trimmed = value.trim().toLowerCase()
+	const num = parseFloat(trimmed)
+	if (isNaN(num)) return 0
+
+	// If it has a unit, we should ideally handle it, but for now we just return the number.
+	// This is used for margins/paddings where we expect cells.
+	return Math.round(num)
+}
+
+/**
+ * Expand spacing shorthands (margin/padding)
+ */
+const expandSpacing = (
+	value: string | number | undefined,
+	prefix: 'margin' | 'padding',
+	style: Styles
+): Partial<Styles> => {
+	if (value === undefined) return {}
+
+	const result: any = {}
+	if (typeof value === 'number') {
+		result[`${prefix}Top`] = value
+		result[`${prefix}Right`] = value
+		result[`${prefix}Bottom`] = value
+		result[`${prefix}Left`] = value
+		return result
+	}
+
+	const parts = value.trim().split(/\s+/)
+	switch (parts.length) {
+		case 1:
+			result[`${prefix}Top`] = parts[0]
+			result[`${prefix}Right`] = parts[0]
+			result[`${prefix}Bottom`] = parts[0]
+			result[`${prefix}Left`] = parts[0]
+			break
+		case 2:
+			result[`${prefix}Top`] = parts[0]
+			result[`${prefix}Bottom`] = parts[0]
+			result[`${prefix}Right`] = parts[1]
+			result[`${prefix}Left`] = parts[1]
+			break
+		case 3:
+			result[`${prefix}Top`] = parts[0]
+			result[`${prefix}Right`] = parts[1]
+			result[`${prefix}Left`] = parts[1]
+			result[`${prefix}Bottom`] = parts[2]
+			break
+		case 4:
+			result[`${prefix}Top`] = parts[0]
+			result[`${prefix}Right`] = parts[1]
+			result[`${prefix}Bottom`] = parts[2]
+			result[`${prefix}Left`] = parts[3]
+			break
+	}
+	return result
+}
+
+/**
+ * Expand a Styles object by resolving shorthands.
+ */
+export const expandStyles = (style: Styles): Styles => {
+	const expanded: any = { ...style }
+
+	// Expand gap
+	if (typeof style.gap === 'string') {
+		const parts = style.gap.trim().split(/\s+/)
+		if (parts.length === 1) {
+			expanded.rowGap = parseNumericValue(parts[0])
+			expanded.columnGap = parseNumericValue(parts[0])
+		} else if (parts.length >= 2) {
+			expanded.rowGap = parseNumericValue(parts[0])
+			expanded.columnGap = parseNumericValue(parts[1])
+		}
+		delete expanded.gap
+	}
+
+	// Expand margin
+	if (style.margin !== undefined) {
+		Object.assign(expanded, expandSpacing(style.margin, 'margin', style))
+		delete expanded.margin
+	}
+	if (style.marginX !== undefined) {
+		expanded.marginLeft = style.marginX
+		expanded.marginRight = style.marginX
+		delete expanded.marginX
+	}
+	if (style.marginY !== undefined) {
+		expanded.marginTop = style.marginY
+		expanded.marginBottom = style.marginY
+		delete expanded.marginY
+	}
+
+	// Expand padding
+	if (style.padding !== undefined) {
+		Object.assign(expanded, expandSpacing(style.padding, 'padding', style))
+		delete expanded.padding
+	}
+	if (style.paddingX !== undefined) {
+		expanded.paddingLeft = style.paddingX
+		expanded.paddingRight = style.paddingX
+		delete expanded.paddingX
+	}
+	if (style.paddingY !== undefined) {
+		expanded.paddingTop = style.paddingY
+		expanded.paddingBottom = style.paddingY
+		delete expanded.paddingY
+	}
+
+	// Expand borderColor
+	if (style.borderColor !== undefined) {
+		expanded.borderTopColor = expanded.borderTopColor ?? style.borderColor
+		expanded.borderRightColor = expanded.borderRightColor ?? style.borderColor
+		expanded.borderBottomColor = expanded.borderBottomColor ?? style.borderColor
+		expanded.borderLeftColor = expanded.borderLeftColor ?? style.borderColor
+		// Keep borderColor for compatibility if needed, but usually we expand it
+	}
+
+	// Expand borderDimColor
+	if (style.borderDimColor !== undefined) {
+		expanded.borderTopDimColor =
+			expanded.borderTopDimColor ?? style.borderDimColor
+		expanded.borderRightDimColor =
+			expanded.borderRightDimColor ?? style.borderDimColor
+		expanded.borderBottomDimColor =
+			expanded.borderBottomDimColor ?? style.borderDimColor
+		expanded.borderLeftDimColor =
+			expanded.borderLeftDimColor ?? style.borderDimColor
+	}
+
+	return expanded
+}
+
+//#endregion
+
 //#region Taffy Layout Style Conversion
 
 /**
@@ -379,85 +526,88 @@ const toDimension = (
  * Pure conversion function - no side effects
  */
 export const toLayoutStyle = (style: Styles): LayoutStyle => {
+	const expanded = expandStyles(style)
 	const result: LayoutStyle = {}
 
 	// Position
-	if (style.position) result.position = style.position
+	if (expanded.position) result.position = expanded.position
 
 	// Display
-	if (style.display) result.display = style.display
+	if (expanded.display) result.display = expanded.display
 
 	// Overflow
-	if (style.overflow) result.overflow = style.overflow
+	if (expanded.overflow) result.overflow = expanded.overflow
 
 	// Dimensions
-	result.width = toDimension(style.width)
-	result.height = toDimension(style.height)
-	result.minWidth = toDimension(style.minWidth)
-	result.minHeight = toDimension(style.minHeight)
+	result.width = toDimension(expanded.width)
+	result.height = toDimension(expanded.height)
+	result.minWidth = toDimension(expanded.minWidth)
+	result.minHeight = toDimension(expanded.minHeight)
 
 	// Flex
-	if (style.flexDirection) result.flexDirection = style.flexDirection
-	if (style.flexWrap) result.flexWrap = style.flexWrap
-	if (typeof style.flexGrow === 'number') result.flexGrow = style.flexGrow
-	if (typeof style.flexShrink === 'number') result.flexShrink = style.flexShrink
-	result.flexBasis = toDimension(style.flexBasis)
+	if (expanded.flexDirection) result.flexDirection = expanded.flexDirection
+	if (expanded.flexWrap) result.flexWrap = expanded.flexWrap
+	if (typeof expanded.flexGrow === 'number') result.flexGrow = expanded.flexGrow
+	if (typeof expanded.flexShrink === 'number')
+		result.flexShrink = expanded.flexShrink
+	result.flexBasis = toDimension(expanded.flexBasis)
 
 	// Alignment
-	if (style.alignItems) result.alignItems = style.alignItems
-	if (style.alignSelf) result.alignSelf = style.alignSelf
-	if (style.justifyContent) result.justifyContent = style.justifyContent
+	if (expanded.alignItems) result.alignItems = expanded.alignItems
+	if (expanded.alignSelf) result.alignSelf = expanded.alignSelf
+	if (expanded.justifyContent) result.justifyContent = expanded.justifyContent
 
-	// Margin (expand shorthands)
+	// Margin (already expanded by expandStyles)
 	const hasMargin =
-		style.margin !== undefined ||
-		style.marginX !== undefined ||
-		style.marginY !== undefined ||
-		style.marginTop !== undefined ||
-		style.marginRight !== undefined ||
-		style.marginBottom !== undefined ||
-		style.marginLeft !== undefined
+		expanded.marginTop !== undefined ||
+		expanded.marginRight !== undefined ||
+		expanded.marginBottom !== undefined ||
+		expanded.marginLeft !== undefined
 	if (hasMargin) {
 		result.margin = {
-			top: style.marginTop ?? style.marginY ?? style.margin ?? 0,
-			right: style.marginRight ?? style.marginX ?? style.margin ?? 0,
-			bottom: style.marginBottom ?? style.marginY ?? style.margin ?? 0,
-			left: style.marginLeft ?? style.marginX ?? style.margin ?? 0,
+			top: parseNumericValue(expanded.marginTop),
+			right: parseNumericValue(expanded.marginRight),
+			bottom: parseNumericValue(expanded.marginBottom),
+			left: parseNumericValue(expanded.marginLeft),
 		}
 	}
 
-	// Padding (expand shorthands)
+	// Padding (already expanded by expandStyles)
 	const hasPadding =
-		style.padding !== undefined ||
-		style.paddingX !== undefined ||
-		style.paddingY !== undefined ||
-		style.paddingTop !== undefined ||
-		style.paddingRight !== undefined ||
-		style.paddingBottom !== undefined ||
-		style.paddingLeft !== undefined
+		expanded.paddingTop !== undefined ||
+		expanded.paddingRight !== undefined ||
+		expanded.paddingBottom !== undefined ||
+		expanded.paddingLeft !== undefined
 	if (hasPadding) {
 		result.padding = {
-			top: style.paddingTop ?? style.paddingY ?? style.padding ?? 0,
-			right: style.paddingRight ?? style.paddingX ?? style.padding ?? 0,
-			bottom: style.paddingBottom ?? style.paddingY ?? style.padding ?? 0,
-			left: style.paddingLeft ?? style.paddingX ?? style.padding ?? 0,
+			top: parseNumericValue(expanded.paddingTop),
+			right: parseNumericValue(expanded.paddingRight),
+			bottom: parseNumericValue(expanded.paddingBottom),
+			left: parseNumericValue(expanded.paddingLeft),
 		}
 	}
 
 	// Border (from borderStyle presence)
-	if (style.borderStyle) {
+	if (expanded.borderStyle) {
 		result.border = {
-			top: style.borderTop !== false ? 1 : 0,
-			right: style.borderRight !== false ? 1 : 0,
-			bottom: style.borderBottom !== false ? 1 : 0,
-			left: style.borderLeft !== false ? 1 : 0,
+			top: expanded.borderTop !== false ? 1 : 0,
+			right: expanded.borderRight !== false ? 1 : 0,
+			bottom: expanded.borderBottom !== false ? 1 : 0,
+			left: expanded.borderLeft !== false ? 1 : 0,
 		}
 	}
 
 	// Gap
-	if (typeof style.gap === 'number') result.gap = style.gap
-	if (typeof style.columnGap === 'number') result.columnGap = style.columnGap
-	if (typeof style.rowGap === 'number') result.rowGap = style.rowGap
+	if (expanded.gap !== undefined) {
+		const gap = parseNumericValue(expanded.gap)
+		result.gap = gap
+	}
+	if (expanded.columnGap !== undefined) {
+		result.columnGap = parseNumericValue(expanded.columnGap)
+	}
+	if (expanded.rowGap !== undefined) {
+		result.rowGap = parseNumericValue(expanded.rowGap)
+	}
 
 	return result
 }

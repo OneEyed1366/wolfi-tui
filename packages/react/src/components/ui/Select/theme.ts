@@ -5,17 +5,25 @@ import type { ComponentTheme } from '../../../theme/theme'
 const theme = {
 	styles: {
 		container: (): BoxProps => ({
-			flexDirection: 'column',
+			style: {
+				flexDirection: 'column',
+			},
 		}),
 		option: ({ isFocused }: { isFocused: boolean }): BoxProps => ({
-			gap: 1,
-			paddingLeft: isFocused ? 0 : 2,
+			style: {
+				gap: 1,
+				paddingLeft: isFocused ? 0 : 2,
+			},
 		}),
 		selectedIndicator: (): TextProps => ({
-			color: 'green',
+			style: {
+				color: 'green',
+			},
 		}),
 		focusIndicator: (): TextProps => ({
-			color: 'blue',
+			style: {
+				color: 'blue',
+			},
 		}),
 		label({
 			isFocused,
@@ -34,10 +42,16 @@ const theme = {
 				color = 'blue'
 			}
 
-			return { color }
+			return {
+				style: {
+					color,
+				},
+			}
 		},
 		highlightedText: (): TextProps => ({
-			bold: true,
+			style: {
+				fontWeight: 'bold',
+			},
 		}),
 	},
 } satisfies ComponentTheme

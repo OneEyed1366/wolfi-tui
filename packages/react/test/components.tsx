@@ -67,8 +67,8 @@ test('text with fragment', () => {
 
 test('wrap text', () => {
 	const output = renderToString(
-		<Box width={7}>
-			<Text wrap="wrap">Hello World</Text>
+		<Box style={{ width: 7 }}>
+			<Text style={{ textWrap: 'wrap' }}>Hello World</Text>
 		</Box>
 	)
 
@@ -77,8 +77,8 @@ test('wrap text', () => {
 
 test("don't wrap text if there is enough space", () => {
 	const output = renderToString(
-		<Box width={20}>
-			<Text wrap="wrap">Hello World</Text>
+		<Box style={{ width: 20 }}>
+			<Text style={{ textWrap: 'wrap' }}>Hello World</Text>
 		</Box>
 	)
 
@@ -87,8 +87,8 @@ test("don't wrap text if there is enough space", () => {
 
 test('truncate text in the end', () => {
 	const output = renderToString(
-		<Box width={7}>
-			<Text wrap="truncate">Hello World</Text>
+		<Box style={{ width: 7 }}>
+			<Text style={{ textWrap: 'truncate' }}>Hello World</Text>
 		</Box>
 	)
 
@@ -97,8 +97,8 @@ test('truncate text in the end', () => {
 
 test('truncate text in the middle', () => {
 	const output = renderToString(
-		<Box width={7}>
-			<Text wrap="truncate-middle">Hello World</Text>
+		<Box style={{ width: 7 }}>
+			<Text style={{ textWrap: 'truncate-middle' }}>Hello World</Text>
 		</Box>
 	)
 
@@ -107,8 +107,8 @@ test('truncate text in the middle', () => {
 
 test('truncate text in the beginning', () => {
 	const output = renderToString(
-		<Box width={7}>
-			<Text wrap="truncate-start">Hello World</Text>
+		<Box style={{ width: 7 }}>
+			<Text style={{ textWrap: 'truncate-start' }}>Hello World</Text>
 		</Box>
 	)
 
@@ -117,7 +117,7 @@ test('truncate text in the beginning', () => {
 
 test('ignore empty text node', () => {
 	const output = renderToString(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Box>
 				<Text>Hello World</Text>
 			</Box>
@@ -367,7 +367,7 @@ test('static output', () => {
 				{(letter) => <Text key={letter}>{letter}</Text>}
 			</Static>
 
-			<Box marginTop={1}>
+			<Box style={{ marginTop: 1 }}>
 				<Text>X</Text>
 			</Box>
 		</Box>
@@ -423,7 +423,7 @@ test('render only new items in static output on final render', () => {
 // See https://github.com/chalk/wrap-ansi/issues/27
 // TODO: ANSI escape handling differs in Vite environment
 test.todo("ensure wrap-ansi doesn't trim leading whitespace", () => {
-	const output = renderToString(<Text color="red">{' ERROR '}</Text>)
+	const output = renderToString(<Text style={{ color: 'red' }}>{' ERROR '}</Text>)
 
 	expect(output).toBe(chalk.red(' ERROR '))
 })
@@ -432,7 +432,7 @@ test('replace child node with text', () => {
 	const stdout = createStdout()
 
 	function Dynamic({ replace }: { readonly replace?: boolean }) {
-		return <Text>{replace ? 'x' : <Text color="green">test</Text>}</Text>
+		return <Text>{replace ? 'x' : <Text style={{ color: 'green' }}>test</Text>}</Text>
 	}
 
 	const { rerender } = render(<Dynamic />, {
@@ -670,11 +670,7 @@ test("reset prop when it's removed from the element", () => {
 
 	function Dynamic({ remove }: { readonly remove?: boolean }) {
 		return (
-			<Box
-				flexDirection="column"
-				justifyContent="flex-end"
-				height={remove ? undefined : 4}
-			>
+			<Box style={{ flexDirection: 'column', justifyContent: 'flex-end', height: remove ? undefined : 4 }}>
 				<Text>x</Text>
 			</Box>
 		)
@@ -715,7 +711,7 @@ test('multiple newlines', () => {
 
 test('horizontal spacer', () => {
 	const output = renderToString(
-		<Box width={20}>
+		<Box style={{ width: 20 }}>
 			<Text>Left</Text>
 			<Spacer />
 			<Text>Right</Text>
@@ -727,7 +723,7 @@ test('horizontal spacer', () => {
 
 test('vertical spacer', () => {
 	const output = renderToString(
-		<Box flexDirection="column" height={6}>
+		<Box style={{ flexDirection: 'column', height: 6 }}>
 			<Text>Top</Text>
 			<Spacer />
 			<Text>Bottom</Text>

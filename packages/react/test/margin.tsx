@@ -5,7 +5,7 @@ import { renderToString } from './helpers/render-to-string'
 
 test('margin', () => {
 	const output = renderToString(
-		<Box margin={2}>
+		<Box style={{ margin: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -16,7 +16,7 @@ test('margin', () => {
 test('margin X', () => {
 	const output = renderToString(
 		<Box>
-			<Box marginX={2}>
+			<Box style={{ marginX: 2 }}>
 				<Text>X</Text>
 			</Box>
 			<Text>Y</Text>
@@ -28,7 +28,7 @@ test('margin X', () => {
 
 test('margin Y', () => {
 	const output = renderToString(
-		<Box marginY={2}>
+		<Box style={{ marginY: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -38,7 +38,7 @@ test('margin Y', () => {
 
 test('margin top', () => {
 	const output = renderToString(
-		<Box marginTop={2}>
+		<Box style={{ marginTop: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -48,7 +48,7 @@ test('margin top', () => {
 
 test('margin bottom', () => {
 	const output = renderToString(
-		<Box marginBottom={2}>
+		<Box style={{ marginBottom: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -58,7 +58,7 @@ test('margin bottom', () => {
 
 test('margin left', () => {
 	const output = renderToString(
-		<Box marginLeft={2}>
+		<Box style={{ marginLeft: 2 }}>
 			<Text>X</Text>
 		</Box>
 	)
@@ -69,7 +69,7 @@ test('margin left', () => {
 test('margin right', () => {
 	const output = renderToString(
 		<Box>
-			<Box marginRight={2}>
+			<Box style={{ marginRight: 2 }}>
 				<Text>X</Text>
 			</Box>
 			<Text>Y</Text>
@@ -81,8 +81,8 @@ test('margin right', () => {
 
 test('nested margin', () => {
 	const output = renderToString(
-		<Box margin={2}>
-			<Box margin={2}>
+		<Box style={{ margin: 2 }}>
+			<Box style={{ margin: 2 }}>
 				<Text>X</Text>
 			</Box>
 		</Box>
@@ -93,7 +93,7 @@ test('nested margin', () => {
 
 test('margin with multiline string', () => {
 	const output = renderToString(
-		<Box margin={2}>
+		<Box style={{ margin: 2 }}>
 			<Text>{'A\nB'}</Text>
 		</Box>
 	)
@@ -103,7 +103,7 @@ test('margin with multiline string', () => {
 
 test('apply margin to text with newlines', () => {
 	const output = renderToString(
-		<Box margin={1}>
+		<Box style={{ margin: 1 }}>
 			<Text>Hello{'\n'}World</Text>
 		</Box>
 	)
@@ -112,7 +112,7 @@ test('apply margin to text with newlines', () => {
 
 test('apply margin to wrapped text', () => {
 	const output = renderToString(
-		<Box margin={1} width={6}>
+		<Box style={{ margin: 1, width: 6 }}>
 			<Text>Hello World</Text>
 		</Box>
 	)

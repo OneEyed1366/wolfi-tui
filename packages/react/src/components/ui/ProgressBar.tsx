@@ -33,14 +33,20 @@ type ProgressBarTheme = {
 export const progressBarTheme = {
 	styles: {
 		container: (): Partial<BoxProps> => ({
-			flexGrow: 1,
-			minWidth: 0,
+			style: {
+				flexGrow: 1,
+				minWidth: 0,
+			},
 		}),
 		completed: (): Partial<TextProps> => ({
-			color: 'magenta',
+			style: {
+				color: 'magenta',
+			},
 		}),
 		remaining: (): Partial<TextProps> => ({
-			dimColor: true,
+			style: {
+				color: 'gray',
+			},
 		}),
 	},
 	config: () => ({

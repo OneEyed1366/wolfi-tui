@@ -5,15 +5,15 @@ import { renderToString } from './helpers/render-to-string'
 
 test('wide characters do not add extra space inside fixed-width Box', () => {
 	const output = renderToString(
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Box>
-				<Box width={2}>
+				<Box style={{ width: 2 }}>
 					<Text>🍔</Text>
 				</Box>
 				<Text>|</Text>
 			</Box>
 			<Box>
-				<Box width={2}>
+				<Box style={{ width: 2 }}>
 					<Text>⏳</Text>
 				</Box>
 				<Text>|</Text>

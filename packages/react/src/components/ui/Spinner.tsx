@@ -24,10 +24,14 @@ type SpinnerTheme = {
 export const spinnerTheme = {
 	styles: {
 		container: (): Partial<BoxProps> => ({
-			gap: 1,
+			style: {
+				gap: 1,
+			},
 		}),
 		frame: (): Partial<TextProps> => ({
-			color: 'blue',
+			style: {
+				color: 'blue',
+			},
 		}),
 		label: (): Partial<TextProps> => ({}),
 	},

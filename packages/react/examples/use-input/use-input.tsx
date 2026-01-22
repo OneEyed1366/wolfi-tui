@@ -30,9 +30,9 @@ function Robot() {
 	})
 
 	return (
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>Use arrow keys to move the face. Press “q” to exit.</Text>
-			<Box height={12} paddingLeft={x} paddingTop={y}>
+			<Box style={{ height: 12, paddingLeft: x, paddingTop: y }}>
 				<Text>^_^</Text>
 			</Box>
 		</Box>

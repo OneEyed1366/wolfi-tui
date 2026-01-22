@@ -3,12 +3,12 @@ import { Box, Text, OrderedList } from '../../src/index'
 
 function OrderedListDemo() {
 	return (
-		<Box flexDirection="column" gap={1}>
-			<Text bold>Ordered List Example</Text>
+		<Box style={{ flexDirection: 'column', gap: 1 }}>
+			<Text style={{ fontWeight: 'bold' }}>Ordered List Example</Text>
 
 			{/* Simple ordered list */}
-			<Box flexDirection="column">
-				<Text dimColor>Simple list:</Text>
+			<Box style={{ flexDirection: 'column' }}>
+				<Text style={{ color: 'gray' }}>Simple list:</Text>
 				<OrderedList>
 					<OrderedList.Item>
 						<Text>First item</Text>
@@ -23,14 +23,14 @@ function OrderedListDemo() {
 			</Box>
 
 			{/* Nested ordered list */}
-			<Box flexDirection="column">
-				<Text dimColor>Nested list:</Text>
+			<Box style={{ flexDirection: 'column' }}>
+				<Text style={{ color: 'gray' }}>Nested list:</Text>
 				<OrderedList>
 					<OrderedList.Item>
 						<Text>Introduction</Text>
 					</OrderedList.Item>
 					<OrderedList.Item>
-						<Box flexDirection="column">
+						<Box style={{ flexDirection: 'column' }}>
 							<Text>Getting Started</Text>
 							<OrderedList>
 								<OrderedList.Item>
@@ -40,7 +40,7 @@ function OrderedListDemo() {
 									<Text>Configuration</Text>
 								</OrderedList.Item>
 								<OrderedList.Item>
-									<Box flexDirection="column">
+									<Box style={{ flexDirection: 'column' }}>
 										<Text>Advanced Setup</Text>
 										<OrderedList>
 											<OrderedList.Item>
@@ -65,8 +65,8 @@ function OrderedListDemo() {
 			</Box>
 
 			{/* Many items (demonstrates padding alignment) */}
-			<Box flexDirection="column">
-				<Text dimColor>Many items (number alignment):</Text>
+			<Box style={{ flexDirection: 'column' }}>
+				<Text style={{ color: 'gray' }}>Many items (number alignment):</Text>
 				<OrderedList>
 					<OrderedList.Item>
 						<Text>Item one</Text>

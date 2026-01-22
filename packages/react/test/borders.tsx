@@ -10,7 +10,7 @@ import createStdout from './helpers/create-stdout'
 
 test('single node - full width box', () => {
 	const output = renderToString(
-		<Box borderStyle="round">
+		<Box style={{ borderStyle: 'round' }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -22,7 +22,7 @@ test('single node - full width box', () => {
 
 test('single node - full width box with colorful border', () => {
 	const output = renderToString(
-		<Box borderStyle="round" borderColor="green">
+		<Box style={{ borderStyle: 'round', borderColor: 'green' }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -38,7 +38,7 @@ test('single node - full width box with colorful border', () => {
 
 test('single node - fit-content box', () => {
 	const output = renderToString(
-		<Box borderStyle="round" alignSelf="flex-start">
+		<Box style={{ borderStyle: 'round', alignSelf: 'flex-start' }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -48,7 +48,7 @@ test('single node - fit-content box', () => {
 
 test('single node - fit-content box with wide characters', () => {
 	const output = renderToString(
-		<Box borderStyle="round" alignSelf="flex-start">
+		<Box style={{ borderStyle: 'round', alignSelf: 'flex-start' }}>
 			<Text>こんにちは</Text>
 		</Box>
 	)
@@ -58,7 +58,7 @@ test('single node - fit-content box with wide characters', () => {
 
 test('single node - fit-content box with emojis', () => {
 	const output = renderToString(
-		<Box borderStyle="round" alignSelf="flex-start">
+		<Box style={{ borderStyle: 'round', alignSelf: 'flex-start' }}>
 			<Text>🌊🌊</Text>
 		</Box>
 	)
@@ -68,7 +68,7 @@ test('single node - fit-content box with emojis', () => {
 
 test('single node - fixed width box', () => {
 	const output = renderToString(
-		<Box borderStyle="round" width={20}>
+		<Box style={{ borderStyle: 'round', width: 20 }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -80,7 +80,7 @@ test('single node - fixed width box', () => {
 
 test('single node - fixed width and height box', () => {
 	const output = renderToString(
-		<Box borderStyle="round" width={20} height={20}>
+		<Box style={{ borderStyle: 'round', width: 20, height: 20 }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -94,7 +94,7 @@ test('single node - fixed width and height box', () => {
 
 test('single node - box with padding', () => {
 	const output = renderToString(
-		<Box borderStyle="round" padding={1} alignSelf="flex-start">
+		<Box style={{ borderStyle: 'round', padding: 1, alignSelf: 'flex-start' }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -106,7 +106,7 @@ test('single node - box with horizontal alignment', () => {
 	// justifyContent="center" centers 11-char text in 18-char inner width.
 	// 7 chars of space split as 4 left, 3 right (Taffy rounds up for left).
 	const output = renderToString(
-		<Box borderStyle="round" width={20} justifyContent="center">
+		<Box style={{ borderStyle: 'round', width: 20, justifyContent: 'center' }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -119,10 +119,12 @@ test('single node - box with vertical alignment', () => {
 	// 17 lines of space split as 9 above, 8 below (Taffy rounds up for top).
 	const output = renderToString(
 		<Box
-			borderStyle="round"
-			height={20}
-			alignItems="center"
-			alignSelf="flex-start"
+			style={{
+				borderStyle: 'round',
+				height: 20,
+				alignItems: 'center',
+				alignSelf: 'flex-start',
+			}}
 		>
 			<Text>Hello World</Text>
 		</Box>
@@ -137,7 +139,7 @@ test('single node - box with vertical alignment', () => {
 
 test('single node - box with wrapping', () => {
 	const output = renderToString(
-		<Box borderStyle="round" width={10}>
+		<Box style={{ borderStyle: 'round', width: 10 }}>
 			<Text>Hello World</Text>
 		</Box>
 	)
@@ -147,7 +149,7 @@ test('single node - box with wrapping', () => {
 
 test('multiple nodes - full width box', () => {
 	const output = renderToString(
-		<Box borderStyle="round">
+		<Box style={{ borderStyle: 'round' }}>
 			<Text>{'Hello '}World</Text>
 		</Box>
 	)
@@ -159,7 +161,7 @@ test('multiple nodes - full width box', () => {
 
 test('multiple nodes - full width box with colorful border', () => {
 	const output = renderToString(
-		<Box borderStyle="round" borderColor="green">
+		<Box style={{ borderStyle: 'round', borderColor: 'green' }}>
 			<Text>{'Hello '}World</Text>
 		</Box>
 	)
@@ -175,7 +177,7 @@ test('multiple nodes - full width box with colorful border', () => {
 
 test('multiple nodes - fit-content box', () => {
 	const output = renderToString(
-		<Box borderStyle="round" alignSelf="flex-start">
+		<Box style={{ borderStyle: 'round', alignSelf: 'flex-start' }}>
 			<Text>{'Hello '}World</Text>
 		</Box>
 	)
@@ -185,7 +187,7 @@ test('multiple nodes - fit-content box', () => {
 
 test('multiple nodes - fixed width box', () => {
 	const output = renderToString(
-		<Box borderStyle="round" width={20}>
+		<Box style={{ borderStyle: 'round', width: 20 }}>
 			<Text>{'Hello '}World</Text>
 		</Box>
 	)
@@ -196,7 +198,7 @@ test('multiple nodes - fixed width box', () => {
 
 test('multiple nodes - fixed width and height box', () => {
 	const output = renderToString(
-		<Box borderStyle="round" width={20} height={20}>
+		<Box style={{ borderStyle: 'round', width: 20, height: 20 }}>
 			<Text>{'Hello '}World</Text>
 		</Box>
 	)
@@ -209,7 +211,7 @@ test('multiple nodes - fixed width and height box', () => {
 
 test('multiple nodes - box with padding', () => {
 	const output = renderToString(
-		<Box borderStyle="round" padding={1} alignSelf="flex-start">
+		<Box style={{ borderStyle: 'round', padding: 1, alignSelf: 'flex-start' }}>
 			<Text>{'Hello '}World</Text>
 		</Box>
 	)
@@ -220,7 +222,7 @@ test('multiple nodes - box with padding', () => {
 test('multiple nodes - box with horizontal alignment', () => {
 	// Same as single node - 4 spaces left, 3 spaces right
 	const output = renderToString(
-		<Box borderStyle="round" width={20} justifyContent="center">
+		<Box style={{ borderStyle: 'round', width: 20, justifyContent: 'center' }}>
 			<Text>{'Hello '}World</Text>
 		</Box>
 	)
@@ -232,10 +234,12 @@ test('multiple nodes - box with vertical alignment', () => {
 	// Same as single node - 9 lines above, 8 lines below
 	const output = renderToString(
 		<Box
-			borderStyle="round"
-			height={20}
-			alignItems="center"
-			alignSelf="flex-start"
+			style={{
+				borderStyle: 'round',
+				height: 20,
+				alignItems: 'center',
+				alignSelf: 'flex-start',
+			}}
 		>
 			<Text>{'Hello '}World</Text>
 		</Box>
@@ -250,7 +254,7 @@ test('multiple nodes - box with vertical alignment', () => {
 
 test('multiple nodes - box with wrapping', () => {
 	const output = renderToString(
-		<Box borderStyle="round" width={10}>
+		<Box style={{ borderStyle: 'round', width: 10 }}>
 			<Text>{'Hello '}World</Text>
 		</Box>
 	)
@@ -260,7 +264,7 @@ test('multiple nodes - box with wrapping', () => {
 
 test('multiple nodes - box with wrapping and long first node', () => {
 	const output = renderToString(
-		<Box borderStyle="round" width={10}>
+		<Box style={{ borderStyle: 'round', width: 10 }}>
 			<Text>{'Helloooooo'} World</Text>
 		</Box>
 	)
@@ -270,7 +274,7 @@ test('multiple nodes - box with wrapping and long first node', () => {
 
 test('multiple nodes - box with wrapping and very long first node', () => {
 	const output = renderToString(
-		<Box borderStyle="round" width={10}>
+		<Box style={{ borderStyle: 'round', width: 10 }}>
 			<Text>{'Hellooooooooooooo'} World</Text>
 		</Box>
 	)
@@ -282,8 +286,10 @@ test('multiple nodes - box with wrapping and very long first node', () => {
 
 test('nested boxes', () => {
 	const output = renderToString(
-		<Box borderStyle="round" width={40} padding={1}>
-			<Box borderStyle="round" justifyContent="center" padding={1}>
+		<Box style={{ borderStyle: 'round', width: 40, padding: 1 }}>
+			<Box
+				style={{ borderStyle: 'round', justifyContent: 'center', padding: 1 }}
+			>
 				<Text>Hello World</Text>
 			</Box>
 		</Box>
@@ -301,14 +307,14 @@ test('nested boxes', () => {
 
 test('nested boxes - fit-content box with wide characters on flex-direction row', () => {
 	const output = renderToString(
-		<Box borderStyle="round" alignSelf="flex-start">
-			<Box borderStyle="round">
+		<Box style={{ borderStyle: 'round', alignSelf: 'flex-start' }}>
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>ミスター</Text>
 			</Box>
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>スポック</Text>
 			</Box>
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>カーク船長</Text>
 			</Box>
 		</Box>
@@ -334,14 +340,14 @@ test('nested boxes - fit-content box with wide characters on flex-direction row'
 
 test('nested boxes - fit-content box with emojis on flex-direction row', () => {
 	const output = renderToString(
-		<Box borderStyle="round" alignSelf="flex-start">
-			<Box borderStyle="round">
+		<Box style={{ borderStyle: 'round', alignSelf: 'flex-start' }}>
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>🦾</Text>
 			</Box>
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>🌏</Text>
 			</Box>
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>😋</Text>
 			</Box>
 		</Box>
@@ -367,14 +373,20 @@ test('nested boxes - fit-content box with emojis on flex-direction row', () => {
 
 test('nested boxes - fit-content box with wide characters on flex-direction column', () => {
 	const output = renderToString(
-		<Box borderStyle="round" alignSelf="flex-start" flexDirection="column">
-			<Box borderStyle="round">
+		<Box
+			style={{
+				borderStyle: 'round',
+				alignSelf: 'flex-start',
+				flexDirection: 'column',
+			}}
+		>
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>ミスター</Text>
 			</Box>
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>スポック</Text>
 			</Box>
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>カーク船長</Text>
 			</Box>
 		</Box>
@@ -394,14 +406,20 @@ test('nested boxes - fit-content box with wide characters on flex-direction colu
 
 test('nested boxes - fit-content box with emojis on flex-direction column', () => {
 	const output = renderToString(
-		<Box borderStyle="round" alignSelf="flex-start" flexDirection="column">
-			<Box borderStyle="round">
+		<Box
+			style={{
+				borderStyle: 'round',
+				alignSelf: 'flex-start',
+				flexDirection: 'column',
+			}}
+		>
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>🦾</Text>
 			</Box>
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>🌏</Text>
 			</Box>
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>😋</Text>
 			</Box>
 		</Box>
@@ -424,7 +442,7 @@ test('render border after update', () => {
 
 	function Test({ borderColor }: { readonly borderColor?: string }) {
 		return (
-			<Box borderStyle="round" borderColor={borderColor}>
+			<Box style={{ borderStyle: 'round', borderColor: borderColor }}>
 				<Text>Hello World</Text>
 			</Box>
 		)
@@ -461,9 +479,9 @@ test('render border after update', () => {
 
 test('hide top border', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderTop={false}>
+			<Box style={{ borderStyle: 'round', borderTop: false }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -484,9 +502,9 @@ test('hide top border', () => {
 
 test('hide bottom border', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderBottom={false}>
+			<Box style={{ borderStyle: 'round', borderBottom: false }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -507,9 +525,11 @@ test('hide bottom border', () => {
 
 test('hide top and bottom borders', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderTop={false} borderBottom={false}>
+			<Box
+				style={{ borderStyle: 'round', borderTop: false, borderBottom: false }}
+			>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -527,9 +547,9 @@ test('hide top and bottom borders', () => {
 
 test('hide left border', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderLeft={false}>
+			<Box style={{ borderStyle: 'round', borderLeft: false }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -549,9 +569,9 @@ test('hide left border', () => {
 
 test('hide right border', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderRight={false}>
+			<Box style={{ borderStyle: 'round', borderRight: false }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -571,9 +591,11 @@ test('hide right border', () => {
 
 test('hide left and right border', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderLeft={false} borderRight={false}>
+			<Box
+				style={{ borderStyle: 'round', borderLeft: false, borderRight: false }}
+			>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -593,14 +615,16 @@ test('hide left and right border', () => {
 
 test('hide all borders', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
 			<Box
-				borderStyle="round"
-				borderTop={false}
-				borderBottom={false}
-				borderLeft={false}
-				borderRight={false}
+				style={{
+					borderStyle: 'round',
+					borderTop: false,
+					borderBottom: false,
+					borderLeft: false,
+					borderRight: false,
+				}}
 			>
 				<Text>Content</Text>
 			</Box>
@@ -613,9 +637,9 @@ test('hide all borders', () => {
 
 test('change color of top border', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderTopColor="green">
+			<Box style={{ borderStyle: 'round', borderTopColor: 'green' }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -641,9 +665,9 @@ test('change color of top border', () => {
 
 test('change color of bottom border', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderBottomColor="green">
+			<Box style={{ borderStyle: 'round', borderBottomColor: 'green' }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -669,9 +693,9 @@ test('change color of bottom border', () => {
 
 test('change color of left border', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderLeftColor="green">
+			<Box style={{ borderStyle: 'round', borderLeftColor: 'green' }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -695,9 +719,9 @@ test('change color of left border', () => {
 
 test('change color of right border', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderStyle="round" borderRightColor="green">
+			<Box style={{ borderStyle: 'round', borderRightColor: 'green' }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -722,15 +746,17 @@ test('change color of right border', () => {
 test('custom border style', () => {
 	const output = renderToString(
 		<Box
-			borderStyle={{
-				topLeft: '↘',
-				top: '↓',
-				topRight: '↙',
-				left: '→',
-				bottomLeft: '↗',
-				bottom: '↑',
-				bottomRight: '↖',
-				right: '←',
+			style={{
+				borderStyle: {
+					topLeft: '↘',
+					top: '↓',
+					topRight: '↙',
+					left: '→',
+					bottomLeft: '↗',
+					bottom: '↑',
+					bottomRight: '↖',
+					right: '←',
+				},
 			}}
 		>
 			<Text>Content</Text>
@@ -742,7 +768,7 @@ test('custom border style', () => {
 
 test('dim border color', () => {
 	const output = renderToString(
-		<Box borderDimColor borderStyle="round">
+		<Box style={{ borderStyle: 'round', borderDimColor: true }}>
 			<Text>Content</Text>
 		</Box>
 	)
@@ -758,9 +784,9 @@ test('dim border color', () => {
 
 test('dim top border color', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderTopDimColor borderStyle="round">
+			<Box style={{ borderStyle: 'round', borderTopDimColor: true }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -786,9 +812,9 @@ test('dim top border color', () => {
 
 test('dim bottom border color', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderBottomDimColor borderStyle="round">
+			<Box style={{ borderStyle: 'round', borderBottomDimColor: true }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -814,9 +840,9 @@ test('dim bottom border color', () => {
 
 test('dim left border color', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderLeftDimColor borderStyle="round">
+			<Box style={{ borderStyle: 'round', borderLeftDimColor: true }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>
@@ -840,9 +866,133 @@ test('dim left border color', () => {
 
 test('dim right border color', () => {
 	const output = renderToString(
-		<Box flexDirection="column" alignItems="flex-start">
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 			<Text>Above</Text>
-			<Box borderRightDimColor borderStyle="round">
+			<Box style={{ borderStyle: 'round', borderRightDimColor: true }}>
+				<Text>Content</Text>
+			</Box>
+			<Text>Below</Text>
+		</Box>
+	)
+
+	expect(output).toBe(
+		[
+			'Above',
+			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
+				cliBoxes.round.topRight
+			}`,
+			`${cliBoxes.round.left}Content${chalk.dim(cliBoxes.round.right)}`,
+			`${cliBoxes.round.bottomLeft}${cliBoxes.round.bottom.repeat(7)}${
+				cliBoxes.round.bottomRight
+			}`,
+			'Below',
+		].join('\n')
+	)
+})
+
+test('dim border color', () => {
+	const output = renderToString(
+		<Box style={{ borderStyle: 'round' }}>
+			<Text>Content</Text>
+		</Box>
+	)
+
+	expect(output).toBe(
+		boxen('Content', {
+			width: 100,
+			borderStyle: 'round',
+			dimBorder: true,
+		})
+	)
+})
+
+test('dim top border color', () => {
+	const output = renderToString(
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+			<Text>Above</Text>
+			<Box style={{ borderStyle: 'round' }}>
+				<Text>Content</Text>
+			</Box>
+			<Text>Below</Text>
+		</Box>
+	)
+
+	expect(output).toBe(
+		[
+			'Above',
+			chalk.dim(
+				`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
+					cliBoxes.round.topRight
+				}`
+			),
+			`${cliBoxes.round.left}Content${cliBoxes.round.right}`,
+			`${cliBoxes.round.bottomLeft}${cliBoxes.round.bottom.repeat(7)}${
+				cliBoxes.round.bottomRight
+			}`,
+			'Below',
+		].join('\n')
+	)
+})
+
+test('dim bottom border color', () => {
+	const output = renderToString(
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+			<Text>Above</Text>
+			<Box style={{ borderStyle: 'round' }}>
+				<Text>Content</Text>
+			</Box>
+			<Text>Below</Text>
+		</Box>
+	)
+
+	expect(output).toBe(
+		[
+			'Above',
+			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
+				cliBoxes.round.topRight
+			}`,
+			`${cliBoxes.round.left}Content${cliBoxes.round.right}`,
+			chalk.dim(
+				`${cliBoxes.round.bottomLeft}${cliBoxes.round.bottom.repeat(7)}${
+					cliBoxes.round.bottomRight
+				}`
+			),
+			'Below',
+		].join('\n')
+	)
+})
+
+test('dim left border color', () => {
+	const output = renderToString(
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+			<Text>Above</Text>
+			<Box style={{ borderStyle: 'round' }}>
+				<Text>Content</Text>
+			</Box>
+			<Text>Below</Text>
+		</Box>
+	)
+
+	expect(output).toBe(
+		[
+			'Above',
+			`${cliBoxes.round.topLeft}${cliBoxes.round.top.repeat(7)}${
+				cliBoxes.round.topRight
+			}`,
+			`${chalk.dim(cliBoxes.round.left)}Content${cliBoxes.round.right}`,
+			`${cliBoxes.round.bottomLeft}${cliBoxes.round.bottom.repeat(7)}${
+				cliBoxes.round.bottomRight
+			}`,
+			'Below',
+		].join('\n')
+	)
+})
+
+test('dim right border color', () => {
+	const output = renderToString(
+		<Box style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+			<Text>Above</Text>
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>Content</Text>
 			</Box>
 			<Text>Below</Text>

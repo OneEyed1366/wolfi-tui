@@ -16,7 +16,7 @@ function App() {
 	}, [])
 
 	return (
-		<Box flexDirection="column" padding={1}>
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
 			<Text>Counter: {count}</Text>
 			<Text>This updates every 10ms but renders are throttled</Text>
 			<Text>Press Ctrl+C to exit</Text>

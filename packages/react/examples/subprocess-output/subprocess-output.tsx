@@ -22,9 +22,9 @@ function SubprocessOutput() {
 	}, [setOutput])
 
 	return (
-		<Box flexDirection="column" padding={1}>
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
 			<Text>Сommand output:</Text>
-			<Box marginTop={1}>
+			<Box style={{ marginTop: 1 }}>
 				<Text>{output}</Text>
 			</Box>
 		</Box>

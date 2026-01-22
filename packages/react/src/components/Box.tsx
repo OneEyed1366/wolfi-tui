@@ -5,7 +5,7 @@ import { accessibilityContext } from './AccessibilityContext'
 import { backgroundContext } from './BackgroundContext'
 import { resolveClassName, type ClassNameValue } from '../styles/index'
 
-export type Props = Except<Styles, 'textWrap'> & {
+export type Props = {
 	/**
 	CSS-like class name for styling. Supports:
 	- String class name: 'container'
@@ -16,6 +16,12 @@ export type Props = Except<Styles, 'textWrap'> & {
 	The `style` prop takes precedence over className when both are provided.
 	*/
 	readonly className?: ClassNameValue
+
+	/**
+	CSS-like inline styles.
+	*/
+	readonly style?: Styles
+
 	/**
 	A label for the element for screen readers.
 	*/
@@ -73,12 +79,11 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 		{
 			children,
 			className,
-			backgroundColor,
+			style = {},
 			'aria-label': ariaLabel,
 			'aria-hidden': ariaHidden,
 			'aria-role': role,
 			'aria-state': ariaState,
-			...style
 		},
 		ref
 	) => {
@@ -104,11 +109,12 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 					// LAYER 2: className styles (medium priority)
 					...resolvedClassName,
 
-					// LAYER 3: Inline props (highest priority)
+					// LAYER 3: Inline style prop (highest priority)
 					...style,
 
 					// Special handling for derived properties
-					backgroundColor: backgroundColor ?? resolvedClassName.backgroundColor,
+					backgroundColor:
+						style.backgroundColor ?? resolvedClassName.backgroundColor,
 					overflowX:
 						style.overflowX ??
 						resolvedClassName.overflowX ??
@@ -133,7 +139,7 @@ const Box = forwardRef<DOMElement, PropsWithChildren<Props>>(
 
 		// If this Box has a background color, provide it to children via context
 		const finalBackgroundColor =
-			backgroundColor ?? resolvedClassName.backgroundColor
+			style.backgroundColor ?? resolvedClassName.backgroundColor
 		if (finalBackgroundColor) {
 			return (
 				<backgroundContext.Provider value={finalBackgroundColor}>

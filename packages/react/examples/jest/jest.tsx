@@ -47,7 +47,7 @@ class Jest extends React.Component<Record<string, unknown>, State> {
 		const { startTime, completedTests, runningTests } = this.state
 
 		return (
-			<Box flexDirection="column">
+			<Box style={{ flexDirection: 'column' }}>
 				<Static items={completedTests}>
 					{(test) => (
 						<Test key={test.path} status={test.status} path={test.path} />
@@ -55,7 +55,7 @@ class Jest extends React.Component<Record<string, unknown>, State> {
 				</Static>
 
 				{runningTests.length > 0 && (
-					<Box flexDirection="column" marginTop={1}>
+					<Box style={{ flexDirection: 'column', marginTop: 1 }}>
 						{runningTests.map((test) => (
 							<Test key={test.path} status={test.status} path={test.path} />
 						))}

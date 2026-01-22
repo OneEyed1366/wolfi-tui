@@ -40,33 +40,31 @@ export default function ErrorOverview({ error }: Props) {
 	}
 
 	return (
-		<Box flexDirection="column" padding={1}>
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
 			<Box>
-				<Text backgroundColor="red" color="white">
-					{' '}
-					ERROR{' '}
-				</Text>
+				<Text style={{ backgroundColor: 'red', color: 'white' }}> ERROR </Text>
 
 				<Text> {error.message}</Text>
 			</Box>
 
 			{origin && filePath && (
-				<Box marginTop={1}>
-					<Text dimColor>
+				<Box style={{ marginTop: 1 }}>
+					<Text style={{ color: 'gray' }}>
 						{filePath}:{origin.line}:{origin.column}
 					</Text>
 				</Box>
 			)}
 
 			{origin && excerpt && (
-				<Box marginTop={1} flexDirection="column">
+				<Box style={{ marginTop: 1, flexDirection: 'column' }}>
 					{excerpt.map(({ line, value }) => (
 						<Box key={line}>
-							<Box width={lineWidth + 1}>
+							<Box style={{ width: lineWidth + 1 }}>
 								<Text
-									dimColor={line !== origin.line}
-									backgroundColor={line === origin.line ? 'red' : undefined}
-									color={line === origin.line ? 'white' : undefined}
+									style={{
+										color: line === origin.line ? 'white' : 'gray',
+										backgroundColor: line === origin.line ? 'red' : undefined,
+									}}
 									aria-label={
 										line === origin.line
 											? `Line ${line}, error`
@@ -79,8 +77,10 @@ export default function ErrorOverview({ error }: Props) {
 
 							<Text
 								key={line}
-								backgroundColor={line === origin.line ? 'red' : undefined}
-								color={line === origin.line ? 'white' : undefined}
+								style={{
+									backgroundColor: line === origin.line ? 'red' : undefined,
+									color: line === origin.line ? 'white' : undefined,
+								}}
 							>
 								{' ' + value}
 							</Text>
@@ -90,7 +90,7 @@ export default function ErrorOverview({ error }: Props) {
 			)}
 
 			{error.stack && (
-				<Box marginTop={1} flexDirection="column">
+				<Box style={{ marginTop: 1, flexDirection: 'column' }}>
 					{error.stack
 						.split('\n')
 						.slice(1)
@@ -101,8 +101,8 @@ export default function ErrorOverview({ error }: Props) {
 							if (!parsedLine) {
 								return (
 									<Box key={line}>
-										<Text dimColor>- </Text>
-										<Text dimColor bold>
+										<Text style={{ color: 'gray' }}>- </Text>
+										<Text style={{ color: 'gray', fontWeight: 'bold' }}>
 											{line}
 											\t{' '}
 										</Text>
@@ -112,13 +112,12 @@ export default function ErrorOverview({ error }: Props) {
 
 							return (
 								<Box key={line}>
-									<Text dimColor>- </Text>
-									<Text dimColor bold>
+									<Text style={{ color: 'gray' }}>- </Text>
+									<Text style={{ color: 'gray', fontWeight: 'bold' }}>
 										{parsedLine.function}
 									</Text>
 									<Text
-										dimColor
-										color="gray"
+										style={{ color: 'gray' }}
 										aria-label={`at ${
 											cleanupPath(parsedLine.file) ?? ''
 										} line ${parsedLine.line} column ${parsedLine.column}`}

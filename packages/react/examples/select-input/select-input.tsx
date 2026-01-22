@@ -33,7 +33,7 @@ function SelectInput() {
 	})
 
 	return (
-		<Box flexDirection="column" aria-role="list">
+		<Box aria-role="list" style={{ flexDirection: 'column' }}>
 			<Text>Select a color:</Text>
 			{items.map((item, index) => {
 				const isSelected = index === selectedIndex
@@ -47,7 +47,7 @@ function SelectInput() {
 						aria-state={{ selected: isSelected }}
 						aria-label={isScreenReaderEnabled ? screenReaderLabel : undefined}
 					>
-						<Text color={isSelected ? 'blue' : undefined}>{label}</Text>
+						<Text style={{ color: isSelected ? 'blue' : undefined }}>{label}</Text>
 					</Box>
 				)
 			})}

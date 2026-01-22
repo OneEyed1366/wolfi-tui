@@ -14,9 +14,15 @@ export type Props = {
 	- Style object (from CSS Modules): { color: 'red' }
 	- Array of the above: ['base', { bold: true }]
 
-	The inline props take precedence over className when both are provided.
+	The inline style prop takes precedence over className when both are provided.
 	*/
 	readonly className?: ClassNameValue
+
+	/**
+	CSS-like inline styles.
+	*/
+	readonly style?: Styles
+
 	/**
 	A label for the element for screen readers.
 	*/
@@ -27,51 +33,6 @@ export type Props = {
 	*/
 	readonly 'aria-hidden'?: boolean
 
-	/**
-	Change text color. Ink uses Chalk under the hood, so all its functionality is supported.
-	*/
-	readonly color?: LiteralUnion<ForegroundColorName, string>
-
-	/**
-	Same as `color`, but for the background.
-	*/
-	readonly backgroundColor?: LiteralUnion<ForegroundColorName, string>
-
-	/**
-	Dim the color (make it less bright).
-	*/
-	readonly dimColor?: boolean
-
-	/**
-	Make the text bold.
-	*/
-	readonly bold?: boolean
-
-	/**
-	Make the text italic.
-	*/
-	readonly italic?: boolean
-
-	/**
-	Make the text underlined.
-	*/
-	readonly underline?: boolean
-
-	/**
-	Make the text crossed out with a line.
-	*/
-	readonly strikethrough?: boolean
-
-	/**
-	Inverse background and foreground colors.
-	*/
-	readonly inverse?: boolean
-
-	/**
-	This property tells Ink to wrap or truncate text if its width is larger than the container. If `wrap` is passed (the default), Ink will wrap text and split it into multiple lines. If `truncate-*` is passed, Ink will truncate text instead, resulting in one line of text with the rest cut off.
-	*/
-	readonly wrap?: Styles['textWrap']
-
 	readonly children?: ReactNode
 }
 
@@ -80,15 +41,7 @@ This component can display text and change its style to make it bold, underlined
 */
 export default function Text({
 	className,
-	color,
-	backgroundColor,
-	dimColor,
-	bold,
-	italic,
-	underline,
-	strikethrough,
-	inverse,
-	wrap,
+	style = {},
 	children,
 	'aria-label': ariaLabel,
 	'aria-hidden': ariaHidden = false,
@@ -102,31 +55,26 @@ export default function Text({
 		return null
 	}
 
-	// Resolve className styles and merge with explicit props (explicit props win)
+	// Resolve className styles and merge with explicit style prop (style prop wins)
 	const resolvedClassName = resolveClassName(className)
 
-	// Merge className styles with explicit props - explicit props override
-	const effectiveColor = color ?? (resolvedClassName.color as typeof color)
-	const effectiveBackgroundColor =
-		backgroundColor ??
-		(resolvedClassName.backgroundColor as typeof backgroundColor)
-	const effectiveDimColor = dimColor ?? false
-	const effectiveBold = bold ?? resolvedClassName.fontWeight === 'bold'
-	const effectiveItalic = italic ?? resolvedClassName.fontStyle === 'italic'
-	const effectiveUnderline =
-		underline ?? resolvedClassName.textDecoration === 'underline'
+	// Merge className styles with explicit style prop - style prop overrides
+	const effectiveStyles: Styles = {
+		...resolvedClassName,
+		...style,
+	}
+
+	const effectiveColor = effectiveStyles.color
+	const effectiveBackgroundColor = effectiveStyles.backgroundColor
+	const effectiveBold = effectiveStyles.fontWeight === 'bold'
+	const effectiveItalic = effectiveStyles.fontStyle === 'italic'
+	const effectiveUnderline = effectiveStyles.textDecoration === 'underline'
 	const effectiveStrikethrough =
-		strikethrough ?? resolvedClassName.textDecoration === 'line-through'
-	const effectiveInverse =
-		inverse ?? (resolvedClassName.inverse as boolean) ?? false
-	const effectiveWrap =
-		wrap ?? (resolvedClassName.textWrap as typeof wrap) ?? 'wrap'
+		effectiveStyles.textDecoration === 'line-through'
+	const effectiveInverse = effectiveStyles.inverse ?? false
+	const effectiveWrap = effectiveStyles.textWrap ?? 'wrap'
 
 	const transform = (children: string): string => {
-		if (effectiveDimColor) {
-			children = chalk.dim(children)
-		}
-
 		if (effectiveColor) {
 			children = colorize(children, effectiveColor, 'foreground')
 		}
@@ -171,8 +119,8 @@ export default function Text({
 				flexGrow: 0,
 				flexShrink: 1,
 				flexDirection: 'row',
+				...effectiveStyles,
 				textWrap: effectiveWrap,
-				...resolvedClassName,
 			}}
 			internal_transform={transform}
 		>

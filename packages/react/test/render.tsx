@@ -243,7 +243,7 @@ test('rerender on resize', async () => {
 
 	function Test() {
 		return (
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>Test</Text>
 			</Box>
 		)
@@ -332,7 +332,7 @@ test('outputs renderTime when onRender is passed', async () => {
 		})
 
 		return (
-			<Box borderStyle="round">
+			<Box style={{ borderStyle: 'round' }}>
 				<Text>{text}</Text>
 				{children}
 			</Box>

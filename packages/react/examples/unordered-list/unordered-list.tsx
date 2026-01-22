@@ -3,12 +3,12 @@ import { Box, Text, UnorderedList } from '../../src/index'
 
 function UnorderedListDemo() {
 	return (
-		<Box flexDirection="column" gap={1}>
-			<Text bold>Unordered List Example</Text>
+		<Box style={{ flexDirection: 'column', gap: 1 }}>
+			<Text style={{ fontWeight: 'bold' }}>Unordered List Example</Text>
 
 			{/* Simple unordered list */}
-			<Box flexDirection="column">
-				<Text dimColor>Simple list:</Text>
+			<Box style={{ flexDirection: 'column' }}>
+				<Text style={{ color: 'gray' }}>Simple list:</Text>
 				<UnorderedList>
 					<UnorderedList.Item>
 						<Text>Apple</Text>
@@ -23,15 +23,15 @@ function UnorderedListDemo() {
 			</Box>
 
 			{/* Nested unordered list (different markers at each depth) */}
-			<Box flexDirection="column">
-				<Text dimColor>Nested list (different markers per depth):</Text>
+			<Box style={{ flexDirection: 'column' }}>
+				<Text style={{ color: 'gray' }}>Nested list (different markers per depth):</Text>
 				<UnorderedList>
 					<UnorderedList.Item>
-						<Box flexDirection="column">
+						<Box style={{ flexDirection: 'column' }}>
 							<Text>Fruits</Text>
 							<UnorderedList>
 								<UnorderedList.Item>
-									<Box flexDirection="column">
+									<Box style={{ flexDirection: 'column' }}>
 										<Text>Citrus</Text>
 										<UnorderedList>
 											<UnorderedList.Item>
@@ -47,7 +47,7 @@ function UnorderedListDemo() {
 									</Box>
 								</UnorderedList.Item>
 								<UnorderedList.Item>
-									<Box flexDirection="column">
+									<Box style={{ flexDirection: 'column' }}>
 										<Text>Berries</Text>
 										<UnorderedList>
 											<UnorderedList.Item>
@@ -63,7 +63,7 @@ function UnorderedListDemo() {
 						</Box>
 					</UnorderedList.Item>
 					<UnorderedList.Item>
-						<Box flexDirection="column">
+						<Box style={{ flexDirection: 'column' }}>
 							<Text>Vegetables</Text>
 							<UnorderedList>
 								<UnorderedList.Item>
@@ -82,24 +82,24 @@ function UnorderedListDemo() {
 			</Box>
 
 			{/* Features list */}
-			<Box flexDirection="column">
-				<Text dimColor>Features:</Text>
+			<Box style={{ flexDirection: 'column' }}>
+				<Text style={{ color: 'gray' }}>Features:</Text>
 				<UnorderedList>
 					<UnorderedList.Item>
 						<Text>
-							<Text color="cyan">Automatic markers</Text> - Different bullet
+							<Text style={{ color: 'cyan' }}>Automatic markers</Text> - Different bullet
 							styles for each nesting level
 						</Text>
 					</UnorderedList.Item>
 					<UnorderedList.Item>
 						<Text>
-							<Text color="cyan">Themeable</Text> - Customize markers and colors
+							<Text style={{ color: 'cyan' }}>Themeable</Text> - Customize markers and colors
 							via theme
 						</Text>
 					</UnorderedList.Item>
 					<UnorderedList.Item>
 						<Text>
-							<Text color="cyan">Flexible content</Text> - Items can contain any
+							<Text style={{ color: 'cyan' }}>Flexible content</Text> - Items can contain any
 							React nodes
 						</Text>
 					</UnorderedList.Item>

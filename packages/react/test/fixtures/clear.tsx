@@ -3,7 +3,7 @@ import { Box, Text, render } from '@wolfie/react'
 
 function Clear() {
 	return (
-		<Box flexDirection="column">
+		<Box style={{ flexDirection: 'column' }}>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>
