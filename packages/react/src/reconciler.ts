@@ -122,9 +122,7 @@ export const unregisterLayoutTree = (rootNode: DOMElement): void => {
  * Get LayoutTree for a node by traversing up to find its root.
  * Works for both DOMElement and TextNode since both have parentNode.
  */
-const getLayoutTree = (
-	node: DOMElement | TextNode
-): LayoutTree | undefined => {
+const getLayoutTree = (node: DOMElement | TextNode): LayoutTree | undefined => {
 	// Start from the node itself if it's a DOMElement
 	let current: DOMElement | undefined
 	if (node.nodeName !== '#text') {
@@ -341,7 +339,10 @@ export default createReconciler<
 
 		const props = diff(oldProps, newProps)
 
-		const styleDiff = diff(oldProps['style'] as Styles, newProps['style'] as Styles)
+		const styleDiff = diff(
+			oldProps['style'] as Styles,
+			newProps['style'] as Styles
+		)
 
 		if (!props && !styleDiff) {
 			return
@@ -373,7 +374,11 @@ export default createReconciler<
 			// not just the diff, because setStyle replaces rather than merges.
 			const layoutTree = getLayoutTree(node)
 			if (layoutTree && node.layoutNodeId !== undefined) {
-				applyLayoutStyle(layoutTree, node.layoutNodeId, newProps['style'] as Styles)
+				applyLayoutStyle(
+					layoutTree,
+					node.layoutNodeId,
+					newProps['style'] as Styles
+				)
 			}
 		}
 	},
