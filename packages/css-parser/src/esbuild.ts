@@ -1,21 +1,31 @@
 /**
  * esbuild Plugin for wolfie CSS
  *
- * Transforms CSS imports into wolfie style objects at build time
+ * Transforms CSS imports into wolfie style objects at build time.
+ * Uses Zero-Scan "Push" model for Tailwind v4 integration.
  */
 
 import type { Plugin } from 'esbuild'
-import fs from 'node:fs'
 import * as path from 'node:path'
 import glob from 'fast-glob'
-import type { EsbuildPluginOptions } from './types'
+import type { EsbuildPluginOptions, ParsedStyles } from './types'
+import { compile, detectLanguage, tailwind } from './preprocessors'
 import { parseCSS } from './parser'
-import { compile, detectLanguage } from './preprocessors'
 import { generateJavaScript } from './generator'
 import { scanCandidates } from './scanner'
 import { inlineStyles } from './inliner'
+import { readFileSync, existsSync } from 'node:fs'
 
-//#region esbuild Plugin
+function matchesPattern(
+	id: string,
+	pattern: string | RegExp | (string | RegExp)[]
+): boolean {
+	const patterns = Array.isArray(pattern) ? pattern : [pattern]
+	return patterns.some((p) => {
+		if (typeof p === 'string') return id.includes(p)
+		return p.test(id)
+	})
+}
 
 /**
  * esbuild plugin for wolfie CSS transformation
@@ -24,113 +34,174 @@ export function wolfieCSS(options: EsbuildPluginOptions = {}): Plugin {
 	const {
 		mode = 'module',
 		filter = /\.(css|scss|sass|less|styl|stylus)$/,
-		inline = false,
+		inline = true,
 	} = options
 
-	const globalStylesMap = new Map<string, any>()
-	const usedCandidates = new Set<string>()
+	const globalStylesMap: ParsedStyles = {}
+
+	async function loadAndProcessStyle(
+		absolutePath: string
+	): Promise<{ code: string; styles: ParsedStyles } | null> {
+		if (!existsSync(absolutePath)) return null
+
+		const isModule = absolutePath.includes('.module.') || mode === 'module'
+		const lang = detectLanguage(absolutePath)
+
+		const source = readFileSync(absolutePath, 'utf-8')
+		const compileResult = await compile(source, lang, absolutePath)
+
+		const styles = parseCSS(compileResult.css, {
+			filename: absolutePath,
+		})
+
+		// Populate global map for inlining
+		Object.assign(globalStylesMap, styles)
+
+		const code = generateJavaScript(styles, {
+			mode: isModule ? 'module' : 'global',
+			metadata: compileResult.metadata,
+		})
+
+		return { code, styles }
+	}
 
 	return {
 		name: 'wolfie-css',
 
 		async setup(build) {
-			// If inlining is enabled, pre-scan CSS files to populate the map
+			const rootDir = build.initialOptions.absWorkingDir || process.cwd()
+
+			// Initialize Tailwind compiler
+			await tailwind.initialize(rootDir)
+
+			// Phase 1: Pre-scan source files to push candidates to Tailwind
+			const sourceFiles = await glob('**/*.{tsx,jsx,ts,js}', {
+				cwd: rootDir,
+				ignore: ['**/node_modules/**', '**/dist/**', '**/build/**'],
+				absolute: true,
+			})
+
+			for (const file of sourceFiles) {
+				try {
+					const source = readFileSync(file, 'utf-8')
+					const candidates = scanCandidates(source)
+					if (candidates.size > 0) {
+						tailwind.addCandidates(candidates)
+					}
+				} catch (err) {
+					console.warn(`[wolfie-css] Failed to pre-scan ${file}:`, err)
+				}
+			}
+
+			// Phase 2: Pre-scan CSS files to populate globalStylesMap for inlining
 			if (inline) {
+				// 2a: Load project CSS files
 				const cssFiles = await glob('**/*.{css,scss,sass,less,styl,stylus}', {
-					cwd: build.initialOptions.absWorkingDir || process.cwd(),
+					cwd: rootDir,
 					ignore: ['**/node_modules/**'],
 					absolute: true,
 				})
 
-				await Promise.all(
-					cssFiles.map(async (file) => {
-						try {
-							const source = await fs.promises.readFile(file, 'utf-8')
-							const lang = detectLanguage(file)
-							const result = await compile(source, lang, file)
-							const styles = parseCSS(result.css, { filename: file })
-							for (const [name, style] of Object.entries(styles)) {
-								globalStylesMap.set(name, style)
-							}
-						} catch (err) {
-							console.warn(`[wolfie-css] Failed to pre-scan ${file}:`, err)
-						}
+				for (const file of cssFiles) {
+					try {
+						await loadAndProcessStyle(file)
+					} catch (err) {
+						console.warn(`[wolfie-css] Failed to load ${file}:`, err)
+					}
+				}
+
+				// 2b: Generate Tailwind CSS and add to globalStylesMap
+				try {
+					const tailwindCss = await tailwind.build()
+					const tailwindStyles = parseCSS(tailwindCss, {
+						filename: 'virtual:tailwind.css',
 					})
-				)
+					Object.assign(globalStylesMap, tailwindStyles)
+					if (process.env['DEBUG_WOLFIE_CSS']) {
+						console.log(
+							`[wolfie-css] Loaded Tailwind styles:`,
+							Object.keys(tailwindStyles)
+						)
+					}
+				} catch (err) {
+					console.warn('[wolfie-css] Failed to generate Tailwind CSS:', err)
+				}
 			}
 
-			// 1. Scan source files if inlining is enabled
+			// Phase 3: Transform JS/TSX files to inline styles
 			if (inline) {
 				build.onLoad({ filter: /\.[jt]sx?$/ }, async (args) => {
-					// Don't process node_modules
 					if (args.path.includes('node_modules')) return
 
-					const source = await fs.promises.readFile(args.path, 'utf-8')
-					const candidates = scanCandidates(source)
-					for (const c of candidates) usedCandidates.add(c)
+					try {
+						let source = readFileSync(args.path, 'utf-8')
 
-					// Perform static inlining if we have styles
-					if (globalStylesMap.size > 0) {
-						const transformed = inlineStyles(source, globalStylesMap)
-						if (transformed !== source) {
-							return { contents: transformed, loader: 'tsx' }
+						// Collect candidates
+						const candidates = scanCandidates(source)
+						if (candidates.size > 0) {
+							tailwind.addCandidates(candidates)
 						}
-					}
 
-					return null
+						// Inline styles
+						if (Object.keys(globalStylesMap).length > 0) {
+							const transformed = inlineStyles(source, globalStylesMap)
+							if (transformed !== source) {
+								return { contents: transformed, loader: 'tsx' }
+							}
+						}
+
+						return null
+					} catch (err) {
+						console.warn(`[wolfie-css] Failed to process ${args.path}:`, err)
+						return null
+					}
 				})
 			}
 
-			// 2. Handle CSS and preprocessor files
+			// Phase 4: Handle CSS/preprocessor files
 			build.onLoad({ filter }, async (args) => {
 				try {
-					const source = await fs.promises.readFile(args.path, 'utf-8')
-
-					// Detect mode from filename (.module.css → module mode)
-					const isModule = args.path.includes('.module.') || mode === 'module'
-
-					// Detect preprocessor and compile to CSS
-					const lang = detectLanguage(args.path)
-					const result = await compile(source, lang, args.path)
-
-					// Update global map for inlining
-					const allStyles = parseCSS(result.css, {
-						filename: args.path,
-					})
-					if (inline) {
-						for (const [name, style] of Object.entries(allStyles)) {
-							globalStylesMap.set(name, style)
+					const result = await loadAndProcessStyle(args.path)
+					if (!result) {
+						return {
+							errors: [
+								{
+									text: `File not found: ${args.path}`,
+									location: { file: args.path },
+								},
+							],
 						}
 					}
 
-					// Parse CSS to styles for this module
-					const styles = parseCSS(result.css, {
-						filename: args.path,
-						includeCandidates: inline ? usedCandidates : undefined,
-					})
-
-					// Generate JavaScript output (esbuild handles transpilation)
-					const output = generateJavaScript(styles, {
-						mode: isModule ? 'module' : 'global',
-						metadata: result.metadata,
-					})
-
 					return {
-						contents: output,
+						contents: result.code,
 						loader: 'js',
-						watchFiles: result.watchFiles,
+						watchFiles: [args.path],
 					}
 				} catch (err: any) {
 					return {
 						errors: [
 							{
 								text: err.message,
-								location: {
-									file: args.path,
-								},
+								location: { file: args.path },
 							},
 						],
 					}
+				}
+			})
+
+			// Phase 5: Handle virtual Tailwind module (optional)
+			build.onResolve({ filter: /^virtual:wolfie-tailwind\.css$/ }, (args) => ({
+				path: args.path,
+				namespace: 'wolfie-tailwind',
+			}))
+
+			build.onLoad({ filter: /.*/, namespace: 'wolfie-tailwind' }, async () => {
+				const css = await tailwind.build()
+				return {
+					contents: css,
+					loader: 'css',
+					resolveDir: rootDir,
 				}
 			})
 		},
