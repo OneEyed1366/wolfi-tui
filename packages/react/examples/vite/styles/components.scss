@@ -1,0 +1,65 @@
+@use 'sass:map';
+
+/* Design tokens - can be imported into Tailwind config */
+$colors: (
+	primary: magenta,
+	secondary: cyan,
+	accent: yellow,
+);
+
+$spacing: (
+	sm: 0,
+	md: 1,
+	lg: 2,
+);
+
+$border: round;
+
+/* Component with SCSS nesting */
+.card {
+	border-style: $border;
+	padding: map.get($spacing, md);
+	border-color: map.get($colors, primary);
+
+	.title {
+		color: map.get($colors, primary);
+		font-weight: bold;
+	}
+
+	.content {
+		padding: map.get($spacing, sm);
+	}
+
+	/* Compound selector for state variations */
+	&.compact {
+		padding: map.get($spacing, sm);
+	}
+}
+
+.btn {
+	padding-x: 2;
+	padding-y: 1;
+	border-style: single;
+	border-color: map.get($colors, primary);
+
+	/* Compound selectors for state variations */
+	&.primary {
+		border-color: map.get($colors, primary);
+	}
+
+	&.large {
+		padding-x: 4;
+		padding-y: 2;
+	}
+}
+
+.menu {
+	.item {
+		color: map.get($colors, primary);
+	}
+
+	/* Compound selector for active state */
+	.item.active {
+		color: map.get($colors, secondary);
+	}
+}
