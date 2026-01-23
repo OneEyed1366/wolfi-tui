@@ -42,19 +42,21 @@ export function wolfieCSS(options: EsbuildPluginOptions = {}): Plugin {
 					absolute: true,
 				})
 
-				for (const file of cssFiles) {
-					try {
-						const source = await fs.promises.readFile(file, 'utf-8')
-						const lang = detectLanguage(file)
-						const result = await compile(source, lang, file)
-						const styles = parseCSS(result.css, { filename: file })
-						for (const [name, style] of Object.entries(styles)) {
-							globalStylesMap.set(name, style)
+				await Promise.all(
+					cssFiles.map(async (file) => {
+						try {
+							const source = await fs.promises.readFile(file, 'utf-8')
+							const lang = detectLanguage(file)
+							const result = await compile(source, lang, file)
+							const styles = parseCSS(result.css, { filename: file })
+							for (const [name, style] of Object.entries(styles)) {
+								globalStylesMap.set(name, style)
+							}
+						} catch (err) {
+							console.warn(`[wolfie-css] Failed to pre-scan ${file}:`, err)
 						}
-					} catch (err) {
-						console.warn(`[wolfie-css] Failed to pre-scan ${file}:`, err)
-					}
-				}
+					})
+				)
 			}
 
 			// 1. Scan source files if inlining is enabled

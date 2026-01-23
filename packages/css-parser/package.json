@@ -39,6 +39,7 @@
 		"postcss-value-parser": "^4.2.0"
 	},
 	"devDependencies": {
+		"@tailwindcss/node": "^4.1.18",
 		"@types/jsdom": "^27.0.0",
 		"@types/less": "^3.0.8",
 		"@types/node": "^24.10.9",

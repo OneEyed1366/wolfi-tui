@@ -1,18 +1,12 @@
 import type { Plugin } from 'vite'
 import type { VitePluginOptions } from './types'
-import './shim' // Apply Tailwind v4 patch EARLY
-import {
-	compile,
-	detectLanguage,
-	type PreprocessorResult,
-} from './preprocessors'
+import './shim' // Apply Tailwind v4 patch
+import { compile, detectLanguage, tailwind } from './preprocessors'
 import { parseCSS } from './parser'
 import { generateJavaScript, generateTypeScript } from './generator'
 import { scanCandidates } from './scanner'
 import { inlineStyles } from './inliner'
 import { readFileSync, existsSync } from 'node:fs'
-import { dirname } from 'node:path'
-import glob from 'fast-glob'
 import type { ParsedStyles } from './types'
 
 /**
@@ -21,76 +15,55 @@ import type { ParsedStyles } from './types'
 export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 	const {
 		mode = 'module',
-		javascript = true, // Default to true for better compatibility with vite-node/SSR
+		javascript = true,
 		include = /\.(css|scss|sass|less|styl|stylus)$/,
 		exclude = /node_modules/,
 		camelCaseClasses = true,
-		inline = true, // New option: inline styles in JSX
+		inline = true,
 	} = options
 
-	const usedCandidates = new Set<string>()
 	const globalStylesMap: ParsedStyles = {}
-	const virtualPrefix = '\0wolfie:'
+	const virtualPrefix = '\x00wolfie:'
+	const tailwindVirtualId = 'virtual:wolfie-tailwind.css'
+	const tailwindVirtualResolvedId = '\x00' + tailwindVirtualId
 
-	/**
-	 * Helper to process a CSS file and populate the global map
-	 */
-	async function processCSSFile(
-		filePath: string,
-		options: { camelCaseClasses?: boolean }
-	) {
-		if (!existsSync(filePath)) return
-
-		const lang = detectLanguage(filePath)
-		const source = readFileSync(filePath, 'utf-8')
-		try {
-			const result = await compile(source, lang, filePath)
-			const styles = parseCSS(result.css, {
-				filename: filePath,
-				camelCaseClasses: options.camelCaseClasses ?? true,
-			})
-			Object.assign(globalStylesMap, styles)
-		} catch (e) {
-			console.warn(`[wolfie-css] Failed to pre-scan ${filePath}:`, e)
-		}
-	}
+	let server: any
 
 	return {
 		name: 'wolfie-css',
 		enforce: 'pre',
 
-		async configResolved(config) {
-			// Pre-scan project for CSS files to populate globalStylesMap early
-			// Use config file directory as scan root to avoid scanning entire monorepo
-			// when running from a parent directory (e.g., `pnpm example` from root)
-			const scanRoot = config.configFile
-				? dirname(config.configFile)
-				: config.root
-
-			const cssFiles = await glob(['**/*.{css,scss,sass,less,styl,stylus}'], {
-				ignore: ['**/node_modules/**', '**/.git/**', '**/.*/**'],
-				cwd: scanRoot,
-				absolute: true,
-				followSymbolicLinks: false,
-				dot: false,
-			})
-
-			for (const file of cssFiles) {
-				await processCSSFile(file, { camelCaseClasses })
-			}
+		configureServer(_server) {
+			server = _server
 		},
 
 		async transform(code, id) {
-			if (id.includes('node_modules')) return null
+			if (id.includes('node_modules') || id.startsWith('\x00')) return null
 
+			// 1. If it's a source file, collect candidates for Tailwind Zero-Scan
 			if (id.match(/\.(tsx|jsx|ts|js)$/)) {
-				// 1. Scan for candidates
 				const candidates = scanCandidates(code)
-				for (const candidate of candidates) {
-					usedCandidates.add(candidate)
+				if (candidates.size > 0) {
+					const beforeSize = tailwind.getCandidateSize()
+					tailwind.addCandidates(candidates)
+					const afterSize = tailwind.getCandidateSize()
+
+					// Trigger HMR if new candidates found
+					if (afterSize > beforeSize && server) {
+						const mod = server.moduleGraph.getModuleById(
+							tailwindVirtualResolvedId
+						)
+						if (mod) {
+							server.moduleGraph.invalidateModule(mod)
+							server.ws.send({
+								type: 'full-reload',
+								path: '*',
+							})
+						}
+					}
 				}
 
-				// 2. If inlining is enabled, replace className with style
+				// 2. If inlining is enabled and we have styles, apply them
 				if (inline && Object.keys(globalStylesMap).length > 0) {
 					const newCode = inlineStyles(code, globalStylesMap)
 					if (newCode !== code) {
@@ -103,10 +76,16 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 		},
 
 		async resolveId(id, importer) {
-			const cleanId = id.split('?')[0]!
+			if (id === tailwindVirtualId) {
+				return tailwindVirtualResolvedId
+			}
 
-			// Skip if already virtual or excluded
-			if (id.startsWith(virtualPrefix) || matchesPattern(cleanId, exclude)) {
+			const cleanId = id.split('?')[0]!
+			if (
+				id.startsWith(virtualPrefix) ||
+				id.startsWith('\x00') ||
+				matchesPattern(cleanId, exclude)
+			) {
 				return null
 			}
 
@@ -120,72 +99,39 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 		},
 
 		async load(id) {
+			if (id === tailwindVirtualResolvedId) {
+				const css = await tailwind.build()
+				return css
+			}
+
 			if (!id.startsWith(virtualPrefix)) {
 				return null
 			}
 
-			// Extract the real absolute path
 			const absolutePath = id.slice(virtualPrefix.length).replace(/\.js$/, '')
-
-			if (!existsSync(absolutePath)) {
-				return null
-			}
+			if (!existsSync(absolutePath)) return null
 
 			const isModule = absolutePath.includes('.module.') || mode === 'module'
 			const lang = detectLanguage(absolutePath)
 
 			try {
-				let compiled: string
-				let metadata: PreprocessorResult['metadata'] = undefined
+				const source = readFileSync(absolutePath, 'utf-8')
 
-				if (lang === 'css' && !absolutePath.includes('.module.')) {
-					try {
-						const result = await this.load({ id: absolutePath })
-						if (
-							result &&
-							result.code &&
-							!result.code.includes('export default')
-						) {
-							compiled = result.code
-						} else {
-							const source = readFileSync(absolutePath, 'utf-8')
-							const compileResult = await compile(source, lang, absolutePath)
-							compiled = compileResult.css
-							metadata = compileResult.metadata
-						}
-					} catch {
-						const source = readFileSync(absolutePath, 'utf-8')
-						const compileResult = await compile(source, lang, absolutePath)
-						compiled = compileResult.css
-						metadata = compileResult.metadata
-					}
-				} else {
-					const source = readFileSync(absolutePath, 'utf-8')
-					const compileResult = await compile(source, lang, absolutePath)
-					compiled = compileResult.css
-					metadata = compileResult.metadata
-				}
-				const styles = parseCSS(compiled, {
+				const compileResult = await compile(source, lang, absolutePath)
+
+				const styles = parseCSS(compileResult.css, {
 					filename: absolutePath,
 					camelCaseClasses,
-					// Only filter global CSS by candidates - CSS modules use dynamic references
-					// like `styles.container` which can't be statically scanned
-					includeCandidates: isModule
-						? undefined
-						: usedCandidates.size > 0
-							? usedCandidates
-							: undefined,
 				})
 
-				// Store in global map for inlining
+				// Populate global map lazily as files are loaded
 				Object.assign(globalStylesMap, styles)
 
-				// Use requested generator (defaulting to JS for runtime compatibility)
 				const generator = javascript ? generateJavaScript : generateTypeScript
 				const code = generator(styles, {
 					mode: isModule ? 'module' : 'global',
 					camelCaseClasses,
-					metadata,
+					metadata: compileResult.metadata,
 				})
 
 				return {
@@ -201,9 +147,6 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 	}
 }
 
-/**
- * Check if a file path matches a pattern or array of patterns
- */
 function matchesPattern(
 	id: string,
 	pattern: string | RegExp | (string | RegExp)[]

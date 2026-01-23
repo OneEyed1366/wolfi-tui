@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, Box, Text } from '@wolfie/react'
+import 'virtual:wolfie-tailwind.css'
 import './styles/global.css'
 import './styles/components.scss'
 import './styles/tailwind.css'

@@ -3,8 +3,7 @@
  */
 
 import * as path from 'node:path'
-import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs'
-import { createHash } from 'node:crypto'
+import { readFileSync, existsSync } from 'node:fs'
 import * as sass from 'sass'
 import less from 'less'
 import stylus from 'stylus'
@@ -13,82 +12,128 @@ import { createRequire } from 'node:module'
 import { parseCSS } from './parser'
 import type { ParsedStyles, PreprocessorType, CSSParserOptions } from './types'
 import './shim' // Apply Tailwind v4 patch
+import {
+	compile as tailwindCompile,
+	__unstable__loadDesignSystem,
+} from 'tailwindcss'
 
-//#region Tailwind Cache
-// File-based cache for expensive Tailwind compilation
-const CACHE_DIR = path.join(process.cwd(), 'node_modules', '.wolfie-cache')
+//#region Tailwind Compiler Singleton
+class TailwindCompiler {
+	private static instance: TailwindCompiler
+	private buildFn: ((candidates: string[]) => string) | null = null
+	private metadata: PreprocessorResult['metadata'] = undefined
+	private initPromise: Promise<void> | null = null
+	private candidates = new Set<string>()
 
-/**
- * Extract @source paths from Tailwind CSS
- * e.g., @source "../index.tsx"; -> ["../index.tsx"]
- */
-function extractSourcePaths(css: string): string[] {
-	const sources: string[] = []
-	const regex = /@source\s+["']([^"']+)["']/g
-	let match
-	while ((match = regex.exec(css)) !== null) {
-		sources.push(match[1]!)
+	private constructor() {}
+
+	static getInstance(): TailwindCompiler {
+		if (!TailwindCompiler.instance) {
+			TailwindCompiler.instance = new TailwindCompiler()
+		}
+		return TailwindCompiler.instance
 	}
-	return sources
-}
 
-/**
- * Generate cache key including source file contents
- * This ensures cache invalidates when source files change
- */
-function getCacheKey(css: string, filePath: string): string {
-	const hash = createHash('sha256')
-	hash.update(css)
-	hash.update(filePath)
+	addCandidates(newCandidates: string[] | Set<string>) {
+		for (const c of newCandidates) {
+			this.candidates.add(c)
+		}
+	}
 
-	// Include @source file contents in hash
-	const sourcePaths = extractSourcePaths(css)
-	const baseDir = path.dirname(filePath)
+	async initialize(root: string = process.cwd()) {
+		if (this.initPromise) return this.initPromise
 
-	for (const sourcePath of sourcePaths) {
-		const absolutePath = path.resolve(baseDir, sourcePath)
-		try {
-			if (existsSync(absolutePath)) {
-				const content = readFileSync(absolutePath, 'utf-8')
-				hash.update(content)
+		this.initPromise = (async () => {
+			try {
+				const baseCss = `
+					@import "tailwindcss/theme";
+					@import "tailwindcss/utilities";
+				`
+
+				const require = createRequire(path.join(root, 'package.json'))
+				const tailwindPkgPath = require.resolve('tailwindcss/package.json')
+				const tailwindDir = path.dirname(tailwindPkgPath)
+
+				const loadStylesheet = async (id: string, base: string) => {
+					let resolvedPath = id
+
+					// Map v4 import shorthand to actual files
+					if (id === 'tailwindcss') {
+						resolvedPath = path.join(tailwindDir, 'index.css')
+					} else if (id === 'tailwindcss/theme') {
+						resolvedPath = path.join(tailwindDir, 'theme.css')
+					} else if (id === 'tailwindcss/utilities') {
+						resolvedPath = path.join(tailwindDir, 'utilities.css')
+					} else if (id === 'tailwindcss/preflight') {
+						resolvedPath = path.join(tailwindDir, 'preflight.css')
+					} else if (id.startsWith('tailwindcss/')) {
+						resolvedPath = path.join(
+							tailwindDir,
+							id.replace('tailwindcss/', '') + '.css'
+						)
+					} else {
+						resolvedPath = path.resolve(base, id)
+					}
+
+					if (!existsSync(resolvedPath) && !resolvedPath.endsWith('.css')) {
+						resolvedPath += '.css'
+					}
+
+					return {
+						content: readFileSync(resolvedPath, 'utf-8'),
+						base: path.dirname(resolvedPath),
+						path: resolvedPath,
+					}
+				}
+
+				const compiled = await tailwindCompile(baseCss, {
+					base: root,
+					loadStylesheet,
+				})
+
+				this.buildFn = compiled.build
+
+				try {
+					const ds = await __unstable__loadDesignSystem(baseCss, {
+						base: root,
+						loadStylesheet,
+					})
+					this.metadata = {
+						prefixes: ds.utilities.keys('functional'),
+						statics: ds.utilities.keys('static'),
+					}
+				} catch (e) {
+					// Metadata is optional
+				}
+			} catch (error) {
+				console.error('[wolfie-css] Tailwind initialization failed:', error)
+				this.initPromise = null
+				throw error
 			}
-		} catch {
-			// Skip files that can't be read
-		}
+		})()
+
+		return this.initPromise
 	}
 
-	return hash.digest('hex').slice(0, 16)
-}
+	async build(extraCandidates: string[] = []): Promise<string> {
+		await this.initialize()
+		if (!this.buildFn) throw new Error('Tailwind compiler not initialized')
 
-function getCachedTailwind(
-	key: string
-): { css: string; metadata?: PreprocessorResult['metadata'] } | null {
-	try {
-		const cachePath = path.join(CACHE_DIR, `${key}.json`)
-		if (existsSync(cachePath)) {
-			const cached = JSON.parse(readFileSync(cachePath, 'utf-8'))
-			return cached
-		}
-	} catch {
-		// Cache miss or corrupted
+		const allCandidates = new Set([...this.candidates, ...extraCandidates])
+		return this.buildFn(Array.from(allCandidates))
 	}
-	return null
-}
 
-function setCachedTailwind(
-	key: string,
-	css: string,
-	metadata?: PreprocessorResult['metadata']
-): void {
-	try {
-		mkdirSync(CACHE_DIR, { recursive: true })
-		const cachePath = path.join(CACHE_DIR, `${key}.json`)
-		writeFileSync(cachePath, JSON.stringify({ css, metadata }))
-	} catch {
-		// Ignore cache write failures
+	getCandidateSize(): number {
+		return this.candidates.size
+	}
+
+	getMetadata() {
+		return this.metadata
 	}
 }
-//#endregion Tailwind Cache
+
+export const tailwind = TailwindCompiler.getInstance()
+//#endregion Tailwind Compiler Singleton
 
 //#region Types
 
@@ -105,35 +150,24 @@ export interface PreprocessorResult {
 }
 
 export interface PreprocessOptions {
-	/** Preprocessor language type */
 	lang?: PreprocessorType
-	/** File path for @import resolution */
 	filePath?: string
-	/** Generate source maps */
 	sourceMap?: boolean
+	candidates?: string[]
 }
 
 //#endregion Types
 
 //#region SCSS/Sass Compilation
 
-/**
- * Compile SCSS/Sass to CSS
- *
- * Uses the modern sass API (compileString) which is synchronous
- * but we return Promise for consistency with other preprocessors.
- */
 export async function compileScss(
 	source: string,
 	filePath?: string
 ): Promise<PreprocessorResult> {
 	const result = sass.compileString(source, {
-		// Use file's directory for @import resolution
 		loadPaths: filePath ? [path.dirname(filePath)] : [],
-		// Use indented syntax for .sass files
 		syntax: filePath?.endsWith('.sass') ? 'indented' : 'scss',
 	})
-
 	return {
 		css: result.css,
 		sourceMap: result.sourceMap ? JSON.stringify(result.sourceMap) : undefined,
@@ -141,28 +175,20 @@ export async function compileScss(
 	}
 }
 
-/**
- * @deprecated Use compileScss instead
- */
 export const compileSass = compileScss
 
 //#endregion SCSS/Sass Compilation
 
 //#region Less Compilation
 
-/**
- * Compile Less to CSS
- */
 export async function compileLess(
 	source: string,
 	filePath?: string
 ): Promise<PreprocessorResult> {
 	const result = await less.render(source, {
 		filename: filePath,
-		// Enable paths relative to file location
 		paths: filePath ? [path.dirname(filePath)] : [],
 	})
-
 	return {
 		css: result.css,
 		sourceMap: result.map,
@@ -174,31 +200,19 @@ export async function compileLess(
 
 //#region Stylus Compilation
 
-/**
- * Compile Stylus to CSS
- */
 export function compileStylus(
 	source: string,
 	filePath?: string
 ): Promise<PreprocessorResult> {
 	return new Promise((resolve, reject) => {
 		const compiler = stylus(source)
-
 		if (filePath) {
 			compiler.set('filename', filePath)
-			// Add file's directory for @import resolution
 			compiler.set('paths', [path.dirname(filePath)])
 		}
-
 		compiler.render((err: Error | null, css: string | undefined) => {
-			if (err) {
-				reject(err)
-			} else {
-				resolve({
-					css: css ?? '',
-					watchFiles: compiler.deps(),
-				})
-			}
+			if (err) reject(err)
+			else resolve({ css: css ?? '', watchFiles: compiler.deps() })
 		})
 	})
 }
@@ -207,12 +221,8 @@ export function compileStylus(
 
 //#region Unified API
 
-/**
- * Detect preprocessor language from file extension
- */
 export function detectLanguage(filename: string): PreprocessorType {
 	const ext = path.extname(filename).toLowerCase()
-
 	switch (ext) {
 		case '.scss':
 		case '.sass':
@@ -233,10 +243,10 @@ export function detectLanguage(filename: string): PreprocessorType {
 export async function compile(
 	source: string,
 	lang: PreprocessorType,
-	filePath?: string
+	filePath?: string,
+	candidates?: string[]
 ): Promise<PreprocessorResult> {
 	let result: PreprocessorResult
-
 	switch (lang) {
 		case 'scss':
 			result = await compileScss(source, filePath)
@@ -255,126 +265,13 @@ export async function compile(
 
 	let css = result.css || ''
 
-	// Always run through PostCSS to handle @import, Tailwind, etc.
 	if (
 		css &&
 		(css.includes('@tailwind') || /@import\s+['"]tailwindcss['"]/.test(css))
 	) {
-		// Check cache first - Tailwind compilation is expensive (~25s)
-		const cacheKey = getCacheKey(css, filePath || '')
-		const cached = getCachedTailwind(cacheKey)
-		if (cached) {
-			return { css: cached.css, metadata: cached.metadata }
-		}
-
 		try {
-			const require = createRequire(filePath || process.cwd())
-
-			let tailwind: any
-
-			try {
-				// Tailwind v4 PostCSS plugin
-				const tailwindPostcssPath = require.resolve('@tailwindcss/postcss')
-				tailwind =
-					(await import(tailwindPostcssPath)).default ||
-					(await import(tailwindPostcssPath))
-			} catch {
-				try {
-					// Tailwind v3 PostCSS plugin
-					const tailwindPath = require.resolve('tailwindcss')
-					tailwind =
-						(await import(tailwindPath)).default || (await import(tailwindPath))
-				} catch {
-					console.warn(
-						'[wolfie-css] Tailwind detected but tailwindcss or @tailwindcss/postcss not found in ' +
-							(filePath || process.cwd())
-					)
-				}
-			}
-
-			if (tailwind) {
-				// Try to find tailwind config (v3 only)
-				let tailwindConfig: any = undefined
-				try {
-					let searchDir = path.dirname(filePath || process.cwd())
-					let configPath: string | null = null
-
-					for (let i = 0; i < 3; i++) {
-						const cjsConfigPath = path.join(searchDir, 'tailwind.config.cjs')
-						if (existsSync(cjsConfigPath)) {
-							configPath = cjsConfigPath
-							break
-						}
-
-						const jsConfigPath = path.join(searchDir, 'tailwind.config.js')
-						if (existsSync(jsConfigPath)) {
-							configPath = jsConfigPath
-							break
-						}
-
-						const parent = path.dirname(searchDir)
-						if (parent === searchDir) break
-						searchDir = parent
-					}
-
-					if (configPath) {
-						const require = createRequire(filePath || process.cwd())
-						const configDir = path.dirname(configPath)
-						const loadedConfig = require(configPath)
-
-						if (loadedConfig.content && Array.isArray(loadedConfig.content)) {
-							loadedConfig.content = loadedConfig.content.map((p: string) =>
-								path.isAbsolute(p) ? p : path.resolve(configDir, p)
-							)
-						}
-
-						tailwindConfig = loadedConfig
-					}
-				} catch {}
-
-				let plugin: any
-				try {
-					if (typeof tailwind === 'function') {
-						plugin = tailwind(tailwindConfig)
-					} else {
-						plugin = tailwind
-					}
-				} catch (err: any) {
-					if (err.message?.includes('PostCSS plugin has moved')) {
-						console.warn(
-							'[wolfie-css] Tailwind v4 detected but @tailwindcss/postcss not available. Please install it.'
-						)
-						return result
-					}
-					plugin = tailwind
-				}
-
-				const processor = postcss([plugin])
-				const postcssResult = await processor.process(css, { from: filePath })
-
-				let metadata: PreprocessorResult['metadata'] = undefined
-
-				try {
-					if (tailwind) {
-						const { __unstable__loadDesignSystem } = await import('tailwindcss')
-						const ds = await __unstable__loadDesignSystem(postcssResult.css)
-						metadata = {
-							prefixes: ds.utilities.keys('functional'),
-							statics: ds.utilities.keys('static'),
-						}
-					}
-				} catch {
-					// Ignore metadata errors
-				}
-
-				// Cache the compiled result for subsequent runs
-				setCachedTailwind(cacheKey, postcssResult.css, metadata)
-
-				return {
-					css: postcssResult.css,
-					metadata,
-				}
-			}
+			const css = await tailwind.build(candidates || [])
+			return { css, metadata: tailwind.getMetadata() }
 		} catch (e) {
 			console.warn('[wolfie-css] Tailwind processing failed:', e)
 		}
@@ -383,11 +280,6 @@ export async function compile(
 	return { ...result, css: result.css || '' }
 }
 
-/**
- * Preprocess source and parse into styles
- *
- * Combined compile + parseCSS for convenience.
- */
 export async function preprocess(
 	source: string,
 	options: PreprocessOptions = {}
@@ -395,21 +287,19 @@ export async function preprocess(
 	const lang =
 		options.lang ??
 		(options.filePath ? detectLanguage(options.filePath) : 'css')
-	const result = await compile(source, lang, options.filePath)
-
+	const result = await compile(
+		source,
+		lang,
+		options.filePath,
+		options.candidates
+	)
 	const parserOptions: CSSParserOptions = {
 		filename: options.filePath,
 		sourceMap: options.sourceMap,
 	}
-
 	return parseCSS(result.css, parserOptions)
 }
 
-/**
- * Legacy preprocess API (type-based)
- *
- * @deprecated Use the new preprocess(source, options) API instead
- */
 export async function preprocessLegacy(
 	source: string,
 	type: PreprocessorType,
