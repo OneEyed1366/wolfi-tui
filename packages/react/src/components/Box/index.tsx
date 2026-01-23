@@ -23,9 +23,7 @@ export const Box = forwardRef<DOMElement, PropsWithChildren<IProps>>(
 		ref
 	) => {
 		const { isScreenReaderEnabled } = useContext(accessibilityContext)
-		const label = ariaLabel ? (
-			<wolwie_react-text>{ariaLabel}</wolwie_react-text>
-		) : undefined
+		const label = ariaLabel ? <wolfie-text>{ariaLabel}</wolfie-text> : undefined
 		if (isScreenReaderEnabled && ariaHidden) {
 			return null
 		}
@@ -33,7 +31,7 @@ export const Box = forwardRef<DOMElement, PropsWithChildren<IProps>>(
 		const resolvedClassName = resolveClassName(className)
 
 		const boxElement = (
-			<wolwie_react-box
+			<wolfie-box
 				ref={ref}
 				style={{
 					backgroundColor:
@@ -60,7 +58,7 @@ export const Box = forwardRef<DOMElement, PropsWithChildren<IProps>>(
 				}}
 			>
 				{isScreenReaderEnabled && label ? label : children}
-			</wolwie_react-box>
+			</wolfie-box>
 		)
 
 		const finalBackgroundColor =

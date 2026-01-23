@@ -81,7 +81,7 @@ export function Text({
 	}
 
 	return (
-		<wolwie_react-text
+		<wolfie-text
 			style={{
 				...effectiveStyles,
 				textWrap: effectiveWrap,
@@ -89,7 +89,7 @@ export function Text({
 			internal_transform={transform}
 		>
 			{isScreenReaderEnabled && ariaLabel ? ariaLabel : children}
-		</wolwie_react-text>
+		</wolfie-text>
 	)
 }
 

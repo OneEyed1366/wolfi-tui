@@ -199,7 +199,7 @@ export default createReconciler<
 	getChildHostContext(parentHostContext, type) {
 		const previousIsInsideText = parentHostContext.isInsideText
 		const isInsideText =
-			type === 'wolwie_react-text' || type === 'wolwie_react-virtual-text'
+			type === 'wolfie-text' || type === 'wolfie-virtual-text'
 
 		if (previousIsInsideText === isInsideText) {
 			return parentHostContext
@@ -209,13 +209,13 @@ export default createReconciler<
 	},
 	shouldSetTextContent: () => false,
 	createInstance(originalType, newProps, rootNode, hostContext) {
-		if (hostContext.isInsideText && originalType === 'wolwie_react-box') {
+		if (hostContext.isInsideText && originalType === 'wolfie-box') {
 			throw new Error(`<Box> can't be nested inside <Text> component`)
 		}
 
 		const type =
-			originalType === 'wolwie_react-text' && hostContext.isInsideText
-				? 'wolwie_react-virtual-text'
+			originalType === 'wolfie-text' && hostContext.isInsideText
+				? 'wolfie-virtual-text'
 				: originalType
 
 		// Get layoutTree from registry for this root

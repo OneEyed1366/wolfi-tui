@@ -58,11 +58,11 @@ export const renderNodeToScreenReaderOutput = (
 
 	let output = ''
 
-	if (node.nodeName === 'wolwie_react-text') {
+	if (node.nodeName === 'wolfie-text') {
 		output = squashTextNodes(node)
 	} else if (
-		node.nodeName === 'wolwie_react-box' ||
-		node.nodeName === 'wolwie_react-root'
+		node.nodeName === 'wolfie-box' ||
+		node.nodeName === 'wolfie-root'
 	) {
 		const separator =
 			node.style.flexDirection === 'row' ||
@@ -159,7 +159,7 @@ const renderNodeToOutput = (
 		newTransformers = [node.internal_transform, ...transformers]
 	}
 
-	if (node.nodeName === 'wolwie_react-text') {
+	if (node.nodeName === 'wolfie-text') {
 		let text = squashTextNodes(node)
 
 		if (text.length > 0) {
@@ -181,7 +181,7 @@ const renderNodeToOutput = (
 
 	let clipped = false
 
-	if (node.nodeName === 'wolwie_react-box') {
+	if (node.nodeName === 'wolfie-box') {
 		renderBackground(x, y, node, output, computedLayout)
 		renderBorder(x, y, node, output, computedLayout)
 
@@ -210,10 +210,7 @@ const renderNodeToOutput = (
 		}
 	}
 
-	if (
-		node.nodeName === 'wolwie_react-root' ||
-		node.nodeName === 'wolwie_react-box'
-	) {
+	if (node.nodeName === 'wolfie-root' || node.nodeName === 'wolfie-box') {
 		for (const childNode of node.childNodes) {
 			renderNodeToOutput(childNode as DOMElement, output, {
 				offsetX: x,

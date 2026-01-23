@@ -13,10 +13,10 @@ type IWolfieNode = {
 
 export type ITextName = '#text'
 export type IElementNames =
-	| 'wolwie_react-root'
-	| 'wolwie_react-box'
-	| 'wolwie_react-text'
-	| 'wolwie_react-virtual-text'
+	| 'wolfie-root'
+	| 'wolfie-box'
+	| 'wolfie-text'
+	| 'wolfie-virtual-text'
 
 export type INodeNames = IElementNames | ITextName
 
@@ -93,7 +93,7 @@ export const createNode = (
 		childNodes: [],
 		parentNode: undefined,
 		layoutNodeId:
-			nodeName === 'wolwie_react-virtual-text' || !layoutTree
+			nodeName === 'wolfie-virtual-text' || !layoutTree
 				? undefined
 				: layoutTree.createNode({}),
 		// Store direct reference to layoutTree for use in appendChild/insertBefore
@@ -141,8 +141,8 @@ export const appendChildNode = (
 	}
 
 	if (
-		node.nodeName === 'wolwie_react-text' ||
-		node.nodeName === 'wolwie_react-virtual-text'
+		node.nodeName === 'wolfie-text' ||
+		node.nodeName === 'wolfie-virtual-text'
 	) {
 		markNodeAsDirty(node, effectiveLayoutTree)
 	}
@@ -185,15 +185,15 @@ export const insertBeforeNode = (
 		}
 
 		if (
-			node.nodeName === 'wolwie_react-text' ||
-			node.nodeName === 'wolwie_react-virtual-text'
+			node.nodeName === 'wolfie-text' ||
+			node.nodeName === 'wolfie-virtual-text'
 		) {
 			markNodeAsDirty(node, effectiveLayoutTree)
 		}
 
 		if (
-			node.nodeName === 'wolwie_react-text' ||
-			node.nodeName === 'wolwie_react-virtual-text'
+			node.nodeName === 'wolfie-text' ||
+			node.nodeName === 'wolfie-virtual-text'
 		) {
 			markNodeAsDirty(node, effectiveLayoutTree)
 		}
@@ -215,8 +215,8 @@ export const insertBeforeNode = (
 	}
 
 	if (
-		node.nodeName === 'wolwie_react-text' ||
-		node.nodeName === 'wolwie_react-virtual-text'
+		node.nodeName === 'wolfie-text' ||
+		node.nodeName === 'wolfie-virtual-text'
 	) {
 		markNodeAsDirty(node, effectiveLayoutTree)
 	}
@@ -246,8 +246,8 @@ export const removeChildNode = (
 	}
 
 	if (
-		node.nodeName === 'wolwie_react-text' ||
-		node.nodeName === 'wolwie_react-virtual-text'
+		node.nodeName === 'wolfie-text' ||
+		node.nodeName === 'wolfie-virtual-text'
 	) {
 		markNodeAsDirty(node, layoutTree)
 	}

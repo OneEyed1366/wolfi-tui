@@ -1,0 +1,13 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"rootDir": "src",
+		"jsx": "preserve",
+		"jsxImportSource": "vue",
+		"baseUrl": ".",
+		"paths": {
+			"preact/*": ["./stub/empty.d.ts"]
+		}
+	},
+	"include": ["src", "src/**/*.vue"]
+}

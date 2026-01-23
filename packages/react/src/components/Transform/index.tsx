@@ -13,11 +13,11 @@ export function Transform({ children, transform, accessibilityLabel }: IProps) {
 	}
 
 	return (
-		<wolwie_react-text internal_transform={transform}>
+		<wolfie-text internal_transform={transform}>
 			{isScreenReaderEnabled && accessibilityLabel
 				? accessibilityLabel
 				: children}
-		</wolwie_react-text>
+		</wolfie-text>
 	)
 }
 

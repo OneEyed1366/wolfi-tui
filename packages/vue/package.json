@@ -1,0 +1,58 @@
+{
+	"name": "@wolfie/vue",
+	"version": "0.1.0",
+	"description": "Vue 3 adapter for Wolfie",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./build/index.d.ts",
+			"default": "./build/index.js"
+		},
+		"./styles": {
+			"types": "./build/styles/index.d.ts",
+			"default": "./build/styles/index.js"
+		}
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"dev": "vite build --watch",
+		"build": "vite build",
+		"prepare": "npm run build",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"files": [
+		"build"
+	],
+	"dependencies": {
+		"@wolfie/core": "workspace:*",
+		"ansi-escapes": "^7.2.0",
+		"ansi-styles": "^6.2.1",
+		"auto-bind": "^5.0.1",
+		"cli-boxes": "^3.0.0",
+		"cli-cursor": "^4.0.0",
+		"cli-truncate": "^5.1.1",
+		"code-excerpt": "^4.0.0",
+		"es-toolkit": "^1.39.10",
+		"indent-string": "^5.0.0",
+		"is-in-ci": "^2.0.0",
+		"patch-console": "^2.0.0",
+		"signal-exit": "^3.0.7",
+		"stack-utils": "^2.0.6",
+		"type-fest": "^4.27.0",
+		"wrap-ansi": "^9.0.0"
+	},
+	"devDependencies": {
+		"@wolfie/css-parser": "workspace:*",
+		"vue": "^3.5.0",
+		"@vitejs/plugin-vue": "^5.2.1",
+		"@vitejs/plugin-vue-jsx": "^4.1.1"
+	},
+	"peerDependencies": {
+		"vue": "^3.5.0",
+		"chalk": "^5.0.0"
+	}
+}

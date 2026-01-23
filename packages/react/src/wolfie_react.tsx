@@ -92,7 +92,7 @@ export default class WolfieReact {
 		// Phase 2: Use Taffy layout tree if provided via options
 		this.layoutTree = options.layoutTree
 
-		this.rootNode = createNode('wolwie_react-root', this.layoutTree)
+		this.rootNode = createNode('wolfie-root', this.layoutTree)
 
 		// Set default style for root node to match Yoga behavior
 		// flexDirection: 'column' makes the main axis vertical, so alignItems: 'stretch'
@@ -248,11 +248,8 @@ export default class WolfieReact {
 			effectiveMaxWidth = Math.max(0, nodeWidth - paddingH - borderH)
 		}
 
-		// For wolwie_react-text nodes, measure the text content
-		if (
-			node.nodeName === 'wolwie_react-text' &&
-			node.layoutNodeId !== undefined
-		) {
+		// For wolfie-text nodes, measure the text content
+		if (node.nodeName === 'wolfie-text' && node.layoutNodeId !== undefined) {
 			const text = squashTextNodes(node)
 			const textWrap = node.style?.textWrap ?? 'wrap'
 

@@ -35,6 +35,8 @@
 		"@types/stack-utils": "^2.0.2",
 		"@types/ws": "^8.18.1",
 		"@vitejs/plugin-react": "^4.3.4",
+		"@vitejs/plugin-vue": "^5.2.4",
+		"@vitejs/plugin-vue-jsx": "^4.2.0",
 		"@wolfie/core": "workspace:*",
 		"@wolfie/css-parser": "workspace:*",
 		"@wolfie/react": "workspace:*",
@@ -72,6 +74,7 @@
 		"vite-plugin-dts": "^4.4.0",
 		"vite-plugin-static-copy": "^3.1.6",
 		"vitest": "^3.0.4",
+		"vue": "^3.5.27",
 		"webpack": "^5.104.1",
 		"webpack-cli": "^6.0.1",
 		"ws": "^8.19.0"

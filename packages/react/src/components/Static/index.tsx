@@ -34,9 +34,9 @@ export function Static<T>(props: IProps<T>) {
 	)
 
 	return (
-		<wolwie_react-box internal_static style={style}>
+		<wolfie-box internal_static style={style}>
 			{children}
-		</wolwie_react-box>
+		</wolfie-box>
 	)
 }
 

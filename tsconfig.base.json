@@ -9,7 +9,6 @@
 		"noEmit": true,
 		"isolatedModules": true,
 		"esModuleInterop": true,
-		"jsx": "react-jsx",
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true

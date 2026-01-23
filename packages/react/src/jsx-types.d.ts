@@ -26,8 +26,8 @@ declare namespace Wolfie {
 declare module 'react' {
 	namespace JSX {
 		interface IntrinsicElements {
-			'wolwie_react-box': Wolfie.Box
-			'wolwie_react-text': Wolfie.Text
+			'wolfie-box': Wolfie.Box
+			'wolfie-text': Wolfie.Text
 		}
 	}
 }
