@@ -1,7 +1,27 @@
 import type { Styles } from '@wolfie/core'
+import { STATIC_UTILITIES, UTILITY_PREFIXES } from './tailwind-data.generated'
 
 /** Global registry of styles from side-effect CSS imports */
 const globalStyles = new Map<string, Partial<Styles>>()
+
+/** Custom tailwind metadata registered at runtime (e.g. from user config) */
+const customPrefixes = new Set<string>()
+const customStatics = new Set<string>()
+
+/**
+ * Register tailwind utility metadata at runtime
+ */
+export function registerTailwindMetadata(data: {
+	prefixes?: string[]
+	statics?: string[]
+}): void {
+	if (data.prefixes) {
+		for (const p of data.prefixes) customPrefixes.add(p)
+	}
+	if (data.statics) {
+		for (const s of data.statics) customStatics.add(s)
+	}
+}
 
 /**
  * Register styles globally (called by generated code from side-effect imports)
@@ -18,6 +38,8 @@ export function registerStyles(styles: Record<string, Partial<Styles>>): void {
  */
 export function clearGlobalStyles(): void {
 	globalStyles.clear()
+	customPrefixes.clear()
+	customStatics.clear()
 }
 
 /**
@@ -49,12 +71,12 @@ export function resolveClassName(className: ClassNameValue): Partial<Styles> {
 	if (!className) return {}
 
 	if (typeof className === 'object' && !Array.isArray(className)) {
-		return className
+		return className as Partial<Styles>
 	}
 
 	if (Array.isArray(className)) {
 		return className.reduce<Partial<Styles>>((acc, item) => {
-			return { ...acc, ...resolveClassName(item) }
+			return { ...acc, ...resolveClassName(item as ClassNameValue) }
 		}, {})
 	}
 
@@ -83,33 +105,38 @@ export function resolveClassName(className: ClassNameValue): Partial<Styles> {
 
 /**
  * Check if a class name looks like a Tailwind utility
- * Returns true for patterns like: w-1/2, p-4, bg-blue-500, text-sm, etc.
+ * Uses generated metadata from node_modules/tailwindcss for high fidelity
  */
 function isTailwindUtility(name: string): boolean {
 	const trimmed = name.trim()
+	if (!trimmed) return false
 
-	const tailwindPatterns = [
-		/^w-\d+\/\d+$/, // w-1/2
-		/^w-(?:full|auto|screen|fit|1\/2|1\/3|2\/3|1\/4|3\/4|1\/5|2\/5|3\/5|4\/5|\d+)$/, // w-full, w-auto, w-80, w-[100px]
-		/^h-\d+\/\d+$/, // h-1/2
-		/^p-[xyrltb]?-?\d+$/, // p-4, px-2, pl-1
-		/^m-[xyrltb]?-?\d+$/, // m-4, mx-2, ml-1
-		/^gap-?\d+$/, // gap-2
-		/^bg-[a-z]+-?\d*$/, // bg-blue-500, bg-red
-		/^text-[a-z-]+-?\d*$/, // text-xl, text-sm, text-cyan-400, text-white
-		/^font-(bold|light|medium|normal|thin|semibold|black)$/, // font-bold
-		/^border-[a-z]+-?\d*$/, // border-blue-500
-		/^rounded-?\d*$/, // rounded, rounded-lg
-		/^flex(-[a-z-]+)?$/, // flex, flex-row, flex-col
-		/^grid(-[a-z-]+)?$/, // grid, grid-cols-2
-		/^items-[a-z-]+$/, // items-center, items-start
-		/^justify-[a-z-]+$/, // justify-center, justify-between
-		/^(?:min-|max-)?(?:w|h)-\d+$/, // min-w-4, max-h-12
-		/^[a-z]+-\[[^\]]+\]$/, // bg-[magenta], p-[10px]
-		/^[a-z]+:.*$/, // hover:bg-blue-500, focus:text-red
-	]
+	// Handle variants (e.g., hover:bg-blue-500, focus:text-red)
+	// We look for the last colon to get the actual utility name
+	const lastColonIndex = trimmed.lastIndexOf(':')
+	const baseName =
+		lastColonIndex !== -1 ? trimmed.slice(lastColonIndex + 1) : trimmed
 
-	return tailwindPatterns.some((pattern) => pattern.test(trimmed))
+	// 1. Check arbitrary properties like [mask-type:luminance]
+	if (baseName.startsWith('[') && baseName.endsWith(']')) return true
+
+	// 2. Check static utilities (e.g., 'flex', 'hidden', '-m-px')
+	if (STATIC_UTILITIES.has(baseName) || customStatics.has(baseName)) return true
+
+	// 3. Check functional utilities (e.g., 'w-1/2', 'bg-red-500', 'p-[10px]')
+	const dashIndex = baseName.indexOf('-')
+	if (dashIndex !== -1) {
+		const prefix = baseName.slice(0, dashIndex)
+
+		// Handle negative utilities (e.g., -mt-4)
+		if (prefix === '' && baseName.length > 1) {
+			return isTailwindUtility(baseName.slice(1))
+		}
+
+		if (UTILITY_PREFIXES.has(prefix) || customPrefixes.has(prefix)) return true
+	}
+
+	return false
 }
 
 /**
@@ -183,21 +210,13 @@ function resolveOne(name: string): Partial<Styles> {
 	const registered = globalStyles.get(trimmed)
 	if (registered) return registered
 
-	const parts = trimmed.split(/\s+/).filter(Boolean)
-
-	if (parts.length === 1) {
-		return {}
+	// Handle variants by stripping them and looking up the base utility
+	const lastColonIndex = trimmed.lastIndexOf(':')
+	if (lastColonIndex !== -1) {
+		const baseName = trimmed.slice(lastColonIndex + 1)
+		const baseStyle = globalStyles.get(baseName)
+		if (baseStyle) return baseStyle
 	}
 
-	const hasTailwindUtility = parts.some((part) => isTailwindUtility(part))
-
-	if (!hasTailwindUtility) {
-		const compound = tryCompoundLookup(parts)
-		if (compound) return compound
-	}
-
-	return parts.reduce<Partial<Styles>>((acc, part) => {
-		const style = globalStyles.get(part)
-		return style ? { ...acc, ...style } : acc
-	}, {})
+	return {}
 }

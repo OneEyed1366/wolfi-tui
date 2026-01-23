@@ -185,6 +185,7 @@ export function generateTypeScript(
 		typescript: true,
 		minify: options.minify ?? false,
 		camelCaseClasses: options.camelCaseClasses ?? true,
+		metadata: options.metadata,
 	}
 
 	return generateCode(styles, opts)
@@ -206,6 +207,7 @@ export function generateJavaScript(
 		typescript: false,
 		minify: options.minify ?? false,
 		camelCaseClasses: options.camelCaseClasses ?? true,
+		metadata: options.metadata,
 	}
 
 	return generateCode(styles, opts)
@@ -250,9 +252,16 @@ function generateCode(
 		}
 	} else {
 		// Global pattern: registerStyles call
-		lines.push(`import { registerStyles } from '@wolfie/react/styles'`)
+		lines.push(
+			`import { registerStyles, registerTailwindMetadata } from '@wolfie/react/styles'`
+		)
 		if (!isMinified) {
 			lines.push('')
+		}
+
+		if (options.metadata) {
+			const metadataStr = JSON.stringify(options.metadata)
+			lines.push(`registerTailwindMetadata(${metadataStr})`)
 		}
 
 		const stylesMap = generateStylesMap(

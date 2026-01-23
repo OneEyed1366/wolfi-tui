@@ -1,5 +1,6 @@
 export {
 	registerStyles,
+	registerTailwindMetadata,
 	clearGlobalStyles,
 	getGlobalStyle,
 	resolveClassName,

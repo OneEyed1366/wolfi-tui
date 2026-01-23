@@ -34,12 +34,14 @@
 	],
 	"dependencies": {
 		"colorjs.io": "^0.6.1",
+		"fast-glob": "^3.3.3",
 		"postcss": "^8.4.49",
 		"postcss-value-parser": "^4.2.0"
 	},
 	"devDependencies": {
 		"@types/jsdom": "^27.0.0",
 		"@types/less": "^3.0.8",
+		"@types/node": "^24.10.9",
 		"@types/stylus": "^0.48.43",
 		"esbuild": "^0.24.2",
 		"jsdom": "^27.4.0",

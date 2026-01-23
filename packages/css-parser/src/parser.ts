@@ -170,6 +170,7 @@ export function parseCSS(
 	css: string,
 	options?: CSSParserOptions
 ): ParsedStyles {
+	if (!css || typeof css !== 'string') return {}
 	const root = postcss.parse(css, { from: options?.filename })
 	const styles: ParsedStyles = {}
 	const camelCase = options?.camelCaseClasses ?? true
@@ -215,6 +216,17 @@ export function parseCSS(
 		for (const selector of selectors) {
 			const className = extractClassName(selector, camelCase)
 			if (!className) continue
+
+			// Purge unused candidates if the list is provided
+			// Note: We check both the original kebab-case name and the camelCase name
+			if (options?.includeCandidates) {
+				const rawName = extractClassName(selector, false)
+				const isUsed =
+					options.includeCandidates.has(className) ||
+					(rawName && options.includeCandidates.has(rawName))
+
+				if (!isUsed) continue
+			}
 
 			const style: Partial<Styles> = {}
 

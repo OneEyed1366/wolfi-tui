@@ -4,73 +4,138 @@
  * Transforms CSS imports into wolfie style objects at build time
  */
 
-import type { Plugin } from 'esbuild';
-import fs from 'node:fs';
-import type { EsbuildPluginOptions } from './types';
-import { parseCSS } from './parser';
-import { compile, detectLanguage } from './preprocessors';
-import { generateJavaScript } from './generator';
+import type { Plugin } from 'esbuild'
+import fs from 'node:fs'
+import * as path from 'node:path'
+import glob from 'fast-glob'
+import type { EsbuildPluginOptions } from './types'
+import { parseCSS } from './parser'
+import { compile, detectLanguage } from './preprocessors'
+import { generateJavaScript } from './generator'
+import { scanCandidates } from './scanner'
+import { inlineStyles } from './inliner'
 
 //#region esbuild Plugin
 
 /**
  * esbuild plugin for wolfie CSS transformation
- *
- * Transforms CSS/SCSS/Less/Stylus files into wolfie style objects.
- *
- * @example
- * // esbuild.config.js
- * import { wolfieCSS } from '@wolfie/css-parser/esbuild'
- *
- * await esbuild.build({
- *   // ...
- *   plugins: [
- *     wolfieCSS({
- *       mode: 'module',  // CSS Modules pattern (default)
- *       // mode: 'global', // Global styles with registerStyles
- *     })
- *   ]
- * })
  */
 export function wolfieCSS(options: EsbuildPluginOptions = {}): Plugin {
 	const {
 		mode = 'module',
 		filter = /\.(css|scss|sass|less|styl|stylus)$/,
-	} = options;
+		inline = false,
+	} = options
+
+	const globalStylesMap = new Map<string, any>()
+	const usedCandidates = new Set<string>()
 
 	return {
 		name: 'wolfie-css',
 
-		setup(build) {
-			// Handle CSS and preprocessor files
+		async setup(build) {
+			// If inlining is enabled, pre-scan CSS files to populate the map
+			if (inline) {
+				const cssFiles = await glob('**/*.{css,scss,sass,less,styl,stylus}', {
+					cwd: build.initialOptions.absWorkingDir || process.cwd(),
+					ignore: ['**/node_modules/**'],
+					absolute: true,
+				})
+
+				for (const file of cssFiles) {
+					try {
+						const source = await fs.promises.readFile(file, 'utf-8')
+						const lang = detectLanguage(file)
+						const result = await compile(source, lang, file)
+						const styles = parseCSS(result.css, { filename: file })
+						for (const [name, style] of Object.entries(styles)) {
+							globalStylesMap.set(name, style)
+						}
+					} catch (err) {
+						console.warn(`[wolfie-css] Failed to pre-scan ${file}:`, err)
+					}
+				}
+			}
+
+			// 1. Scan source files if inlining is enabled
+			if (inline) {
+				build.onLoad({ filter: /\.[jt]sx?$/ }, async (args) => {
+					// Don't process node_modules
+					if (args.path.includes('node_modules')) return
+
+					const source = await fs.promises.readFile(args.path, 'utf-8')
+					const candidates = scanCandidates(source)
+					for (const c of candidates) usedCandidates.add(c)
+
+					// Perform static inlining if we have styles
+					if (globalStylesMap.size > 0) {
+						const transformed = inlineStyles(source, globalStylesMap)
+						if (transformed !== source) {
+							return { contents: transformed, loader: 'tsx' }
+						}
+					}
+
+					return null
+				})
+			}
+
+			// 2. Handle CSS and preprocessor files
 			build.onLoad({ filter }, async (args) => {
-				const source = await fs.promises.readFile(args.path, 'utf-8');
+				try {
+					const source = await fs.promises.readFile(args.path, 'utf-8')
 
-				// Detect mode from filename (.module.css → module mode)
-				const isModule = args.path.includes('.module.') || mode === 'module';
+					// Detect mode from filename (.module.css → module mode)
+					const isModule = args.path.includes('.module.') || mode === 'module'
 
-				// Detect preprocessor and compile to CSS
-				const lang = detectLanguage(args.path);
-				const css = await compile(source, lang, args.path);
+					// Detect preprocessor and compile to CSS
+					const lang = detectLanguage(args.path)
+					const result = await compile(source, lang, args.path)
 
-				// Parse CSS to styles
-				const styles = parseCSS(css, { filename: args.path });
+					// Update global map for inlining
+					const allStyles = parseCSS(result.css, {
+						filename: args.path,
+					})
+					if (inline) {
+						for (const [name, style] of Object.entries(allStyles)) {
+							globalStylesMap.set(name, style)
+						}
+					}
 
-				// Generate JavaScript output (esbuild handles transpilation)
-				const output = generateJavaScript(styles, {
-					mode: isModule ? 'module' : 'global',
-				});
+					// Parse CSS to styles for this module
+					const styles = parseCSS(result.css, {
+						filename: args.path,
+						includeCandidates: inline ? usedCandidates : undefined,
+					})
 
-				return {
-					contents: output,
-					loader: 'js',
-				};
-			});
+					// Generate JavaScript output (esbuild handles transpilation)
+					const output = generateJavaScript(styles, {
+						mode: isModule ? 'module' : 'global',
+						metadata: result.metadata,
+					})
+
+					return {
+						contents: output,
+						loader: 'js',
+						watchFiles: result.watchFiles,
+					}
+				} catch (err: any) {
+					return {
+						errors: [
+							{
+								text: err.message,
+								location: {
+									file: args.path,
+								},
+							},
+						],
+					}
+				}
+			})
 		},
-	};
+	}
 }
 
 //#endregion esbuild Plugin
 
-export { type EsbuildPluginOptions };
-export default wolfieCSS;
+export { type EsbuildPluginOptions }
+export default wolfieCSS

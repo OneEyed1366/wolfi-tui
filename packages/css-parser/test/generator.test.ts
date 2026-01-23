@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { generateTypeScript, generateJavaScript, sanitizeIdentifier } from '../src/generator'
+import {
+	generateTypeScript,
+	generateJavaScript,
+	sanitizeIdentifier,
+} from '../src/generator'
 import type { ParsedStyles } from '../src/types'
 
 describe('Code Generator - sanitizeIdentifier', () => {
@@ -31,7 +35,7 @@ describe('Code Generator - sanitizeIdentifier', () => {
 describe('Code Generator - TypeScript Module Mode', () => {
 	const styles: ParsedStyles = {
 		container: { display: 'flex', gap: 4 },
-		header: { padding: 2 }
+		header: { padding: 2 },
 	}
 
 	it('generates default export with styles object', () => {
@@ -66,13 +70,15 @@ describe('Code Generator - TypeScript Module Mode', () => {
 
 describe('Code Generator - TypeScript Global Mode', () => {
 	const styles: ParsedStyles = {
-		container: { display: 'flex' }
+		container: { display: 'flex' },
 	}
 
 	it('generates registerStyles call', () => {
 		const output = generateTypeScript(styles, { mode: 'global' })
 		expect(output).toContain('registerStyles({')
-		expect(output).toContain("import { registerStyles } from '@wolfie/react/styles'")
+		expect(output).toContain(
+			"import { registerStyles, registerTailwindMetadata } from '@wolfie/react/styles'"
+		)
 	})
 
 	it('does not include default export', () => {
@@ -82,13 +88,13 @@ describe('Code Generator - TypeScript Global Mode', () => {
 
 	it('does not include type import in global mode', () => {
 		const output = generateTypeScript(styles, { mode: 'global' })
-		expect(output).not.toContain("import type { Styles }")
+		expect(output).not.toContain('import type { Styles }')
 	})
 })
 
 describe('Code Generator - JavaScript Output', () => {
 	const styles: ParsedStyles = {
-		container: { display: 'flex' }
+		container: { display: 'flex' },
 	}
 
 	it('does not include type imports', () => {
@@ -109,14 +115,16 @@ describe('Code Generator - JavaScript Output', () => {
 
 	it('generates JavaScript global mode', () => {
 		const output = generateJavaScript(styles, { mode: 'global' })
-		expect(output).toContain("import { registerStyles } from '@wolfie/react/styles'")
+		expect(output).toContain(
+			"import { registerStyles, registerTailwindMetadata } from '@wolfie/react/styles'"
+		)
 		expect(output).toContain('registerStyles({')
 	})
 })
 
 describe('Code Generator - Minified Output', () => {
 	const styles: ParsedStyles = {
-		container: { display: 'flex', gap: 4 }
+		container: { display: 'flex', gap: 4 },
 	}
 
 	it('produces compact output', () => {
@@ -154,7 +162,7 @@ describe('Code Generator - Edge Cases', () => {
 
 	it('handles styles with empty properties', () => {
 		const styles: ParsedStyles = {
-			empty: {}
+			empty: {},
 		}
 		const output = generateTypeScript(styles, { mode: 'module' })
 		expect(output).toContain('empty: {}')
@@ -162,7 +170,7 @@ describe('Code Generator - Edge Cases', () => {
 
 	it('handles string values with special characters', () => {
 		const styles: ParsedStyles = {
-			test: { borderColor: '"quoted"' }
+			test: { borderColor: '"quoted"' },
 		}
 		const output = generateTypeScript(styles, { mode: 'module' })
 		// JSON.stringify should escape quotes
@@ -171,7 +179,7 @@ describe('Code Generator - Edge Cases', () => {
 
 	it('handles boolean values', () => {
 		const styles: ParsedStyles = {
-			test: { overflowWrap: 'break-word' } as ParsedStyles['string']
+			test: { overflowWrap: 'break-word' } as ParsedStyles['string'],
 		}
 		const output = generateTypeScript(styles, { mode: 'module' })
 		expect(output).toContain('overflowWrap')
@@ -179,9 +187,22 @@ describe('Code Generator - Edge Cases', () => {
 
 	it('defaults to module mode when mode not specified', () => {
 		const styles: ParsedStyles = {
-			test: { display: 'flex' }
+			test: { display: 'flex' },
 		}
 		const output = generateTypeScript(styles)
 		expect(output).toContain('export default styles')
+	})
+
+	it('includes registerTailwindMetadata when metadata is provided', () => {
+		const styles: ParsedStyles = {
+			test: { display: 'flex' },
+		}
+		const output = generateTypeScript(styles, {
+			mode: 'global',
+			metadata: { prefixes: ['custom'], statics: ['my-static'] },
+		})
+		expect(output).toContain(
+			'registerTailwindMetadata({"prefixes":["custom"],"statics":["my-static"]})'
+		)
 	})
 })

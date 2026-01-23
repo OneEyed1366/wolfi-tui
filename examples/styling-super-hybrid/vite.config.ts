@@ -1,8 +1,12 @@
 import { defineConfig } from 'vite'
 import { wolfieCSS } from '@wolfie/css-parser/vite'
-import path from 'node:path'
+import { dirname, resolve } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+	root: __dirname,
 	plugins: [
 		wolfieCSS({
 			mode: 'global',
@@ -10,6 +14,6 @@ export default defineConfig({
 		}),
 	],
 	css: {
-		postcss: path.resolve(__dirname, 'postcss.config.js'),
+		postcss: resolve(__dirname, 'postcss.config.js'),
 	},
 })

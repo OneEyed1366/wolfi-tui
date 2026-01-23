@@ -39,6 +39,8 @@ export interface CSSParserOptions {
 	sourceMap?: boolean
 	/** Transform selectors to camelCase class names */
 	camelCaseClasses?: boolean
+	/** Optional set of class names to include (purges everything else) */
+	includeCandidates?: Set<string>
 }
 
 /**
@@ -68,6 +70,11 @@ export interface CodeGeneratorOptions {
 	minify?: boolean
 	/** Use camelCase for keys (default: true) */
 	camelCaseClasses?: boolean
+	/** Optional metadata to register (like Tailwind prefixes) */
+	metadata?: {
+		prefixes?: string[]
+		statics?: string[]
+	}
 }
 
 export interface GeneratedOutput {
@@ -94,6 +101,8 @@ export interface VitePluginOptions {
 	exclude?: string | RegExp | (string | RegExp)[]
 	/** Transform selectors to camelCase class names (default: true) */
 	camelCaseClasses?: boolean
+	/** Inline styles directly in JSX (experimental) */
+	inline?: boolean
 }
 
 /**
@@ -104,6 +113,8 @@ export interface EsbuildPluginOptions {
 	mode?: 'module' | 'global'
 	/** Filter pattern for CSS/preprocessor files */
 	filter?: RegExp
+	/** Inline styles directly in JSX (experimental) */
+	inline?: boolean
 }
 
 //#endregion Plugin Types

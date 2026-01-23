@@ -23,7 +23,7 @@ const App = () => {
 					<Text className="text-green-200">Green Box</Text>
 				</Box>
 				<Box className="bg-blue-900 p-1 px-3 border border-blue-500">
-					<Text className="text-blue-200 underline" style={{ underline: true } style={{ underline: true, underline: true }}>Blue Link</Text>
+					<Text className="text-blue-200 underline">Blue Link</Text>
 				</Box>
 			</Box>
 
