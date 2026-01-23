@@ -48,7 +48,14 @@ test('column - wrap content', () => {
 	// With column wrap, items flow vertically then wrap to next column.
 	// Use alignSelf="flex-start" so box shrinks to content width.
 	const output = renderToString(
-		<Box style={{ flexDirection: 'column', height: 2, flexWrap: 'wrap', alignSelf: 'flex-start' }}>
+		<Box
+			style={{
+				flexDirection: 'column',
+				height: 2,
+				flexWrap: 'wrap',
+				alignSelf: 'flex-start',
+			}}
+		>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>
@@ -63,7 +70,14 @@ test('column - wrap content reverse', () => {
 	// First column (A,B) is on the right, wrapped column (C) is on the left.
 	// Taffy aligns C at x=0 with its content width.
 	const output = renderToString(
-		<Box style={{ flexDirection: 'column', height: 2, width: 3, flexWrap: 'wrap-reverse' }}>
+		<Box
+			style={{
+				flexDirection: 'column',
+				height: 2,
+				width: 3,
+				flexWrap: 'wrap-reverse',
+			}}
+		>
 			<Text>A</Text>
 			<Text>B</Text>
 			<Text>C</Text>

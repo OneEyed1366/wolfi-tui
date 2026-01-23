@@ -61,6 +61,7 @@ export const useFocus = ({
 		} else {
 			deactivate(id)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isActive, id])
 
 	useEffect(() => {
@@ -73,11 +74,11 @@ export const useFocus = ({
 		return () => {
 			setRawMode(false)
 		}
-	}, [isActive])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isActive, isRawModeSupported])
 
 	return {
 		isFocused: Boolean(id) && activeId === id,
 		focus,
 	}
 }
-

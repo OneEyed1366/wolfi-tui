@@ -295,7 +295,11 @@ test('replace child node with text', () => {
 	const stdout = createStdout()
 
 	function Dynamic({ replace }: { replace?: boolean }) {
-		return <Text>{replace ? 'x' : <Text style={{ color: 'green' }}>test</Text>}</Text>
+		return (
+			<Text>
+				{replace ? 'x' : <Text style={{ color: 'green' }}>test</Text>}
+			</Text>
+		)
 	}
 
 	const { rerender } = render(<Dynamic />, {

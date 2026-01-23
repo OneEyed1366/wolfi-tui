@@ -1,0 +1,4 @@
+{
+	"*": "pnpm format",
+	"*.{js,ts,jsx,tsx}": ["pnpm exec eslint --fix --no-warn-ignored --quiet"]
+}

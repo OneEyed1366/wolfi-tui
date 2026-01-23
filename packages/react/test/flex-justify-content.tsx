@@ -95,7 +95,9 @@ test('row - align colored text node when text is squashed', () => {
 
 test('column - align text to center', () => {
 	const output = renderToString(
-		<Box style={{ flexDirection: 'column', justifyContent: 'center', height: 3 }}>
+		<Box
+			style={{ flexDirection: 'column', justifyContent: 'center', height: 3 }}
+		>
 			<Text>Test</Text>
 		</Box>
 	)
@@ -105,7 +107,9 @@ test('column - align text to center', () => {
 
 test('column - align text to bottom', () => {
 	const output = renderToString(
-		<Box style={{ flexDirection: 'column', justifyContent: 'flex-end', height: 3 }}>
+		<Box
+			style={{ flexDirection: 'column', justifyContent: 'flex-end', height: 3 }}
+		>
 			<Text>Test</Text>
 		</Box>
 	)
@@ -115,7 +119,13 @@ test('column - align text to bottom', () => {
 
 test('column - align two text nodes on the edges', () => {
 	const output = renderToString(
-		<Box style={{ flexDirection: 'column', justifyContent: 'space-between', height: 4 }}>
+		<Box
+			style={{
+				flexDirection: 'column',
+				justifyContent: 'space-between',
+				height: 4,
+			}}
+		>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>
@@ -127,7 +137,13 @@ test('column - align two text nodes on the edges', () => {
 // Note: Yoga had a bug with space-around but Taffy handles it correctly
 test('column - align two text nodes with equal space around them', () => {
 	const output = renderToString(
-		<Box style={{ flexDirection: 'column', justifyContent: 'space-around', height: 5 }}>
+		<Box
+			style={{
+				flexDirection: 'column',
+				justifyContent: 'space-around',
+				height: 5,
+			}}
+		>
 			<Text>A</Text>
 			<Text>B</Text>
 		</Box>

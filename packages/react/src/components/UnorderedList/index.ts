@@ -1,4 +1,7 @@
-export { UnorderedList, type IUnorderedListProps as UnorderedListProps } from './UnorderedList'
+export {
+	UnorderedList,
+	type IUnorderedListProps as UnorderedListProps,
+} from './UnorderedList'
 export {
 	UnorderedListItem,
 	type IUnorderedListItemProps as UnorderedListItemProps,
@@ -11,5 +14,8 @@ export {
 	UnorderedListItemContext,
 	type IUnorderedListItemContextProps as UnorderedListItemContextProps,
 } from './UnorderedListItemContext'
-export { unorderedListTheme, type IUnorderedListTheme as UnorderedListTheme } from './theme'
+export {
+	unorderedListTheme,
+	type IUnorderedListTheme as UnorderedListTheme,
+} from './theme'
 export { defaultMarker } from './constants'

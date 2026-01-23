@@ -15,4 +15,3 @@ export const AppContext = createContext<IProps>({
 })
 
 AppContext.displayName = 'InternalAppContext'
-

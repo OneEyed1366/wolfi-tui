@@ -335,4 +335,8 @@ export class App extends PureComponent<IProps, IState> {
 	}
 }
 
-export type { IProps as Props, IState as State, IFocusable as Focusable } from './types'
+export type {
+	IProps as Props,
+	IState as State,
+	IFocusable as Focusable,
+} from './types'

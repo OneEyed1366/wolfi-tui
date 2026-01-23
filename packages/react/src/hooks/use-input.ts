@@ -203,4 +203,3 @@ export const useInput = (inputHandler: IHandler, options: IOptions = {}) => {
 		}
 	}, [options.isActive, stdin, internal_exitOnCtrlC, inputHandler])
 }
-

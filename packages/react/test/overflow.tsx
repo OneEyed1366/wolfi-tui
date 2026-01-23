@@ -212,7 +212,14 @@ test('overflowY - single text node inside overflow container', () => {
 
 test('overflowY - single text node inside overflow container with border', () => {
 	const output = renderToString(
-		<Box style={{ width: 20, height: 3, overflowY: 'hidden', borderStyle: 'round' }}>
+		<Box
+			style={{
+				width: 20,
+				height: 3,
+				overflowY: 'hidden',
+				borderStyle: 'round',
+			}}
+		>
 			<Text>Hello{'\n'}World</Text>
 		</Box>
 	)
@@ -243,7 +250,15 @@ test('overflowY - multiple boxes inside overflow container', () => {
 
 test('overflowY - multiple boxes inside overflow container with border', () => {
 	const output = renderToString(
-		<Box style={{ width: 9, height: 4, overflowY: 'hidden', flexDirection: 'column', borderStyle: 'round' }}>
+		<Box
+			style={{
+				width: 9,
+				height: 4,
+				overflowY: 'hidden',
+				flexDirection: 'column',
+				borderStyle: 'round',
+			}}
+		>
 			<Box style={{ flexShrink: 0 }}>
 				<Text>Line #1</Text>
 			</Box>
@@ -276,7 +291,9 @@ test('overflowY - box above top edge of overflow container', () => {
 
 test('overflowY - box above top edge of overflow container with border', () => {
 	const output = renderToString(
-		<Box style={{ width: 7, height: 3, overflowY: 'hidden', borderStyle: 'round' }}>
+		<Box
+			style={{ width: 7, height: 3, overflowY: 'hidden', borderStyle: 'round' }}
+		>
 			<Box style={{ marginTop: -3, height: 2, flexShrink: 0 }}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
@@ -300,7 +317,9 @@ test('overflowY - box intersecting with top edge of overflow container', () => {
 
 test('overflowY - box intersecting with top edge of overflow container with border', () => {
 	const output = renderToString(
-		<Box style={{ width: 7, height: 3, overflowY: 'hidden', borderStyle: 'round' }}>
+		<Box
+			style={{ width: 7, height: 3, overflowY: 'hidden', borderStyle: 'round' }}
+		>
 			<Box style={{ marginTop: -1, height: 2, flexShrink: 0 }}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
@@ -324,7 +343,9 @@ test('overflowY - box below bottom edge of overflow container', () => {
 
 test('overflowY - box below bottom edge of overflow container with border', () => {
 	const output = renderToString(
-		<Box style={{ width: 7, height: 3, overflowY: 'hidden', borderStyle: 'round' }}>
+		<Box
+			style={{ width: 7, height: 3, overflowY: 'hidden', borderStyle: 'round' }}
+		>
 			<Box style={{ marginTop: 2, height: 2, flexShrink: 0 }}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
@@ -348,7 +369,9 @@ test('overflowY - box intersecting with bottom edge of overflow container', () =
 
 test('overflowY - box intersecting with bottom edge of overflow container with border', () => {
 	const output = renderToString(
-		<Box style={{ width: 7, height: 3, overflowY: 'hidden', borderStyle: 'round' }}>
+		<Box
+			style={{ width: 7, height: 3, overflowY: 'hidden', borderStyle: 'round' }}
+		>
 			<Box style={{ height: 2, flexShrink: 0 }}>
 				<Text>Hello{'\n'}World</Text>
 			</Box>
@@ -375,7 +398,14 @@ test('overflow - single text node inside overflow container', () => {
 test('overflow - single text node inside overflow container with border', () => {
 	const output = renderToString(
 		<Box style={{ paddingBottom: 1 }}>
-			<Box style={{ width: 8, height: 3, overflow: 'hidden', borderStyle: 'round' }}>
+			<Box
+				style={{
+					width: 8,
+					height: 3,
+					overflow: 'hidden',
+					borderStyle: 'round',
+				}}
+			>
 				<Box style={{ width: 12, height: 2, flexShrink: 0 }}>
 					<Text>Hello{'\n'}World</Text>
 				</Box>
@@ -406,7 +436,14 @@ test('overflow - multiple boxes inside overflow container', () => {
 test('overflow - multiple boxes inside overflow container with border', () => {
 	const output = renderToString(
 		<Box style={{ paddingBottom: 1 }}>
-			<Box style={{ width: 6, height: 3, overflow: 'hidden', borderStyle: 'round' }}>
+			<Box
+				style={{
+					width: 6,
+					height: 3,
+					overflow: 'hidden',
+					borderStyle: 'round',
+				}}
+			>
 				<Box style={{ width: 2, height: 2, flexShrink: 0 }}>
 					<Text>TL{'\n'}BL</Text>
 				</Box>
@@ -423,7 +460,15 @@ test('overflow - multiple boxes inside overflow container with border', () => {
 test('overflow - box intersecting with top left edge of overflow container', () => {
 	const output = renderToString(
 		<Box style={{ width: 4, height: 4, overflow: 'hidden' }}>
-			<Box style={{ marginTop: -2, marginLeft: -2, width: 4, height: 4, flexShrink: 0 }}>
+			<Box
+				style={{
+					marginTop: -2,
+					marginLeft: -2,
+					width: 4,
+					height: 4,
+					flexShrink: 0,
+				}}
+			>
 				<Text>
 					AAAA{'\n'}BBBB{'\n'}CCCC{'\n'}DDDD
 				</Text>
@@ -437,7 +482,15 @@ test('overflow - box intersecting with top left edge of overflow container', () 
 test('overflow - box intersecting with top right edge of overflow container', () => {
 	const output = renderToString(
 		<Box style={{ width: 4, height: 4, overflow: 'hidden' }}>
-			<Box style={{ marginTop: -2, marginLeft: 2, width: 4, height: 4, flexShrink: 0 }}>
+			<Box
+				style={{
+					marginTop: -2,
+					marginLeft: 2,
+					width: 4,
+					height: 4,
+					flexShrink: 0,
+				}}
+			>
 				<Text>
 					AAAA{'\n'}BBBB{'\n'}CCCC{'\n'}DDDD
 				</Text>
@@ -451,7 +504,15 @@ test('overflow - box intersecting with top right edge of overflow container', ()
 test('overflow - box intersecting with bottom left edge of overflow container', () => {
 	const output = renderToString(
 		<Box style={{ width: 4, height: 4, overflow: 'hidden' }}>
-			<Box style={{ marginTop: 2, marginLeft: -2, width: 4, height: 4, flexShrink: 0 }}>
+			<Box
+				style={{
+					marginTop: 2,
+					marginLeft: -2,
+					width: 4,
+					height: 4,
+					flexShrink: 0,
+				}}
+			>
 				<Text>
 					AAAA{'\n'}BBBB{'\n'}CCCC{'\n'}DDDD
 				</Text>
@@ -465,7 +526,15 @@ test('overflow - box intersecting with bottom left edge of overflow container', 
 test('overflow - box intersecting with bottom right edge of overflow container', () => {
 	const output = renderToString(
 		<Box style={{ width: 4, height: 4, overflow: 'hidden' }}>
-			<Box style={{ marginTop: 2, marginLeft: 2, width: 4, height: 4, flexShrink: 0 }}>
+			<Box
+				style={{
+					marginTop: 2,
+					marginLeft: 2,
+					width: 4,
+					height: 4,
+					flexShrink: 0,
+				}}
+			>
 				<Text>
 					AAAA{'\n'}BBBB{'\n'}CCCC{'\n'}DDDD
 				</Text>
@@ -482,7 +551,14 @@ test('nested overflow', () => {
 	// The inner 2x2 box shows 1 row (AA), outer 4x4 box clips to 4 rows total.
 	const output = renderToString(
 		<Box style={{ paddingBottom: 1 }}>
-			<Box style={{ width: 4, height: 4, overflow: 'hidden', flexDirection: 'column' }}>
+			<Box
+				style={{
+					width: 4,
+					height: 4,
+					overflow: 'hidden',
+					flexDirection: 'column',
+				}}
+			>
 				<Box style={{ width: 2, height: 2, overflow: 'hidden' }}>
 					<Box style={{ width: 4, height: 4, flexShrink: 0 }}>
 						<Text>

@@ -27,4 +27,3 @@ export const FocusContext = createContext<IProps>({
 })
 
 FocusContext.displayName = 'InternalFocusContext'
-

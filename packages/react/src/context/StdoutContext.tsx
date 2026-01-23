@@ -22,4 +22,3 @@ export const StdoutContext = createContext<IProps>({
 })
 
 StdoutContext.displayName = 'InternalStdoutContext'
-

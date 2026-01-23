@@ -1,10 +1,12 @@
 // Copied from https://github.com/enquirer/enquirer/blob/36785f3399a41cd61e9d28d1eb9c2fcd73d69b4c/lib/keypress
 import { Buffer } from 'node:buffer'
 
-const metaKeyCodeRe = /^(?:\x1b)([a-zA-Z0-9])$/
+/* eslint-disable no-control-regex */
+const metaKeyCodeRe = /^(?:\x1b)([a-zA-Z0-9])$/u
 
 const fnKeyRe =
-	/^(?:\x1b+)(O|N|\[|\[\[)(?:(\d+)(?:;(\d+))?([~^$])|(?:1;)?(\d+)?([a-zA-Z]))/
+	/^(?:\x1b+)(O|N|\[|\[\[)(?:(\d+)(?:;(\d+))?([~^$])|(?:1;)?(\d+)?([a-zA-Z]))/u
+/* eslint-enable no-control-regex */
 
 const keyName: Record<string, string> = {
 	/* xterm/gnome ESC O letter */

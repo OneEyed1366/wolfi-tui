@@ -423,7 +423,9 @@ test('render only new items in static output on final render', () => {
 // See https://github.com/chalk/wrap-ansi/issues/27
 // TODO: ANSI escape handling differs in Vite environment
 test.todo("ensure wrap-ansi doesn't trim leading whitespace", () => {
-	const output = renderToString(<Text style={{ color: 'red' }}>{' ERROR '}</Text>)
+	const output = renderToString(
+		<Text style={{ color: 'red' }}>{' ERROR '}</Text>
+	)
 
 	expect(output).toBe(chalk.red(' ERROR '))
 })
@@ -432,7 +434,11 @@ test('replace child node with text', () => {
 	const stdout = createStdout()
 
 	function Dynamic({ replace }: { replace?: boolean }) {
-		return <Text>{replace ? 'x' : <Text style={{ color: 'green' }}>test</Text>}</Text>
+		return (
+			<Text>
+				{replace ? 'x' : <Text style={{ color: 'green' }}>test</Text>}
+			</Text>
+		)
 	}
 
 	const { rerender } = render(<Dynamic />, {
@@ -670,7 +676,13 @@ test("reset prop when it's removed from the element", () => {
 
 	function Dynamic({ remove }: { remove?: boolean }) {
 		return (
-			<Box style={{ flexDirection: 'column', justifyContent: 'flex-end', height: remove ? undefined : 4 }}>
+			<Box
+				style={{
+					flexDirection: 'column',
+					justifyContent: 'flex-end',
+					height: remove ? undefined : 4,
+				}}
+			>
 				<Text>x</Text>
 			</Box>
 		)

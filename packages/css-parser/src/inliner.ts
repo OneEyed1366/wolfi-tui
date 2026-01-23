@@ -72,7 +72,7 @@ export function inlineStyles(
 				try {
 					const existingStyleStr = styleMatch[1]!
 					// Safe eval of the object literal to handle non-strict JSON
-					// eslint-disable-next-line no-new-func
+
 					const existingStyle = new Function(`return ${existingStyleStr}`)()
 					const merged = { ...toInline, ...existingStyle }
 					currentTag = currentTag.replace(

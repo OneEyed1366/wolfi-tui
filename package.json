@@ -12,7 +12,9 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"example": "f() { npx vite-node --config $(dirname \"$1\")/vite.config.ts \"$1\"; }; f",
-		"benchmark": "npx vite-node"
+		"benchmark": "npx vite-node",
+		"typecheck": "tsc --noEmit",
+		"prepare": "husky"
 	},
 	"engines": {
 		"node": ">=20",
@@ -43,6 +45,8 @@
 		"eslint": "^9.18.0",
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^5.0.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.7",
 		"ms": "^2.1.3",
 		"node-pty": "^1.0.0",
 		"p-queue": "^9.0.0",

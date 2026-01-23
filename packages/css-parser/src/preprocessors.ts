@@ -7,14 +7,13 @@ import { readFileSync, existsSync } from 'node:fs'
 import * as sass from 'sass'
 import less from 'less'
 import stylus from 'stylus'
-import postcss from 'postcss'
 import { createRequire } from 'node:module'
 import { parseCSS } from './parser'
 import type { ParsedStyles, IPreprocessorType, CSSParserOptions } from './types'
 import './shim' // Apply Tailwind v4 patch
 import {
 	compile as tailwindCompile,
-	__unstable__loadDesignSystem,
+	__unstable__loadDesignSystem as loadDesignSystem,
 } from 'tailwindcss'
 
 //#region Tailwind Compiler Singleton
@@ -94,7 +93,7 @@ class TailwindCompiler {
 				this.buildFn = compiled.build
 
 				try {
-					const ds = await __unstable__loadDesignSystem(baseCss, {
+					const ds = await loadDesignSystem(baseCss, {
 						base: root,
 						loadStylesheet,
 					})
@@ -102,7 +101,7 @@ class TailwindCompiler {
 						prefixes: ds.utilities.keys('functional'),
 						statics: ds.utilities.keys('static'),
 					}
-				} catch (e) {
+				} catch {
 					// Metadata is optional
 				}
 			} catch (error) {
@@ -263,15 +262,16 @@ export async function compile(
 			break
 	}
 
-	let css = result.css || ''
+	const compiledCss = result.css || ''
 
 	if (
-		css &&
-		(css.includes('@tailwind') || /@import\s+['"]tailwindcss['"]/.test(css))
+		compiledCss &&
+		(compiledCss.includes('@tailwind') ||
+			/@import\s+['"]tailwindcss['"]/.test(compiledCss))
 	) {
 		try {
-			const css = await tailwind.build(candidates || [])
-			return { css, metadata: tailwind.getMetadata() }
+			const finalCss = await tailwind.build(candidates || [])
+			return { css: finalCss, metadata: tailwind.getMetadata() }
 		} catch (e) {
 			console.warn('[wolfie-css] Tailwind processing failed:', e)
 		}
@@ -281,14 +281,14 @@ export async function compile(
 }
 
 export async function preprocess(
-	source: string,
+	_source: string,
 	options: PreprocessOptions = {}
 ): Promise<ParsedStyles> {
 	const lang =
 		options.lang ??
 		(options.filePath ? detectLanguage(options.filePath) : 'css')
 	const result = await compile(
-		source,
+		_source,
 		lang,
 		options.filePath,
 		options.candidates

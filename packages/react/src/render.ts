@@ -2,7 +2,10 @@ import { Stream } from 'node:stream'
 import process from 'node:process'
 import type { ReactNode } from 'react'
 import { LayoutTree } from '@wolfie/core/layout'
-import WolfieReact, { type IOptions as WolfieOptions, type IRenderMetrics } from './wolfie_react'
+import WolfieReact, {
+	type IOptions as WolfieOptions,
+	type IRenderMetrics,
+} from './wolfie_react'
 import instances from './instances'
 
 export type RenderOptions = {

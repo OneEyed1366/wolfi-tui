@@ -192,10 +192,10 @@ export function parseNumeric(value: string): number {
 
 	// Parse number with optional unit
 	const match = trimmed.match(
-		/^(-?\d+(?:\.\d+)?)(px|em|rem|pt|pc|in|cm|mm|ch|vw|vh|vmin|vmax)?$/
+		/^(-?\d+(?:\.\d+)?)(px|em|rem|pt|pc|in|cm|mm|ch|vw|vh|vmin|vmax)?$/u
 	)
 	if (match) {
-		let val = parseFloat(match[1]!)
+		const val = parseFloat(match[1]!)
 		const unit = match[2]
 
 		// Tailwind / Web → TUI Scaling
@@ -301,7 +301,8 @@ export function parseColor(value: string): string {
 
 	// Modern: rgb(255 255 255 / 0.5) or rgb(255 255 255)
 	const rgbMatch = trimmed.match(
-		/^rgba?\s*\(\s*(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)(?:\s*[\/\s]\s*.*)?\)$/
+		// eslint-disable-next-line no-useless-escape
+		/^rgba?\s*\(\s*(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)(?:\s*[\/\s]\s*.*)?\)$/u
 	)
 	const legacyRgbMatch = trimmed.match(
 		/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*[\d.]+)?\s*\)$/

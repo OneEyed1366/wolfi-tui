@@ -8,4 +8,3 @@ export const useIsScreenReaderEnabled = (): boolean => {
 	const { isScreenReaderEnabled } = useContext(accessibilityContext)
 	return isScreenReaderEnabled
 }
-

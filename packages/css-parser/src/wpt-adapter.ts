@@ -81,7 +81,7 @@ export function scanWPTDirectory(dirPath: string): WPTTestCase[] {
 
 			const test = parseWPTTest(fullPath)
 			if (test) tests.push(test)
-		} catch (e) {
+		} catch {
 			// Ignore read errors
 		}
 	}

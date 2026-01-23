@@ -20,7 +20,6 @@ export type IElementNames =
 
 export type INodeNames = IElementNames | ITextName
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type DOMElement = {
 	nodeName: IElementNames
 	attributes: Record<string, DOMNodeAttribute>
@@ -73,7 +72,6 @@ export type TextNode = {
 	nodeValue: string
 } & IWolfieNode
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type DOMNode<T = { nodeName: INodeNames }> = T extends {
 	nodeName: infer U
 }
@@ -82,7 +80,6 @@ export type DOMNode<T = { nodeName: INodeNames }> = T extends {
 		: DOMElement
 	: never
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type DOMNodeAttribute = boolean | string | number
 
 export const createNode = (
@@ -101,7 +98,7 @@ export const createNode = (
 				: layoutTree.createNode({}),
 		// Store direct reference to layoutTree for use in appendChild/insertBefore
 		layoutTree,
-		// eslint-disable-next-line @typescript-eslint/naming-convention
+
 		internal_accessibility: {},
 	}
 

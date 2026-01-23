@@ -6,7 +6,6 @@
  */
 
 import type { Plugin } from 'esbuild'
-import * as path from 'node:path'
 import glob from 'fast-glob'
 import type { EsbuildPluginOptions, ParsedStyles } from './types'
 import { compile, detectLanguage, tailwind } from './preprocessors'
@@ -16,6 +15,7 @@ import { scanCandidates } from './scanner'
 import { inlineStyles } from './inliner'
 import { readFileSync, existsSync } from 'node:fs'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function matchesPattern(
 	id: string,
 	pattern: string | RegExp | (string | RegExp)[]
@@ -134,7 +134,7 @@ export function wolfieCSS(options: EsbuildPluginOptions = {}): Plugin {
 					if (args.path.includes('node_modules')) return
 
 					try {
-						let source = readFileSync(args.path, 'utf-8')
+						const source = readFileSync(args.path, 'utf-8')
 
 						// Collect candidates
 						const candidates = scanCandidates(source)

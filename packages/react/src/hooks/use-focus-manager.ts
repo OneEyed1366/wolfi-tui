@@ -42,4 +42,3 @@ export const useFocusManager = (): IOutput => {
 		focus: focusContext.focus,
 	}
 }
-

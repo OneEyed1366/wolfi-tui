@@ -196,7 +196,14 @@ test('Box background with emojis', () => {
 // Box background space fill tests - these should work with forced colors
 test('Box background fills entire area with standard color', () => {
 	const output = renderToString(
-		<Box style={{ backgroundColor: 'red', width: 10, height: 3, alignSelf: 'flex-start' }}>
+		<Box
+			style={{
+				backgroundColor: 'red',
+				width: 10,
+				height: 3,
+				alignSelf: 'flex-start',
+			}}
+		>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -210,7 +217,14 @@ test('Box background fills entire area with standard color', () => {
 
 test('Box background fills with hex color', () => {
 	const output = renderToString(
-		<Box style={{ backgroundColor: '#FF0000', width: 10, height: 3, alignSelf: 'flex-start' }}>
+		<Box
+			style={{
+				backgroundColor: '#FF0000',
+				width: 10,
+				height: 3,
+				alignSelf: 'flex-start',
+			}}
+		>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -223,7 +237,14 @@ test('Box background fills with hex color', () => {
 
 test('Box background fills with rgb color', () => {
 	const output = renderToString(
-		<Box style={{ backgroundColor: 'rgb(255, 0, 0)', width: 10, height: 3, alignSelf: 'flex-start' }}>
+		<Box
+			style={{
+				backgroundColor: 'rgb(255, 0, 0)',
+				width: 10,
+				height: 3,
+				alignSelf: 'flex-start',
+			}}
+		>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -236,7 +257,14 @@ test('Box background fills with rgb color', () => {
 
 test('Box background fills with ansi256 color', () => {
 	const output = renderToString(
-		<Box style={{ backgroundColor: 'ansi256(9)', width: 10, height: 3, alignSelf: 'flex-start' }}>
+		<Box
+			style={{
+				backgroundColor: 'ansi256(9)',
+				width: 10,
+				height: 3,
+				alignSelf: 'flex-start',
+			}}
+		>
 			<Text>Hello</Text>
 		</Box>
 	)
@@ -249,7 +277,15 @@ test('Box background fills with ansi256 color', () => {
 
 test('Box background with border fills content area', () => {
 	const output = renderToString(
-		<Box style={{ backgroundColor: 'cyan', borderStyle: 'round', width: 10, height: 5, alignSelf: 'flex-start' }}>
+		<Box
+			style={{
+				backgroundColor: 'cyan',
+				borderStyle: 'round',
+				width: 10,
+				height: 5,
+				alignSelf: 'flex-start',
+			}}
+		>
 			<Text>Hi</Text>
 		</Box>
 	)
@@ -264,7 +300,15 @@ test('Box background with border fills content area', () => {
 
 test('Box background with padding fills entire padded area', () => {
 	const output = renderToString(
-		<Box style={{ backgroundColor: 'magenta', padding: 1, width: 10, height: 5, alignSelf: 'flex-start' }}>
+		<Box
+			style={{
+				backgroundColor: 'magenta',
+				padding: 1,
+				width: 10,
+				height: 5,
+				alignSelf: 'flex-start',
+			}}
+		>
 			<Text>Hi</Text>
 		</Box>
 	)
@@ -277,7 +321,15 @@ test('Box background with padding fills entire padded area', () => {
 
 test('Box background with center alignment fills entire area', () => {
 	const output = renderToString(
-		<Box style={{ backgroundColor: 'blue', width: 10, height: 3, justifyContent: 'center', alignSelf: 'flex-start' }}>
+		<Box
+			style={{
+				backgroundColor: 'blue',
+				width: 10,
+				height: 3,
+				justifyContent: 'center',
+				alignSelf: 'flex-start',
+			}}
+		>
 			<Text>Hi</Text>
 		</Box>
 	)
@@ -289,7 +341,15 @@ test('Box background with center alignment fills entire area', () => {
 
 test('Box background with column layout fills entire area', () => {
 	const output = renderToString(
-		<Box style={{ backgroundColor: 'green', flexDirection: 'column', width: 10, height: 5, alignSelf: 'flex-start' }}>
+		<Box
+			style={{
+				backgroundColor: 'green',
+				flexDirection: 'column',
+				width: 10,
+				height: 5,
+				alignSelf: 'flex-start',
+			}}
+		>
 			<Text>Line 1</Text>
 			<Text>Line 2</Text>
 		</Box>

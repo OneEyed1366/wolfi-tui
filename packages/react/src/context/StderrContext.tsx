@@ -22,4 +22,3 @@ export const StderrContext = createContext<IProps>({
 })
 
 StderrContext.displayName = 'InternalStderrContext'
-

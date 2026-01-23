@@ -1,12 +1,10 @@
 // Ignoring missing types error to avoid adding another dependency for this hack to work
 import ws from 'ws'
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const customGlobal = global as any
 
 // These things must exist before importing `react-devtools-core`
 
-// eslint-disable-next-line n/no-unsupported-features/node-builtins
 customGlobal.WebSocket ||= ws
 
 customGlobal.window ||= global

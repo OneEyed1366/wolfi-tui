@@ -186,7 +186,7 @@ export default class Output {
 
 				let offsetY = 0
 
-				for (let [index, line] of lines.entries()) {
+				for (const [index, line] of lines.entries()) {
 					const currentLine = output[y + offsetY]
 
 					// Line can be missing if `text` is taller than height of pre-initialized `this.output`
@@ -194,11 +194,12 @@ export default class Output {
 						continue
 					}
 
+					let transformedLine = line
 					for (const transformer of transformers) {
-						line = transformer(line, index)
+						transformedLine = transformer(transformedLine, index)
 					}
 
-					const characters = styledCharsFromTokens(tokenize(line))
+					const characters = styledCharsFromTokens(tokenize(transformedLine))
 					let offsetX = x
 
 					for (const character of characters) {

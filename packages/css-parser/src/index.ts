@@ -6,12 +6,7 @@
 
 //#region Parser Exports
 
-export {
-	parse,
-	parseRule,
-	parseCSS,
-	extractClassName,
-} from './parser';
+export { parse, parseRule, parseCSS, extractClassName } from './parser'
 
 //#endregion Parser Exports
 
@@ -28,7 +23,7 @@ export {
 	type PreprocessorType,
 	type PreprocessorResult,
 	type PreprocessOptions,
-} from './preprocessors';
+} from './preprocessors'
 
 //#endregion Preprocessor Exports
 
@@ -39,7 +34,7 @@ export {
 	mapPropertyName,
 	isValidProperty,
 	mapCSSProperty,
-} from './properties';
+} from './properties'
 
 //#endregion Property Exports
 
@@ -57,7 +52,7 @@ export {
 	transformColor,
 	expandFlexShorthand,
 	expandSpacingShorthand,
-} from './values';
+} from './values'
 
 //#endregion Value Exports
 
@@ -68,7 +63,7 @@ export {
 	generateTypeScript,
 	generateJavaScript,
 	sanitizeIdentifier,
-} from './generator';
+} from './generator'
 
 //#endregion Generator Exports
 
@@ -85,6 +80,6 @@ export type {
 	CodeGeneratorOptions,
 	VitePluginOptions,
 	EsbuildPluginOptions,
-} from './types';
+} from './types'
 
 //#endregion Type Exports

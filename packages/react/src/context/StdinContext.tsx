@@ -35,4 +35,3 @@ export const StdinContext = createContext<IProps>({
 })
 
 StdinContext.displayName = 'InternalStdinContext'
-

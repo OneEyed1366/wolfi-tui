@@ -112,7 +112,7 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 								try {
 									// Pre-load the style file
 									await loadAndProcessStyle(cleanId)
-								} catch (e) {
+								} catch {
 									// Ignore errors here, let the actual import handle it
 								}
 							}
