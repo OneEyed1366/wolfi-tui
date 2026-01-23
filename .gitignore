@@ -7,3 +7,4 @@ packages/react/build
 .pnpm-store/v10
 packages/core/tsconfig.tsbuildinfo
 packages/react/tsconfig.tsbuildinfo
+examples/styling-esbuild/dist

@@ -1,0 +1,15 @@
+@import 'tailwindcss';
+
+.container {
+	flex-direction: column;
+	border-style: single;
+}
+
+.title {
+	color: yellow;
+	font-weight: bold;
+}
+
+.red-bg {
+	background-color: red;
+}
