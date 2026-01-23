@@ -1,4 +1,4 @@
-import type { Option } from '../components/ui/types'
+import type { Option } from '../components/types'
 
 type OptionMapItem = Option & {
 	previous: OptionMapItem | undefined
@@ -7,7 +7,7 @@ type OptionMapItem = Option & {
 }
 
 export default class OptionMap extends Map<string, OptionMapItem> {
-	readonly first: OptionMapItem | undefined
+	first: OptionMapItem | undefined
 
 	constructor(options: Option[]) {
 		const items: Array<[string, OptionMapItem]> = []

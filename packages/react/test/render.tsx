@@ -163,7 +163,7 @@ describe.skipIf(!nodePtyAvailable)('PTY render tests', () => {
 		}
 
 		// Find the last occurrence of an eraseLines sequence
-		// eraseLines(1) is the minimal erase pattern used by Ink
+		// eraseLines(1) is the minimal erase pattern used by Wolfie
 		const eraseLinesPattern = ansiEscapes.eraseLines(1)
 		const lastEraseIndex = beforeCursorShow.lastIndexOf(eraseLinesPattern)
 
@@ -269,7 +269,7 @@ test('rerender on resize', async () => {
 	expect(stdout.listeners('resize').length).toBe(0)
 })
 
-function ThrottleTestComponent({ text }: { readonly text: string }) {
+function ThrottleTestComponent({ text }: { text: string }) {
 	return <Text>{text}</Text>
 }
 
@@ -324,7 +324,7 @@ test('outputs renderTime when onRender is passed', async () => {
 
 	const onRenderStub = stub(funcObj, 'onRender').callThrough()
 
-	function Test({ children }: { readonly children?: ReactNode }) {
+	function Test({ children }: { children?: ReactNode }) {
 		const [text, setText] = useState('Test')
 
 		useInput((input) => {

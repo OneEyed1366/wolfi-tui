@@ -349,7 +349,7 @@ function generateDeclarations(styles: ParsedStyles): string {
 		lines.push('declare const styles: {')
 		for (const name of classNames) {
 			const key = sanitizeIdentifier(name)
-			lines.push(`\treadonly ${key}: Styles`)
+			lines.push(`\t${key}: Styles`)
 		}
 		lines.push('}')
 	} else {

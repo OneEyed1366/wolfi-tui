@@ -38,7 +38,7 @@ const applyPaddingToText = (
 	return text
 }
 
-export type OutputTransformer = (s: string, index: number) => string
+export type IOutputTransformer = (s: string, index: number) => string
 
 export const renderNodeToScreenReaderOutput = (
 	node: DOMElement,
@@ -58,9 +58,12 @@ export const renderNodeToScreenReaderOutput = (
 
 	let output = ''
 
-	if (node.nodeName === 'ink-text') {
+	if (node.nodeName === 'wolwie_react-text') {
 		output = squashTextNodes(node)
-	} else if (node.nodeName === 'ink-box' || node.nodeName === 'ink-root') {
+	} else if (
+		node.nodeName === 'wolwie_react-box' ||
+		node.nodeName === 'wolwie_react-root'
+	) {
 		const separator =
 			node.style.flexDirection === 'row' ||
 			node.style.flexDirection === 'row-reverse'
@@ -116,7 +119,7 @@ const renderNodeToOutput = (
 	options: {
 		offsetX?: number
 		offsetY?: number
-		transformers?: OutputTransformer[]
+		transformers?: IOutputTransformer[]
 		skipStaticElements: boolean
 		layoutTree?: LayoutTree
 	}
@@ -156,7 +159,7 @@ const renderNodeToOutput = (
 		newTransformers = [node.internal_transform, ...transformers]
 	}
 
-	if (node.nodeName === 'ink-text') {
+	if (node.nodeName === 'wolwie_react-text') {
 		let text = squashTextNodes(node)
 
 		if (text.length > 0) {
@@ -178,7 +181,7 @@ const renderNodeToOutput = (
 
 	let clipped = false
 
-	if (node.nodeName === 'ink-box') {
+	if (node.nodeName === 'wolwie_react-box') {
 		renderBackground(x, y, node, output, computedLayout)
 		renderBorder(x, y, node, output, computedLayout)
 
@@ -188,8 +191,14 @@ const renderNodeToOutput = (
 			node.style.overflowY === 'hidden' || node.style.overflow === 'hidden'
 
 		if (clipHorizontally || clipVertically) {
-			const { borderLeft, borderRight, borderTop, borderBottom, width, height } =
-				computedLayout
+			const {
+				borderLeft,
+				borderRight,
+				borderTop,
+				borderBottom,
+				width,
+				height,
+			} = computedLayout
 
 			const x1 = clipHorizontally ? x + borderLeft : undefined
 			const x2 = clipHorizontally ? x + width - borderRight : undefined
@@ -201,7 +210,10 @@ const renderNodeToOutput = (
 		}
 	}
 
-	if (node.nodeName === 'ink-root' || node.nodeName === 'ink-box') {
+	if (
+		node.nodeName === 'wolwie_react-root' ||
+		node.nodeName === 'wolwie_react-box'
+	) {
 		for (const childNode of node.childNodes) {
 			renderNodeToOutput(childNode as DOMElement, output, {
 				offsetX: x,

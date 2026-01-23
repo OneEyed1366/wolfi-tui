@@ -1,8 +1,7 @@
 import { useContext } from 'react'
-import StdoutContext from '../components/StdoutContext'
+import { StdoutContext } from '../context/StdoutContext'
 
 /**
-`useStdout` is a React hook that exposes the stdout stream where Ink renders your app.
+`useStdout` is a React hook that exposes the stdout stream where Wolfie renders your app.
 */
-const useStdout = () => useContext(StdoutContext)
-export default useStdout
+export const useStdout = () => useContext(StdoutContext)

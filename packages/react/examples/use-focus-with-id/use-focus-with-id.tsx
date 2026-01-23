@@ -39,8 +39,8 @@ function Focus() {
 }
 
 type ItemProperties = {
-	readonly id: number
-	readonly label: string
+	id: number
+	label: string
 }
 
 function Item({ label, id }: ItemProperties) {

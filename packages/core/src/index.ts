@@ -2,13 +2,13 @@
 // Yoga has been removed - Taffy is now the only layout engine
 
 export type {
-	DOMElement,
+	DOMElement as DOMElement,
 	DOMNode,
 	DOMNodeAttribute,
 	TextNode,
-	TextName,
-	NodeNames,
-	ElementNames,
+	ITextName as TextName,
+	INodeNames as NodeNames,
+	IElementNames as ElementNames,
 } from './dom'
 export {
 	createNode,
@@ -22,7 +22,7 @@ export {
 } from './dom'
 export { default as Output } from './output'
 export { default as renderer } from './renderer'
-export type { Styles } from './styles'
+export type { IStyles as Styles } from './styles'
 export {
 	applyLayoutStyle,
 	toLayoutStyle,
@@ -39,10 +39,10 @@ export { default as renderBorder } from './render-border'
 export { default as renderBackground } from './render-background'
 export { default as getMaxWidth } from './get-max-width'
 export { default as colorize } from './colorize'
-export { type OutputTransformer } from './render-node-to-output'
+export { type IOutputTransformer as OutputTransformer } from './render-node-to-output'
 export { default as renderNodeToOutput } from './render-node-to-output'
 export { default as logUpdate } from './log-update'
-export type { LogUpdate } from './log-update'
+export type { ILogUpdate as LogUpdate } from './log-update'
 
 // Taffy layout helpers
 export {

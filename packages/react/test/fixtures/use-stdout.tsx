@@ -5,7 +5,7 @@ function WriteToStdout() {
 	const { write } = useStdout()
 
 	useEffect(() => {
-		write('Hello from Ink to stdout\n')
+		write('Hello from Wolfie to stdout\n')
 	}, [])
 
 	return <Text>Hello World</Text>

@@ -10,7 +10,7 @@ import stylus from 'stylus'
 import postcss from 'postcss'
 import { createRequire } from 'node:module'
 import { parseCSS } from './parser'
-import type { ParsedStyles, PreprocessorType, CSSParserOptions } from './types'
+import type { ParsedStyles, IPreprocessorType, CSSParserOptions } from './types'
 import './shim' // Apply Tailwind v4 patch
 import {
 	compile as tailwindCompile,
@@ -137,7 +137,7 @@ export const tailwind = TailwindCompiler.getInstance()
 
 //#region Types
 
-export type { PreprocessorType }
+export type { IPreprocessorType as PreprocessorType }
 
 export interface PreprocessorResult {
 	css: string
@@ -150,7 +150,7 @@ export interface PreprocessorResult {
 }
 
 export interface PreprocessOptions {
-	lang?: PreprocessorType
+	lang?: IPreprocessorType
 	filePath?: string
 	sourceMap?: boolean
 	candidates?: string[]
@@ -221,7 +221,7 @@ export function compileStylus(
 
 //#region Unified API
 
-export function detectLanguage(filename: string): PreprocessorType {
+export function detectLanguage(filename: string): IPreprocessorType {
 	const ext = path.extname(filename).toLowerCase()
 	switch (ext) {
 		case '.scss':
@@ -242,7 +242,7 @@ export function detectLanguage(filename: string): PreprocessorType {
  */
 export async function compile(
 	source: string,
-	lang: PreprocessorType,
+	lang: IPreprocessorType,
 	filePath?: string,
 	candidates?: string[]
 ): Promise<PreprocessorResult> {
@@ -302,7 +302,7 @@ export async function preprocess(
 
 export async function preprocessLegacy(
 	source: string,
-	type: PreprocessorType,
+	type: IPreprocessorType,
 	filePath?: string
 ): Promise<PreprocessorResult> {
 	return compile(source, type, filePath)

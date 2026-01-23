@@ -57,8 +57,8 @@ const term = (fixture: string, args: string[] = []) => {
 
 	const result = {
 		write(input: string) {
-			// Give TS and Ink time to start up and render UI
-			// TODO: Send a signal from the Ink process when it's ready to accept input instead
+			// Give TS and Wolfie time to start up and render UI
+			// TODO: Send a signal from the Wolfie process when it's ready to accept input instead
 			setTimeout(() => {
 				ps.write(input)
 			}, 3000)
@@ -326,7 +326,7 @@ describe.skipIf(!nodePtyAvailable)('PTY hook tests', () => {
 		const lines = stripAnsi(ps.output).split('\r\n')
 
 		expect(lines.slice(1, -1)).toEqual([
-			'Hello from Ink to stdout',
+			'Hello from Wolfie to stdout',
 			'Hello World',
 			'exited',
 		])
@@ -334,6 +334,6 @@ describe.skipIf(!nodePtyAvailable)('PTY hook tests', () => {
 
 	// `node-pty` doesn't support streaming stderr output, so I need to figure out
 	// how to test useStderr() hook. child_process.spawn() can't be used, because
-	// Ink fails with "raw mode unsupported" error.
+	// Wolfie fails with "raw mode unsupported" error.
 	test.todo('useStderr - write to stderr')
 })

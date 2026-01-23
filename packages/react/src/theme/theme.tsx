@@ -1,32 +1,32 @@
 import { type ReactNode, createContext, useContext } from 'react'
 import * as deepmergeModule from 'deepmerge'
 const deepmerge = deepmergeModule.default ?? deepmergeModule
-import { badgeTheme } from '../components/ui/Badge'
-import { spinnerTheme } from '../components/ui/Spinner'
-import { progressBarTheme } from '../components/ui/ProgressBar'
-import { statusMessageTheme } from '../components/ui/StatusMessage'
-import { alertTheme } from '../components/ui/Alert'
-import { orderedListTheme } from '../components/ui/OrderedList/index'
-import { unorderedListTheme } from '../components/ui/UnorderedList/index'
-import { confirmInputTheme } from '../components/ui/ConfirmInput'
-import { textInputTheme } from '../components/ui/TextInput/index'
-import { passwordInputTheme } from '../components/ui/PasswordInput/index'
-import { emailInputTheme } from '../components/ui/EmailInput/index'
-import { selectTheme } from '../components/ui/Select/index'
-import { multiSelectTheme } from '../components/ui/MultiSelect/index'
+import { badgeTheme } from '../components/Badge'
+import { spinnerTheme } from '../components/Spinner'
+import { progressBarTheme } from '../components/ProgressBar'
+import { statusMessageTheme } from '../components/StatusMessage'
+import { alertTheme } from '../components/Alert/theme'
+import { orderedListTheme } from '../components/OrderedList/index'
+import { unorderedListTheme } from '../components/UnorderedList/index'
+import { confirmInputTheme } from '../components/ConfirmInput'
+import { textInputTheme } from '../components/TextInput/index'
+import { passwordInputTheme } from '../components/PasswordInput/index'
+import { emailInputTheme } from '../components/EmailInput/index'
+import { selectTheme } from '../components/Select/index'
+import { multiSelectTheme } from '../components/MultiSelect/index'
 
-export type Theme = {
-	components: Record<string, ComponentTheme>
+export type ITheme = {
+	components: Record<string, IComponentTheme>
 }
 
-export type ComponentTheme = {
-	styles?: Record<string, (props?: any) => ComponentStyles>
+export type IComponentTheme = {
+	styles?: Record<string, (props?: any) => IComponentStyles>
 	config?: (props?: any) => Record<string, unknown>
 }
 
-export type ComponentStyles = Record<string, unknown>
+export type IComponentStyles = Record<string, unknown>
 
-export const defaultTheme: Theme = {
+export const defaultTheme: ITheme = {
 	components: {
 		Badge: badgeTheme,
 		Spinner: spinnerTheme,
@@ -44,22 +44,22 @@ export const defaultTheme: Theme = {
 	},
 }
 
-export const ThemeContext = createContext<Theme>(defaultTheme)
+export const ThemeContext = createContext<ITheme>(defaultTheme)
 
 export type ThemeProviderProps = {
-	readonly children: ReactNode
-	readonly theme: Theme
+	children: ReactNode
+	theme: ITheme
 }
 
 export function ThemeProvider({ children, theme }: ThemeProviderProps) {
 	return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
 }
 
-export const extendTheme = (originalTheme: Theme, newTheme: Theme) => {
+export const extendTheme = (originalTheme: ITheme, newTheme: ITheme) => {
 	return deepmerge(originalTheme, newTheme)
 }
 
-export const useComponentTheme = <Theme extends ComponentTheme>(
+export const useComponentTheme = <Theme extends IComponentTheme>(
 	component: string
 ): Theme => {
 	const theme = useContext(ThemeContext)

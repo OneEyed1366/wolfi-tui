@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { parseKeypress, nonAlphanumericKeys } from '@wolfie/core'
 import reconciler from '../reconciler'
-import useStdin from './use-stdin'
+import { useStdin } from './use-stdin'
 
 /**
 Handy information about a key that was pressed.
 */
-export type Key = {
+export type IKey = {
 	/**
 	Up arrow key was pressed.
 	*/
@@ -88,9 +88,9 @@ export type Key = {
 	meta: boolean
 }
 
-type Handler = (input: string, key: Key) => void
+type IHandler = (input: string, key: IKey) => void
 
-type Options = {
+type IOptions = {
 	/**
 	Enable or disable capturing of user input. Useful when there are multiple `useInput` hooks used at once to avoid handling the same input several times.
 
@@ -120,7 +120,7 @@ const UserInput = () => {
 };
 ```
 */
-const useInput = (inputHandler: Handler, options: Options = {}) => {
+export const useInput = (inputHandler: IHandler, options: IOptions = {}) => {
 	const { stdin, setRawMode, internal_exitOnCtrlC, internal_eventEmitter } =
 		useStdin()
 
@@ -162,7 +162,7 @@ const useInput = (inputHandler: Handler, options: Options = {}) => {
 				delete: keypress.name === 'delete',
 				// `parseKeypress` parses \u001B\u001B[A (meta + up arrow) as meta = false
 				// but with option = true, so we need to take this into account here
-				// to avoid breaking changes in Ink.
+				// to avoid breaking changes in Wolfie.
 				// TODO(vadimdemedes): consider removing this in the next major version.
 				meta: keypress.meta || keypress.name === 'escape' || keypress.option,
 			}
@@ -204,4 +204,3 @@ const useInput = (inputHandler: Handler, options: Options = {}) => {
 	}, [options.isActive, stdin, internal_exitOnCtrlC, inputHandler])
 }
 
-export default useInput

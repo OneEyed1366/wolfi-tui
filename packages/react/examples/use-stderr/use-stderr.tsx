@@ -7,7 +7,7 @@ function Example() {
 
 	React.useEffect(() => {
 		const timer = setInterval(() => {
-			write('Hello from Ink to stderr\n')
+			write('Hello from Wolfie to stderr\n')
 		}, 1000)
 
 		return () => {

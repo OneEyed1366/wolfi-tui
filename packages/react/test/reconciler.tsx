@@ -5,7 +5,7 @@ import { Box, Text, render } from '@wolfie/react'
 import createStdout from './helpers/create-stdout'
 
 test('update child', () => {
-	function Test({ update }: { readonly update?: boolean }) {
+	function Test({ update }: { update?: boolean }) {
 		return <Text>{update ? 'B' : 'A'}</Text>
 	}
 
@@ -35,7 +35,7 @@ test('update child', () => {
 })
 
 test('update text node', () => {
-	function Test({ update }: { readonly update?: boolean }) {
+	function Test({ update }: { update?: boolean }) {
 		return (
 			<Box>
 				<Text>Hello </Text>
@@ -70,7 +70,7 @@ test('update text node', () => {
 })
 
 test('append child', () => {
-	function Test({ append }: { readonly append?: boolean }) {
+	function Test({ append }: { append?: boolean }) {
 		if (append) {
 			return (
 				<Box style={{ flexDirection: 'column' }}>
@@ -124,7 +124,7 @@ test('append child', () => {
 })
 
 test('insert child between other children', () => {
-	function Test({ insert }: { readonly insert?: boolean }) {
+	function Test({ insert }: { insert?: boolean }) {
 		if (insert) {
 			return (
 				<Box style={{ flexDirection: 'column' }}>
@@ -182,7 +182,7 @@ test('insert child between other children', () => {
 })
 
 test('remove child', () => {
-	function Test({ remove }: { readonly remove?: boolean }) {
+	function Test({ remove }: { remove?: boolean }) {
 		if (remove) {
 			return (
 				<Box style={{ flexDirection: 'column' }}>
@@ -236,7 +236,7 @@ test('remove child', () => {
 })
 
 test('reorder children', () => {
-	function Test({ reorder }: { readonly reorder?: boolean }) {
+	function Test({ reorder }: { reorder?: boolean }) {
 		if (reorder) {
 			return (
 				<Box style={{ flexDirection: 'column' }}>
@@ -294,7 +294,7 @@ test('reorder children', () => {
 test('replace child node with text', () => {
 	const stdout = createStdout()
 
-	function Dynamic({ replace }: { readonly replace?: boolean }) {
+	function Dynamic({ replace }: { replace?: boolean }) {
 		return <Text>{replace ? 'x' : <Text style={{ color: 'green' }}>test</Text>}</Text>
 	}
 

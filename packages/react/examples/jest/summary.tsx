@@ -2,10 +2,10 @@ import React from 'react'
 import { Box, Text } from '../../src/index'
 
 type Properties = {
-	readonly isFinished: boolean
-	readonly passed: number
-	readonly failed: number
-	readonly time: string
+	isFinished: boolean
+	passed: number
+	failed: number
+	time: string
 }
 
 function Summary({ isFinished, passed, failed, time }: Properties) {

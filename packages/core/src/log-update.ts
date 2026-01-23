@@ -2,7 +2,7 @@ import { type Writable } from 'node:stream'
 import ansiEscapes from 'ansi-escapes'
 import cliCursor from 'cli-cursor'
 
-export type LogUpdate = {
+export type ILogUpdate = {
 	clear: () => void
 	done: () => void
 	sync: (str: string) => void;
@@ -12,7 +12,7 @@ export type LogUpdate = {
 const createStandard = (
 	stream: Writable,
 	{ showCursor = false } = {}
-): LogUpdate => {
+): ILogUpdate => {
 	let previousLineCount = 0
 	let previousOutput = ''
 	let hasHiddenCursor = false
@@ -61,7 +61,7 @@ const createStandard = (
 const createIncremental = (
 	stream: Writable,
 	{ showCursor = false } = {}
-): LogUpdate => {
+): ILogUpdate => {
 	let previousLines: string[] = []
 	let previousOutput = ''
 	let hasHiddenCursor = false
@@ -150,7 +150,7 @@ const createIncremental = (
 const create = (
 	stream: Writable,
 	{ showCursor = false, incremental = false } = {}
-): LogUpdate => {
+): ILogUpdate => {
 	if (incremental) {
 		return createIncremental(stream, { showCursor })
 	}

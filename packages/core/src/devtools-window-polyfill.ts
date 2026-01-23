@@ -13,7 +13,7 @@ customGlobal.window ||= global
 
 customGlobal.self ||= global
 
-// Filter out Ink's internal components from devtools for a cleaner view.
+// Filter out Wolfie's internal components from devtools for a cleaner view.
 // Also, ince `react-devtools-shared` package isn't published on npm, we can't
 // use its types, that's why there are hard-coded values in `type` fields below.
 // See https://github.com/facebook/react/blob/edf6eac8a181860fd8a2d076a43806f1237495a1/packages/react-devtools-shared/src/types#L24

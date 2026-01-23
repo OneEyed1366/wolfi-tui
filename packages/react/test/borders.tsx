@@ -440,7 +440,7 @@ test('nested boxes - fit-content box with emojis on flex-direction column', () =
 test('render border after update', () => {
 	const stdout = createStdout()
 
-	function Test({ borderColor }: { readonly borderColor?: string }) {
+	function Test({ borderColor }: { borderColor?: string }) {
 		return (
 			<Box style={{ borderStyle: 'round', borderColor: borderColor }}>
 				<Text>Hello World</Text>

@@ -379,7 +379,7 @@ test('static output', () => {
 test('skip previous output when rendering new static output', () => {
 	const stdout = createStdout()
 
-	function Dynamic({ items }: { readonly items: string[] }) {
+	function Dynamic({ items }: { items: string[] }) {
 		return (
 			<Static items={items}>{(item) => <Text key={item}>{item}</Text>}</Static>
 		)
@@ -399,7 +399,7 @@ test('skip previous output when rendering new static output', () => {
 test('render only new items in static output on final render', () => {
 	const stdout = createStdout()
 
-	function Dynamic({ items }: { readonly items: string[] }) {
+	function Dynamic({ items }: { items: string[] }) {
 		return (
 			<Static items={items}>{(item) => <Text key={item}>{item}</Text>}</Static>
 		)
@@ -431,7 +431,7 @@ test.todo("ensure wrap-ansi doesn't trim leading whitespace", () => {
 test('replace child node with text', () => {
 	const stdout = createStdout()
 
-	function Dynamic({ replace }: { readonly replace?: boolean }) {
+	function Dynamic({ replace }: { replace?: boolean }) {
 		return <Text>{replace ? 'x' : <Text style={{ color: 'green' }}>test</Text>}</Text>
 	}
 
@@ -481,8 +481,8 @@ test('disable raw mode when all input components are unmounted', () => {
 		renderFirstInput,
 		renderSecondInput,
 	}: {
-		readonly renderFirstInput?: boolean
-		readonly renderSecondInput?: boolean
+		renderFirstInput?: boolean
+		renderSecondInput?: boolean
 	}) {
 		const { setRawMode } = useStdin()
 
@@ -602,8 +602,8 @@ test('render different component based on whether stdin is a TTY or not', () => 
 		renderFirstInput,
 		renderSecondInput,
 	}: {
-		readonly renderFirstInput?: boolean
-		readonly renderSecondInput?: boolean
+		renderFirstInput?: boolean
+		renderSecondInput?: boolean
 	}) {
 		const { isRawModeSupported, setRawMode } = useStdin()
 
@@ -668,7 +668,7 @@ test.todo(
 test("reset prop when it's removed from the element", () => {
 	const stdout = createStdout()
 
-	function Dynamic({ remove }: { readonly remove?: boolean }) {
+	function Dynamic({ remove }: { remove?: boolean }) {
 		return (
 			<Box style={{ flexDirection: 'column', justifyContent: 'flex-end', height: remove ? undefined : 4 }}>
 				<Text>x</Text>

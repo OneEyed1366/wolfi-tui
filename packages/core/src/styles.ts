@@ -4,8 +4,8 @@ import { type LiteralUnion } from 'type-fest'
 import { type ForegroundColorName } from 'ansi-styles' // Note: We import directly from `ansi-styles` to avoid a bug in TypeScript.
 import type { LayoutStyle, LayoutTree, Dimension, Edges } from './layout-types'
 
-export type Styles = {
-	readonly textWrap?:
+export type IStyles = {
+	textWrap?:
 		| 'wrap'
 		| 'end'
 		| 'middle'
@@ -14,140 +14,140 @@ export type Styles = {
 		| 'truncate-middle'
 		| 'truncate-start'
 
-	readonly position?: 'absolute' | 'relative'
+	position?: 'absolute' | 'relative'
 
 	/**
 	Size of the gap between an element's columns.
 	*/
-	readonly columnGap?: number
+	columnGap?: number
 
 	/**
 	Size of the gap between an element's rows.
 	*/
-	readonly rowGap?: number
+	rowGap?: number
 
 	/**
 	Size of the gap between an element's columns and rows. A shorthand for `columnGap` and `rowGap`.
 	*/
-	readonly gap?: number | string
+	gap?: number | string
 
 	/**
 	Margin on all sides. Equivalent to setting `marginTop`, `marginBottom`, `marginLeft`, and `marginRight`.
 	*/
-	readonly margin?: number | string
+	margin?: number | string
 
 	/**
 	Horizontal margin. Equivalent to setting `marginLeft` and `marginRight`.
 	*/
-	readonly marginX?: number | string
+	marginX?: number | string
 
 	/**
 	Vertical margin. Equivalent to setting `marginTop` and `marginBottom`.
 	*/
-	readonly marginY?: number | string
+	marginY?: number | string
 
 	/**
 	Top margin.
 	*/
-	readonly marginTop?: number | string
+	marginTop?: number | string
 
 	/**
 	Bottom margin.
 	*/
-	readonly marginBottom?: number | string
+	marginBottom?: number | string
 
 	/**
 	Left margin.
 	*/
-	readonly marginLeft?: number | string
+	marginLeft?: number | string
 
 	/**
 	Right margin.
 	*/
-	readonly marginRight?: number | string
+	marginRight?: number | string
 
 	/**
 	Padding on all sides. Equivalent to setting `paddingTop`, `paddingBottom`, `paddingLeft`, and `paddingRight`.
 	*/
-	readonly padding?: number | string
+	padding?: number | string
 
 	/**
 	Horizontal padding. Equivalent to setting `paddingLeft` and `paddingRight`.
 	*/
-	readonly paddingX?: number | string
+	paddingX?: number | string
 
 	/**
 	Vertical padding. Equivalent to setting `paddingTop` and `paddingBottom`.
 	*/
-	readonly paddingY?: number | string
+	paddingY?: number | string
 
 	/**
 	Top padding.
 	*/
-	readonly paddingTop?: number | string
+	paddingTop?: number | string
 
 	/**
 	Bottom padding.
 	*/
-	readonly paddingBottom?: number | string
+	paddingBottom?: number | string
 
 	/**
 	Left padding.
 	*/
-	readonly paddingLeft?: number | string
+	paddingLeft?: number | string
 
 	/**
 	Right padding.
 	*/
-	readonly paddingRight?: number | string
+	paddingRight?: number | string
 
 	/**
 	This property defines the ability for a flex item to grow if necessary.
 	See [flex-grow](https://css-tricks.com/almanac/properties/f/flex-grow/).
 	*/
-	readonly flexGrow?: number
+	flexGrow?: number
 
 	/**
 	It specifies the “flex shrink factor”, which determines how much the flex item will shrink relative to the rest of the flex items in the flex container when there isn’t enough space on the row.
 	See [flex-shrink](https://css-tricks.com/almanac/properties/f/flex-shrink/).
 	*/
-	readonly flexShrink?: number
+	flexShrink?: number
 
 	/**
 	It establishes the main-axis, thus defining the direction flex items are placed in the flex container.
 	See [flex-direction](https://css-tricks.com/almanac/properties/f/flex-direction/).
 	*/
-	readonly flexDirection?: 'row' | 'column' | 'row-reverse' | 'column-reverse'
+	flexDirection?: 'row' | 'column' | 'row-reverse' | 'column-reverse'
 
 	/**
 	It specifies the initial size of the flex item, before any available space is distributed according to the flex factors.
 	See [flex-basis](https://css-tricks.com/almanac/properties/f/flex-basis/).
 	*/
-	readonly flexBasis?: number | string
+	flexBasis?: number | string
 
 	/**
 	It defines whether the flex items are forced in a single line or can be flowed into multiple lines. If set to multiple lines, it also defines the cross-axis which determines the direction new lines are stacked in.
 	See [flex-wrap](https://css-tricks.com/almanac/properties/f/flex-wrap/).
 	*/
-	readonly flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse'
+	flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse'
 
 	/**
 	The align-items property defines the default behavior for how items are laid out along the cross axis (perpendicular to the main axis).
 	See [align-items](https://css-tricks.com/almanac/properties/a/align-items/).
 	*/
-	readonly alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch'
+	alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch'
 
 	/**
 	It makes possible to override the align-items value for specific flex items.
 	See [align-self](https://css-tricks.com/almanac/properties/a/align-self/).
 	*/
-	readonly alignSelf?: 'flex-start' | 'center' | 'flex-end' | 'auto'
+	alignSelf?: 'flex-start' | 'center' | 'flex-end' | 'auto'
 
 	/**
 	It defines the alignment along the main axis.
 	See [justify-content](https://css-tricks.com/almanac/properties/j/justify-content/).
 	*/
-	readonly justifyContent?:
+	justifyContent?:
 		| 'flex-start'
 		| 'flex-end'
 		| 'space-between'
@@ -158,173 +158,173 @@ export type Styles = {
 	/**
 	Width of the element in spaces. You can also set it as a percentage, which will calculate the width based on the width of the parent element.
 	*/
-	readonly width?: number | string
+	width?: number | string
 
 	/**
 	Height of the element in lines (rows). You can also set it as a percentage, which will calculate the height based on the height of the parent element.
 	*/
-	readonly height?: number | string
+	height?: number | string
 
 	/**
 	Sets a minimum width of the element.
 	*/
-	readonly minWidth?: number | string
+	minWidth?: number | string
 
 	/**
 	Sets a minimum height of the element.
 	*/
-	readonly minHeight?: number | string
+	minHeight?: number | string
 
 	/**
 	Set this property to `none` to hide the element.
 	*/
-	readonly display?: 'flex' | 'none'
+	display?: 'flex' | 'none'
 
 	/**
 	Add a border with a specified style. If `borderStyle` is `undefined` (the default), no border will be added.
 	*/
-	readonly borderStyle?: keyof Boxes | BoxStyle
+	borderStyle?: keyof Boxes | BoxStyle
 
 	/**
 	Determines whether the top border is visible.
 	
 	@default true
 	*/
-	readonly borderTop?: boolean
+	borderTop?: boolean
 
 	/**
 	Determines whether the bottom border is visible.
 	
 	@default true
 	*/
-	readonly borderBottom?: boolean
+	borderBottom?: boolean
 
 	/**
 	Determines whether the left border is visible.
 	
 	@default true
 	*/
-	readonly borderLeft?: boolean
+	borderLeft?: boolean
 
 	/**
 	Determines whether the right border is visible.
 	
 	@default true
 	*/
-	readonly borderRight?: boolean
+	borderRight?: boolean
 
 	/**
 	Change border color. A shorthand for setting `borderTopColor`, `borderRightColor`, `borderBottomColor`, and `borderLeftColor`.
 	*/
-	readonly borderColor?: LiteralUnion<ForegroundColorName, string>
+	borderColor?: LiteralUnion<ForegroundColorName, string>
 
 	/**
 	Change the top border color. Accepts the same values as `color` in `Text` component.
 	*/
-	readonly borderTopColor?: LiteralUnion<ForegroundColorName, string>
+	borderTopColor?: LiteralUnion<ForegroundColorName, string>
 
 	/**
 	Change the bottom border color. Accepts the same values as `color` in `Text` component.
 	*/
-	readonly borderBottomColor?: LiteralUnion<ForegroundColorName, string>
+	borderBottomColor?: LiteralUnion<ForegroundColorName, string>
 
 	/**
 	Change the left border color. Accepts the same values as `color` in `Text` component.
 	*/
-	readonly borderLeftColor?: LiteralUnion<ForegroundColorName, string>
+	borderLeftColor?: LiteralUnion<ForegroundColorName, string>
 
 	/**
 	Change the right border color. Accepts the same values as `color` in `Text` component.
 	*/
-	readonly borderRightColor?: LiteralUnion<ForegroundColorName, string>
+	borderRightColor?: LiteralUnion<ForegroundColorName, string>
 
 	/**
 	Dim the border color. A shorthand for setting `borderTopDimColor`, `borderBottomDimColor`, `borderLeftDimColor`, and `borderRightDimColor`.
 
 	@default false
 	*/
-	readonly borderDimColor?: boolean
+	borderDimColor?: boolean
 
 	/**
 	Dim the top border color.
 	
 	@default false
 	*/
-	readonly borderTopDimColor?: boolean
+	borderTopDimColor?: boolean
 
 	/**
 	Dim the bottom border color.
 	
 	@default false
 	*/
-	readonly borderBottomDimColor?: boolean
+	borderBottomDimColor?: boolean
 
 	/**
 	Dim the left border color.
 	
 	@default false
 	*/
-	readonly borderLeftDimColor?: boolean
+	borderLeftDimColor?: boolean
 
 	/**
 	Dim the right border color.
 	
 	@default false
 	*/
-	readonly borderRightDimColor?: boolean
+	borderRightDimColor?: boolean
 
 	/**
 	Behavior for an element's overflow in both directions.
 	
 	@default 'visible'
 	*/
-	readonly overflow?: 'visible' | 'hidden'
+	overflow?: 'visible' | 'hidden'
 
 	/**
 	Behavior for an element's overflow in the horizontal direction.
 
 	@default 'visible'
 	*/
-	readonly overflowX?: 'visible' | 'hidden'
+	overflowX?: 'visible' | 'hidden'
 
 	/**
 	Behavior for an element's overflow in the vertical direction.
 
 	@default 'visible'
 	*/
-	readonly overflowY?: 'visible' | 'hidden'
+	overflowY?: 'visible' | 'hidden'
 
 	/**
 	Background color for the element.
 	
 	Accepts the same values as `color` in the `<Text>` component.
 	*/
-	readonly backgroundColor?: LiteralUnion<ForegroundColorName, string>
+	backgroundColor?: LiteralUnion<ForegroundColorName, string>
 
 	/**
 	Foreground color for the text.
 	*/
-	readonly color?: LiteralUnion<ForegroundColorName, string>
+	color?: LiteralUnion<ForegroundColorName, string>
 
 	/**
 	Make the text bold.
 	*/
-	readonly fontWeight?: 'bold' | 'normal' | number
+	fontWeight?: 'bold' | 'normal' | number
 
 	/**
 	Make the text italic.
 	*/
-	readonly fontStyle?: 'italic' | 'normal'
+	fontStyle?: 'italic' | 'normal'
 
 	/**
 	Text decoration (underline, strikethrough).
 	*/
-	readonly textDecoration?: 'underline' | 'line-through' | 'none'
+	textDecoration?: 'underline' | 'line-through' | 'none'
 
 	/**
 	Inverse background and foreground colors.
 	*/
-	readonly inverse?: boolean
+	inverse?: boolean
 }
 
 //#region Shorthand Expansion
@@ -354,8 +354,8 @@ export const parseNumericValue = (
 const expandSpacing = (
 	value: string | number | undefined,
 	prefix: 'margin' | 'padding',
-	style: Styles
-): Partial<Styles> => {
+	style: IStyles
+): Partial<IStyles> => {
 	if (value === undefined) return {}
 
 	const result: any = {}
@@ -400,7 +400,7 @@ const expandSpacing = (
 /**
  * Expand a Styles object by resolving shorthands.
  */
-export const expandStyles = (style: Styles): Styles => {
+export const expandStyles = (style: IStyles): IStyles => {
 	const expanded: any = { ...style }
 
 	// Expand gap
@@ -525,7 +525,7 @@ const toDimension = (
  * Convert wolfie Styles to Taffy LayoutStyle
  * Pure conversion function - no side effects
  */
-export const toLayoutStyle = (style: Styles): LayoutStyle => {
+export const toLayoutStyle = (style: IStyles): LayoutStyle => {
 	const expanded = expandStyles(style)
 	const result: LayoutStyle = {}
 
@@ -619,7 +619,7 @@ export const toLayoutStyle = (style: Styles): LayoutStyle => {
 export const applyLayoutStyle = (
 	layoutTree: LayoutTree,
 	nodeId: number,
-	style: Styles = {}
+	style: IStyles = {}
 ): void => {
 	layoutTree.setStyle(nodeId, toLayoutStyle(style))
 }
@@ -672,11 +672,11 @@ const resolveViewportUnit = (
  * Creates a new Styles object with viewport units resolved
  */
 export const resolveViewportUnits = (
-	style: Styles,
+	style: IStyles,
 	terminalWidth: number,
 	terminalHeight: number
-): Styles => {
-	const resolved: Partial<Styles> = {}
+): IStyles => {
+	const resolved: Partial<IStyles> = {}
 
 	for (const [key, value] of Object.entries(style)) {
 		if (
@@ -697,7 +697,7 @@ export const resolveViewportUnits = (
 		}
 	}
 
-	return resolved as Styles
+	return resolved as IStyles
 }
 
 //#endregion

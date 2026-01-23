@@ -1,13 +1,13 @@
 import wrapAnsi from 'wrap-ansi'
 import cliTruncate from 'cli-truncate'
-import { type Styles } from './styles'
+import { type IStyles } from './styles'
 
 const cache: Record<string, string> = {}
 
 const wrapText = (
 	text: string,
 	maxWidth: number,
-	wrapType: Styles['textWrap']
+	wrapType: IStyles['textWrap']
 ): string => {
 	const cacheKey = text + String(maxWidth) + String(wrapType)
 	const cachedText = cache[cacheKey]

@@ -34,7 +34,7 @@ if (process.env['DEV'] === 'true') {
 		if (error.code === 'ERR_MODULE_NOT_FOUND') {
 			console.warn(
 				`
-The environment variable DEV is set to true, so Ink tried to import \`react-devtools-core\`,
+The environment variable DEV is set to true, so Wolfie tried to import \`react-devtools-core\`,
 but this failed as it was not installed. Debugging with React Devtools requires it.
 
 To install use this command:
@@ -102,7 +102,7 @@ const layoutTreeRegistry = new WeakMap<DOMElement, LayoutTree>()
 
 /**
  * Register a LayoutTree for a root node.
- * Called by Ink class when creating a new instance.
+ * Called by Wolfie class when creating a new instance.
  */
 export const registerLayoutTree = (
 	rootNode: DOMElement,
@@ -198,7 +198,8 @@ export default createReconciler<
 	},
 	getChildHostContext(parentHostContext, type) {
 		const previousIsInsideText = parentHostContext.isInsideText
-		const isInsideText = type === 'ink-text' || type === 'ink-virtual-text'
+		const isInsideText =
+			type === 'wolwie_react-text' || type === 'wolwie_react-virtual-text'
 
 		if (previousIsInsideText === isInsideText) {
 			return parentHostContext
@@ -208,13 +209,13 @@ export default createReconciler<
 	},
 	shouldSetTextContent: () => false,
 	createInstance(originalType, newProps, rootNode, hostContext) {
-		if (hostContext.isInsideText && originalType === 'ink-box') {
+		if (hostContext.isInsideText && originalType === 'wolwie_react-box') {
 			throw new Error(`<Box> can't be nested inside <Text> component`)
 		}
 
 		const type =
-			originalType === 'ink-text' && hostContext.isInsideText
-				? 'ink-virtual-text'
+			originalType === 'wolwie_react-text' && hostContext.isInsideText
+				? 'wolwie_react-virtual-text'
 				: originalType
 
 		// Get layoutTree from registry for this root

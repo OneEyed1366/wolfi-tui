@@ -1,31 +1,31 @@
 import { type LayoutTree } from './layout-types'
-import { type Styles } from './styles'
-import { type OutputTransformer } from './render-node-to-output'
+import { type IStyles } from './styles'
+import { type IOutputTransformer } from './render-node-to-output'
 
-type InkNode = {
+type IWolfieNode = {
 	parentNode: DOMElement | undefined
 	layoutNodeId?: number
 	// Direct reference to layout tree for Taffy (avoids root traversal during reconciliation)
 	layoutTree?: LayoutTree
 	internal_static?: boolean
-	style: Styles
+	style: IStyles
 }
 
-export type TextName = '#text'
-export type ElementNames =
-	| 'ink-root'
-	| 'ink-box'
-	| 'ink-text'
-	| 'ink-virtual-text'
+export type ITextName = '#text'
+export type IElementNames =
+	| 'wolwie_react-root'
+	| 'wolwie_react-box'
+	| 'wolwie_react-text'
+	| 'wolwie_react-virtual-text'
 
-export type NodeNames = ElementNames | TextName
+export type INodeNames = IElementNames | ITextName
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type DOMElement = {
-	nodeName: ElementNames
+	nodeName: IElementNames
 	attributes: Record<string, DOMNodeAttribute>
 	childNodes: DOMNode[]
-	internal_transform?: OutputTransformer
+	internal_transform?: IOutputTransformer
 
 	internal_accessibility?: {
 		role?:
@@ -66,15 +66,15 @@ export type DOMElement = {
 	onComputeLayout?: () => void
 	onRender?: () => void
 	onImmediateRender?: () => void
-} & InkNode
+} & IWolfieNode
 
 export type TextNode = {
-	nodeName: TextName
+	nodeName: ITextName
 	nodeValue: string
-} & InkNode
+} & IWolfieNode
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export type DOMNode<T = { nodeName: NodeNames }> = T extends {
+export type DOMNode<T = { nodeName: INodeNames }> = T extends {
 	nodeName: infer U
 }
 	? U extends '#text'
@@ -86,7 +86,7 @@ export type DOMNode<T = { nodeName: NodeNames }> = T extends {
 export type DOMNodeAttribute = boolean | string | number
 
 export const createNode = (
-	nodeName: ElementNames,
+	nodeName: IElementNames,
 	layoutTree?: LayoutTree
 ): DOMElement => {
 	const node: DOMElement = {
@@ -96,7 +96,7 @@ export const createNode = (
 		childNodes: [],
 		parentNode: undefined,
 		layoutNodeId:
-			nodeName === 'ink-virtual-text' || !layoutTree
+			nodeName === 'wolwie_react-virtual-text' || !layoutTree
 				? undefined
 				: layoutTree.createNode({}),
 		// Store direct reference to layoutTree for use in appendChild/insertBefore
@@ -143,7 +143,10 @@ export const appendChildNode = (
 		)
 	}
 
-	if (node.nodeName === 'ink-text' || node.nodeName === 'ink-virtual-text') {
+	if (
+		node.nodeName === 'wolwie_react-text' ||
+		node.nodeName === 'wolwie_react-virtual-text'
+	) {
 		markNodeAsDirty(node, effectiveLayoutTree)
 	}
 }
@@ -184,7 +187,17 @@ export const insertBeforeNode = (
 			)
 		}
 
-		if (node.nodeName === 'ink-text' || node.nodeName === 'ink-virtual-text') {
+		if (
+			node.nodeName === 'wolwie_react-text' ||
+			node.nodeName === 'wolwie_react-virtual-text'
+		) {
+			markNodeAsDirty(node, effectiveLayoutTree)
+		}
+
+		if (
+			node.nodeName === 'wolwie_react-text' ||
+			node.nodeName === 'wolwie_react-virtual-text'
+		) {
 			markNodeAsDirty(node, effectiveLayoutTree)
 		}
 		return
@@ -204,7 +217,10 @@ export const insertBeforeNode = (
 		)
 	}
 
-	if (node.nodeName === 'ink-text' || node.nodeName === 'ink-virtual-text') {
+	if (
+		node.nodeName === 'wolwie_react-text' ||
+		node.nodeName === 'wolwie_react-virtual-text'
+	) {
 		markNodeAsDirty(node, effectiveLayoutTree)
 	}
 }
@@ -232,7 +248,10 @@ export const removeChildNode = (
 		node.childNodes.splice(index, 1)
 	}
 
-	if (node.nodeName === 'ink-text' || node.nodeName === 'ink-virtual-text') {
+	if (
+		node.nodeName === 'wolwie_react-text' ||
+		node.nodeName === 'wolwie_react-virtual-text'
+	) {
 		markNodeAsDirty(node, layoutTree)
 	}
 }
@@ -250,7 +269,7 @@ export const setAttribute = (
 	node.attributes[key] = value
 }
 
-export const setStyle = (node: DOMNode, style: Styles): void => {
+export const setStyle = (node: DOMNode, style: IStyles): void => {
 	node.style = style
 }
 

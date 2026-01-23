@@ -2,7 +2,7 @@ import { Stream } from 'node:stream'
 import process from 'node:process'
 import type { ReactNode } from 'react'
 import { LayoutTree } from '@wolfie/core/layout'
-import Ink, { type Options as InkOptions, type RenderMetrics } from './ink'
+import WolfieReact, { type IOptions as WolfieOptions, type IRenderMetrics } from './wolfie_react'
 import instances from './instances'
 
 export type RenderOptions = {
@@ -34,14 +34,14 @@ export type RenderOptions = {
 	debug?: boolean
 
 	/**
-	Configure whether Ink should listen for Ctrl+C keyboard input and exit the app. This is needed in case `process.stdin` is in raw mode, because then Ctrl+C is ignored by default and the process is expected to handle it manually.
+	Configure whether Wolfie should listen for Ctrl+C keyboard input and exit the app. This is needed in case `process.stdin` is in raw mode, because then Ctrl+C is ignored by default and the process is expected to handle it manually.
 
 	@default true
 	*/
 	exitOnCtrlC?: boolean
 
 	/**
-	Patch console methods to ensure console output doesn't mix with Ink's output.
+	Patch console methods to ensure console output doesn't mix with Wolfie's output.
 
 	@default true
 	*/
@@ -50,7 +50,7 @@ export type RenderOptions = {
 	/**
 	Runs the given callback after each render and re-render.
 	*/
-	onRender?: (metrics: RenderMetrics) => void
+	onRender?: (metrics: IRenderMetrics) => void
 
 	/**
 	Enable screen reader support. See https://github.com/vadimdemedes/ink/blob/master/readme.md#screen-reader-support
@@ -81,17 +81,17 @@ export type Instance = {
 	/**
 	Replace the previous root node with a new one or update props of the current root node.
 	*/
-	rerender: Ink['render']
+	rerender: WolfieReact['render']
 
 	/**
-	Manually unmount the whole Ink app.
+	Manually unmount the whole Wolfie app.
 	*/
-	unmount: Ink['unmount']
+	unmount: WolfieReact['unmount']
 
 	/**
 	Returns a promise that resolves when the app is unmounted.
 	*/
-	waitUntilExit: Ink['waitUntilExit']
+	waitUntilExit: WolfieReact['waitUntilExit']
 
 	cleanup: () => void
 
@@ -111,7 +111,7 @@ const render = (
 	// Create a new Taffy layout tree for layout calculations
 	const layoutTree = new LayoutTree()
 
-	const inkOptions: InkOptions = {
+	const inkOptions: WolfieOptions = {
 		stdout: process.stdout,
 		stdin: process.stdin,
 		stderr: process.stderr,
@@ -124,9 +124,9 @@ const render = (
 		layoutTree,
 	}
 
-	const instance: Ink = getInstance(
+	const instance: WolfieReact = getInstance(
 		inkOptions.stdout,
-		() => new Ink(inkOptions)
+		() => new WolfieReact(inkOptions)
 	)
 
 	instance.render(node)
@@ -159,8 +159,8 @@ const getOptions = (
 
 const getInstance = (
 	stdout: NodeJS.WriteStream,
-	createInstance: () => Ink
-): Ink => {
+	createInstance: () => WolfieReact
+): WolfieReact => {
 	let instance = instances.get(stdout)
 
 	if (!instance) {

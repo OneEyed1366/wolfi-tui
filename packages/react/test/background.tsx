@@ -10,12 +10,12 @@ import { enableTestColors, disableTestColors } from './helpers/force-colors'
 // Note: We test against raw ANSI codes rather than chalk predicates because:
 // 1. Different color reset patterns:
 //    - Chalk: '\u001b[43mHello \u001b[49m\u001b[43mWorld\u001b[49m' (individual resets)
-//    - Ink:   '\u001b[43mHello World\u001b[49m' (continuous blocks)
+//    - Wolfie:   '\u001b[43mHello World\u001b[49m' (continuous blocks)
 // 2. Background space fills that chalk doesn't generate:
-//    - Ink: '\u001b[41mHello     \u001b[49m\n\u001b[41m          \u001b[49m' (fills entire Box area)
+//    - Wolfie: '\u001b[41mHello     \u001b[49m\n\u001b[41m          \u001b[49m' (fills entire Box area)
 // 3. Context-aware color transitions:
 //    - Chalk: '\u001b[43mOuter: \u001b[49m\u001b[44mInner: \u001b[49m\u001b[41mExplicit\u001b[49m'
-//    - Ink:   '\u001b[43mOuter: \u001b[44mInner: \u001b[41mExplicit\u001b[49m' (no intermediate resets)
+//    - Wolfie:   '\u001b[43mOuter: \u001b[44mInner: \u001b[41mExplicit\u001b[49m' (no intermediate resets)
 const ansi = {
 	// Standard colors
 	bgRed: '\u001B[41m',
@@ -305,7 +305,7 @@ test('Box background with column layout fills entire area', () => {
 test('Box background updates on rerender', () => {
 	const stdout = createStdout()
 
-	function Test({ bgColor }: { readonly bgColor?: string }) {
+	function Test({ bgColor }: { bgColor?: string }) {
 		return (
 			<Box style={{ backgroundColor: bgColor, alignSelf: 'flex-start' }}>
 				<Text>Hello</Text>

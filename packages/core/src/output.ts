@@ -7,7 +7,7 @@ import {
 	styledCharsToString,
 	tokenize,
 } from '@alcalzone/ansi-tokenize'
-import { type OutputTransformer } from './render-node-to-output'
+import { type IOutputTransformer } from './render-node-to-output'
 
 /**
 "Virtual" output class
@@ -29,7 +29,7 @@ type WriteOperation = {
 	x: number
 	y: number
 	text: string
-	transformers: OutputTransformer[]
+	transformers: IOutputTransformer[]
 }
 
 type ClipOperation = {
@@ -52,7 +52,7 @@ export default class Output {
 	width: number
 	height: number
 
-	private readonly operations: Operation[] = []
+	private operations: Operation[] = []
 
 	constructor(options: Options) {
 		const { width, height } = options
@@ -65,7 +65,7 @@ export default class Output {
 		x: number,
 		y: number,
 		text: string,
-		options: { transformers: OutputTransformer[] }
+		options: { transformers: IOutputTransformer[] }
 	): void {
 		const { transformers } = options
 

@@ -1,9 +1,16 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import { wolfieCSS } from '@wolfie/css-parser/vite'
 
 export default defineConfig({
-	plugins: [react()],
+	plugins: [
+		wolfieCSS({
+			mode: 'module',
+			include: /\.module\.css$/,
+		}),
+		react(),
+	],
 	test: {
 		globals: true,
 		environment: 'node',

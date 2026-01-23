@@ -22,8 +22,8 @@ const getBackgroundForStatus = (status: string): string | undefined => {
 }
 
 type Properties = {
-	readonly status: string
-	readonly path: string
+	status: string
+	path: string
 }
 
 function Test({ status, path }: Properties) {

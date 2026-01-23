@@ -27,15 +27,15 @@ const emitReadable = (stdin: NodeJS.WriteStream, chunk: string) => {
 }
 
 type TestProps = {
-	readonly showFirst?: boolean
-	readonly disableFirst?: boolean
-	readonly disableSecond?: boolean
-	readonly disableThird?: boolean
-	readonly autoFocus?: boolean
-	readonly disabled?: boolean
-	readonly focusNext?: boolean
-	readonly focusPrevious?: boolean
-	readonly unmountChildren?: boolean
+	showFirst?: boolean
+	disableFirst?: boolean
+	disableSecond?: boolean
+	disableThird?: boolean
+	autoFocus?: boolean
+	disabled?: boolean
+	focusNext?: boolean
+	focusPrevious?: boolean
+	unmountChildren?: boolean
 }
 
 function Test({
@@ -87,9 +87,9 @@ function Test({
 }
 
 type ItemProps = {
-	readonly label: string
-	readonly autoFocus: boolean
-	readonly disabled?: boolean
+	label: string
+	autoFocus: boolean
+	disabled?: boolean
 }
 
 function Item({ label, autoFocus, disabled = false }: ItemProps) {

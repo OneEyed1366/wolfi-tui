@@ -1,0 +1,6 @@
+.box {
+	flex-wrap: nowrap;
+	flex-direction: row;
+	flex-grow: 0;
+	flex-shrink: 1;
+}

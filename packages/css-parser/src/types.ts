@@ -46,7 +46,7 @@ export interface CSSParserOptions {
 /**
  * Supported preprocessor types
  */
-export type PreprocessorType = 'css' | 'scss' | 'less' | 'stylus'
+export type IPreprocessorType = 'css' | 'scss' | 'less' | 'stylus'
 
 //#endregion Core Types
 

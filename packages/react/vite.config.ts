@@ -2,6 +2,7 @@ import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
+import { wolfieCSS } from '@wolfie/css-parser/vite'
 
 export default defineConfig(({ command }) => {
 	const babelPlugins: [string, object][] = [['babel-plugin-react-compiler', {}]]
@@ -39,6 +40,10 @@ export default defineConfig(({ command }) => {
 			},
 		},
 		plugins: [
+			wolfieCSS({
+				mode: 'module',
+				include: /\.module\.css$/,
+			}),
 			react({
 				babel: {
 					plugins: babelPlugins,

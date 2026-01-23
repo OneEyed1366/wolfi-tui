@@ -1,8 +1,8 @@
 import { useEffect, useContext, useMemo } from 'react'
-import FocusContext from '../components/FocusContext'
-import useStdin from './use-stdin'
+import { FocusContext } from '../context/FocusContext'
+import { useStdin } from './use-stdin'
 
-type Input = {
+type IInput = {
 	/**
 	Enable or disable this component's focus, while still maintaining its position in the list of focusable components.
 	*/
@@ -19,7 +19,7 @@ type Input = {
 	id?: string
 }
 
-type Output = {
+type IOutput = {
 	/**
 	Determines whether this component is focused.
 	*/
@@ -32,13 +32,13 @@ type Output = {
 }
 
 /**
-A component that uses the `useFocus` hook becomes "focusable" to Ink, so when the user presses <kbd>Tab</kbd>, Ink will switch focus to this component. If there are multiple components that execute the `useFocus` hook, focus will be given to them in the order in which these components are rendered. This hook returns an object with an `isFocused` boolean property, which determines whether this component is focused.
+A component that uses the `useFocus` hook becomes "focusable" to Wolfie, so when the user presses <kbd>Tab</kbd>, Wolfie will switch focus to this component. If there are multiple components that execute the `useFocus` hook, focus will be given to them in the order in which these components are rendered. This hook returns an object with an `isFocused` boolean property, which determines whether this component is focused.
 */
-const useFocus = ({
+export const useFocus = ({
 	isActive = true,
 	autoFocus = false,
 	id: customId,
-}: Input = {}): Output => {
+}: IInput = {}): IOutput => {
 	const { isRawModeSupported, setRawMode } = useStdin()
 	const { activeId, add, remove, activate, deactivate, focus } =
 		useContext(FocusContext)
@@ -81,4 +81,3 @@ const useFocus = ({
 	}
 }
 
-export default useFocus
