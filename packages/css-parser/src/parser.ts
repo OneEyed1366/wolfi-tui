@@ -125,7 +125,7 @@ export function extractClassName(
 
 		if (classNames.length > 0) {
 			if (!camelCase) {
-				return classNames.join(' ')
+				return classNames.join('-')
 			}
 
 			// Join all parts into a single camelCase name

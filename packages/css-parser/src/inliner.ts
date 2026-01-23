@@ -27,17 +27,37 @@ export function inlineStyles(
 			const toInline: Record<string, any> = {}
 			let allResolved = true
 
-			for (const cls of classes) {
-				const camelCls = cls.replace(/-([a-z])/g, (_, l) => l.toUpperCase())
-				const style =
-					styles instanceof Map
-						? styles.get(cls) || styles.get(camelCls)
-						: styles[cls] || styles[camelCls]
+			// Helper to get style by class name (raw or camelCase)
+			const getStyle = (name: string) => {
+				const camelName = name.replace(/-([a-z])/g, (_, l) => l.toUpperCase())
+				return styles instanceof Map
+					? styles.get(name) || styles.get(camelName)
+					: styles[name] || styles[camelName]
+			}
 
+			// 1. Resolve individual classes
+			for (const cls of classes) {
+				const style = getStyle(cls)
 				if (style) {
 					Object.assign(toInline, style)
 				} else {
 					allResolved = false
+				}
+			}
+
+			// 2. Resolve compound selectors (e.g. .btn.primary)
+			// We try all pairs for now, which covers most common cases like .btn.primary
+			// In the future, we might need a more sophisticated approach for 3+ classes
+			if (classes.length >= 2) {
+				for (let i = 0; i < classes.length; i++) {
+					for (let j = 0; j < classes.length; j++) {
+						if (i === j) continue
+						const compound = `${classes[i]}.${classes[j]}`
+						const style = getStyle(compound)
+						if (style) {
+							Object.assign(toInline, style)
+						}
+					}
 				}
 			}
 

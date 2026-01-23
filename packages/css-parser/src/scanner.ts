@@ -14,7 +14,13 @@ export function scanCandidates(code: string): Set<string> {
 		const classList = match[2]!.split(/\s+/)
 
 		for (const cls of classList) {
-			if (cls) candidates.add(cls)
+			if (cls) {
+				candidates.add(cls)
+				// If it looks like a compound selector in a string, add parts too
+				if (cls.includes('.')) {
+					cls.split('.').forEach((p) => p && candidates.add(p))
+				}
+			}
 		}
 	}
 

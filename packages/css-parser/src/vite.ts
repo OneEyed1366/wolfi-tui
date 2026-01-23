@@ -29,6 +29,40 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 
 	let server: any
 
+	async function loadAndProcessStyle(absolutePath: string) {
+		if (!existsSync(absolutePath)) return null
+
+		const isModule = absolutePath.includes('.module.') || mode === 'module'
+		const lang = detectLanguage(absolutePath)
+
+		const source = readFileSync(absolutePath, 'utf-8')
+		const compileResult = await compile(source, lang, absolutePath)
+
+		const styles = parseCSS(compileResult.css, {
+			filename: absolutePath,
+			camelCaseClasses,
+		})
+
+		// Populate global map
+		Object.assign(globalStylesMap, styles)
+
+		if (process.env['DEBUG_WOLFIE_CSS']) {
+			console.log(
+				`[wolfie-css] Loaded styles from ${absolutePath}:`,
+				Object.keys(styles)
+			)
+		}
+
+		const generator = javascript ? generateJavaScript : generateTypeScript
+		const code = generator(styles, {
+			mode: isModule ? 'module' : 'global',
+			camelCaseClasses,
+			metadata: compileResult.metadata,
+		})
+
+		return { code, styles }
+	}
+
 	return {
 		name: 'wolfie-css',
 		enforce: 'pre',
@@ -63,7 +97,30 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 					}
 				}
 
-				// 2. If inlining is enabled and we have styles, apply them
+				// 2. Scan and preload CSS imports to ensure they are available for inlining
+				if (inline) {
+					const importMatches = code.matchAll(
+						/import\s+(?:[^"']*\s+from\s+)?["']([^"']+\.(css|scss|sass|less|styl|stylus))["']/g
+					)
+					for (const match of importMatches) {
+						const importPath = match[1]!
+						const resolved = await this.resolve(importPath, id)
+						if (resolved && !resolved.id.includes('node_modules')) {
+							// Check if it's one of our supported files
+							const cleanId = resolved.id.split('?')[0]!
+							if (matchesPattern(cleanId, include)) {
+								try {
+									// Pre-load the style file
+									await loadAndProcessStyle(cleanId)
+								} catch (e) {
+									// Ignore errors here, let the actual import handle it
+								}
+							}
+						}
+					}
+				}
+
+				// 3. If inlining is enabled and we have styles, apply them
 				if (inline && Object.keys(globalStylesMap).length > 0) {
 					const newCode = inlineStyles(code, globalStylesMap)
 					if (newCode !== code) {
@@ -109,33 +166,13 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 			}
 
 			const absolutePath = id.slice(virtualPrefix.length).replace(/\.js$/, '')
-			if (!existsSync(absolutePath)) return null
-
-			const isModule = absolutePath.includes('.module.') || mode === 'module'
-			const lang = detectLanguage(absolutePath)
 
 			try {
-				const source = readFileSync(absolutePath, 'utf-8')
-
-				const compileResult = await compile(source, lang, absolutePath)
-
-				const styles = parseCSS(compileResult.css, {
-					filename: absolutePath,
-					camelCaseClasses,
-				})
-
-				// Populate global map lazily as files are loaded
-				Object.assign(globalStylesMap, styles)
-
-				const generator = javascript ? generateJavaScript : generateTypeScript
-				const code = generator(styles, {
-					mode: isModule ? 'module' : 'global',
-					camelCaseClasses,
-					metadata: compileResult.metadata,
-				})
+				const result = await loadAndProcessStyle(absolutePath)
+				if (!result) return null
 
 				return {
-					code,
+					code: result.code,
 					moduleType: 'js',
 					map: { mappings: '' },
 				}

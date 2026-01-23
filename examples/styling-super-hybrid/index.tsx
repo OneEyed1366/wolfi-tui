@@ -1,6 +1,5 @@
 import React from 'react'
 import { render, Box, Text } from '@wolfie/react'
-import 'virtual:wolfie-tailwind.css'
 import './styles/global.css'
 import './styles/components.scss'
 import './styles/tailwind.css'
@@ -8,7 +7,7 @@ import buttonStyles from './styles/Button.module.css'
 import cardStyles from './styles/Card.module.css'
 
 /*
- * Pure CSS Styling Demo
+ * Hybrid CSS Styling Demo
  *
  * This example demonstrates all CSS approaches without explicit layout props:
  * - SCSS with nesting (.card, .btn)
