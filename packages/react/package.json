@@ -70,7 +70,8 @@
 		"wrap-ansi": "^9.0.0"
 	},
 	"devDependencies": {
-		"@wolfie/css-parser": "workspace:*"
+		"@wolfie/css-parser": "workspace:*",
+		"@wolfie/plugin": "workspace:*"
 	},
 	"peerDependencies": {
 		"@types/react": ">=19.0.0",

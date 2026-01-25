@@ -20,12 +20,20 @@ export {
 	compileLess,
 	compileStylus,
 	detectLanguage,
+	tailwind,
 	type PreprocessorType,
 	type PreprocessorResult,
 	type PreprocessOptions,
 } from './preprocessors'
 
 //#endregion Preprocessor Exports
+
+//#region Scanner & Inliner Exports
+
+export { scanCandidates } from './scanner'
+export { inlineStyles } from './inliner'
+
+//#endregion Scanner & Inliner Exports
 
 //#region Property Exports
 

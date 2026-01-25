@@ -6,7 +6,7 @@ import isInCi from 'is-in-ci'
 import autoBind from 'auto-bind'
 import signalExit from 'signal-exit'
 import patchConsole from 'patch-console'
-import { LegacyRoot } from 'react-reconciler/constants'
+import { LegacyRoot } from './reconciler-constants'
 import { type FiberRoot } from 'react-reconciler'
 import wrapAnsi from 'wrap-ansi'
 import {

@@ -13,7 +13,7 @@
 	},
 	"devDependencies": {
 		"@tailwindcss/postcss": "^4.1.18",
-		"@wolfie/css-parser": "workspace:*",
+		"@wolfie/plugin": "workspace:*",
 		"autoprefixer": "^10.4.23",
 		"esbuild": "^0.24.0",
 		"postcss": "^8.5.6",

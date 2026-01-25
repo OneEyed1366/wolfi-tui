@@ -2,6 +2,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import webpack from 'webpack'
 import fs from 'node:fs'
+import { wolfie } from '@wolfie/plugin/webpack'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -102,6 +103,7 @@ export default {
 		minimize: false,
 	},
 	plugins: [
+		wolfie('react', { mode: 'global' }),
 		new webpack.BannerPlugin({
 			banner:
 				'#!/usr/bin/env node\nprocess.env.NAPI_RS_NATIVE_LIBRARY_PATH = require("path").join(__dirname, "native/wolfie-core.' +

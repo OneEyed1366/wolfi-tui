@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { wolfieVuePlugin } from '@wolfie/vue'
+import { wolfie } from '@wolfie/plugin/vite'
 
 export default defineConfig({
 	resolve: {
@@ -11,9 +11,6 @@ export default defineConfig({
 		dedupe: ['vue'],
 	},
 	plugins: [
-		// Rewrite Vue imports in .vue files to use @wolfie/vue
-		// This ensures single Vue instance between SFCs and renderer
-		wolfieVuePlugin(),
 		vue({
 			isProduction: false,
 			template: {
@@ -23,5 +20,7 @@ export default defineConfig({
 				},
 			},
 		}),
+		// Unified wolfie plugin handles CSS and Vue SFC styles
+		wolfie('vue'),
 	],
 })

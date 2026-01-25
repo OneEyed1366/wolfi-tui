@@ -1,0 +1,70 @@
+{
+	"name": "@wolfie/plugin",
+	"version": "0.1.0",
+	"description": "Unplugin for wolfie - supports Vite, esbuild, webpack, and Rollup",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./build/index.d.ts",
+			"default": "./build/index.js"
+		},
+		"./vite": {
+			"types": "./build/vite.d.ts",
+			"default": "./build/vite.js"
+		},
+		"./esbuild": {
+			"types": "./build/esbuild.d.ts",
+			"default": "./build/esbuild.js"
+		},
+		"./webpack": {
+			"types": "./build/webpack.d.ts",
+			"default": "./build/webpack.js"
+		},
+		"./rollup": {
+			"types": "./build/rollup.d.ts",
+			"default": "./build/rollup.js"
+		}
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"dev": "vite build --watch",
+		"build": "vite build",
+		"test": "vitest run"
+	},
+	"files": [
+		"build"
+	],
+	"dependencies": {
+		"@wolfie/css-parser": "workspace:*",
+		"fast-glob": "^3.3.2",
+		"unplugin": "^2.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.9",
+		"vite": "^6.4.1",
+		"vite-plugin-dts": "^4.5.4"
+	},
+	"peerDependencies": {
+		"esbuild": ">=0.17",
+		"vite": ">=5.0",
+		"webpack": ">=5.0",
+		"rollup": ">=3.0"
+	},
+	"peerDependenciesMeta": {
+		"esbuild": {
+			"optional": true
+		},
+		"vite": {
+			"optional": true
+		},
+		"webpack": {
+			"optional": true
+		},
+		"rollup": {
+			"optional": true
+		}
+	}
+}

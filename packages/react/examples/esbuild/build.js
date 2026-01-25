@@ -1,5 +1,5 @@
 import esbuild from 'esbuild'
-import { wolfieCSS } from '@wolfie/css-parser/esbuild'
+import { wolfie } from '@wolfie/plugin/esbuild'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -25,7 +25,7 @@ await esbuild.build({
 	entryPoints: ['index.tsx'],
 	bundle: true,
 	outfile: 'dist/index.cjs',
-	format: 'cjs', // Changed to cjs for portability as requested
+	format: 'cjs',
 	platform: 'node',
 	external: ['react', '@wolfie/react'],
 	banner: {
@@ -36,10 +36,6 @@ await esbuild.build({
 			process.arch +
 			'.node");',
 	},
-	plugins: [
-		wolfieCSS({
-			inline: true,
-		}),
-	],
+	plugins: [wolfie('react', { inline: true })],
 	logLevel: 'info',
 })

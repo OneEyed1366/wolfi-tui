@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import dts from 'vite-plugin-dts'
-import { wolfieCSS } from '@wolfie/css-parser/vite'
+import { wolfie } from '@wolfie/plugin/vite'
 
 export default defineConfig({
 	build: {
@@ -33,9 +33,11 @@ export default defineConfig({
 		},
 	},
 	plugins: [
-		wolfieCSS({
+		wolfie('vue', {
 			mode: 'module',
 			include: /\.module\.css$/,
+			handleSfcStyles: false,
+			rewriteVueImports: false,
 		}),
 		vue(),
 		vueJsx(),

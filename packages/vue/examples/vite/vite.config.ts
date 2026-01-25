@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { wolfieVuePlugin } from '../../src/index'
-import { wolfieCSS } from '../../../css-parser/src/vite'
+import { wolfie } from '@wolfie/plugin/vite'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
@@ -19,12 +18,7 @@ export default defineConfig({
 				},
 			},
 		}),
-		...wolfieVuePlugin({ tailwind: true }), // Returns array of plugins
-		wolfieCSS({
-			mode: 'global',
-			camelCaseClasses: false,
-			framework: 'vue',
-		}),
+		wolfie('vue', { mode: 'global' }),
 		viteStaticCopy({
 			targets: [
 				{

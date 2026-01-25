@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import { wolfieCSS } from '@wolfie/css-parser/vite'
+import { wolfie } from '@wolfie/plugin/vite'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
@@ -9,10 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
 	root: __dirname,
 	plugins: [
-		wolfieCSS({
-			mode: 'global',
-			camelCaseClasses: false,
-		}),
+		wolfie('react', { mode: 'global' }),
 		viteStaticCopy({
 			targets: [
 				{
@@ -28,19 +25,28 @@ export default defineConfig({
 	build: {
 		lib: {
 			entry: resolve(__dirname, 'index.tsx'),
-			formats: ['cjs'],
+			formats: ['es'],
 			fileName: 'index',
 		},
 		rollupOptions: {
 			output: {
 				banner:
-					'#!/usr/bin/env node\nconst path = require("path");const fs = require("fs");const platform = "' +
+					'#!/usr/bin/env node\nimport { createRequire } from "node:module";\nimport { fileURLToPath } from "node:url";\nimport { dirname, join } from "node:path";\nimport { existsSync } from "node:fs";\nconst __filename = fileURLToPath(import.meta.url);\nconst __dirname = dirname(__filename);\nconst platform = "' +
 					process.platform +
-					'";const arch = "' +
+					'";\nconst arch = "' +
 					process.arch +
-					'";const candidates = ["wolfie-core." + platform + "-" + arch + ".node","wolfie-core." + platform + "-" + arch + "-gnu.node","wolfie-core." + platform + "-" + arch + "-musl.node"];const nativePath = candidates.find(f => fs.existsSync(path.join(__dirname, "native/" + f)));if (nativePath) {process.env.NAPI_RS_NATIVE_LIBRARY_PATH = path.join(__dirname, "native/" + nativePath);} else {console.error("Native binding not found for", platform, arch);process.exit(1);}',
+					'";\nconst candidates = ["wolfie-core." + platform + "-" + arch + ".node","wolfie-core." + platform + "-" + arch + "-gnu.node","wolfie-core." + platform + "-" + arch + "-musl.node"];\nconst nativePath = candidates.find(f => existsSync(join(__dirname, "native/" + f)));\nif (nativePath) {process.env.NAPI_RS_NATIVE_LIBRARY_PATH = join(__dirname, "native/" + nativePath);} else {console.error("Native binding not found for", platform, arch);process.exit(1);}\n',
 			},
-			external: ['react', '@wolfie/react', 'path'],
+			external: [
+				'react',
+				'react/jsx-runtime',
+				'react/jsx-dev-runtime',
+				'@wolfie/react',
+				'node:module',
+				'node:url',
+				'node:path',
+				'node:fs',
+			],
 		},
 	},
 })

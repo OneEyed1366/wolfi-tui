@@ -1,9 +1,6 @@
 import process from 'node:process'
 import createReconciler, { type ReactContext } from 'react-reconciler'
-import {
-	DefaultEventPriority,
-	NoEventPriority,
-} from 'react-reconciler/constants'
+import { DefaultEventPriority, NoEventPriority } from './reconciler-constants'
 import { createContext } from 'react'
 import {
 	createTextNode,
@@ -27,25 +24,29 @@ import {
 // We need to conditionally perform devtools connection to avoid
 // accidentally breaking other third-party code.
 // See https://github.com/vadimdemedes/ink/issues/384
+// Wrapped in IIFE to avoid top-level await which breaks CJS require()
 if (process.env['DEV'] === 'true') {
-	try {
-		await import('./devtools')
-	} catch (error: any) {
-		if (error.code === 'ERR_MODULE_NOT_FOUND') {
-			console.warn(
-				`
+	;(async () => {
+		try {
+			await import('./devtools')
+		} catch (error: unknown) {
+			const err = error as { code?: string }
+			if (err.code === 'ERR_MODULE_NOT_FOUND') {
+				console.warn(
+					`
 The environment variable DEV is set to true, so Wolfie tried to import \`react-devtools-core\`,
 but this failed as it was not installed. Debugging with React Devtools requires it.
 
 To install use this command:
 
 $ npm install --save-dev react-devtools-core
-				`.trim() + '\n'
-			)
-		} else {
-			throw error
+					`.trim() + '\n'
+				)
+			} else {
+				throw error
+			}
 		}
-	}
+	})()
 }
 
 type AnyObject = Record<string, unknown>

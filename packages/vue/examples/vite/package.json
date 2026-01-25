@@ -11,7 +11,7 @@
 	},
 	"devDependencies": {
 		"@wolfie/vue": "workspace:*",
-		"@wolfie/css-parser": "workspace:*",
+		"@wolfie/plugin": "workspace:*",
 		"@vitejs/plugin-vue": "^5.0.0",
 		"vite": "^6.0.0",
 		"vite-plugin-static-copy": "^1.0.0",
