@@ -7,6 +7,8 @@ import {
 	setAttribute,
 	setTextNodeValue,
 	applyLayoutStyle,
+	isElement,
+	isText,
 	type DOMElement,
 	type TextNode,
 	type ElementNames,
@@ -14,13 +16,13 @@ import {
 	type DOMNode,
 } from '@wolfie/core'
 import { type RendererOptions } from 'vue'
-import { layoutTreeRegistry } from '../index'
+import { layoutTreeRegistry, type WolfieVueInstance } from '../index'
 
-const getLayoutTree = (node: DOMNode): LayoutTree | undefined => {
+const getInstance = (node: DOMNode): WolfieVueInstance | undefined => {
 	let current: DOMElement | undefined
-	if (node.nodeName !== '#text') {
+	if (isElement(node)) {
 		current = node
-	} else {
+	} else if (isText(node)) {
 		current = node.parentNode
 	}
 	// Find root node by traversing up the tree
@@ -47,8 +49,8 @@ const initLayoutTreeRecursively = (
 	const children = node.childNodes
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i]
-		if ('childNodes' in child) {
-			initLayoutTreeRecursively(child as DOMElement, layoutTree)
+		if (isElement(child)) {
+			initLayoutTreeRecursively(child, layoutTree)
 
 			if (
 				wasUndefined &&
@@ -62,67 +64,48 @@ const initLayoutTreeRecursively = (
 }
 
 export const nodeOps: Omit<
-	RendererOptions<DOMElement | TextNode, DOMElement>,
+	RendererOptions<DOMNode, DOMElement>,
 	'patchProp'
 > = {
 	createElement(tag) {
 		const wolfieTag = tag.startsWith('wolfie-') ? tag : `wolfie-${tag}`
-
-		// When creating an element, we don't always have the parent/root yet in Vue's flow
-		// But Wolfie's createNode needs a LayoutTree to create a layoutNodeId.
-		// We'll attempt to find the layoutTree from the registry if we can identify the target root.
-		// However, Vue's createElement doesn't provide the root.
-		// As a fallback, createNode in @wolfie/core handles undefined layoutTree by creating a node without layoutNodeId,
-		// and appendChildNode will propagate the layoutTree and create the layoutNodeId when it's attached.
 		const node = createNode(wolfieTag as ElementNames)
-
-		// Optimization: If it's a text component, we can pre-measure it if it has text content
-		// But in Vue, text content is usually added via createText/setText later.
-
 		return node
 	},
 
 	insert(child, parent, anchor) {
-		const layoutTree = getLayoutTree(parent)
+		const instance = getInstance(parent)
 
-		if (layoutTree) {
-			initLayoutTreeRecursively(child as DOMElement, layoutTree)
+		if (instance && isElement(child)) {
+			initLayoutTreeRecursively(child, instance.layoutTree)
 		}
 
 		if (anchor) {
-			insertBeforeNode(parent, child, anchor, layoutTree)
+			insertBeforeNode(parent, child, anchor, instance?.layoutTree)
 		} else {
-			appendChildNode(parent, child as DOMElement, layoutTree)
+			appendChildNode(parent, child, instance?.layoutTree)
 		}
 
 		// Important: If this is a text component or attached to one, we might need to compute its dimensions
 		if (
-			layoutTree &&
+			instance &&
 			(child.nodeName === 'wolfie-text' || parent.nodeName === 'wolfie-text')
 		) {
-			layoutTree.markDirty(parent.layoutNodeId ?? child.layoutNodeId!)
+			instance.layoutTree.markDirty(parent.layoutNodeId ?? child.layoutNodeId!)
 		}
 
 		// Trigger re-render on any tree change
-		let root: DOMElement = parent
-		while (root.parentNode) {
-			root = root.parentNode
-		}
-		root.onRender?.()
+		instance?.onRender()
 	},
 
 	remove(child) {
 		const parent = child.parentNode
 		if (parent) {
-			const layoutTree = getLayoutTree(parent)
-			removeChildNode(parent, child, layoutTree)
+			const instance = getInstance(parent)
+			removeChildNode(parent, child, instance?.layoutTree)
 
 			// Trigger re-render on any tree change
-			let root: DOMElement = parent
-			while (root.parentNode) {
-				root = root.parentNode
-			}
-			root.onRender?.()
+			instance?.onRender()
 		}
 	},
 
@@ -130,26 +113,40 @@ export const nodeOps: Omit<
 		return createTextNode(text)
 	},
 
-	createComment(text) {
+	createComment(_text) {
 		// Wolfie doesn't have comments, using a hidden text node as placeholder
-		const node = createTextNode('')
-		return node as any
-	},
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	setText(node, text) {
-		const layoutTree = getLayoutTree(node as TextNode)
-		setTextNodeValue(node as TextNode, text, layoutTree)
+		return createTextNode('')
 	},
 
 	setElementText(el, text) {
-		const layoutTree = getLayoutTree(el)
-		// Remove all existing children and add a single text node
-		while (el.childNodes.length > 0) {
-			removeChildNode(el, el.childNodes[0]!, layoutTree)
+		const instance = getInstance(el)
+
+		// OPTIMIZATION: If we already have a single text node, just update it
+		// This prevents destroying layout nodes during SFC "PatchFlags.TEXT" updates
+		if (el.childNodes.length === 1 && isText(el.childNodes[0])) {
+			setTextNodeValue(el.childNodes[0] as TextNode, text, instance?.layoutTree)
+		} else {
+			// Fallback for complex changes: Remove all existing children and add a single text node
+			while (el.childNodes.length > 0) {
+				removeChildNode(el, el.childNodes[0]!, instance?.layoutTree)
+			}
+			const textNode = createTextNode(text)
+			appendChildNode(el, textNode, instance?.layoutTree)
 		}
-		const textNode = createTextNode(text)
-		appendChildNode(el, textNode as any, layoutTree)
+
+		// Trigger re-render on element text change
+		instance?.onRender()
+	},
+
+	setText(node, text) {
+		const instance = getInstance(node)
+
+		if (isText(node)) {
+			setTextNodeValue(node as TextNode, text, instance?.layoutTree)
+		}
+
+		// Trigger re-render on text node change
+		instance?.onRender()
 	},
 
 	parentNode(node) {
@@ -160,7 +157,7 @@ export const nodeOps: Omit<
 		const parent = node.parentNode
 		if (!parent) return null
 		const index = parent.childNodes.indexOf(node)
-		return (parent.childNodes[index + 1] as any) || null
+		return parent.childNodes[index + 1] || null
 	},
 
 	querySelector() {

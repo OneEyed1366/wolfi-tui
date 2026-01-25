@@ -117,12 +117,6 @@ export function wolfieCSS(options: EsbuildPluginOptions = {}): Plugin {
 						filename: 'virtual:tailwind.css',
 					})
 					Object.assign(globalStylesMap, tailwindStyles)
-					if (process.env['DEBUG_WOLFIE_CSS']) {
-						console.log(
-							`[wolfie-css] Loaded Tailwind styles:`,
-							Object.keys(tailwindStyles)
-						)
-					}
 				} catch (err) {
 					console.warn('[wolfie-css] Failed to generate Tailwind CSS:', err)
 				}

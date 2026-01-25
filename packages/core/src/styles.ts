@@ -324,6 +324,7 @@ export type IStyles = {
 	Inverse background and foreground colors.
 	*/
 	inverse?: boolean
+	[key: string]: string | number | boolean | undefined | object
 }
 
 //#region Shorthand Expansion
@@ -357,7 +358,7 @@ const expandSpacing = (
 ): Partial<IStyles> => {
 	if (value === undefined) return {}
 
-	const result: any = {}
+	const result: Partial<IStyles> = {}
 	if (typeof value === 'number') {
 		result[`${prefix}Top`] = value
 		result[`${prefix}Right`] = value
@@ -400,7 +401,7 @@ const expandSpacing = (
  * Expand a Styles object by resolving shorthands.
  */
 export const expandStyles = (style: IStyles): IStyles => {
-	const expanded: any = { ...style }
+	const expanded: IStyles = { ...style }
 
 	// Expand gap
 	if (typeof style.gap === 'string') {
@@ -686,13 +687,13 @@ export const resolveViewportUnits = (
 				value.includes('vmax'))
 		) {
 			// For string values, resolve viewport units if present
-			;(resolved as any)[key] = resolveViewportUnit(
+			resolved[key] = resolveViewportUnit(
 				value as string,
 				terminalWidth,
 				terminalHeight
 			)
 		} else {
-			;(resolved as any)[key] = value
+			resolved[key] = value
 		}
 	}
 

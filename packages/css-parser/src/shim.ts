@@ -22,11 +22,6 @@ if (!(originalFromCodePoint as any).__patched) {
 				// Check if the args contain the known invalid sentinel
 				const invalid = codePoints.find((cp) => cp > 0x10ffff)
 				if (invalid !== undefined) {
-					if (process.env['DEBUG_WOLFIE_CSS']) {
-						console.warn(
-							`[wolfie-css] Shim: Bypassed invalid code point: ${invalid} (Tailwind v4 workaround)`
-						)
-					}
 					// Return Replacement Character ()
 					return '\uFFFD'
 				}

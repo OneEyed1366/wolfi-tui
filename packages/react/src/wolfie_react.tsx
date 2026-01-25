@@ -22,6 +22,7 @@ import {
 	resolveViewportUnits,
 	applyLayoutStyle,
 	parseNumericValue,
+	isElement,
 } from '@wolfie/core'
 import reconciler, {
 	registerLayoutTree,
@@ -270,8 +271,8 @@ export default class WolfieReact {
 
 		// Recurse into children with the effective max width
 		for (const child of node.childNodes) {
-			if ('childNodes' in child) {
-				this.preMeasureTextNodes(child as DOMElement, effectiveMaxWidth)
+			if (isElement(child)) {
+				this.preMeasureTextNodes(child, effectiveMaxWidth)
 			}
 		}
 	}
@@ -307,7 +308,7 @@ export default class WolfieReact {
 
 			// Update the node's style with resolved values
 			for (const [key, value] of Object.entries(resolvedStyle)) {
-				;(node.style as any)[key] = value
+				node.style[key] = value
 			}
 
 			// Update the layout tree with resolved style
@@ -318,8 +319,8 @@ export default class WolfieReact {
 
 		// Recurse into children
 		for (const child of node.childNodes) {
-			if ('childNodes' in child) {
-				this.resolveViewportUnitsInTree(child as DOMElement)
+			if (isElement(child)) {
+				this.resolveViewportUnitsInTree(child)
 			}
 		}
 	}

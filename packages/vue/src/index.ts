@@ -6,6 +6,7 @@ import {
 	createNode,
 	renderer as coreRenderer,
 	logUpdate,
+	type LogUpdate,
 	squashTextNodes,
 	measureText,
 	wrapText,
@@ -15,13 +16,28 @@ import {
 	type DOMElement,
 	type LayoutTree,
 	type ElementNames,
+	type DOMNode,
 } from '@wolfie/core'
 import { LayoutTree as TaffyLayoutTree } from '@wolfie/core/layout'
 import { throttle } from 'es-toolkit/compat'
 import signalExit from 'signal-exit'
 import { StdinSymbol, StdoutSymbol, StderrSymbol, AppSymbol } from './symbols'
 
-const { createApp: createVueApp } = createRenderer({ ...nodeOps, patchProp })
+// Lazy initialization - createRenderer is called at runtime, not module load time
+// This ensures Vue module is fully resolved before creating the custom renderer
+let _createApp:
+	| ReturnType<typeof createRenderer<DOMNode, DOMElement>>['createApp']
+	| null = null
+const getCreateApp = () => {
+	if (!_createApp) {
+		const renderer = createRenderer<DOMNode, DOMElement>({
+			...nodeOps,
+			patchProp,
+		})
+		_createApp = renderer.createApp
+	}
+	return _createApp
+}
 
 export interface RenderOptions {
 	stdout?: NodeJS.WriteStream
@@ -30,16 +46,21 @@ export interface RenderOptions {
 	maxFps?: number
 }
 
-// Registry to allow nodeOps and patchProp to find the layoutTree for a given node
-export const layoutTreeRegistry = new WeakMap<DOMElement, LayoutTree>()
+export type WolfieVueInstance = {
+	layoutTree: LayoutTree
+	onRender: () => void
+}
+
+// Registry to allow nodeOps and patchProp to find the layoutTree and trigger renders
+export const layoutTreeRegistry = new WeakMap<DOMElement, WolfieVueInstance>()
 
 class WolfieVue {
 	private rootNode: DOMElement
-	private app!: App<DOMElement>
+	private app!: App<DOMNode>
 	private stdout: NodeJS.WriteStream
 	private stdin: NodeJS.ReadStream
 	private stderr: NodeJS.WriteStream
-	private log: any
+	private log: LogUpdate
 	private isUnmounted = false
 	private layoutTree: LayoutTree
 	private eventEmitter: EventEmitter
@@ -53,12 +74,6 @@ class WolfieVue {
 
 		this.layoutTree = new TaffyLayoutTree()
 		this.rootNode = createNode('wolfie-root' as ElementNames, this.layoutTree)
-		layoutTreeRegistry.set(this.rootNode, this.layoutTree)
-		this.rootNode.style = {
-			flexDirection: 'column',
-			alignItems: 'stretch',
-			width: 80,
-		}
 
 		this.log = logUpdate.create(this.stdout)
 		this.eventEmitter = new EventEmitter()
@@ -68,7 +83,7 @@ class WolfieVue {
 		const renderThrottleMs =
 			maxFps > 0 ? Math.max(1, Math.ceil(1000 / maxFps)) : 0
 
-		this.rootNode.onRender = throttle(
+		const throttledRender = throttle(
 			this.onRender.bind(this),
 			renderThrottleMs,
 			{
@@ -76,6 +91,19 @@ class WolfieVue {
 				trailing: true,
 			}
 		)
+
+		this.rootNode.onRender = throttledRender
+
+		layoutTreeRegistry.set(this.rootNode, {
+			layoutTree: this.layoutTree,
+			onRender: throttledRender,
+		})
+
+		this.rootNode.style = {
+			flexDirection: 'column',
+			alignItems: 'stretch',
+			width: 80,
+		}
 
 		this.stdin.on('data', (data: Buffer) => {
 			this.eventEmitter.emit('input', data.toString())
@@ -149,7 +177,7 @@ class WolfieVue {
 
 		// Recurse into children
 		for (const child of node.childNodes) {
-			if ('childNodes' in child) {
+			if (child.nodeName !== '#text') {
 				this.preMeasureTextNodes(child as DOMElement, effectiveMaxWidth)
 			}
 		}
@@ -180,7 +208,7 @@ class WolfieVue {
 
 			// Update the node's style with resolved values
 			for (const [key, value] of Object.entries(resolvedStyle)) {
-				;(node.style as any)[key] = value
+				node.style[key] = value
 			}
 
 			if (node.layoutNodeId !== undefined) {
@@ -190,7 +218,7 @@ class WolfieVue {
 
 		// Recurse into children
 		for (const child of node.childNodes) {
-			if ('childNodes' in child) {
+			if (child.nodeName !== '#text') {
 				this.resolveViewportUnitsInTree(child as DOMElement)
 			}
 		}
@@ -203,7 +231,7 @@ class WolfieVue {
 			this.resolveViewportUnitsInTree(this.rootNode)
 			this.preMeasureTextNodes(this.rootNode, terminalWidth)
 
-			const rootStyle: any = {
+			const rootStyle: Record<string, unknown> = {
 				flexDirection: 'column',
 				alignItems: 'stretch',
 			}
@@ -242,48 +270,51 @@ class WolfieVue {
 	}
 
 	render(component: Component) {
-		this.app = createVueApp(component)
+		// Create app using lazy-initialized renderer
+		// This ensures Vue is fully loaded before createRenderer is called
+		this.app = getCreateApp()(component)
 
-		// Disable SSR warnings and logic in TUI environment
-		this.app.config.compilerOptions.isCustomElement = (tag) =>
-			tag.startsWith('wolfie-')
+		const { mount } = this.app
+		this.app.mount = (container: DOMElement) => {
+			// Provide standard TUI context
+			this.app.provide(StdinSymbol, {
+				stdin: this.stdin,
+				setRawMode: (value: boolean) => {
+					if (this.stdin.isTTY) {
+						this.stdin.setRawMode(value)
+					}
+				},
+				isRawModeSupported: this.stdin.isTTY,
+				internal_exitOnCtrlC: true,
+				internal_eventEmitter: this.eventEmitter,
+			})
 
-		this.app.provide(StdinSymbol, {
-			stdin: this.stdin,
-			setRawMode: (value: boolean) => {
-				if (this.stdin.isTTY) {
-					this.stdin.setRawMode(value)
-				}
-			},
-			isRawModeSupported: this.stdin.isTTY,
-			internal_exitOnCtrlC: true,
-			internal_eventEmitter: this.eventEmitter,
-		})
+			this.app.provide(StdoutSymbol, {
+				stdout: this.stdout,
+				write: (data: string) => this.writeToStdout(data),
+			})
 
-		this.app.provide(StdoutSymbol, {
-			stdout: this.stdout,
-			write: (data: string) => this.writeToStdout(data),
-		})
+			this.app.provide(StderrSymbol, {
+				stderr: this.stderr,
+				write: (data: string) => this.writeToStderr(data),
+			})
 
-		this.app.provide(StderrSymbol, {
-			stderr: this.stderr,
-			write: (data: string) => this.writeToStderr(data),
-		})
+			this.app.provide(AppSymbol, {
+				exit: (error?: Error) => {
+					if (error) {
+						this.stderr.write(error.stack || error.message)
+					}
+					this.unmount()
+					process.exit(error ? 1 : 0)
+				},
+			})
 
-		this.app.provide(AppSymbol, {
-			exit: (error?: Error) => {
-				if (error) {
-					this.stderr.write(error.stack || error.message)
-				}
-				this.unmount()
-				process.exit(error ? 1 : 0)
-			},
-		})
+			const proxy = mount(container)
+			this.onRender()
+			return proxy
+		}
 
 		this.app.mount(this.rootNode)
-
-		// Initial render trigger
-		this.onRender()
 	}
 
 	unmount() {
@@ -313,3 +344,65 @@ export * from './hooks/use-stdin'
 export * from './hooks/use-stdout'
 export * from './hooks/use-stderr'
 export * from './hooks/use-app'
+
+// Re-export Vue APIs to ensure single instance when using the wolfieVuePlugin
+export {
+	ref,
+	reactive,
+	computed,
+	watch,
+	watchEffect,
+	onMounted,
+	onUnmounted,
+	onBeforeMount,
+	onBeforeUnmount,
+	onUpdated,
+	onBeforeUpdate,
+	getCurrentInstance,
+	provide,
+	inject,
+	nextTick,
+	toRef,
+	toRefs,
+	toRaw,
+	unref,
+	isRef,
+	isReactive,
+	isReadonly,
+	shallowRef,
+	shallowReactive,
+	shallowReadonly,
+	triggerRef,
+	customRef,
+	markRaw,
+	effectScope,
+	getCurrentScope,
+	onScopeDispose,
+	defineComponent,
+	h,
+} from 'vue'
+
+// Vite plugin to automatically rewrite Vue imports in .vue files
+// This ensures all Vue imports use the same instance as @wolfie/vue
+export function wolfieVuePlugin(): import('vite').Plugin {
+	return {
+		name: 'wolfie-vue-imports',
+		enforce: 'pre',
+		transform(code, id) {
+			// Only transform .vue files
+			if (!id.endsWith('.vue')) return null
+
+			// Replace 'vue' imports with '@wolfie/vue' imports
+			// This ensures SFCs use the same Vue instance as the renderer
+			const transformed = code.replace(
+				/from\s+['"]vue['"]/g,
+				'from "@wolfie/vue"'
+			)
+
+			if (transformed !== code) {
+				return { code: transformed, map: null }
+			}
+			return null
+		},
+	}
+}

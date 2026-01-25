@@ -19,6 +19,8 @@ export {
 	setStyle,
 	createTextNode,
 	setTextNodeValue,
+	isElement,
+	isText,
 } from './dom'
 export { default as Output } from './output'
 export { default as renderer } from './renderer'

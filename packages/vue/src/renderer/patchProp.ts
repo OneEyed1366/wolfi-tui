@@ -2,18 +2,24 @@ import {
 	setAttribute,
 	setStyle,
 	applyLayoutStyle,
+	isElement,
+	isText,
+	setTextNodeValue,
+	appendChildNode,
+	removeChildNode,
+	createTextNode,
 	type DOMElement,
 	type Styles,
-	type LayoutTree,
 	type DOMNode,
+	type TextNode,
 } from '@wolfie/core'
-import { layoutTreeRegistry } from '../index'
+import { layoutTreeRegistry, type WolfieVueInstance } from '../index'
 
-const getLayoutTree = (node: DOMNode): LayoutTree | undefined => {
+const getInstance = (node: DOMNode): WolfieVueInstance | undefined => {
 	let current: DOMElement | undefined
-	if (node.nodeName !== '#text') {
+	if (isElement(node)) {
 		current = node
-	} else {
+	} else if (isText(node)) {
 		current = node.parentNode
 	}
 	// Find root node by traversing up the tree
@@ -26,33 +32,42 @@ const getLayoutTree = (node: DOMNode): LayoutTree | undefined => {
 export const patchProp = (
 	el: DOMElement,
 	key: string,
-	prevValue: any,
-	nextValue: any
+	_prevValue: unknown,
+	nextValue: unknown
 ) => {
+	const instance = getInstance(el)
+
 	if (key === 'style') {
 		setStyle(el, nextValue as Styles)
 
-		const layoutTree = getLayoutTree(el)
-		if (layoutTree && el.layoutNodeId !== undefined) {
-			applyLayoutStyle(layoutTree, el.layoutNodeId, nextValue as Styles)
+		if (instance && el.layoutNodeId !== undefined) {
+			applyLayoutStyle(
+				instance.layoutTree,
+				el.layoutNodeId,
+				nextValue as Styles
+			)
 		}
 	} else if (key === 'class') {
-		// Support for Tailwind/CSS classes via wolfie-css-parser logic
-		// This might need more advanced integration like in React's resolveClassName
-		setAttribute(el, 'class', nextValue)
+		setAttribute(el, 'class', nextValue as string)
+	} else if (key === 'textContent' || key === 'innerText') {
+		// SFC optimized paths or direct prop setting
+		const text = String(nextValue)
+		if (el.childNodes.length === 1 && isText(el.childNodes[0])) {
+			setTextNodeValue(el.childNodes[0] as TextNode, text, instance?.layoutTree)
+		} else {
+			while (el.childNodes.length > 0) {
+				removeChildNode(el, el.childNodes[0]!, instance?.layoutTree)
+			}
+			const textNode = createTextNode(text)
+			appendChildNode(el, textNode, instance?.layoutTree)
+		}
 	} else if (key.startsWith('on')) {
-		// Handle events (e.g., onClick -> click)
-		// For TUI, we might need a custom event emitter on the element
 		const eventName = key.slice(2).toLowerCase()
-		setAttribute(el, `on${eventName}`, nextValue)
+		setAttribute(el, `on${eventName}`, nextValue as string)
 	} else {
-		setAttribute(el, key, nextValue)
+		setAttribute(el, key, nextValue as string)
 	}
 
 	// Trigger re-render on any prop change
-	let root: DOMElement = el
-	while (root.parentNode) {
-		root = root.parentNode
-	}
-	root.onRender?.()
+	instance?.onRender()
 }

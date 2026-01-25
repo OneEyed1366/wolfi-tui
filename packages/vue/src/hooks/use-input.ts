@@ -96,10 +96,14 @@ export const useInput = (inputHandler: Handler, options: Options = {}) => {
 	}
 
 	onMounted(() => {
-		internal_eventEmitter?.on('input', handleData)
+		if (internal_eventEmitter) {
+			internal_eventEmitter.on('input', handleData)
+		}
 	})
 
 	onUnmounted(() => {
-		internal_eventEmitter?.removeListener('input', handleData)
+		if (internal_eventEmitter) {
+			internal_eventEmitter.off('input', handleData)
+		}
 	})
 }

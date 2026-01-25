@@ -82,6 +82,20 @@ export type DOMNode<T = { nodeName: INodeNames }> = T extends {
 
 export type DOMNodeAttribute = boolean | string | number
 
+/**
+ * Type guard for DOMElement
+ */
+export const isElement = (node: DOMNode): node is DOMElement => {
+	return node.nodeName !== '#text'
+}
+
+/**
+ * Type guard for TextNode
+ */
+export const isText = (node: DOMNode): node is TextNode => {
+	return node.nodeName === '#text'
+}
+
 export const createNode = (
 	nodeName: IElementNames,
 	layoutTree?: LayoutTree
@@ -109,7 +123,7 @@ export const createNode = (
 
 export const appendChildNode = (
 	node: DOMElement,
-	childNode: DOMElement,
+	childNode: DOMNode,
 	_layoutTree?: LayoutTree // Kept for API compatibility, but node.layoutTree is preferred
 ): void => {
 	// Use node's layoutTree directly (avoids traversal during initial render)
@@ -191,12 +205,6 @@ export const insertBeforeNode = (
 			markNodeAsDirty(node, effectiveLayoutTree)
 		}
 
-		if (
-			node.nodeName === 'wolfie-text' ||
-			node.nodeName === 'wolfie-virtual-text'
-		) {
-			markNodeAsDirty(node, effectiveLayoutTree)
-		}
 		return
 	}
 
@@ -292,7 +300,10 @@ const findClosestLayoutNodeId = (node?: DOMNode): number | undefined => {
 	return node.layoutNodeId ?? findClosestLayoutNodeId(node.parentNode)
 }
 
-const markNodeAsDirty = (node?: DOMNode, layoutTree?: LayoutTree): void => {
+export const markNodeAsDirty = (
+	node?: DOMNode,
+	layoutTree?: LayoutTree
+): void => {
 	if (layoutTree) {
 		const layoutNodeId = findClosestLayoutNodeId(node)
 		if (layoutNodeId !== undefined) {
@@ -311,7 +322,7 @@ export const setTextNodeValue = (
 	}
 
 	node.nodeValue = text
-	markNodeAsDirty(node, layoutTree)
+	markNodeAsDirty(node, layoutTree ?? node.layoutTree)
 }
 
 // Re-export LayoutTree type for consumers

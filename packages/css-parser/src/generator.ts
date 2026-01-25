@@ -12,6 +12,7 @@ import type {
 	CodeGeneratorOptions,
 } from './types'
 import { mapCSSProperty } from './properties'
+import type { Styles } from '@wolfie/core'
 
 //#region Utilities
 
@@ -318,7 +319,7 @@ export function generate(
 		}
 
 		if (Object.keys(styleObj).length > 0) {
-			styles[className] = styleObj
+			styles[className] = styleObj as Styles
 		}
 	}
 

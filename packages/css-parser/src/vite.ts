@@ -46,13 +46,6 @@ export function wolfieCSS(options: VitePluginOptions = {}): Plugin {
 		// Populate global map
 		Object.assign(globalStylesMap, styles)
 
-		if (process.env['DEBUG_WOLFIE_CSS']) {
-			console.log(
-				`[wolfie-css] Loaded styles from ${absolutePath}:`,
-				Object.keys(styles)
-			)
-		}
-
 		const generator = javascript ? generateJavaScript : generateTypeScript
 		const code = generator(styles, {
 			mode: isModule ? 'module' : 'global',
