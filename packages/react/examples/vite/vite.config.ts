@@ -7,10 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
 	root: __dirname,
-	plugins: [
-		// nativeBindings: true by default - handles banner + file copying
-		wolfie('react', { mode: 'global' }),
-	],
+	plugins: [wolfie('react')],
 	css: {
 		postcss: resolve(__dirname, 'postcss.config.cjs'),
 	},

@@ -8,10 +8,7 @@ await esbuild.build({
 	format: 'cjs',
 	platform: 'node',
 	external: ['react', '@wolfie/react'],
-	banner: {
-		js: generateNativeBanner('cjs'),
-	},
-	// nativeBindings: true by default - copies .node files to dist/native/
-	plugins: [wolfie('react', { inline: true })],
+	banner: { js: generateNativeBanner('cjs') },
+	plugins: [wolfie('react')],
 	logLevel: 'info',
 })

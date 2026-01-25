@@ -11,13 +11,13 @@ export default defineConfig({
 		vue({
 			template: {
 				compilerOptions: {
-					isCustomElement: (tag) => tag.startsWith('wolfie-'),
+					isCustomElement: (tag) =>
+						tag.startsWith('wolfie-') || tag.startsWith('Wolfie'),
 					hoistStatic: false,
 				},
 			},
 		}),
-		// nativeBindings: true by default - handles banner + file copying
-		wolfie('vue', { mode: 'global' }),
+		wolfie('vue'),
 	],
 	css: {
 		postcss: resolve(__dirname, 'postcss.config.cjs'),

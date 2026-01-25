@@ -103,7 +103,7 @@ export default {
 		minimize: false,
 	},
 	plugins: [
-		wolfie('react', { mode: 'global' }),
+		wolfie('react'),
 		new webpack.BannerPlugin({
 			banner:
 				'#!/usr/bin/env node\nprocess.env.NAPI_RS_NATIVE_LIBRARY_PATH = require("path").join(__dirname, "native/wolfie-core.' +

@@ -98,25 +98,31 @@ function findCoreNativeDir(root: string): string | null {
 //#endregion Native Bindings
 
 /**
- * Wolfie esbuild plugin
+ * Wolfie esbuild plugin for terminal UI styling.
  *
- * Custom esbuild implementation bc unplugin's transform doesn't set loader: 'js'
+ * Works zero-config for most use cases. Automatically:
+ * - Processes CSS/SCSS/LESS/Stylus files
+ * - Converts styles to JS objects for terminal rendering
+ * - Uses camelCase for React, kebab-case for Vue
+ * - Treats `.module.css` files as CSS Modules
+ *
+ * @example
+ * await esbuild.build({
+ *   plugins: [wolfie('react')],
+ *   banner: { js: generateNativeBanner('cjs') },
+ * })
  */
 export function wolfie(
 	framework: Framework,
 	options: WolfieOptions = {}
 ): Plugin {
-	const {
-		mode = 'module',
-		inline = true,
-		include,
-		exclude,
-		camelCaseClasses,
-		nativeBindings = true,
-	} = options
+	const { include, exclude, nativeBindings = true } = options
 
 	const isVue = framework === 'vue'
-	const camelCase = camelCaseClasses ?? !isVue
+	// Hardcoded: React uses camelCase, Vue uses kebab-case
+	const camelCase = !isVue
+	// Hardcoded: always inline styles (terminal UI has no stylesheets)
+	const inline = true
 	const filter = include ?? CSS_EXTENSIONS_RE
 
 	const globalStylesMap: ParsedStyles = {}
@@ -126,7 +132,8 @@ export function wolfie(
 	): Promise<{ code: string; styles: ParsedStyles } | null> {
 		if (!existsSync(absolutePath)) return null
 
-		const isModule = absolutePath.includes('.module.') || mode === 'module'
+		// Convention: .module.css files are CSS Modules, otherwise global
+		const isModule = absolutePath.includes('.module.')
 		const lang = detectLanguage(absolutePath)
 
 		const source = readFileSync(absolutePath, 'utf-8')

@@ -8,7 +8,6 @@
  */
 import type { Plugin } from 'vite'
 import { compile, parseCSS } from '@wolfie/css-parser'
-import type { WolfieOptions } from './index'
 
 const WOLFIE_STYLE_PREFIX = '\x00wolfie-vue-style:'
 const WOLFIE_CSS_MODULE_PREFIX = '\x00wolfie-vue-css-module:'
@@ -73,7 +72,7 @@ function extractStyleBlocks(content: string): Array<{
  * SFC style handler plugin - redirects Vue SFC style modules to JavaScript
  * Uses resolveId + load hooks to completely replace the module before CSS pipeline
  */
-export function createVueSfcPlugin(_options: WolfieOptions = {}): Plugin {
+export function createVueSfcPlugin(): Plugin {
 	const styleCache = new Map<string, string>()
 
 	return {

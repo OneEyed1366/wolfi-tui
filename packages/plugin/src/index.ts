@@ -15,21 +15,26 @@ import {
 
 export type Framework = 'react' | 'vue'
 
+/**
+ * Wolfie plugin options.
+ *
+ * The plugin works zero-config for most use cases. These options are
+ * escape hatches for power users.
+ *
+ * @example
+ * // Zero-config (recommended)
+ * wolfie('react')
+ * wolfie('vue')
+ *
+ * @example
+ * // Power user: custom file filtering
+ * wolfie('react', { include: /\.css$/, exclude: /vendor/ })
+ */
 export interface WolfieOptions {
-	/** CSS processing mode */
-	mode?: 'module' | 'global'
-	/** Convert CSS class names to camelCase (default: true for React, false for Vue) */
-	camelCaseClasses?: boolean
-	/** Inline styles in JSX/TSX */
-	inline?: boolean
-	/** File pattern to include */
+	/** File pattern to include (default: all CSS/SCSS/LESS/Stylus files) */
 	include?: RegExp
 	/** File pattern to exclude */
 	exclude?: RegExp
-	/** Rewrite 'vue' imports to '@wolfie/vue' (Vue only, default: true) */
-	rewriteVueImports?: boolean
-	/** Process Vue SFC <style> blocks (Vue only, default: true) */
-	handleSfcStyles?: boolean
 	/**
 	 * Handle native bindings for @wolfie/core (default: true)
 	 * - Copies .node files to output/native/
@@ -49,8 +54,8 @@ export const unpluginFactory: UnpluginFactory<[Framework, WolfieOptions?]> = (
 	meta
 ): UnpluginOptions | UnpluginOptions[] => {
 	const isVue = framework === 'vue'
-	const camelCase = options.camelCaseClasses ?? !isVue
-	const mode = options.mode ?? 'module'
+	// Hardcoded: React uses camelCase, Vue uses kebab-case
+	const camelCase = !isVue
 
 	// Main CSS transform plugin
 	const mainPlugin: UnpluginOptions = {
@@ -72,7 +77,8 @@ export const unpluginFactory: UnpluginFactory<[Framework, WolfieOptions?]> = (
 			const compileResult = await compile(code, lang, cleanId)
 
 			// Parse to styles object
-			const isModule = cleanId.includes('.module.') || mode === 'module'
+			// Convention: .module.css files are CSS Modules, otherwise global
+			const isModule = cleanId.includes('.module.')
 			const styles = parseCSS(compileResult.css, {
 				filename: cleanId,
 				camelCaseClasses: camelCase,

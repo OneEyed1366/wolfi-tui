@@ -175,25 +175,37 @@ function createNativeBindingsPlugin(): Plugin {
 //#endregion Native Bindings
 
 /**
- * Wolfie Vite plugin
+ * Wolfie Vite plugin for terminal UI styling.
  *
- * Uses resolveId/load pattern to bypass Vite's CSS pipeline entirely.
+ * Works zero-config for most use cases. Automatically:
+ * - Processes CSS/SCSS/LESS/Stylus files
+ * - Converts styles to JS objects for terminal rendering
+ * - Uses camelCase for React, kebab-case for Vue
+ * - Treats `.module.css` files as CSS Modules
+ *
+ * @example
+ * // Vite + React
+ * plugins: [wolfie('react')]
+ *
+ * @example
+ * // Vite + Vue
+ * plugins: [vue(), wolfie('vue')]
  */
 export function wolfie(
 	framework: Framework,
 	options: WolfieOptions = {}
 ): Plugin | Plugin[] {
 	const {
-		mode = 'module',
 		include = CSS_EXTENSIONS_RE,
 		exclude,
-		camelCaseClasses,
-		inline = true,
 		nativeBindings = true,
 	} = options
 
 	const isVue = framework === 'vue'
-	const camelCase = camelCaseClasses ?? !isVue
+	// Hardcoded: React uses camelCase, Vue uses kebab-case
+	const camelCase = !isVue
+	// Hardcoded: always inline styles (terminal UI has no stylesheets)
+	const inline = true
 
 	const globalStylesMap: ParsedStyles = {}
 	const virtualPrefix = '\x00wolfie:'
@@ -229,7 +241,8 @@ export function wolfie(
 	async function loadAndProcessStyle(absolutePath: string) {
 		if (!existsSync(absolutePath)) return null
 
-		const isModule = absolutePath.includes('.module.') || mode === 'module'
+		// Convention: .module.css files are CSS Modules, otherwise global
+		const isModule = absolutePath.includes('.module.')
 		const lang = detectLanguage(absolutePath)
 
 		const source = readFileSync(absolutePath, 'utf-8')
@@ -355,7 +368,6 @@ export function wolfie(
 				}
 			} catch (error) {
 				this.error(`[wolfie] Error loading ${absolutePath}: ${error}`)
-				return null
 			}
 		},
 	}
@@ -368,23 +380,16 @@ export function wolfie(
 		plugins.push(createNativeBindingsPlugin())
 	}
 
-	// For Vue, add SFC handling plugins
+	// For Vue, add SFC handling plugins (always enabled)
 	if (isVue) {
-		const handleSfcStyles = options?.handleSfcStyles !== false
-		const rewriteVueImports = options?.rewriteVueImports !== false
-
 		// SFC style plugin runs BEFORE other CSS plugins
-		if (handleSfcStyles) {
-			plugins.push(createVueSfcPlugin(options))
-		}
+		plugins.push(createVueSfcPlugin())
 
 		// Main CSS transform plugin
 		plugins.push(mainPlugin)
 
 		// Vue import rewrite runs AFTER Vue SFC compilation
-		if (rewriteVueImports) {
-			plugins.push(createVueImportPlugin())
-		}
+		plugins.push(createVueImportPlugin())
 
 		return plugins
 	}
