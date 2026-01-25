@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "webpack",
-		"start": "node dist/index.cjs"
+		"start": "node dist/index.cjs",
+		"example": "webpack && node dist/index.cjs"
 	},
 	"dependencies": {
 		"@wolfie/react": "workspace:*",

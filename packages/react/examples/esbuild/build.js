@@ -24,7 +24,7 @@ for (const file of files) {
 await esbuild.build({
 	entryPoints: ['index.tsx'],
 	bundle: true,
-	outfile: 'dist/index.js',
+	outfile: 'dist/index.cjs',
 	format: 'cjs', // Changed to cjs for portability as requested
 	platform: 'node',
 	external: ['react', '@wolfie/react'],

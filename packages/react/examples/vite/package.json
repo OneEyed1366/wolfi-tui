@@ -1,6 +1,13 @@
 {
 	"name": "styling-super-hybrid",
+	"private": true,
 	"type": "module",
+	"scripts": {
+		"dev": "vite build --watch",
+		"build": "vite build",
+		"start": "node dist/index.cjs",
+		"example": "vite build && node dist/index.cjs"
+	},
 	"dependencies": {
 		"@wolfie/react": "workspace:*",
 		"react": "^18.3.1"

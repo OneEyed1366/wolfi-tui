@@ -22,7 +22,8 @@
 		"build": "vite build",
 		"prepare": "npm run build",
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"example": "pnpm --filter @examples/vue-vite example"
 	},
 	"files": [
 		"build"

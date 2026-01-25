@@ -28,7 +28,8 @@
 		"build": "vite build",
 		"prepare": "npm run build",
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"example": "pnpm --filter styling-super-hybrid example"
 	},
 	"files": [
 		"build"
