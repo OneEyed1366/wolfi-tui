@@ -9,7 +9,5 @@ export default defineConfig({
 		},
 		dedupe: ['vue'],
 	},
-	plugins: [
-		vueJsx({ optimize: false }),
-	],
+	plugins: [vueJsx({ optimize: false })],
 })

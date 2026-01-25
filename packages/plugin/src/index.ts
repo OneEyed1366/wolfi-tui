@@ -30,6 +30,12 @@ export interface WolfieOptions {
 	rewriteVueImports?: boolean
 	/** Process Vue SFC <style> blocks (Vue only, default: true) */
 	handleSfcStyles?: boolean
+	/**
+	 * Handle native bindings for @wolfie/core (default: true)
+	 * - Copies .node files to output/native/
+	 * - Injects banner to set NAPI_RS_NATIVE_LIBRARY_PATH
+	 */
+	nativeBindings?: boolean
 }
 
 //#endregion Types

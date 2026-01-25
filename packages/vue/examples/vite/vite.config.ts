@@ -3,12 +3,10 @@ import vue from '@vitejs/plugin-vue'
 import { wolfie } from '@wolfie/plugin/vite'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-	root: __dirname,
 	plugins: [
 		vue({
 			template: {
@@ -18,15 +16,8 @@ export default defineConfig({
 				},
 			},
 		}),
+		// nativeBindings: true by default - handles banner + file copying
 		wolfie('vue', { mode: 'global' }),
-		viteStaticCopy({
-			targets: [
-				{
-					src: resolve(__dirname, '../../../core/*.node'),
-					dest: 'native',
-				},
-			],
-		}),
 	],
 	css: {
 		postcss: resolve(__dirname, 'postcss.config.cjs'),
@@ -38,11 +29,7 @@ export default defineConfig({
 			fileName: 'index',
 		},
 		rollupOptions: {
-			output: {
-				banner:
-					'#!/usr/bin/env node\nconst path = require("path");const fs = require("fs");const platform = process.platform;const arch = process.arch;const candidates = ["wolfie-core." + platform + "-" + arch + ".node","wolfie-core." + platform + "-" + arch + "-gnu.node","wolfie-core." + platform + "-" + arch + "-musl.node"];const nativePath = candidates.find(f => fs.existsSync(path.join(__dirname, "native/" + f)));if (nativePath) {process.env.NAPI_RS_NATIVE_LIBRARY_PATH = path.join(__dirname, "native/" + nativePath);} else {console.error("Native binding not found for", platform, arch);process.exit(1);}',
-			},
-			external: ['vue', '@wolfie/vue', 'path', 'fs'],
+			external: ['vue', '@wolfie/vue'],
 		},
 	},
 })
