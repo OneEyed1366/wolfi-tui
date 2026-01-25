@@ -1,2 +1,4 @@
 packages:
   - 'packages/*'
+  - 'packages/vue/examples/*'
+  - 'packages/react/examples/*'

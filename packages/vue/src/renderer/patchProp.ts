@@ -14,6 +14,7 @@ import {
 	type TextNode,
 } from '@wolfie/core'
 import { layoutTreeRegistry, type WolfieVueInstance } from '../index'
+import { resolveClassName } from '../styles'
 
 const getInstance = (node: DOMNode): WolfieVueInstance | undefined => {
 	let current: DOMElement | undefined
@@ -32,23 +33,34 @@ const getInstance = (node: DOMNode): WolfieVueInstance | undefined => {
 export const patchProp = (
 	el: DOMElement,
 	key: string,
-	_prevValue: unknown,
+	prevValue: unknown,
 	nextValue: unknown
 ) => {
 	const instance = getInstance(el)
 
 	if (key === 'style') {
-		setStyle(el, nextValue as Styles)
+		// Merge with resolved classes if any
+		const classStyles = resolveClassName(el.attributes['class'] as string)
+		const mergedStyles = { ...classStyles, ...(nextValue as Styles) }
+		setStyle(el, mergedStyles)
 
 		if (instance && el.layoutNodeId !== undefined) {
-			applyLayoutStyle(
-				instance.layoutTree,
-				el.layoutNodeId,
-				nextValue as Styles
-			)
+			applyLayoutStyle(instance.layoutTree, el.layoutNodeId, mergedStyles)
 		}
 	} else if (key === 'class') {
-		setAttribute(el, 'class', nextValue as string)
+		const nextClass = nextValue as string
+		setAttribute(el, 'class', nextClass)
+
+		// Resolve classes to styles
+		const classStyles = resolveClassName(nextClass)
+		// Merge with existing style prop
+		const existingStyle = el.style || {}
+		const mergedStyles = { ...classStyles, ...existingStyle }
+
+		setStyle(el, mergedStyles)
+		if (instance && el.layoutNodeId !== undefined) {
+			applyLayoutStyle(instance.layoutTree, el.layoutNodeId, mergedStyles)
+		}
 	} else if (key === 'textContent' || key === 'innerText') {
 		// SFC optimized paths or direct prop setting
 		const text = String(nextValue)

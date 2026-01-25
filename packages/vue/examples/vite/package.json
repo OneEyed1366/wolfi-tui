@@ -1,0 +1,24 @@
+{
+	"name": "@examples/vue-vite",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite build --watch",
+		"build": "vite build",
+		"start": "node dist/index.cjs",
+		"example": "vite build && node dist/index.cjs"
+	},
+	"devDependencies": {
+		"@wolfie/vue": "workspace:*",
+		"@wolfie/css-parser": "workspace:*",
+		"@vitejs/plugin-vue": "^5.0.0",
+		"vite": "^6.0.0",
+		"vite-plugin-static-copy": "^1.0.0",
+		"sass": "^1.70.0",
+		"less": "^4.2.0",
+		"stylus": "^0.62.0",
+		"postcss": "^8.4.0",
+		"tailwindcss": "^4.0.0"
+	}
+}

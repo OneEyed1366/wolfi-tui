@@ -209,6 +209,51 @@ export function parseCSS(
 		return parsed.toString()
 	}
 
+	// Step 3: Helper to evaluate calc() expressions
+	const evaluateCalc = (value: string): string => {
+		if (!value.includes('calc(')) return value
+
+		// Match calc(...) and evaluate simple expressions
+		return value.replace(/calc\(([^)]+)\)/g, (_, expr: string) => {
+			// Replace CSS units with their numeric equivalents for calculation
+			// Then convert back. For TUI, we use the rem scale (1rem = 4 cells)
+			const calcExpr = expr
+
+			// Extract numeric values and units
+			const matches = calcExpr.match(/(-?\d+(?:\.\d+)?)(rem|em|px)?/g) || []
+			const values: number[] = []
+
+			for (const m of matches) {
+				const numMatch = m.match(/(-?\d+(?:\.\d+)?)(rem|em|px)?/)
+				if (numMatch) {
+					const num = parseFloat(numMatch[1]!)
+					const unit = numMatch[2]
+					// Convert to base unit (TUI cells)
+					if (unit === 'rem' || unit === 'em') {
+						values.push(num * 4) // 1rem = 4 cells
+					} else if (unit === 'px') {
+						values.push(num / 4) // 4px = 1 cell
+					} else {
+						values.push(num)
+					}
+				}
+			}
+
+			// Handle simple multiplication: X * Y
+			if (calcExpr.includes('*')) {
+				const parts = calcExpr.split('*').map((p) => p.trim())
+				if (parts.length === 2) {
+					const a = values[0] ?? (parseFloat(parts[0]!) || 0)
+					const b = parseFloat(parts[1]!) || 1
+					return String(Math.round(a * b))
+				}
+			}
+
+			// Return first value or fallback
+			return String(Math.round(values[0] ?? 0))
+		})
+	}
+
 	root.walkRules((rule) => {
 		// Handle multiple selectors (e.g., .btn, .button)
 		const selectors = rule.selector.split(',').map((s) => s.trim())
@@ -231,7 +276,7 @@ export function parseCSS(
 			const style: Partial<Styles> = {}
 
 			rule.walkDecls((decl) => {
-				const resolvedValue = resolveValue(decl.value)
+				const resolvedValue = evaluateCalc(resolveValue(decl.value))
 				const mapped = mapCSSProperty(decl.prop, resolvedValue)
 				if (mapped) {
 					Object.assign(style, mapped)

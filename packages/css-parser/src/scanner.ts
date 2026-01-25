@@ -1,15 +1,19 @@
 /**
  * Simple regex-based scanner to find candidate class names in source code.
  * Matches:
- * - className="static-class"
+ * - className="static-class" (React)
+ * - class="static-class" (Vue templates)
  * - className={`template-${expression}`} (extracts the static parts)
  * - className={['array', 'of', 'classes']}
+ * - :class="..." (Vue dynamic bindings)
  */
 export function scanCandidates(code: string): Set<string> {
 	const candidates = new Set<string>()
 
-	// 1. Match className="string" or className='string'
-	const stringMatches = code.matchAll(/className\s*=\s*(["'])([^"']+)\1/g)
+	// 1. Match className="string" or class="string" (React and Vue)
+	const stringMatches = code.matchAll(
+		/(?:className|class)\s*=\s*(["'])([^"']+)\1/g
+	)
 	for (const match of stringMatches) {
 		const classList = match[2]!.split(/\s+/)
 
@@ -24,8 +28,10 @@ export function scanCandidates(code: string): Set<string> {
 		}
 	}
 
-	// 2. Match className={...}
-	const curlyMatches = code.matchAll(/className\s*=\s*\{([^}]+)\}/g)
+	// 2. Match className={...} or :class="{...}" (React JSX and Vue bindings)
+	const curlyMatches = code.matchAll(
+		/(?:className|:class)\s*=\s*["']?\{([^}]+)\}/g
+	)
 	for (const match of curlyMatches) {
 		const content = match[1]!
 
@@ -45,6 +51,21 @@ export function scanCandidates(code: string): Set<string> {
 			const staticParts = tmpl[1]!.replace(/\$\{[^}]+\}/g, ' ').split(/\s+/)
 			for (const part of staticParts) {
 				if (part) candidates.add(part)
+			}
+		}
+	}
+
+	// 3. Match Vue :class="expression" with array syntax
+	const vueClassMatches = code.matchAll(/:class\s*=\s*"([^"]+)"/g)
+	for (const match of vueClassMatches) {
+		const content = match[1]!
+
+		// Extract string literals from arrays like ['class1', 'class2']
+		const arrayLiterals = content.matchAll(/['"]([^'"]+)['"]/g)
+		for (const lit of arrayLiterals) {
+			const classList = lit[1]!.split(/\s+/)
+			for (const cls of classList) {
+				if (cls) candidates.add(cls)
 			}
 		}
 	}

@@ -168,4 +168,30 @@ export const nodeOps: Omit<
 	setScopeId(el, id) {
 		setAttribute(el, id, true)
 	},
+
+	insertStaticContent(content, parent, anchor, _isSvg, _start, _end) {
+		// Vue uses insertStaticContent for static hoisting optimization
+		// For terminal rendering, we just parse and insert the static HTML as regular nodes
+		// Since we don't have innerHTML, we create a placeholder text node
+		const instance = getInstance(parent)
+
+		// Create a virtual container for static content
+		const staticNode = createNode('wolfie-box' as ElementNames)
+		staticNode.style = { display: 'none' as any }
+
+		// Parse static content as text (simplified - real impl would parse HTML)
+		const textNode = createTextNode(content)
+		appendChildNode(staticNode, textNode, instance?.layoutTree)
+
+		if (anchor) {
+			insertBeforeNode(parent, staticNode, anchor, instance?.layoutTree)
+		} else {
+			appendChildNode(parent, staticNode, instance?.layoutTree)
+		}
+
+		instance?.onRender()
+
+		// Return [el, anchor] tuple as Vue expects
+		return [staticNode, staticNode]
+	},
 }

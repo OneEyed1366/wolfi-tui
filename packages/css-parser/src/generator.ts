@@ -187,6 +187,7 @@ export function generateTypeScript(
 		minify: options.minify ?? false,
 		camelCaseClasses: options.camelCaseClasses ?? true,
 		metadata: options.metadata,
+		framework: options.framework,
 	}
 
 	return generateCode(styles, opts)
@@ -209,6 +210,7 @@ export function generateJavaScript(
 		minify: options.minify ?? false,
 		camelCaseClasses: options.camelCaseClasses ?? true,
 		metadata: options.metadata,
+		framework: options.framework,
 	}
 
 	return generateCode(styles, opts)
@@ -253,8 +255,10 @@ function generateCode(
 		}
 	} else {
 		// Global pattern: registerStyles call
+		const pkg =
+			options.framework === 'vue' ? '@wolfie/vue' : '@wolfie/react/styles'
 		lines.push(
-			`import { registerStyles, registerTailwindMetadata } from '@wolfie/react/styles'`
+			`import { registerStyles, registerTailwindMetadata } from '${pkg}'`
 		)
 		if (!isMinified) {
 			lines.push('')

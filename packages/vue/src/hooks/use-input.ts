@@ -21,9 +21,9 @@ export type Key = {
 	meta: boolean
 }
 
-type Handler = (input: string, key: Key) => void
+export type Handler = (input: string, key: Key) => void
 
-type Options = {
+export type Options = {
 	isActive?: boolean
 }
 

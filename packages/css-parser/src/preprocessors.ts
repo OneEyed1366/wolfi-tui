@@ -3,7 +3,7 @@
  */
 
 import * as path from 'node:path'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, lstatSync } from 'node:fs'
 import * as sass from 'sass'
 import less from 'less'
 import stylus from 'stylus'
@@ -50,7 +50,26 @@ class TailwindCompiler {
 				`
 
 				const require = createRequire(path.join(root, 'package.json'))
-				const tailwindPkgPath = require.resolve('tailwindcss/package.json')
+				let tailwindPkgPath: string | undefined
+
+				try {
+					tailwindPkgPath = require.resolve('tailwindcss/package.json')
+				} catch {
+					// Fallback to project root if resolve fails
+					const projectRequire = createRequire(
+						path.join(process.cwd(), 'package.json')
+					)
+					try {
+						tailwindPkgPath = projectRequire.resolve('tailwindcss/package.json')
+					} catch {
+						// Last resort: search up from root
+					}
+				}
+
+				if (!tailwindPkgPath) {
+					throw new Error('Could not find tailwindcss package')
+				}
+
 				const tailwindDir = path.dirname(tailwindPkgPath)
 
 				const loadStylesheet = async (id: string, base: string) => {
@@ -74,8 +93,34 @@ class TailwindCompiler {
 						resolvedPath = path.resolve(base, id)
 					}
 
-					if (!existsSync(resolvedPath) && !resolvedPath.endsWith('.css')) {
-						resolvedPath += '.css'
+					if (!existsSync(resolvedPath)) {
+						// Search in node_modules relative to current file or process root
+						const candidates = [
+							path.join(root, 'node_modules', id),
+							path.join(process.cwd(), 'node_modules', id),
+							path.join(tailwindDir, id.replace('tailwindcss/', '')),
+						]
+						for (const cand of candidates) {
+							const extensions = ['', '.css']
+							for (const ext of extensions) {
+								const p = cand + ext
+								if (existsSync(p) && !lstatSync(p).isDirectory()) {
+									resolvedPath = p
+									break
+								}
+							}
+							if (
+								existsSync(resolvedPath) &&
+								!lstatSync(resolvedPath).isDirectory()
+							)
+								break
+						}
+					}
+
+					if (!existsSync(resolvedPath)) {
+						throw new Error(
+							`Could not find stylesheet: ${id} (resolved to ${resolvedPath}). TailwindDir: ${tailwindDir}`
+						)
 					}
 
 					return {
@@ -169,7 +214,9 @@ export async function compileScss(
 	})
 	return {
 		css: result.css,
-		sourceMap: result.sourceMap ? JSON.stringify(result.sourceMap) : undefined,
+		sourceMap: (result as any).map
+			? JSON.stringify((result as any).map)
+			: undefined,
 		watchFiles: result.loadedUrls.map((url) => url.pathname),
 	}
 }

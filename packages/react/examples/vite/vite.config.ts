@@ -34,11 +34,11 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				banner:
-					'#!/usr/bin/env node\nprocess.env.NAPI_RS_NATIVE_LIBRARY_PATH = require("path").join(__dirname, "native/wolfie-core.' +
+					'#!/usr/bin/env node\nconst path = require("path");const fs = require("fs");const platform = "' +
 					process.platform +
-					'-' +
+					'";const arch = "' +
 					process.arch +
-					'.node");',
+					'";const candidates = ["wolfie-core." + platform + "-" + arch + ".node","wolfie-core." + platform + "-" + arch + "-gnu.node","wolfie-core." + platform + "-" + arch + "-musl.node"];const nativePath = candidates.find(f => fs.existsSync(path.join(__dirname, "native/" + f)));if (nativePath) {process.env.NAPI_RS_NATIVE_LIBRARY_PATH = path.join(__dirname, "native/" + nativePath);} else {console.error("Native binding not found for", platform, arch);process.exit(1);}',
 			},
 			external: ['react', '@wolfie/react', 'path'],
 		},
