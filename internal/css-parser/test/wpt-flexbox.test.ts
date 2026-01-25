@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { parseCSS } from '../src/parser'
-import {
-	scanWPTDirectory,
-	type WPTTestCase,
-	extractExpectedValues,
-} from '../src/wpt-adapter'
+import { scanWPTDirectory, extractExpectedValues } from '../src/wpt-adapter'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -24,10 +20,11 @@ describe.skipIf(!wptAvailable)('WPT css-flexbox', () => {
 
 	// Group tests by property for better reporting
 	const directionTests = tests.filter((t) => t.css.includes('flex-direction'))
-	const wrapTests = tests.filter((t) => t.css.includes('flex-wrap'))
-	const growTests = tests.filter((t) => t.css.includes('flex-grow'))
-	const shrinkTests = tests.filter((t) => t.css.includes('flex-shrink'))
-	const basisTests = tests.filter((t) => t.css.includes('flex-basis'))
+	// Additional test groups available but unused for now:
+	// const wrapTests = tests.filter((t) => t.css.includes('flex-wrap'))
+	// const growTests = tests.filter((t) => t.css.includes('flex-grow'))
+	// const shrinkTests = tests.filter((t) => t.css.includes('flex-shrink'))
+	// const basisTests = tests.filter((t) => t.css.includes('flex-basis'))
 
 	describe('flex-direction', () => {
 		it.each(directionTests)('$name', (test) => {

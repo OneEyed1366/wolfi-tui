@@ -40,10 +40,7 @@ export default defineConfig(({ command }) => {
 			},
 		},
 		plugins: [
-			wolfie('react', {
-				mode: 'module',
-				include: /\.module\.css$/,
-			}),
+			wolfie('react'),
 			react({
 				babel: {
 					plugins: babelPlugins,

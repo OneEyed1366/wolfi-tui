@@ -328,7 +328,7 @@ export function parseColor(value: string): string {
 			const color = new Color(value)
 			return color.to('srgb').toString({ format: 'hex' })
 		} catch (e) {
-		  console.warn(`[wolfie-css] parseColor:`, e)
+			console.warn(`[wolfie-css] parseColor:`, e)
 		}
 	}
 

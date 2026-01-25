@@ -1,4 +1,4 @@
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin } from 'vite'
 import {
 	readFileSync,
 	existsSync,
@@ -26,44 +26,11 @@ const CSS_EXTENSIONS_RE = /\.(css|scss|sass|less|styl|stylus)$/
 //#region Native Bindings
 
 /**
- * Generate the banner code for native binding resolution.
- * Detects platform/arch at build time and injects the path setup.
- */
-function generateNativeBanner(format: 'es' | 'cjs'): string {
-	const platform = process.platform
-	const arch = process.arch
-
-	if (format === 'es') {
-		return `#!/usr/bin/env node
-import { existsSync as __existsSync } from "node:fs";
-import { dirname as __dirname_fn, join as __join } from "node:path";
-import { fileURLToPath as __fileURLToPath } from "node:url";
-const __filename = __fileURLToPath(import.meta.url);
-const __dirname = __dirname_fn(__filename);
-const __nativeCandidates = ["wolfie-core.${platform}-${arch}.node","wolfie-core.${platform}-${arch}-gnu.node","wolfie-core.${platform}-${arch}-musl.node"];
-const __nativePath = __nativeCandidates.find(f => __existsSync(__join(__dirname, "native/" + f)));
-if (__nativePath) { process.env.NAPI_RS_NATIVE_LIBRARY_PATH = __join(__dirname, "native/" + __nativePath); }
-else { console.error("Native binding not found for ${platform} ${arch}"); process.exit(1); }
-`
-	}
-
-	// CJS format
-	return `#!/usr/bin/env node
-const __path = require("path");
-const __fs = require("fs");
-const __nativeCandidates = ["wolfie-core.${platform}-${arch}.node","wolfie-core.${platform}-${arch}-gnu.node","wolfie-core.${platform}-${arch}-musl.node"];
-const __nativePath = __nativeCandidates.find(f => __fs.existsSync(__path.join(__dirname, "native/" + f)));
-if (__nativePath) { process.env.NAPI_RS_NATIVE_LIBRARY_PATH = __path.join(__dirname, "native/" + __nativePath); }
-else { console.error("Native binding not found for ${platform} ${arch}"); process.exit(1); }
-`
-}
-
-/**
  * Find the @wolfie/core package and return the path to its .node files
  */
 function findCoreNativeDir(root: string): string | null {
 	// Try monorepo paths first (relative to project root)
-	const monorepoCandidate = resolve(root, 'packages/core')
+	const monorepoCandidate = resolve(root, 'internal/core')
 	if (existsSync(join(monorepoCandidate, 'package.json'))) {
 		return monorepoCandidate
 	}
@@ -81,7 +48,7 @@ function findCoreNativeDir(root: string): string | null {
 		if (parent === current) break
 		current = parent
 
-		const candidate = resolve(current, 'packages/core')
+		const candidate = resolve(current, 'internal/core')
 		if (existsSync(join(candidate, 'package.json'))) {
 			return candidate
 		}
@@ -94,49 +61,18 @@ function findCoreNativeDir(root: string): string | null {
  * Create a plugin that handles native binding setup
  */
 function createNativeBindingsPlugin(): Plugin {
-	let resolvedConfig: ResolvedConfig
 	let coreDir: string | null = null
+	let outDir: string = 'dist'
 
 	return {
 		name: 'wolfie:native-bindings',
-		enforce: 'pre',
 
 		configResolved(config) {
-			resolvedConfig = config
 			coreDir = findCoreNativeDir(config.root)
+			outDir = config.build.outDir
 		},
 
-		config(config) {
-			// Determine output format from config
-			const formats = config.build?.lib
-				? Array.isArray((config.build.lib as any).formats)
-					? (config.build.lib as any).formats
-					: ['es']
-				: ['es']
-			const format = formats[0] === 'cjs' ? 'cjs' : 'es'
-
-			// Add external dependencies for the banner imports
-			const externals =
-				format === 'es' ? ['node:fs', 'node:path', 'node:url'] : [] // CJS uses require, no externals needed
-
-			return {
-				build: {
-					rollupOptions: {
-						output: {
-							banner: generateNativeBanner(format),
-						},
-						external: [
-							...(Array.isArray(config.build?.rollupOptions?.external)
-								? config.build.rollupOptions.external
-								: []),
-							...externals,
-						],
-					},
-				},
-			}
-		},
-
-		writeBundle(options) {
+		closeBundle() {
 			if (!coreDir) {
 				console.warn(
 					'[wolfie] Could not find @wolfie/core package for native bindings'
@@ -144,8 +80,6 @@ function createNativeBindingsPlugin(): Plugin {
 				return
 			}
 
-			// Determine output directory
-			const outDir = options.dir || resolvedConfig.build.outDir
 			const nativeDir = join(outDir, 'native')
 
 			// Create native directory
@@ -375,11 +309,6 @@ export function wolfie(
 	// Build the plugin array
 	const plugins: Plugin[] = []
 
-	// Native bindings plugin (first, to inject banner)
-	if (nativeBindings) {
-		plugins.push(createNativeBindingsPlugin())
-	}
-
 	// For Vue, add SFC handling plugins (always enabled)
 	if (isVue) {
 		// SFC style plugin runs BEFORE other CSS plugins
@@ -391,16 +320,21 @@ export function wolfie(
 		// Vue import rewrite runs AFTER Vue SFC compilation
 		plugins.push(createVueImportPlugin())
 
+		// Native bindings plugin (last, just copies files)
+		if (nativeBindings) {
+			plugins.push(createNativeBindingsPlugin())
+		}
+
 		return plugins
 	}
 
-	// Non-Vue: return single plugin or array if native bindings enabled
+	// Non-Vue: return main plugin, optionally with native bindings
+	plugins.push(mainPlugin)
 	if (nativeBindings) {
-		plugins.push(mainPlugin)
-		return plugins
+		plugins.push(createNativeBindingsPlugin())
 	}
 
-	return mainPlugin
+	return plugins.length === 1 ? mainPlugin : plugins
 }
 
 export default wolfie

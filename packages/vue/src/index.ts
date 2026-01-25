@@ -377,6 +377,3 @@ export {
 	defineComponent,
 	h,
 } from 'vue'
-
-// Note: Vite plugin moved to @wolfie/plugin
-// Use: import { wolfie } from '@wolfie/plugin/vite'

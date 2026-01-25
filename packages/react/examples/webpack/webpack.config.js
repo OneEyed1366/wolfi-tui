@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 class CopyNativeBinariesPlugin {
 	apply(compiler) {
 		compiler.hooks.afterEmit.tap('CopyNativeBinariesPlugin', (compilation) => {
-			const coreDir = path.resolve(__dirname, '../../../core')
+			const coreDir = path.resolve(__dirname, '../../../../internal/core')
 			const distNativeDir = path.resolve(__dirname, 'dist/native')
 
 			if (!fs.existsSync(distNativeDir)) {
@@ -53,8 +53,18 @@ export default {
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js', '.node'],
 		alias: {
-			'@wolfie/core/layout': path.resolve(__dirname, '../../../core/layout.js'),
-			'@wolfie/core': path.resolve(__dirname, '../../../core/src/index.ts'),
+			'@wolfie/core/layout': path.resolve(
+				__dirname,
+				'../../../../internal/core/layout.js'
+			),
+			'@wolfie/core': path.resolve(
+				__dirname,
+				'../../../../internal/core/src/index.ts'
+			),
+			'@wolfie/react/styles': path.resolve(
+				__dirname,
+				'../../src/styles/index.ts'
+			),
 			'@wolfie/react': path.resolve(__dirname, '../../src/index.ts'),
 		},
 		conditionNames: ['node', 'import', 'require'],

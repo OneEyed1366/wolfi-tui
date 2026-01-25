@@ -32,15 +32,5 @@ export default defineConfig({
 			},
 		},
 	},
-	plugins: [
-		wolfie('vue', {
-			mode: 'module',
-			include: /\.module\.css$/,
-			handleSfcStyles: false,
-			rewriteVueImports: false,
-		}),
-		vue(),
-		vueJsx(),
-		dts({ rollupTypes: true }),
-	],
+	plugins: [wolfie('vue'), vue(), vueJsx(), dts({ rollupTypes: true })],
 })

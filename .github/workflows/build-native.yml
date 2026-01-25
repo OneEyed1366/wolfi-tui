@@ -4,13 +4,13 @@ on:
   push:
     branches: [master, main]
     paths:
-      - 'packages/core/rust/**'
-      - 'packages/core/Cargo.toml'
+      - 'internal/core/rust/**'
+      - 'internal/core/Cargo.toml'
       - '.github/workflows/build-native.yml'
   pull_request:
     paths:
-      - 'packages/core/rust/**'
-      - 'packages/core/Cargo.toml'
+      - 'internal/core/rust/**'
+      - 'internal/core/Cargo.toml'
   workflow_dispatch:
 
 jobs:
@@ -54,12 +54,12 @@ jobs:
         run: pnpm install
 
       - name: Build native module
-        working-directory: packages/core
+        working-directory: internal/core
         run: pnpm build:rust --target ${{ matrix.target }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: bindings-${{ matrix.target }}
-          path: packages/core/*.node
+          path: internal/core/*.node
           if-no-files-found: error

@@ -1,9 +1,8 @@
 node_modules
 /build
-/packages/*/build
+**/build
 .pnpm
 .pnpm-debug.log*
-packages/react/build
 .pnpm-store/v10
 **/tsconfig.tsbuildinfo
 **/dist

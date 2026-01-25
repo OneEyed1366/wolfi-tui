@@ -68,7 +68,7 @@ else { console.error("Native binding not found for ${platform} ${arch}"); proces
  */
 function findCoreNativeDir(root: string): string | null {
 	// Try monorepo paths first (relative to project root)
-	const monorepoCandidate = resolve(root, 'packages/core')
+	const monorepoCandidate = resolve(root, 'internal/core')
 	if (existsSync(join(monorepoCandidate, 'package.json'))) {
 		return monorepoCandidate
 	}
@@ -86,7 +86,7 @@ function findCoreNativeDir(root: string): string | null {
 		if (parent === current) break
 		current = parent
 
-		const candidate = resolve(current, 'packages/core')
+		const candidate = resolve(current, 'internal/core')
 		if (existsSync(join(candidate, 'package.json'))) {
 			return candidate
 		}
