@@ -47,6 +47,9 @@ const initLayoutTreeRecursively = (
 	}
 
 	const children = node.childNodes
+	// Track actual layout child index separately since not all DOM children
+	// get layout nodes (e.g., text nodes, wolfie-virtual-text)
+	let layoutChildIndex = 0
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i]
 		if (isElement(child)) {
@@ -57,7 +60,12 @@ const initLayoutTreeRecursively = (
 				node.layoutNodeId !== undefined &&
 				child.layoutNodeId !== undefined
 			) {
-				layoutTree.insertChild(node.layoutNodeId, child.layoutNodeId, i)
+				layoutTree.insertChild(
+					node.layoutNodeId,
+					child.layoutNodeId,
+					layoutChildIndex
+				)
+				layoutChildIndex++
 			}
 		}
 	}

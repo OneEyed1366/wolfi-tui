@@ -43,6 +43,14 @@ export default tseslint.config(
 		},
 	},
 	{
+		// Disable react-hooks rules for Vue package (Vue composables use 'use' prefix but aren't React hooks)
+		files: ['packages/vue/**/*.{ts,tsx}'],
+		rules: {
+			'react-hooks/rules-of-hooks': 'off',
+			'react-hooks/exhaustive-deps': 'off',
+		},
+	},
+	{
 		ignores: ['**/build/**', '**/node_modules/**', '**/*.js'],
 	}
 )

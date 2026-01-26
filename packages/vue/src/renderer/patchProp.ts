@@ -12,6 +12,7 @@ import {
 	type Styles,
 	type DOMNode,
 	type TextNode,
+	type OutputTransformer,
 } from '@wolfie/core'
 import { layoutTreeRegistry, type WolfieVueInstance } from '../index'
 import { resolveClassName } from '../styles'
@@ -33,7 +34,7 @@ const getInstance = (node: DOMNode): WolfieVueInstance | undefined => {
 export const patchProp = (
 	el: DOMElement,
 	key: string,
-	prevValue: unknown,
+	_prevValue: unknown,
 	nextValue: unknown
 ) => {
 	const instance = getInstance(el)
@@ -73,6 +74,12 @@ export const patchProp = (
 			const textNode = createTextNode(text)
 			appendChildNode(el, textNode, instance?.layoutTree)
 		}
+	} else if (key === 'internal_transform') {
+		// Set transform function directly on node, not as attribute
+		el.internal_transform = nextValue as OutputTransformer
+	} else if (key === 'internal_static') {
+		// Set static flag directly on node, not as attribute
+		el.internal_static = nextValue as boolean
 	} else if (key.startsWith('on')) {
 		const eventName = key.slice(2).toLowerCase()
 		setAttribute(el, `on${eventName}`, nextValue as string)

@@ -26,6 +26,7 @@ import {
 	StdoutSymbol,
 	StderrSymbol,
 	AppSymbol,
+	AccessibilitySymbol,
 } from './context/symbols'
 // Note: CSS compilation moved to @wolfie/plugin
 
@@ -49,6 +50,17 @@ export interface RenderOptions {
 	stdin?: NodeJS.ReadStream
 	stderr?: NodeJS.WriteStream
 	maxFps?: number
+	/**
+	 * Enable debug mode (disables throttling for synchronous testing)
+	 */
+	debug?: boolean
+	/**
+	 * Enable screen reader mode. When enabled, the renderer outputs
+	 * plain text optimized for screen readers without ANSI styles.
+	 *
+	 * @default process.env['INK_SCREEN_READER'] === 'true'
+	 */
+	isScreenReaderEnabled?: boolean
 }
 
 export type WolfieVueInstance = {
@@ -70,6 +82,7 @@ class WolfieVue {
 	private eventEmitter: EventEmitter
 	private lastTerminalWidth: number
 	private unsubscribeResize?: () => void
+	private isScreenReaderEnabled!: boolean
 
 	constructor(options: RenderOptions = {}) {
 		this.stdout = options.stdout || process.stdout
@@ -83,18 +96,24 @@ class WolfieVue {
 		this.eventEmitter = new EventEmitter()
 		this.lastTerminalWidth = this.getTerminalWidth()
 
+		this.isScreenReaderEnabled =
+			options.isScreenReaderEnabled ??
+			process.env['INK_SCREEN_READER'] === 'true'
+
+		// In debug mode or screen reader mode, disable throttling for synchronous rendering
+		const unthrottled = options.debug === true || this.isScreenReaderEnabled
 		const maxFps = options.maxFps ?? 30
 		const renderThrottleMs =
-			maxFps > 0 ? Math.max(1, Math.ceil(1000 / maxFps)) : 0
+			unthrottled || maxFps <= 0 ? 0 : Math.max(1, Math.ceil(1000 / maxFps))
 
-		const throttledRender = throttle(
-			this.onRender.bind(this),
-			renderThrottleMs,
-			{
-				leading: true,
-				trailing: true,
-			}
-		)
+		const renderFn = this.onRender.bind(this)
+		const throttledRender =
+			renderThrottleMs > 0
+				? throttle(renderFn, renderThrottleMs, {
+						leading: true,
+						trailing: true,
+					})
+				: renderFn
 
 		this.rootNode.onRender = throttledRender
 
@@ -103,10 +122,13 @@ class WolfieVue {
 			onRender: throttledRender,
 		})
 
+		// Set default style for root node to match React behavior
+		// flexDirection: 'column' makes the main axis vertical, so alignItems: 'stretch'
+		// stretches children horizontally (along the cross-axis = width)
+		// NOTE: Do NOT set width here - it's set dynamically in calculateLayout
 		this.rootNode.style = {
 			flexDirection: 'column',
 			alignItems: 'stretch',
-			width: 80,
 		}
 
 		this.stdin.on('data', (data: Buffer) => {
@@ -245,7 +267,11 @@ class WolfieVue {
 		if (this.isUnmounted) return
 
 		this.calculateLayout()
-		const { output } = coreRenderer(this.rootNode, false, this.layoutTree)
+		const { output } = coreRenderer(
+			this.rootNode,
+			this.isScreenReaderEnabled,
+			this.layoutTree
+		)
 		this.log(output)
 	}
 
@@ -253,7 +279,11 @@ class WolfieVue {
 		if (this.isUnmounted) return
 		this.log.clear()
 		this.stdout.write(data)
-		const { output } = coreRenderer(this.rootNode, false, this.layoutTree)
+		const { output } = coreRenderer(
+			this.rootNode,
+			this.isScreenReaderEnabled,
+			this.layoutTree
+		)
 		this.log(output)
 	}
 
@@ -261,47 +291,56 @@ class WolfieVue {
 		if (this.isUnmounted) return
 		this.log.clear()
 		this.stderr.write(data)
-		const { output } = coreRenderer(this.rootNode, false, this.layoutTree)
+		const { output } = coreRenderer(
+			this.rootNode,
+			this.isScreenReaderEnabled,
+			this.layoutTree
+		)
 		this.log(output)
 	}
 
 	render(component: Component) {
 		this.app = getCreateApp()(component)
 
+		// Provide context values BEFORE mounting - Vue requires this
+		this.app.provide(StdinSymbol, {
+			stdin: this.stdin,
+			setRawMode: (value: boolean) => {
+				if (this.stdin.isTTY) {
+					this.stdin.setRawMode(value)
+				}
+			},
+			isRawModeSupported: this.stdin.isTTY,
+			internal_exitOnCtrlC: true,
+			internal_eventEmitter: this.eventEmitter,
+		})
+
+		this.app.provide(StdoutSymbol, {
+			stdout: this.stdout,
+			write: (data: string) => this.writeToStdout(data),
+		})
+
+		this.app.provide(StderrSymbol, {
+			stderr: this.stderr,
+			write: (data: string) => this.writeToStderr(data),
+		})
+
+		this.app.provide(AppSymbol, {
+			exit: (error?: Error) => {
+				if (error) {
+					this.stderr.write(error.stack || error.message)
+				}
+				this.unmount()
+				process.exit(error ? 1 : 0)
+			},
+		})
+
+		this.app.provide(AccessibilitySymbol, {
+			isScreenReaderEnabled: this.isScreenReaderEnabled,
+		})
+
 		const { mount } = this.app
 		this.app.mount = (container: DOMElement) => {
-			this.app.provide(StdinSymbol, {
-				stdin: this.stdin,
-				setRawMode: (value: boolean) => {
-					if (this.stdin.isTTY) {
-						this.stdin.setRawMode(value)
-					}
-				},
-				isRawModeSupported: this.stdin.isTTY,
-				internal_exitOnCtrlC: true,
-				internal_eventEmitter: this.eventEmitter,
-			})
-
-			this.app.provide(StdoutSymbol, {
-				stdout: this.stdout,
-				write: (data: string) => this.writeToStdout(data),
-			})
-
-			this.app.provide(StderrSymbol, {
-				stderr: this.stderr,
-				write: (data: string) => this.writeToStderr(data),
-			})
-
-			this.app.provide(AppSymbol, {
-				exit: (error?: Error) => {
-					if (error) {
-						this.stderr.write(error.stack || error.message)
-					}
-					this.unmount()
-					process.exit(error ? 1 : 0)
-				},
-			})
-
 			const proxy = mount(container)
 			this.onRender()
 			return proxy

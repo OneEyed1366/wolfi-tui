@@ -1,4 +1,10 @@
 {
-	"extends": "./tsconfig.base.json",
-	"include": ["packages/*/src"]
+	"files": [],
+	"references": [
+		{ "path": "internal/core" },
+		{ "path": "internal/css-parser" },
+		{ "path": "packages/react" },
+		{ "path": "packages/vue" },
+		{ "path": "packages/plugin" }
+	]
 }

@@ -13,7 +13,7 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"benchmark": "npx vite-node",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc --build --noEmit",
 		"prepare": "husky"
 	},
 	"engines": {
