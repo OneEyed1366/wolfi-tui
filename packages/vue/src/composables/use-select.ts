@@ -1,3 +1,4 @@
+import { computed, toValue, type MaybeRefOrGetter } from 'vue'
 import { useInput } from './use-input'
 import type { SelectState } from './use-select-state'
 
@@ -5,10 +6,11 @@ import type { SelectState } from './use-select-state'
 export type UseSelectProps = {
 	/**
 	 * When disabled, user input is ignored.
+	 * Can be a boolean or a ref for reactivity.
 	 *
 	 * @default false
 	 */
-	isDisabled?: boolean
+	isDisabled?: MaybeRefOrGetter<boolean | undefined>
 
 	/**
 	 * Select state.
@@ -19,6 +21,9 @@ export type UseSelectProps = {
 
 //#region Composable
 export const useSelect = ({ isDisabled = false, state }: UseSelectProps) => {
+	// Create computed for reactive isActive
+	const isActive = computed(() => !toValue(isDisabled))
+
 	useInput(
 		(_input, key) => {
 			if (key.downArrow) {
@@ -33,7 +38,7 @@ export const useSelect = ({ isDisabled = false, state }: UseSelectProps) => {
 				state.selectFocusedOption()
 			}
 		},
-		{ isActive: !isDisabled }
+		{ isActive }
 	)
 }
 //#endregion Composable

@@ -1,4 +1,9 @@
-import { defineComponent, type PropType, type DefineComponent } from 'vue'
+import {
+	defineComponent,
+	computed,
+	type PropType,
+	type DefineComponent,
+} from 'vue'
 import { Text, type TextProps } from './Text'
 import { useInput } from '../composables/use-input'
 import { useComponentTheme, type IComponentTheme } from '../theme'
@@ -84,6 +89,8 @@ export const ConfirmInput: DefineComponent<ConfirmInputProps> = defineComponent(
 			},
 		},
 		setup(props) {
+			const isActive = computed(() => !props.isDisabled)
+
 			useInput(
 				(input: string, key: { return?: boolean }) => {
 					if (input.toLowerCase() === 'y') {
@@ -102,7 +109,7 @@ export const ConfirmInput: DefineComponent<ConfirmInputProps> = defineComponent(
 						}
 					}
 				},
-				{ isActive: !props.isDisabled }
+				{ isActive }
 			)
 
 			const theme = useComponentTheme<ConfirmInputTheme>('ConfirmInput')

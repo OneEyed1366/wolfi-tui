@@ -1,4 +1,4 @@
-import { computed, type ComputedRef } from 'vue'
+import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue'
 import chalk from 'chalk'
 import { useInput } from './use-input'
 import type { TextInputState } from './use-text-input-state'
@@ -10,7 +10,7 @@ export type UseTextInputProps = {
 	 *
 	 * @default false
 	 */
-	isDisabled?: boolean
+	isDisabled?: MaybeRefOrGetter<boolean | undefined>
 
 	/**
 	 * Text input state.
@@ -39,8 +39,10 @@ export const useTextInput = ({
 	state,
 	placeholder = '',
 }: UseTextInputProps): UseTextInputResult => {
+	const isActive = computed(() => !toValue(isDisabled))
+
 	const renderedPlaceholder = computed(() => {
-		if (isDisabled) {
+		if (toValue(isDisabled)) {
 			return placeholder ? chalk.dim(placeholder) : ''
 		}
 
@@ -50,7 +52,7 @@ export const useTextInput = ({
 	})
 
 	const renderedValue = computed(() => {
-		if (isDisabled) {
+		if (toValue(isDisabled)) {
 			return state.value.value
 		}
 
@@ -111,7 +113,7 @@ export const useTextInput = ({
 				state.insert(input)
 			}
 		},
-		{ isActive: !isDisabled }
+		{ isActive }
 	)
 
 	const inputValue = computed(() =>

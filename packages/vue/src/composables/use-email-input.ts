@@ -1,4 +1,4 @@
-import { computed, type ComputedRef } from 'vue'
+import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue'
 import chalk from 'chalk'
 import { useInput } from './use-input'
 import type { EmailInputState } from './use-email-input-state'
@@ -10,7 +10,7 @@ export type UseEmailInputProps = {
 	 *
 	 * @default false
 	 */
-	isDisabled?: boolean
+	isDisabled?: MaybeRefOrGetter<boolean | undefined>
 
 	/**
 	 * Text input state.
@@ -41,8 +41,10 @@ export const useEmailInput = ({
 	state,
 	placeholder = '',
 }: UseEmailInputProps): UseEmailInputResult => {
+	const isActive = computed(() => !toValue(isDisabled))
+
 	const renderedPlaceholder = computed(() => {
-		if (isDisabled) {
+		if (toValue(isDisabled)) {
 			return placeholder ? chalk.dim(placeholder) : ''
 		}
 
@@ -52,7 +54,7 @@ export const useEmailInput = ({
 	})
 
 	const renderedValue = computed(() => {
-		if (isDisabled) {
+		if (toValue(isDisabled)) {
 			return state.value.value
 		}
 
@@ -113,7 +115,7 @@ export const useEmailInput = ({
 				state.insert(input)
 			}
 		},
-		{ isActive: !isDisabled }
+		{ isActive }
 	)
 
 	const inputValue = computed(() =>

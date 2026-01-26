@@ -1,5 +1,6 @@
 import {
 	defineComponent,
+	toRef,
 	type PropType,
 	type VNode,
 	type DefineComponent,
@@ -87,7 +88,7 @@ export const Select: DefineComponent<SelectProps> = defineComponent({
 			onChange: props.onChange,
 		})
 
-		useSelect({ isDisabled: props.isDisabled, state })
+		useSelect({ isDisabled: toRef(props, 'isDisabled'), state })
 
 		const theme = useComponentTheme<SelectTheme>('Select')
 		const { styles } = theme ?? selectTheme

@@ -1,4 +1,4 @@
-import { computed, type ComputedRef } from 'vue'
+import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue'
 import chalk from 'chalk'
 import { useInput } from './use-input'
 import type { PasswordInputState } from './use-password-input-state'
@@ -10,7 +10,7 @@ export type UsePasswordInputProps = {
 	 *
 	 * @default false
 	 */
-	isDisabled?: boolean
+	isDisabled?: MaybeRefOrGetter<boolean | undefined>
 
 	/**
 	 * Password input state.
@@ -41,8 +41,10 @@ export const usePasswordInput = ({
 	state,
 	placeholder = '',
 }: UsePasswordInputProps): UsePasswordInputResult => {
+	const isActive = computed(() => !toValue(isDisabled))
+
 	const renderedPlaceholder = computed(() => {
-		if (isDisabled) {
+		if (toValue(isDisabled)) {
 			return placeholder ? chalk.dim(placeholder) : ''
 		}
 
@@ -54,7 +56,7 @@ export const usePasswordInput = ({
 	const renderedValue = computed(() => {
 		const maskedValue = '*'.repeat(state.value.value.length)
 
-		if (isDisabled) {
+		if (toValue(isDisabled)) {
 			return maskedValue
 		}
 
@@ -103,7 +105,7 @@ export const usePasswordInput = ({
 				state.insert(input)
 			}
 		},
-		{ isActive: !isDisabled }
+		{ isActive }
 	)
 
 	const inputValue = computed(() =>

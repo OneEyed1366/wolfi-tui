@@ -1,3 +1,4 @@
+import { computed, toValue, type MaybeRefOrGetter } from 'vue'
 import { useInput } from './use-input'
 import type { MultiSelectState } from './use-multi-select-state'
 
@@ -5,10 +6,11 @@ import type { MultiSelectState } from './use-multi-select-state'
 export type UseMultiSelectProps = {
 	/**
 	 * When disabled, user input is ignored.
+	 * Can be a boolean or a ref for reactivity.
 	 *
 	 * @default false
 	 */
-	isDisabled?: boolean
+	isDisabled?: MaybeRefOrGetter<boolean | undefined>
 
 	/**
 	 * Select state.
@@ -22,6 +24,9 @@ export const useMultiSelect = ({
 	isDisabled = false,
 	state,
 }: UseMultiSelectProps) => {
+	// Create computed for reactive isActive
+	const isActive = computed(() => !toValue(isDisabled))
+
 	useInput(
 		(input, key) => {
 			if (key.downArrow) {
@@ -40,7 +45,7 @@ export const useMultiSelect = ({
 				state.submit()
 			}
 		},
-		{ isActive: !isDisabled }
+		{ isActive }
 	)
 }
 //#endregion Composable

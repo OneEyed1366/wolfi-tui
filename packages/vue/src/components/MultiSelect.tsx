@@ -1,5 +1,6 @@
 import {
 	defineComponent,
+	toRef,
 	type PropType,
 	type VNode,
 	type DefineComponent,
@@ -103,7 +104,7 @@ export const MultiSelect: DefineComponent<MultiSelectProps> = defineComponent({
 			onSubmit: props.onSubmit,
 		})
 
-		useMultiSelect({ isDisabled: props.isDisabled, state })
+		useMultiSelect({ isDisabled: toRef(props, 'isDisabled'), state })
 
 		const theme = useComponentTheme<MultiSelectTheme>('MultiSelect')
 		const { styles } = theme ?? multiSelectTheme

@@ -1,4 +1,10 @@
-import { onMounted, onUnmounted, watch } from 'vue'
+import {
+	onMounted,
+	onUnmounted,
+	watchEffect,
+	toValue,
+	type MaybeRefOrGetter,
+} from 'vue'
 import { parseKeypress, nonAlphanumericKeys } from '@wolfie/core'
 import { useStdin } from './use-stdin'
 
@@ -24,30 +30,34 @@ export type Key = {
 export type Handler = (input: string, key: Key) => void
 
 export type Options = {
-	isActive?: boolean
+	isActive?: MaybeRefOrGetter<boolean>
 }
+
+// Debug flag - set to true to see input handling logs
+const DEBUG_INPUT = process.env.DEBUG_INPUT === 'true'
 
 export const useInput = (inputHandler: Handler, options: Options = {}) => {
 	const { setRawMode, internal_exitOnCtrlC, internal_eventEmitter } = useStdin()
 
-	watch(
-		() => options.isActive,
-		(isActive) => {
-			if (isActive !== false) {
-				setRawMode(true)
-			} else {
-				setRawMode(false)
-			}
-		},
-		{ immediate: true }
-	)
+	// Raw mode subscription with conditional cleanup (same pattern as React package)
+	// Only register cleanup when active - prevents false decrement when mounting inactive
+	watchEffect((onCleanup) => {
+		const isActive = toValue(options.isActive)
+		if (isActive === false) {
+			return // Early return - no cleanup registered for inactive components
+		}
 
-	onUnmounted(() => {
-		setRawMode(false)
+		if (DEBUG_INPUT) console.error('[useInput] setRawMode(true)')
+		setRawMode(true)
+
+		onCleanup(() => {
+			if (DEBUG_INPUT) console.error('[useInput] setRawMode(false) - cleanup')
+			setRawMode(false)
+		})
 	})
 
 	const handleData = (data: string) => {
-		if (options.isActive === false) {
+		if (toValue(options.isActive) === false) {
 			return
 		}
 
