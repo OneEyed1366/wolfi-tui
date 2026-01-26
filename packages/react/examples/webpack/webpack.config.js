@@ -129,4 +129,11 @@ export default {
 		__dirname: false,
 		__filename: false,
 	},
+	// Ignore warnings for optional ws dependencies (native performance modules)
+	ignoreWarnings: [
+		{
+			module: /node_modules\/ws\/lib\//,
+			message: /Can't resolve '(bufferutil|utf-8-validate)'/,
+		},
+	],
 }
