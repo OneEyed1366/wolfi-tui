@@ -1,4 +1,11 @@
-import { defineComponent, inject, provide, type PropType } from 'vue'
+import {
+	defineComponent,
+	inject,
+	provide,
+	computed,
+	unref,
+	type PropType,
+} from 'vue'
 import type { Styles } from '@wolfie/core'
 import { AccessibilitySymbol, BackgroundSymbol } from '../context/symbols'
 import { resolveClassName, type ClassNameValue } from '../styles'
@@ -87,11 +94,25 @@ export const Box = defineComponent({
 			default: undefined,
 		},
 	},
-	setup(props, { slots }) {
+	inheritAttrs: false,
+	setup(props, { slots, attrs }) {
 		const accessibility = inject(AccessibilitySymbol, {
 			isScreenReaderEnabled: false,
 		})
-		const inheritedBackgroundColor = inject(BackgroundSymbol, undefined)
+		const inheritedBackgroundColorRef = inject(BackgroundSymbol, undefined)
+
+		// Compute background color reactively for provide (must be in setup, not render)
+		const computedBackgroundColor = computed(() => {
+			const style = props.style ?? {}
+			const mergedClassName = attrs.class ?? props.className
+			const resolvedClassName = resolveClassName(
+				mergedClassName as ClassNameValue
+			)
+			return style.backgroundColor ?? resolvedClassName.backgroundColor
+		})
+
+		// Provide background color to children (called in setup, not render)
+		provide(BackgroundSymbol, computedBackgroundColor)
 
 		return () => {
 			const style = props.style ?? {}
@@ -115,19 +136,23 @@ export const Box = defineComponent({
 				return null
 			}
 
-			const resolvedClassName = resolveClassName(props.className)
+			// Merge attrs.class with props.className (attrs.class takes precedence for Vue SFC usage)
+			const mergedClassName = attrs.class ?? props.className
+			const resolvedClassName = resolveClassName(
+				mergedClassName as ClassNameValue
+			)
 
-			const finalBackgroundColor =
-				style.backgroundColor ?? resolvedClassName.backgroundColor
+			const finalBackgroundColor = computedBackgroundColor.value
 
 			const label = ariaLabel ? (
 				<wolfie-text>{ariaLabel}</wolfie-text>
 			) : undefined
 
-			const boxElement = (
+			return (
 				<wolfie-box
 					style={{
-						backgroundColor: finalBackgroundColor ?? inheritedBackgroundColor,
+						backgroundColor:
+							finalBackgroundColor ?? unref(inheritedBackgroundColorRef),
 						overflowX:
 							style.overflowX ??
 							resolvedClassName.overflowX ??
@@ -152,12 +177,6 @@ export const Box = defineComponent({
 					{isScreenReaderEnabled && label ? label : slots.default?.()}
 				</wolfie-box>
 			)
-
-			if (finalBackgroundColor) {
-				provide(BackgroundSymbol, finalBackgroundColor)
-			}
-
-			return boxElement
 		}
 	},
 })

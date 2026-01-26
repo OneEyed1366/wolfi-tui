@@ -302,12 +302,25 @@ class WolfieVue {
 	render(component: Component) {
 		this.app = getCreateApp()(component)
 
+		// Reference count for raw mode - only disable when all consumers release
+		let rawModeRefCount = 0
+
 		// Provide context values BEFORE mounting - Vue requires this
 		this.app.provide(StdinSymbol, {
 			stdin: this.stdin,
 			setRawMode: (value: boolean) => {
 				if (this.stdin.isTTY) {
-					this.stdin.setRawMode(value)
+					if (value) {
+						rawModeRefCount++
+						if (rawModeRefCount === 1) {
+							this.stdin.setRawMode(true)
+						}
+					} else {
+						rawModeRefCount = Math.max(0, rawModeRefCount - 1)
+						if (rawModeRefCount === 0) {
+							this.stdin.setRawMode(false)
+						}
+					}
 				}
 			},
 			isRawModeSupported: this.stdin.isTTY,
@@ -379,6 +392,16 @@ export {
 } from './styles'
 
 export type { ClassNameValue } from './styles'
+
+// Re-export components
+export * from './components'
+
+// Re-export composables
+export { useApp } from './composables/use-app'
+export { useInput } from './composables/use-input'
+export { useStdin } from './composables/use-stdin'
+export { useStdout } from './composables/use-stdout'
+export { useStderr } from './composables/use-stderr'
 
 // Re-export Vue APIs
 export {

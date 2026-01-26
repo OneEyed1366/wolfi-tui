@@ -191,10 +191,18 @@ export const insertBeforeNode = (
 			node.layoutNodeId !== undefined &&
 			effectiveLayoutTree
 		) {
+			// Calculate layout index by counting only siblings with layoutNodeId before anchor
+			// DOM childNodes may contain text nodes that don't have layout IDs
+			let layoutIndex = 0
+			for (let i = 0; i < index; i++) {
+				if (node.childNodes[i]?.layoutNodeId !== undefined) {
+					layoutIndex++
+				}
+			}
 			effectiveLayoutTree.insertChild(
 				node.layoutNodeId,
 				newChildNode.layoutNodeId,
-				index
+				layoutIndex
 			)
 		}
 

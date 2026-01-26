@@ -1,4 +1,4 @@
-import { defineComponent, inject, type PropType } from 'vue'
+import { defineComponent, inject, unref, type PropType } from 'vue'
 import chalk from 'chalk'
 import { colorize, type Styles } from '@wolfie/core'
 import { AccessibilitySymbol, BackgroundSymbol } from '../context/symbols'
@@ -36,11 +36,12 @@ export const Text = defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { slots }) {
+	inheritAttrs: false,
+	setup(props, { slots, attrs }) {
 		const accessibility = inject(AccessibilitySymbol, {
 			isScreenReaderEnabled: false,
 		})
-		const inheritedBackgroundColor = inject(BackgroundSymbol, undefined)
+		const inheritedBackgroundColorRef = inject(BackgroundSymbol, undefined)
 
 		return () => {
 			const style = props.style ?? {}
@@ -65,7 +66,11 @@ export const Text = defineComponent({
 				return null
 			}
 
-			const resolvedClassName = resolveClassName(props.className)
+			// Merge attrs.class with props.className (attrs.class takes precedence for Vue SFC usage)
+			const mergedClassName = attrs.class ?? props.className
+			const resolvedClassName = resolveClassName(
+				mergedClassName as ClassNameValue
+			)
 
 			const effectiveStyles: Styles = {
 				...resolvedClassName,
@@ -90,7 +95,7 @@ export const Text = defineComponent({
 				}
 
 				const finalBackgroundColor =
-					effectiveBackgroundColor ?? inheritedBackgroundColor
+					effectiveBackgroundColor ?? unref(inheritedBackgroundColorRef)
 				if (finalBackgroundColor) {
 					result = colorize(result, finalBackgroundColor, 'background')
 				}

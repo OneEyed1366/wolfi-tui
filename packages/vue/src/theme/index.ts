@@ -15,39 +15,10 @@ export type IComponentTheme = {
 export type IComponentStyles = Record<string, unknown>
 //#endregion Types
 
-//#region Theme Imports
-import { alertTheme } from '../components/Alert'
-import { badgeTheme } from '../components/Badge'
-import { spinnerTheme } from '../components/Spinner'
-import { statusMessageTheme } from '../components/StatusMessage'
-import { progressBarTheme } from '../components/ProgressBar'
-import { orderedListTheme } from '../components/OrderedList'
-import { unorderedListTheme } from '../components/UnorderedList'
-import { textInputTheme } from '../components/TextInput'
-import { passwordInputTheme } from '../components/PasswordInput'
-import { emailInputTheme } from '../components/EmailInput'
-import { confirmInputTheme } from '../components/ConfirmInput'
-import { selectTheme } from '../components/SelectOption'
-import { multiSelectTheme } from '../components/MultiSelectOption'
-//#endregion Theme Imports
-
 //#region Default Theme
+// Empty default theme - components provide their own fallbacks
 export const defaultTheme: ITheme = {
-	components: {
-		Alert: alertTheme,
-		Badge: badgeTheme,
-		Spinner: spinnerTheme,
-		StatusMessage: statusMessageTheme,
-		ProgressBar: progressBarTheme,
-		OrderedList: orderedListTheme,
-		UnorderedList: unorderedListTheme,
-		TextInput: textInputTheme,
-		PasswordInput: passwordInputTheme,
-		EmailInput: emailInputTheme,
-		ConfirmInput: confirmInputTheme,
-		Select: selectTheme,
-		MultiSelect: multiSelectTheme,
-	},
+	components: {},
 }
 //#endregion Default Theme
 
@@ -66,7 +37,7 @@ export const extendTheme = (
 
 export const useComponentTheme = <Theme extends IComponentTheme>(
 	component: string
-): Theme => {
+): Theme | undefined => {
 	const theme = inject(ThemeKey, defaultTheme)
-	return theme.components[component] as Theme
+	return theme.components[component] as Theme | undefined
 }

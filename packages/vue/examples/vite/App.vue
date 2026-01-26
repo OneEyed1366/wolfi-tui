@@ -1,158 +1,74 @@
 <template>
-	<wolfie-box class="p-1 flex-col w-[80]">
-		<wolfie-box class="mb-1">
-			<wolfie-text class="text-white font-bold"
-				>Wolfie Vue Super-Hybrid Demo</wolfie-text
+	<Box class="flex-col p-1 w-full">
+		<!-- Header -->
+		<Box class="mb-1">
+			<Text class="text-blue font-bold"> Wolfie Vue Comprehensive Demo </Text>
+		</Box>
+
+		<!-- Screen tabs -->
+		<Box class="flex-row gap-2 mb-1">
+			<Text
+				v-for="(screen, i) in screens"
+				:key="screen.name"
+				:class="i === activeScreen ? 'text-cyan font-bold' : 'text-gray'"
 			>
-		</wolfie-box>
+				[{{ i + 1 }}] {{ screen.name }}
+			</Text>
+		</Box>
 
-		<!-- Tailwind Section -->
-		<wolfie-box class="border-double border-yellow p-1 mb-1 flex-col w-full">
-			<wolfie-text class="text-[cyan]">
-				Tailwind: border-double + arbitrary text-[cyan]
-			</wolfie-text>
-		</wolfie-box>
+		<!-- Active screen -->
+		<component :is="screens[activeScreen].component" />
 
-		<!-- SCSS Section (from SFC style block) -->
-		<wolfie-box class="card flex-col mb-1 w-full">
-			<wolfie-text class="card-title">SCSS Flavor</wolfie-text>
-			<wolfie-text class="text-muted">
-				Nested selectors from &lt;style lang="scss"&gt;
-			</wolfie-text>
-		</wolfie-box>
-
-		<!-- LESS Section (from SFC style block) -->
-		<wolfie-box class="less-box flex-col mb-1 w-full">
-			<wolfie-text class="less-text">LESS Flavor</wolfie-text>
-			<wolfie-text class="text-muted">
-				Nesting from &lt;style lang="less"&gt;
-			</wolfie-text>
-		</wolfie-box>
-
-		<!-- Stylus Section (from SFC style block) -->
-		<wolfie-box class="stylus-box flex-col mb-1 w-full">
-			<wolfie-text class="stylus-text">Stylus Flavor</wolfie-text>
-			<wolfie-text class="text-muted"
-				>Indentation-based &lt;style lang="stylus"&gt;</wolfie-text
-			>
-		</wolfie-box>
-
-		<!-- CSS Modules Section (external .module.css files) -->
-		<wolfie-box :class="[cardStyles.card, 'flex-col mb-1 w-full']">
-			<wolfie-text :class="cardStyles.cardTitle"
-				>CSS Modules Flavor</wolfie-text
-			>
-			<wolfie-text class="text-muted"
-				>Scoped styles from Card.module.css</wolfie-text
-			>
-		</wolfie-box>
-
-		<!-- SFC Module Style Section -->
-		<wolfie-box :class="[$style.moduleBox, 'flex-col mb-1 w-full']">
-			<wolfie-text :class="$style.moduleText">SFC Module Style</wolfie-text>
-			<wolfie-text class="text-muted"
-				>Scoped via &lt;style module&gt;</wolfie-text
-			>
-		</wolfie-box>
-
-		<!-- Buttons Mix -->
-		<wolfie-box class="flex-row gap-2 mb-1 w-full">
-			<wolfie-box class="btn primary">
-				<wolfie-text>SCSS Btn</wolfie-text>
-			</wolfie-box>
-			<wolfie-box :class="buttonStyles.button">
-				<wolfie-text :class="buttonStyles.text">Module Btn</wolfie-text>
-			</wolfie-box>
-			<wolfie-box class="bg-blue-600 p-x-2">
-				<wolfie-text class="text-white">Tailwind Btn</wolfie-text>
-			</wolfie-box>
-		</wolfie-box>
-	</wolfie-box>
+		<!-- Footer -->
+		<Box class="mt-1 border-t-single border-gray p-t-1">
+			<Text class="text-gray"> tab navigate | 1-6 jump | q quit </Text>
+		</Box>
+	</Box>
 </template>
 
 <script setup lang="ts">
-import buttonStyles from './styles/Button.module.css'
-import cardStyles from './styles/Card.module.css'
+import { ref, markRaw, type Component } from 'vue'
+import { Box, Text, useInput, useApp } from '@wolfie/vue'
+import StyleDemo from './screens/StyleDemo.vue'
+import InputDemo from './screens/InputDemo.vue'
+import SelectDemo from './screens/SelectDemo.vue'
+import StatusDemo from './screens/StatusDemo.vue'
+import ListDemo from './screens/ListDemo.vue'
+import ErrorDemo from './screens/ErrorDemo.vue'
+
+interface Screen {
+	name: string
+	component: Component
+}
+
+const screens: Screen[] = [
+	{ name: 'Styles', component: markRaw(StyleDemo) },
+	{ name: 'Inputs', component: markRaw(InputDemo) },
+	{ name: 'Select', component: markRaw(SelectDemo) },
+	{ name: 'Status', component: markRaw(StatusDemo) },
+	{ name: 'Lists', component: markRaw(ListDemo) },
+	{ name: 'Errors', component: markRaw(ErrorDemo) },
+]
+
+const activeScreen = ref(0)
+const { exit } = useApp()
+
+useInput((input, key) => {
+	if (input === 'q') {
+		exit()
+	}
+	// Tab/Shift+Tab for navigation (avoid arrow conflicts with input components)
+	if (key.tab && !key.shift) {
+		activeScreen.value = (activeScreen.value + 1) % screens.length
+	}
+	if (key.tab && key.shift) {
+		activeScreen.value =
+			(activeScreen.value - 1 + screens.length) % screens.length
+	}
+	// Number keys 1-6 to jump to screen
+	const num = parseInt(input)
+	if (num >= 1 && num <= screens.length) {
+		activeScreen.value = num - 1
+	}
+})
 </script>
-
-<!-- Global utility classes -->
-<style>
-.text-base {
-	color: white;
-}
-
-.text-muted {
-	color: gray;
-}
-</style>
-
-<!-- SCSS styles with nesting -->
-<style lang="scss">
-$primary: magenta;
-
-.card {
-	border-style: single;
-	padding: 1;
-	border-color: $primary;
-
-	.title {
-		color: $primary;
-		font-weight: bold;
-	}
-}
-
-.btn {
-	padding-x: 2;
-	padding-y: 1;
-	border-style: single;
-	border-color: $primary;
-
-	&.primary {
-		border-color: $primary;
-	}
-}
-</style>
-
-<!-- LESS styles with nesting -->
-<style lang="less">
-@green: green;
-
-.less-box {
-	border-style: single;
-	border-color: @green;
-	padding: 1;
-
-	.less-text {
-		color: @green;
-		font-weight: bold;
-	}
-}
-</style>
-
-<!-- Stylus styles with indentation -->
-<style lang="stylus">
-$yellow = yellow
-
-.stylus-box
-	border-style single
-	border-color $yellow
-	padding 1
-
-	.stylus-text
-		color $yellow
-		font-style italic
-</style>
-
-<!-- SFC Module styles (scoped via $style binding) -->
-<style module>
-.moduleBox {
-	border-style: double;
-	border-color: white;
-	padding: 1;
-}
-
-.moduleText {
-	color: white;
-	font-weight: bold;
-}
-</style>

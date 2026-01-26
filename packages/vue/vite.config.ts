@@ -32,5 +32,18 @@ export default defineConfig({
 			},
 		},
 	},
-	plugins: [wolfie('vue'), vue(), vueJsx(), dts({ rollupTypes: true })],
+	plugins: [
+		wolfie('vue'),
+		vue({
+			template: {
+				compilerOptions: {
+					isCustomElement: (tag) => tag.startsWith('wolfie-'),
+				},
+			},
+		}),
+		vueJsx({
+			isCustomElement: (tag) => tag.startsWith('wolfie-'),
+		}),
+		dts({ rollupTypes: true }),
+	],
 })
