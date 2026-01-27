@@ -27,9 +27,10 @@ export default defineConfig(({ command }) => {
 					'styles/index': resolve(__dirname, 'src/styles/index.ts'),
 				},
 				output: {
-					// Maintain file structure
+					// Maintain file structure for better tree-shaking
+					preserveModules: true,
+					preserveModulesRoot: 'src',
 					entryFileNames: '[name].js',
-					preserveModules: false,
 				},
 				// Externalize all dependencies - library consumers will provide them
 				external: (id) => {

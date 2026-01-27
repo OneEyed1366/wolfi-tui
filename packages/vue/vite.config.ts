@@ -19,12 +19,14 @@ export default defineConfig({
 		rollupOptions: {
 			input: {
 				index: resolve(__dirname, 'src/index.ts'),
-				// 'styles/index': resolve(__dirname, 'src/styles/index.ts'),
 			},
 			output: {
+				// Maintain file structure for better tree-shaking
+				preserveModules: true,
+				preserveModulesRoot: 'src',
 				entryFileNames: '[name].js',
-				preserveModules: false,
 			},
+			// Externalize all dependencies - library consumers will provide them
 			external: (id) => {
 				if (id.startsWith('node:')) return true
 				if (id.startsWith('.') || id.startsWith('/')) return false

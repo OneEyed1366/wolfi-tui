@@ -1,0 +1,11 @@
+.card {
+	padding: 1;
+	border-style: double;
+	border-color: green;
+}
+
+.cardTitle {
+	color: cyan;
+	font-weight: bold;
+	text-decoration: underline;
+}

@@ -1,0 +1,10 @@
+.moduleBox {
+	border-style: double;
+	border-color: white;
+	padding: 1;
+}
+
+.moduleText {
+	color: white;
+	font-weight: bold;
+}

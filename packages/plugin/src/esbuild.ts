@@ -20,7 +20,7 @@ import {
 } from '@wolfie/css-parser'
 import type { Framework, WolfieOptions } from './index'
 
-const CSS_EXTENSIONS_RE = /\.(css|scss|sass|less|styl|stylus)$/
+const CSS_EXTENSIONS_RE = /\.(css|scss|sass|less|styl|stylus)(\?.*)?$/
 
 //#region Native Bindings
 
@@ -97,6 +97,31 @@ function findCoreNativeDir(root: string): string | null {
 
 //#endregion Native Bindings
 
+function extractVueStyle(path: string): string | null {
+	// Match unplugin-vue virtual path format: file.vue?vue&type=style&index=0...
+	const match = path.match(/^(.*\.vue)\?.*index=(\d+)/)
+	if (!match) return null
+	const [, filePath, indexStr] = match
+	const index = parseInt(indexStr, 10)
+
+	if (!existsSync(filePath)) return null
+	const content = readFileSync(filePath, 'utf-8').replace(
+		/<!--[\s\S]*?-->/g,
+		''
+	)
+
+	const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/g
+	let matchStyle
+	let i = 0
+	while ((matchStyle = styleRegex.exec(content)) !== null) {
+		if (i === index) {
+			return matchStyle[1]
+		}
+		i++
+	}
+	return null
+}
+
 /**
  * Wolfie esbuild plugin for terminal UI styling.
  *
@@ -116,45 +141,119 @@ export function wolfie(
 	framework: Framework,
 	options: WolfieOptions = {}
 ): Plugin {
-	const { include, exclude, nativeBindings = true } = options
+	const {
+		include = CSS_EXTENSIONS_RE,
+		exclude,
+		nativeBindings = true,
+	} = options
 
 	const isVue = framework === 'vue'
 	// Hardcoded: React uses camelCase, Vue uses kebab-case
 	const camelCase = !isVue
 	// Hardcoded: always inline styles (terminal UI has no stylesheets)
 	const inline = true
-	const filter = include ?? CSS_EXTENSIONS_RE
 
 	const globalStylesMap: ParsedStyles = {}
 
-	async function loadAndProcessStyle(
-		absolutePath: string
-	): Promise<{ code: string; styles: ParsedStyles } | null> {
-		if (!existsSync(absolutePath)) return null
+	async function loadAndProcessStyle(absolutePath: string) {
+		let source = ''
+		let filename = absolutePath
+		let lang: any = ''
 
-		// Convention: .module.css files are CSS Modules, otherwise global
-		const isModule = absolutePath.includes('.module.')
-		const lang = detectLanguage(absolutePath)
+		let isModule = filename.includes('.module.')
 
-		const source = readFileSync(absolutePath, 'utf-8')
-		const compileResult = await compile(source, lang, absolutePath)
+		const vueStyle = extractVueStyle(absolutePath)
+		if (vueStyle) {
+			source = vueStyle
+			filename = absolutePath.split('?')[0]!
+			// Extract lang from query (e.g. &lang.scss)
+			const queryLang = absolutePath.match(/lang\.([a-z]+)$/)?.[1]
+			lang = (queryLang || 'css') as any
+			// Check for module in query
+			if (absolutePath.includes('&module=')) {
+				isModule = true
+			}
+			// Check for scoped in query
+			const isScoped = absolutePath.includes('&scoped=true')
+			if (isScoped) {
+				const scopeId =
+					filename.match(/([^/]+)\.vue$/)?.[1]?.toLowerCase() || 'scope'
+				// Match CSS class/ID selectors and append scopeId
+				// Targets: .class, #id, .class:hover, .class::before, etc.
+				source = source.replace(/([.#][a-zA-Z0-9_-]+)(?=[^{]*{)/g, (match) => {
+					// Don't scope if already scoped (sanity check)
+					if (match.endsWith(`-${scopeId}`)) return match
+					return `${match}-${scopeId}`
+				})
+			}
+		} else {
+			if (!existsSync(absolutePath)) return null
+			source = readFileSync(absolutePath, 'utf-8')
+			lang = detectLanguage(absolutePath)
+		}
+
+		const compileResult = await compile(source, lang, filename)
 
 		const styles = parseCSS(compileResult.css, {
-			filename: absolutePath,
-			camelCaseClasses: camelCase,
+			filename: filename,
+			camelCaseClasses: false, // Vite uses false
 		})
 
-		// Populate global map for inlining
+		// For CSS Modules and <style module>, we need to export a mapping
+		// and register the scoped styles.
+		if (isModule) {
+			const scopeId = Math.abs(
+				filename.split('').reduce((a, b) => {
+					a = (a << 5) - a + b.charCodeAt(0)
+					return a & a
+				}, 0)
+			)
+				.toString(36)
+				.slice(0, 8)
+
+			const scopedStyles: Record<string, any> = {}
+			const classNameMap: Record<string, string> = {}
+
+			for (const [className, style] of Object.entries(styles)) {
+				const scopedName = `${className}__${scopeId}`
+				scopedStyles[scopedName] = style
+				classNameMap[className] = scopedName
+			}
+
+			// In esbuild, we return the JS directly.
+			// We must include the registerStyles call in the JS code.
+			const code = `import { registerStyles } from '${isVue ? '@wolfie/vue' : '@wolfie/react'}'
+registerStyles(${JSON.stringify(scopedStyles)})
+export default ${JSON.stringify(classNameMap)}`
+
+			return { code, styles: scopedStyles }
+		}
+
+		// Regular styles - register and export style objects
 		Object.assign(globalStylesMap, styles)
 
 		const code = generateJavaScript(styles, {
-			mode: isModule ? 'module' : 'global',
-			metadata: compileResult.metadata,
+			mode: 'global',
+			camelCaseClasses: false,
+			metadata: {
+				...compileResult.metadata,
+				register: true,
+			} as any,
 			framework,
-			camelCaseClasses: camelCase,
 		})
 
 		return { code, styles }
+	}
+
+	function matchesPattern(
+		id: string,
+		pattern: string | RegExp | (string | RegExp)[]
+	): boolean {
+		const patterns = Array.isArray(pattern) ? pattern : [pattern]
+		return patterns.some((p) => {
+			if (typeof p === 'string') return id.includes(p)
+			return p.test(id)
+		})
 	}
 
 	return {
@@ -244,10 +343,22 @@ export function wolfie(
 				})
 			}
 
-			// Phase 4: Handle CSS/preprocessor files
-			build.onLoad({ filter }, async (args) => {
+			// Phase 4: Handle CSS/preprocessor files directly
+			build.onLoad({ filter: CSS_EXTENSIONS_RE }, async (args) => {
 				// Check exclude pattern
-				if (exclude?.test(args.path)) return null
+				if (exclude && matchesPattern(args.path, exclude)) {
+					return null
+				}
+
+				// Check include pattern
+				if (!matchesPattern(args.path, include)) {
+					return null
+				}
+
+				// Skip node_modules
+				if (args.path.includes('node_modules')) {
+					return null
+				}
 
 				try {
 					const result = await loadAndProcessStyle(args.path)
@@ -266,6 +377,7 @@ export function wolfie(
 						contents: result.code,
 						loader: 'js',
 						watchFiles: [args.path],
+						resolveDir: dirname(args.path.split('?')[0]),
 					}
 				} catch (err: unknown) {
 					const message = err instanceof Error ? err.message : String(err)

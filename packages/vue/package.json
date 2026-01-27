@@ -4,6 +4,7 @@
 	"description": "Vue 3 adapter for Wolfie",
 	"license": "MIT",
 	"type": "module",
+	"sideEffects": false,
 	"exports": {
 		".": {
 			"types": "./build/index.d.ts",
@@ -47,14 +48,16 @@
 		"wrap-ansi": "^9.0.0"
 	},
 	"devDependencies": {
+		"@vitejs/plugin-vue": "^5.2.1",
+		"@vitejs/plugin-vue-jsx": "^4.1.1",
 		"@wolfie/css-parser": "workspace:*",
 		"@wolfie/plugin": "workspace:*",
-		"vue": "^3.5.0",
-		"@vitejs/plugin-vue": "^5.2.1",
-		"@vitejs/plugin-vue-jsx": "^4.1.1"
+		"memfs": "^4.56.10",
+		"ts-loader": "^9.5.4",
+		"vue": "^3.5.0"
 	},
 	"peerDependencies": {
-		"vue": "^3.5.0",
-		"chalk": "^5.0.0"
+		"chalk": "^5.0.0",
+		"vue": "^3.5.0"
 	}
 }

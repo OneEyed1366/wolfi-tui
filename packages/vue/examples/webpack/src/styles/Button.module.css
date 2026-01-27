@@ -1,0 +1,13 @@
+.button {
+	padding: 1;
+	border-style: round;
+	border-color: blue;
+}
+
+.button:hover {
+	border-color: lime;
+}
+
+.text {
+	color: green;
+}

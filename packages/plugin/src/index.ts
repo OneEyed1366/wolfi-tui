@@ -47,7 +47,7 @@ export interface WolfieOptions {
 
 //#region Plugin Factory
 
-const CSS_EXTENSIONS_RE = /\.(css|scss|sass|less|styl|stylus)$/
+const CSS_EXTENSIONS_RE = /\.(css|scss|sass|less|styl|stylus)(\?.*)?$/
 
 export const unpluginFactory: UnpluginFactory<[Framework, WolfieOptions?]> = (
 	[framework, options = {}],
