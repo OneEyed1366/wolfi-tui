@@ -11,6 +11,8 @@ import { Box, type BoxProps } from './Box'
 import { Text, type TextProps } from './Text'
 import { useComponentTheme, type IComponentTheme } from '../theme'
 import { OrderedListSymbol, OrderedListItemSymbol } from '../context/symbols'
+import { flatten } from '../utils/slots'
+import { UnorderedList } from './UnorderedList'
 
 //#region Types
 export type OrderedListContextProps = {
@@ -152,12 +154,45 @@ const OrderedListComponent = defineComponent({
 			const styles = theme?.styles ?? orderedListTheme.styles
 
 			const children = slots.default?.() ?? props.children ?? []
+			const flatChildren = flatten(
+				Array.isArray(children) ? children : [children]
+			)
 
-			// Count OrderedListItem children
+			// Count OrderedListItem children (or children that will be wrapped)
 			let numberOfItems = 0
-			const childArray = Array.isArray(children) ? children : [children]
+			for (const child of flatChildren) {
+				if (
+					child &&
+					typeof child === 'object' &&
+					'type' in child &&
+					(child.type === OrderedListComponent ||
+						(child.type as any)?.name === 'OrderedList' ||
+						child.type === UnorderedList ||
+						(child.type as any)?.name === 'UnorderedList')
+				) {
+					// Don't count nested lists as items for the current list's numbering
+					continue
+				}
+				numberOfItems++
+			}
 
-			for (const child of childArray) {
+			const maxMarkerWidth = String(numberOfItems).length
+
+			let itemIndex = 0
+
+			const wrappedChildren = flatChildren.map((child) => {
+				if (
+					child &&
+					typeof child === 'object' &&
+					'type' in child &&
+					(child.type === OrderedListComponent ||
+						(child.type as any)?.name === 'OrderedList' ||
+						child.type === UnorderedList ||
+						(child.type as any)?.name === 'UnorderedList')
+				) {
+					return child
+				}
+
 				if (
 					child &&
 					typeof child === 'object' &&
@@ -165,34 +200,23 @@ const OrderedListComponent = defineComponent({
 					(child.type === OrderedListItem ||
 						(child.type as any)?.name === 'OrderedListItem')
 				) {
-					numberOfItems++
-				}
-			}
+					itemIndex++
+					const paddedMarker = `${String(itemIndex).padStart(maxMarkerWidth)}.`
+					const marker = `${parentContext.marker}${paddedMarker}`
 
-			const maxMarkerWidth = String(numberOfItems).length
-
-			let itemIndex = 0
-
-			const wrappedChildren = childArray.map((child) => {
-				if (
-					!child ||
-					typeof child !== 'object' ||
-					!('type' in child) ||
-					(child.type !== OrderedListItem &&
-						(child.type as any)?.name !== 'OrderedListItem')
-				) {
-					return child
+					return h(
+						OrderedListItemWrapper,
+						{ marker, key: itemIndex },
+						() => child
+					)
 				}
 
 				itemIndex++
 				const paddedMarker = `${String(itemIndex).padStart(maxMarkerWidth)}.`
 				const marker = `${parentContext.marker}${paddedMarker}`
 
-				// Wrap item with context provider
-				return h(
-					OrderedListItemWrapper,
-					{ marker, key: itemIndex },
-					() => child
+				return h(OrderedListItemWrapper, { marker, key: itemIndex }, () =>
+					h(OrderedListItem, null, () => child)
 				)
 			})
 

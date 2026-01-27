@@ -2,6 +2,7 @@ import {
 	defineComponent,
 	inject,
 	provide,
+	h,
 	type PropType,
 	type VNode,
 } from 'vue'
@@ -13,6 +14,8 @@ import {
 	UnorderedListSymbol,
 	UnorderedListItemSymbol,
 } from '../context/symbols'
+import { flatten } from '../utils/slots'
+import { OrderedList } from './OrderedList'
 
 //#region Types
 export type UnorderedListContextProps = {
@@ -172,8 +175,29 @@ const UnorderedListComponent = defineComponent({
 		return () => {
 			const styles = theme?.styles ?? unorderedListTheme.styles
 			const children = slots.default?.() ?? props.children ?? []
+			const flatChildren = flatten(
+				Array.isArray(children) ? children : [children]
+			)
 
-			return <Box {...styles.list()}>{children}</Box>
+			const wrappedChildren = flatChildren.map((child) => {
+				if (
+					child &&
+					typeof child === 'object' &&
+					'type' in child &&
+					(child.type === UnorderedListItem ||
+						(child.type as any)?.name === 'UnorderedListItem' ||
+						child.type === UnorderedListComponent ||
+						(child.type as any)?.name === 'UnorderedList' ||
+						child.type === OrderedList ||
+						(child.type as any)?.name === 'OrderedList')
+				) {
+					return child
+				}
+
+				return h(UnorderedListItem, null, () => child)
+			})
+
+			return <Box {...styles.list()}>{wrappedChildren}</Box>
 		}
 	},
 })
