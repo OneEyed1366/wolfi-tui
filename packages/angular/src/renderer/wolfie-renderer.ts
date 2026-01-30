@@ -153,22 +153,23 @@ export class WolfieRenderer implements Renderer2 {
 
 	createElement(name: string, _namespace?: string | null): DOMElement {
 		// Map Angular component selectors to Wolfie element names
-		// w-box -> wolfie-box, w-text -> wolfie-text, etc.
-		let wolfieTag: string
-		if (name.startsWith('wolfie-')) {
-			wolfieTag = name
-		} else if (name.startsWith('w-')) {
-			// Angular component selectors: w-box -> wolfie-box
-			wolfieTag = `wolfie-${name.slice(2)}`
-		} else if (name.startsWith('app-')) {
-			// App components become boxes (containers)
+		// Only wolfie-root, wolfie-box, wolfie-text, wolfie-virtual-text are valid ElementNames
+		let wolfieTag: ElementNames
+		if (name === 'wolfie-root') {
+			wolfieTag = 'wolfie-root'
+		} else if (name === 'w-box' || name === 'wolfie-box') {
 			wolfieTag = 'wolfie-box'
+		} else if (name === 'w-text' || name === 'wolfie-text') {
+			wolfieTag = 'wolfie-text'
+		} else if (name === 'wolfie-virtual-text') {
+			wolfieTag = 'wolfie-virtual-text'
 		} else {
-			// Other elements become boxes by default
+			// All other elements (w-alert, w-select, w-ordered-list, app-*, etc.)
+			// become wolfie-box containers since that's the only valid container type
 			wolfieTag = 'wolfie-box'
 		}
 		// Don't pass layoutTree here - init recursively on insert (Vue pattern)
-		const node = createNode(wolfieTag as ElementNames)
+		const node = createNode(wolfieTag)
 		return node
 	}
 
@@ -222,7 +223,12 @@ export class WolfieRenderer implements Renderer2 {
 			initLayoutTreeRecursively(newChild, instance.layoutTree)
 		}
 
-		insertBeforeNode(parent, newChild, refChild, instance?.layoutTree)
+		// If refChild is null, append to end (insertBeforeNode requires non-null refChild)
+		if (refChild) {
+			insertBeforeNode(parent, newChild, refChild, instance?.layoutTree)
+		} else {
+			appendChildNode(parent, newChild, instance?.layoutTree)
+		}
 
 		// Mark dirty if text component
 		if (

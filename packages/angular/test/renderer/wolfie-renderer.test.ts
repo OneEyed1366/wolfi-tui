@@ -103,9 +103,19 @@ describe('WolfieRenderer', () => {
 			expect(node.nodeName).toBe('wolfie-box')
 		})
 
-		it('passes through wolfie-* selectors unchanged', () => {
+		it('passes through valid wolfie-* selectors unchanged', () => {
+			// Only valid ElementNames: wolfie-root, wolfie-box, wolfie-text, wolfie-virtual-text
+			const textNode = renderer.createElement('wolfie-text')
+			expect(textNode.nodeName).toBe('wolfie-text')
+
+			const virtualTextNode = renderer.createElement('wolfie-virtual-text')
+			expect(virtualTextNode.nodeName).toBe('wolfie-virtual-text')
+		})
+
+		it('maps invalid wolfie-* selectors to wolfie-box', () => {
+			// Invalid wolfie-* names become wolfie-box
 			const node = renderer.createElement('wolfie-spacer')
-			expect(node.nodeName).toBe('wolfie-spacer')
+			expect(node.nodeName).toBe('wolfie-box')
 		})
 
 		it('does not initialize layoutNodeId until inserted into tree', () => {
