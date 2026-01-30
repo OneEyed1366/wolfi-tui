@@ -4,6 +4,7 @@ import {
 	signal,
 	computed,
 	effect,
+	inject,
 	ChangeDetectionStrategy,
 } from '@angular/core'
 import {
@@ -66,6 +67,10 @@ export class FocusDemoComponent implements OnDestroy {
 	]
 	//#endregion Constants
 
+	//#region Injected Dependencies
+	private focusService = inject(FocusService)
+	//#endregion Injected Dependencies
+
 	//#region State
 	item2Active = signal(true)
 	//#endregion State
@@ -74,7 +79,7 @@ export class FocusDemoComponent implements OnDestroy {
 	private focusedId = computed(() => this.focusService.activeId())
 	//#endregion Computed
 
-	constructor(private focusService: FocusService) {
+	constructor() {
 		// Register all focusable items
 		this.items.forEach((item, index) => {
 			this.focusService.addFocusable(item.id, {

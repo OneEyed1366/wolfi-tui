@@ -2,6 +2,7 @@ import {
 	Component,
 	signal,
 	computed,
+	inject,
 	ChangeDetectionStrategy,
 } from '@angular/core'
 import {
@@ -12,6 +13,8 @@ import {
 	EmailInputComponent,
 	ConfirmInputComponent,
 	FocusService,
+	injectInput,
+	type Key,
 } from '@wolfie/angular'
 
 //#region InputDemoComponent
@@ -80,7 +83,7 @@ import {
 			</w-box>
 
 			<w-text class="text-gray">
-				Type to enter values. Tab autocompletes suggestions.
+				Type to enter values. Tab to switch inputs.
 			</w-text>
 		</w-box>
 	`,
@@ -90,12 +93,30 @@ export class InputDemoComponent {
 	readonly nameSuggestions = ['Alice', 'Bob', 'Charlie', 'Diana', 'Edward']
 	//#endregion Constants
 
+	//#region Injected Dependencies
+	private focusService = inject(FocusService)
+	//#endregion Injected Dependencies
+
 	//#region State
 	name = signal('')
 	password = signal('')
 	email = signal('')
 	confirmStatus = signal('pending')
 	//#endregion State
+
+	//#region Constructor
+	constructor() {
+		// Handle Tab/Shift+Tab for focus navigation between inputs
+		injectInput((_input: string, key: Key) => {
+			if (key.tab && !key.shift) {
+				this.focusService.focusNext()
+			}
+			if (key.tab && key.shift) {
+				this.focusService.focusPrevious()
+			}
+		})
+	}
+	//#endregion Constructor
 
 	//#region Computed
 	maskedPassword = computed(() => {

@@ -112,11 +112,10 @@ export class AppComponent {
 	]
 
 	activeScreen = signal(0)
-	footerText = computed(() =>
-		this.screens[this.activeScreen()].name === 'Focus'
-			? 'tab focus'
-			: 'tab navigate'
-	)
+	footerText = computed(() => {
+		const name = this.screens[this.activeScreen()].name
+		return name === 'Focus' || name === 'Inputs' ? 'tab focus' : 'tab navigate'
+	})
 	private appService = inject(AppService)
 
 	constructor() {
@@ -125,9 +124,11 @@ export class AppComponent {
 				this.appService.exit()
 			}
 
-			// Tab/Shift+Tab for navigation - disabled on Focus screen
-			const isFocusScreen = this.screens[this.activeScreen()].name === 'Focus'
-			if (!isFocusScreen) {
+			// Tab/Shift+Tab for navigation - disabled on Focus and Inputs screens
+			const currentScreen = this.screens[this.activeScreen()].name
+			const useInternalFocus =
+				currentScreen === 'Focus' || currentScreen === 'Inputs'
+			if (!useInternalFocus) {
 				if (key.tab && !key.shift) {
 					this.activeScreen.update((v) => (v + 1) % this.screens.length)
 				}

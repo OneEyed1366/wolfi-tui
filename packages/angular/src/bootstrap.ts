@@ -4,7 +4,25 @@ import {
 	NgZone,
 	RendererFactory2,
 	createEnvironmentInjector,
+	Injectable,
+	ɵChangeDetectionScheduler as ChangeDetectionScheduler,
 } from '@angular/core'
+
+//#region NoopChangeDetectionScheduler
+/**
+ * Minimal ChangeDetectionScheduler implementation for effect() support.
+ * Since Wolfie manages change detection manually, we just need to satisfy
+ * the interface without actually scheduling anything.
+ */
+@Injectable()
+class NoopChangeDetectionScheduler {
+	notify(_source?: number): void {
+		// Noop - Wolfie handles change detection manually
+	}
+
+	runningTick = false
+}
+//#endregion NoopChangeDetectionScheduler
 import cliCursor from 'cli-cursor'
 import { WolfieAngular, type WolfieOptions } from './wolfie-angular'
 import { WolfieRendererFactory } from './renderer/wolfie-renderer-factory'
@@ -132,6 +150,11 @@ export async function renderWolfie<T>(
 		{
 			provide: NgZone,
 			useValue: ngZone,
+		},
+		// Required for effect() to work
+		{
+			provide: ChangeDetectionScheduler,
+			useClass: NoopChangeDetectionScheduler,
 		},
 		StdinService,
 		StdoutService,
