@@ -21,7 +21,12 @@
 
 		<!-- Footer -->
 		<Box class="mt-1 border-t-single border-gray p-t-1">
-			<Text class="text-gray"> tab navigate | 1-6 jump | q quit </Text>
+			<Text class="text-gray">
+				{{
+					screens[activeScreen].name === 'Focus' ? 'tab focus' : 'tab navigate'
+				}}
+				| 1-7 jump | q quit
+			</Text>
 		</Box>
 	</Box>
 </template>
@@ -35,6 +40,7 @@ import SelectDemo from './screens/SelectDemo.vue'
 import StatusDemo from './screens/StatusDemo.vue'
 import ListDemo from './screens/ListDemo.vue'
 import ErrorDemo from './screens/ErrorDemo.vue'
+import FocusDemo from './screens/FocusDemo.vue'
 
 interface Screen {
 	name: string
@@ -48,6 +54,7 @@ const screens: Screen[] = [
 	{ name: 'Status', component: markRaw(StatusDemo) },
 	{ name: 'Lists', component: markRaw(ListDemo) },
 	{ name: 'Errors', component: markRaw(ErrorDemo) },
+	{ name: 'Focus', component: markRaw(FocusDemo) },
 ]
 
 const activeScreen = ref(0)
@@ -57,15 +64,18 @@ useInput((input, key) => {
 	if (input === 'q') {
 		exit()
 	}
-	// Tab/Shift+Tab for navigation (avoid arrow conflicts with input components)
-	if (key.tab && !key.shift) {
-		activeScreen.value = (activeScreen.value + 1) % screens.length
+	// Tab/Shift+Tab for navigation - disabled on Focus screen to allow focus demo
+	const isFocusScreen = screens[activeScreen.value].name === 'Focus'
+	if (!isFocusScreen) {
+		if (key.tab && !key.shift) {
+			activeScreen.value = (activeScreen.value + 1) % screens.length
+		}
+		if (key.tab && key.shift) {
+			activeScreen.value =
+				(activeScreen.value - 1 + screens.length) % screens.length
+		}
 	}
-	if (key.tab && key.shift) {
-		activeScreen.value =
-			(activeScreen.value - 1 + screens.length) % screens.length
-	}
-	// Number keys 1-6 to jump to screen
+	// Number keys 1-7 to jump to screen
 	const num = parseInt(input)
 	if (num >= 1 && num <= screens.length) {
 		activeScreen.value = num - 1

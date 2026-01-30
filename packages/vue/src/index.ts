@@ -1,4 +1,4 @@
-import { createRenderer, type App, type Component } from 'vue'
+import { createRenderer, ref, type App, type Component, type Ref } from 'vue'
 import { EventEmitter } from 'node:events'
 import { nodeOps } from './renderer/nodeOps'
 import { patchProp } from './renderer/patchProp'
@@ -27,6 +27,7 @@ import {
 	StderrSymbol,
 	AppSymbol,
 	AccessibilitySymbol,
+	FocusSymbol,
 } from './context/symbols'
 // Note: CSS compilation moved to @wolfie/plugin
 
@@ -70,6 +71,11 @@ export type WolfieVueInstance = {
 
 export const layoutTreeRegistry = new WeakMap<DOMElement, WolfieVueInstance>()
 
+interface Focusable {
+	id: string
+	isActive: boolean
+}
+
 class WolfieVue {
 	private rootNode: DOMElement
 	private app!: App<DOMNode>
@@ -83,6 +89,12 @@ class WolfieVue {
 	private lastTerminalWidth: number
 	private unsubscribeResize?: () => void
 	private isScreenReaderEnabled!: boolean
+
+	//#region Focus State
+	private focusables: Ref<Focusable[]> = ref([])
+	private activeFocusId: Ref<string | undefined> = ref(undefined)
+	private isFocusEnabled = true
+	//#endregion Focus State
 
 	constructor(options: RenderOptions = {}) {
 		this.stdout = options.stdout || process.stdout
@@ -132,7 +144,9 @@ class WolfieVue {
 		}
 
 		this.stdin.on('data', (data: Buffer) => {
-			this.eventEmitter.emit('input', data.toString())
+			const input = data.toString()
+			this.handleFocusInput(input)
+			this.eventEmitter.emit('input', input)
 		})
 
 		if (this.stdout.isTTY) {
@@ -299,6 +313,114 @@ class WolfieVue {
 		this.log(output)
 	}
 
+	//#region Focus Management
+	private addFocusable = (id: string, options: { autoFocus: boolean }) => {
+		this.focusables.value.push({ id, isActive: true })
+
+		// Auto-focus if requested and no component is currently focused
+		if (options.autoFocus && this.activeFocusId.value === undefined) {
+			this.activeFocusId.value = id
+		}
+	}
+
+	private removeFocusable = (id: string) => {
+		this.focusables.value = this.focusables.value.filter((f) => f.id !== id)
+
+		// Clear focus if the removed component was focused
+		if (this.activeFocusId.value === id) {
+			this.activeFocusId.value = undefined
+		}
+	}
+
+	private activateFocusable = (id: string) => {
+		const focusable = this.focusables.value.find((f) => f.id === id)
+		if (focusable) {
+			focusable.isActive = true
+		}
+	}
+
+	private deactivateFocusable = (id: string) => {
+		const focusable = this.focusables.value.find((f) => f.id === id)
+		if (focusable) {
+			focusable.isActive = false
+
+			// If this was focused, advance to next (like Angular)
+			if (this.activeFocusId.value === id) {
+				this.focusNext()
+			}
+		}
+	}
+
+	private focusNext = () => {
+		const activeFocusables = this.focusables.value.filter((f) => f.isActive)
+		if (activeFocusables.length === 0) return
+
+		const currentIndex = activeFocusables.findIndex(
+			(f) => f.id === this.activeFocusId.value
+		)
+
+		// Wrap around: if at end or not found, go to first
+		const nextIndex =
+			currentIndex === -1 || currentIndex >= activeFocusables.length - 1
+				? 0
+				: currentIndex + 1
+
+		this.activeFocusId.value = activeFocusables[nextIndex].id
+	}
+
+	private focusPrevious = () => {
+		const activeFocusables = this.focusables.value.filter((f) => f.isActive)
+		if (activeFocusables.length === 0) return
+
+		const currentIndex = activeFocusables.findIndex(
+			(f) => f.id === this.activeFocusId.value
+		)
+
+		// Wrap around: if at start or not found, go to last
+		const prevIndex =
+			currentIndex <= 0 ? activeFocusables.length - 1 : currentIndex - 1
+
+		this.activeFocusId.value = activeFocusables[prevIndex].id
+	}
+
+	private focus = (id: string) => {
+		const focusable = this.focusables.value.find(
+			(f) => f.id === id && f.isActive
+		)
+		if (focusable) {
+			this.activeFocusId.value = id
+		}
+	}
+
+	private enableFocus = () => {
+		this.isFocusEnabled = true
+	}
+
+	private disableFocus = () => {
+		this.isFocusEnabled = false
+	}
+
+	private handleFocusInput = (input: string) => {
+		// Escape clears focus
+		if (input === '\u001B') {
+			this.activeFocusId.value = undefined
+			return
+		}
+
+		if (!this.isFocusEnabled || this.focusables.value.length === 0) return
+
+		// Tab = focusNext
+		if (input === '\t') {
+			this.focusNext()
+		}
+
+		// Shift+Tab = focusPrevious
+		if (input === '\u001B[Z') {
+			this.focusPrevious()
+		}
+	}
+	//#endregion Focus Management
+
 	render(component: Component) {
 		this.app = getCreateApp()(component)
 
@@ -352,6 +474,19 @@ class WolfieVue {
 			isScreenReaderEnabled: this.isScreenReaderEnabled,
 		})
 
+		this.app.provide(FocusSymbol, {
+			activeFocusId: this.activeFocusId,
+			add: this.addFocusable,
+			remove: this.removeFocusable,
+			activate: this.activateFocusable,
+			deactivate: this.deactivateFocusable,
+			focusNext: this.focusNext,
+			focusPrevious: this.focusPrevious,
+			focus: this.focus,
+			enableFocus: this.enableFocus,
+			disableFocus: this.disableFocus,
+		})
+
 		const { mount } = this.app
 		this.app.mount = (container: DOMElement) => {
 			const proxy = mount(container)
@@ -399,6 +534,8 @@ export * from './components'
 // Re-export composables
 export { useApp } from './composables/use-app'
 export { useInput } from './composables/use-input'
+export { useFocus } from './composables/use-focus'
+export { useFocusManager } from './composables/use-focus-manager'
 export { useStdin } from './composables/use-stdin'
 export { useStdout } from './composables/use-stdout'
 export { useStderr } from './composables/use-stderr'
