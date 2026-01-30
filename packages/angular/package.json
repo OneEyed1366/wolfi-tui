@@ -32,6 +32,8 @@
 	"dependencies": {
 		"@wolfie/core": "workspace:*",
 		"ansi-escapes": "^7.2.0",
+		"cli-spinners": "^3.4.0",
+		"figures": "^6.1.0",
 		"ansi-styles": "^6.2.1",
 		"auto-bind": "^5.0.1",
 		"cli-boxes": "^3.0.0",
