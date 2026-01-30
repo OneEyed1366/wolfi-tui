@@ -1,4 +1,4 @@
-import { Injectable, inject, DestroyRef } from '@angular/core'
+import { Injectable, inject, DestroyRef, NgZone } from '@angular/core'
 import { parseKeypress, nonAlphanumericKeys } from '@wolfie/core'
 import { STDIN_CONTEXT } from '../tokens'
 
@@ -82,6 +82,7 @@ export function injectInput(
 ): void {
 	const stdinContext = inject(STDIN_CONTEXT)
 	const destroyRef = inject(DestroyRef)
+	const ngZone = inject(NgZone)
 
 	const handleData = (data: string) => {
 		// Check isActive if provided
@@ -130,7 +131,8 @@ export function injectInput(
 
 		// Handle Ctrl+C exit if enabled
 		if (!(input === 'c' && key.ctrl) || !stdinContext.internal_exitOnCtrlC) {
-			handler(input, key)
+			// Run inside Angular zone to trigger change detection
+			ngZone.run(() => handler(input, key))
 		}
 	}
 
