@@ -2,6 +2,19 @@
 
 Vue 3 adapter for wolf-tui. Build terminal user interfaces with Vue.
 
+## About
+
+This package provides Vue 3 components ported from the React ecosystem — originally [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes and the ink-\* component libraries. All components have been reimplemented using Vue's Composition API and `defineComponent`.
+
+## Features
+
+- **SFC & JSX support** — Write components using Single File Components (`.vue`) or JSX/TSX
+- **Vue 3.5+** — Built for modern Vue with Composition API
+- **Tree-shakeable** — Only imports what you use; tested with esbuild, Vite, and webpack
+- **Full component library** — Inputs, alerts, spinners, progress bars, lists
+- **Composables API** — `useInput`, `useFocus`, `useFocusManager`, and more
+- **CSS styling** — Tailwind CSS, CSS Modules, SCSS/LESS/Stylus via `@wolfie/plugin`
+
 ## Installation
 
 ```bash
@@ -16,6 +29,8 @@ pnpm add @wolfie/vue @wolfie/plugin chalk
 - `chalk` ^5.0.0
 
 ## Quick Start
+
+### With SFC (Single File Components)
 
 ```vue
 <script setup>
@@ -33,6 +48,29 @@ import { Box, Text } from '@wolfie/vue'
 ```ts
 import { render } from '@wolfie/vue'
 import App from './App.vue'
+
+render(App)
+```
+
+### With JSX/TSX
+
+```tsx
+import { defineComponent, ref } from '@wolfie/vue'
+import { Box, Text, render } from '@wolfie/vue'
+
+const App = defineComponent({
+	setup() {
+		const count = ref(0)
+		return () => (
+			<Box flexDirection="column" padding={1}>
+				<Text color="green" bold>
+					Hello, Terminal!
+				</Text>
+				<Text>Count: {count.value}</Text>
+			</Box>
+		)
+	},
+})
 
 render(App)
 ```

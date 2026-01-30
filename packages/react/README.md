@@ -6,6 +6,15 @@ React adapter for wolf-tui. Build terminal user interfaces with React.
 
 This package is a fork of [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes, extended with additional components from the ink-\* ecosystem. It provides React components and hooks for building interactive CLI applications.
 
+## Features
+
+- **React Compiler** — Built with [React Compiler](https://react.dev/learn/react-compiler) for automatic memoization and optimal performance
+- **React 19+** — Leverages latest React features
+- **Tree-shakeable** — Only imports what you use; tested with esbuild, Vite, and webpack
+- **Full component library** — Inputs, alerts, spinners, progress bars, lists
+- **Hooks API** — `useInput`, `useFocus`, `useFocusManager`, and more
+- **CSS styling** — Tailwind CSS, CSS Modules, SCSS/LESS/Stylus via `@wolfie/plugin`
+
 ## Installation
 
 ```bash

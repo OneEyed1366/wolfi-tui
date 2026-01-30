@@ -2,6 +2,20 @@
 
 Angular adapter for wolf-tui. Build terminal user interfaces with Angular.
 
+## About
+
+This package provides Angular components ported from the React ecosystem — originally [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes and the ink-\* component libraries. All components have been reimplemented as standalone Angular components with signals support.
+
+## Features
+
+- **Angular 17+** — Built for modern Angular with standalone components
+- **Signals support** — First-class support for Angular signals (`signal`, `computed`, `effect`)
+- **OnPush ready** — All components work with `ChangeDetectionStrategy.OnPush`
+- **Tree-shakeable** — Only imports what you use; `sideEffects: false` for optimal bundling
+- **Full component library** — Inputs, alerts, spinners, progress bars, lists
+- **Dependency injection** — Services and injection functions for keyboard input, focus, stdio
+- **CSS styling** — Tailwind CSS, CSS Modules, SCSS/LESS/Stylus via `@wolfie/plugin`
+
 ## Installation
 
 ```bash

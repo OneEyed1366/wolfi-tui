@@ -22,10 +22,19 @@ This project started as a fork of [Ink](https://github.com/vadimdemedes/ink) by 
 - **Multi-framework** — React 19+, Vue 3.5+, Angular 17+
 - **Modern layout** — Flexbox & CSS Grid via Taffy engine
 - **Rich styling** — Tailwind CSS (v3 & v4), SCSS, LESS, Stylus, CSS Modules
+- **Tree-shakeable** — Only bundle what you use; tested with esbuild, Vite, webpack
 - **Build tools** — Vite, esbuild, webpack, Rollup (via unplugin)
 - **Component library** — Inputs, alerts, spinners, progress bars, lists
 - **Keyboard handling** — Focus management, Tab navigation
 - **Accessibility** — Screen reader support
+
+### Framework-Specific Features
+
+| Framework   | Key Features                                                      |
+| ----------- | ----------------------------------------------------------------- |
+| **React**   | React Compiler for automatic memoization, React 19+ features      |
+| **Vue**     | SFC (`.vue`) and JSX/TSX support, Composition API                 |
+| **Angular** | Signals (`signal`, `computed`, `effect`), OnPush change detection |
 
 ## Quick Start
 
