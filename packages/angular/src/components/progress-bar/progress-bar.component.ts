@@ -118,7 +118,7 @@ export class ProgressBarComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	ngOnChanges(): void {
 		this._value.set(this.value)
-		this.measureWidth()
+		// Width is measured once in ngAfterViewInit - no need to remeasure on value changes
 	}
 	//#endregion Lifecycle
 

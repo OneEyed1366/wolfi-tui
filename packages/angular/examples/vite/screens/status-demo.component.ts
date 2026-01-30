@@ -1,5 +1,11 @@
 import type { OnInit, OnDestroy } from '@angular/core'
-import { Component, signal, NgZone, inject } from '@angular/core'
+import {
+	Component,
+	signal,
+	NgZone,
+	ChangeDetectorRef,
+	inject,
+} from '@angular/core'
 import {
 	BoxComponent,
 	TextComponent,
@@ -75,6 +81,7 @@ const PROGRESS_MAX = 100
 export class StatusDemoComponent implements OnInit, OnDestroy {
 	//#region Injected Dependencies
 	private ngZone = inject(NgZone)
+	private cdr = inject(ChangeDetectorRef)
 	//#endregion Injected Dependencies
 
 	//#region Signals
@@ -91,7 +98,11 @@ export class StatusDemoComponent implements OnInit, OnDestroy {
 		this.ngZone.runOutsideAngular(() => {
 			this.progressInterval = setInterval(() => {
 				this.ngZone.run(() => {
-					this.progress.update((p) => (p >= PROGRESS_MAX ? 0 : p + 1))
+					const newVal =
+						this.progress() >= PROGRESS_MAX ? 0 : this.progress() + 1
+					this.progress.set(newVal)
+					// Force immediate change detection for OnPush component
+					this.cdr.detectChanges()
 				})
 			}, PROGRESS_INTERVAL_MS)
 		})

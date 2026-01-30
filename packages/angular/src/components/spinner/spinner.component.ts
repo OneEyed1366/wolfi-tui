@@ -3,6 +3,7 @@ import {
 	Component,
 	Input,
 	ChangeDetectionStrategy,
+	ChangeDetectorRef,
 	signal,
 	computed,
 	NgZone,
@@ -70,6 +71,7 @@ export class SpinnerComponent implements OnInit, OnDestroy {
 
 	//#region Injected Dependencies
 	private ngZone = inject(NgZone)
+	private cdr = inject(ChangeDetectorRef)
 	//#endregion Injected Dependencies
 
 	//#region Internal State
@@ -118,6 +120,8 @@ export class SpinnerComponent implements OnInit, OnDestroy {
 					const currentIndex = this._frameIndex()
 					const isLastFrame = currentIndex === spinner.frames.length - 1
 					this._frameIndex.set(isLastFrame ? 0 : currentIndex + 1)
+					// Force immediate change detection for OnPush component
+					this.cdr.detectChanges()
 				})
 			}, spinner.interval)
 		})
