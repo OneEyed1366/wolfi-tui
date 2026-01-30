@@ -13,7 +13,7 @@ import {
 
 //#region Types
 
-export type Framework = 'react' | 'vue'
+export type Framework = 'react' | 'vue' | 'angular'
 
 /**
  * Wolfie plugin options.
@@ -54,8 +54,9 @@ export const unpluginFactory: UnpluginFactory<[Framework, WolfieOptions?]> = (
 	meta
 ): UnpluginOptions | UnpluginOptions[] => {
 	const isVue = framework === 'vue'
-	// Hardcoded: React uses camelCase, Vue uses kebab-case
-	const camelCase = !isVue
+	const isAngular = framework === 'angular'
+	// Hardcoded: React uses camelCase, Vue/Angular use kebab-case
+	const camelCase = !isVue && !isAngular
 
 	// Main CSS transform plugin
 	const mainPlugin: UnpluginOptions = {

@@ -76,7 +76,7 @@ export interface CodeGeneratorOptions {
 		statics?: string[]
 	}
 	/** Framework to import from (default: 'react') */
-	framework?: 'react' | 'vue'
+	framework?: 'react' | 'vue' | 'angular'
 }
 
 export interface GeneratedOutput {
@@ -105,8 +105,8 @@ export interface VitePluginOptions {
 	camelCaseClasses?: boolean
 	/** Inline styles directly in JSX (experimental) */
 	inline?: boolean
-	/** Framework to import from: 'react' or 'vue' (default: 'react') */
-	framework?: 'react' | 'vue'
+	/** Framework to import from: 'react', 'vue', or 'angular' (default: 'react') */
+	framework?: 'react' | 'vue' | 'angular'
 }
 
 /**

@@ -136,8 +136,9 @@ export function wolfie(
 	} = options
 
 	const isVue = framework === 'vue'
-	// Hardcoded: React uses camelCase, Vue uses kebab-case
-	const camelCase = !isVue
+	const isAngular = framework === 'angular'
+	// Hardcoded: React uses camelCase, Vue/Angular use kebab-case
+	const camelCase = !isVue && !isAngular
 	// Hardcoded: always inline styles (terminal UI has no stylesheets)
 	const inline = true
 
@@ -157,7 +158,8 @@ export function wolfie(
 				if (entry === 'node_modules' || entry.startsWith('.')) continue
 				scanDirectoryForCandidates(fullPath)
 			} else if (stat.isFile()) {
-				if (/\.(tsx|jsx|ts|js|vue)$/.test(entry)) {
+				// Include .html for Angular template files
+				if (/\.(tsx|jsx|ts|js|vue|html)$/.test(entry)) {
 					try {
 						const content = readFileSync(fullPath, 'utf-8')
 						const candidates = scanCandidates(content)
@@ -225,7 +227,8 @@ export function wolfie(
 			if (id.includes('node_modules') || id.startsWith('\x00')) return null
 
 			// If it's a source file, collect candidates for Tailwind
-			if (id.match(/\.(tsx|jsx|ts|js|vue)$/)) {
+			// Include .html for Angular templates
+			if (id.match(/\.(tsx|jsx|ts|js|vue|html)$/)) {
 				const candidates = scanCandidates(code)
 				if (candidates.size > 0) {
 					tailwind.addCandidates(candidates)

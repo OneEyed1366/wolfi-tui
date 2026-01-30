@@ -256,7 +256,11 @@ function generateCode(
 	} else {
 		// Global pattern: registerStyles call
 		const pkg =
-			options.framework === 'vue' ? '@wolfie/vue' : '@wolfie/react/styles'
+			options.framework === 'vue'
+				? '@wolfie/vue'
+				: options.framework === 'angular'
+					? '@wolfie/angular'
+					: '@wolfie/react/styles'
 		lines.push(
 			`import { registerStyles, registerTailwindMetadata } from '${pkg}'`
 		)

@@ -148,8 +148,9 @@ export function wolfie(
 	} = options
 
 	const isVue = framework === 'vue'
-	// Hardcoded: React uses camelCase, Vue uses kebab-case
-	const camelCase = !isVue
+	const isAngular = framework === 'angular'
+	// Hardcoded: React uses camelCase, Vue/Angular use kebab-case
+	const camelCase = !isVue && !isAngular
 	// Hardcoded: always inline styles (terminal UI has no stylesheets)
 	const inline = true
 
@@ -222,7 +223,12 @@ export function wolfie(
 
 			// In esbuild, we return the JS directly.
 			// We must include the registerStyles call in the JS code.
-			const code = `import { registerStyles } from '${isVue ? '@wolfie/vue' : '@wolfie/react'}'
+			const pkg = isVue
+				? '@wolfie/vue'
+				: isAngular
+					? '@wolfie/angular'
+					: '@wolfie/react'
+			const code = `import { registerStyles } from '${pkg}'
 registerStyles(${JSON.stringify(scopedStyles)})
 export default ${JSON.stringify(classNameMap)}`
 
@@ -267,7 +273,8 @@ export default ${JSON.stringify(classNameMap)}`
 			await tailwind.initialize(rootDir)
 
 			// Phase 1: Pre-scan source files to push candidates to Tailwind
-			const sourceFiles = await glob('**/*.{tsx,jsx,ts,js,vue}', {
+			// Include .html for Angular templates
+			const sourceFiles = await glob('**/*.{tsx,jsx,ts,js,vue,html}', {
 				cwd: rootDir,
 				ignore: ['**/node_modules/**', '**/dist/**', '**/build/**'],
 				absolute: true,

@@ -1,5 +1,4 @@
 packages:
   - 'packages/*'
   - 'internal/*'
-  - 'packages/vue/examples/*'
-  - 'packages/react/examples/*'
+  - 'packages/**/examples/*'
