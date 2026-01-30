@@ -499,6 +499,24 @@ registerStyles(parsedStyles)
 
 ---
 
+## Theming
+
+Components export theme objects for customization:
+
+```ts
+import {
+	alertTheme,
+	badgeTheme,
+	spinnerTheme,
+	statusMessageTheme,
+	progressBarTheme,
+	orderedListTheme,
+	unorderedListTheme,
+} from '@wolfie/vue'
+```
+
+---
+
 ## Examples
 
 See [`examples/`](examples/) directory:

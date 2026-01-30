@@ -38,17 +38,23 @@ export default defineConfig({
 ```typescript
 // esbuild.config.js
 import * as esbuild from 'esbuild'
-import wolfie from '@wolfie/plugin/esbuild'
+import wolfie, { generateNativeBanner } from '@wolfie/plugin/esbuild'
 
 await esbuild.build({
 	entryPoints: ['src/index.tsx'],
 	bundle: true,
 	platform: 'node',
+	format: 'cjs',
+	banner: {
+		js: generateNativeBanner('cjs'), // Required for native bindings
+	},
 	plugins: [
 		wolfie('react'), // or 'vue', 'angular'
 	],
 })
 ```
+
+> **Note:** The `generateNativeBanner` helper generates code for native `.node` binding resolution at runtime. Use `'cjs'` or `'es'` to match your output format.
 
 ### webpack
 

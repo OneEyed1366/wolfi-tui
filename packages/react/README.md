@@ -543,7 +543,6 @@ Check if screen reader is active.
 
 ```tsx
 import './styles.css' // Import Tailwind
-
 ;<Box className="flex-col p-4 gap-2 border-round">
 	<Text className="text-green-500 font-bold">Tailwind styled</Text>
 </Box>
@@ -553,7 +552,6 @@ import './styles.css' // Import Tailwind
 
 ```tsx
 import styles from './App.module.css'
-
 ;<Box className={styles.container}>
 	<Text className={styles.title}>CSS Modules</Text>
 </Box>
@@ -578,7 +576,21 @@ const style = resolveClassName('my-class')
 Components export theme objects for customization:
 
 ```tsx
-import { alertTheme, badgeTheme, spinnerTheme } from '@wolfie/react'
+import {
+	alertTheme,
+	badgeTheme,
+	spinnerTheme,
+	statusMessageTheme,
+	progressBarTheme,
+	textInputTheme,
+	passwordInputTheme,
+	emailInputTheme,
+	confirmInputTheme,
+	selectTheme,
+	multiSelectTheme,
+	orderedListTheme,
+	unorderedListTheme,
+} from '@wolfie/react'
 
 // Override theme values
 const customAlertTheme = {
