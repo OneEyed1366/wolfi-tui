@@ -1,101 +1,103 @@
 import type { OnInit, OnDestroy } from '@angular/core'
-import { Component, signal } from '@angular/core'
-import { BoxComponent, TextComponent } from '@wolfie/angular'
+import { Component, signal, NgZone, inject } from '@angular/core'
+import {
+	BoxComponent,
+	TextComponent,
+	AlertComponent,
+	BadgeComponent,
+	StatusMessageComponent,
+	SpinnerComponent,
+	ProgressBarComponent,
+} from '@wolfie/angular'
 
 //#region Constants
-const SPINNER_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
-const SPINNER_INTERVAL_MS = 80
-const PROGRESS_INTERVAL_MS = 200
-const PROGRESS_MAX = 10
+const PROGRESS_INTERVAL_MS = 100
+const PROGRESS_MAX = 100
 //#endregion Constants
 
 //#region StatusDemoComponent
 @Component({
 	selector: 'app-status-demo',
 	standalone: true,
-	imports: [BoxComponent, TextComponent],
+	imports: [
+		BoxComponent,
+		TextComponent,
+		AlertComponent,
+		BadgeComponent,
+		StatusMessageComponent,
+		SpinnerComponent,
+		ProgressBarComponent,
+	],
 	template: `
-		<w-box class="flex-col w-full gap-1">
-			<!-- Title -->
-			<w-text class="font-bold text-white">Status Demo</w-text>
+		<w-box class="flex-col gap-1 w-full">
+			<!-- Alerts -->
+			<w-text class="font-bold text-white">Alerts</w-text>
+			<w-alert variant="success">Operation completed successfully!</w-alert>
+			<w-alert variant="warning">Check your settings before proceeding</w-alert>
+			<w-alert variant="error">Something went wrong</w-alert>
+
+			<!-- Badges -->
+			<w-text class="font-bold text-white mt-1">Badges</w-text>
+			<w-box class="flex-row gap-2">
+				<w-badge color="green">Active</w-badge>
+				<w-badge color="yellow">Pending</w-badge>
+				<w-badge color="red">Failed</w-badge>
+				<w-badge color="blue">Info</w-badge>
+			</w-box>
+
+			<!-- Status Messages -->
+			<w-text class="font-bold text-white mt-1">Status Messages</w-text>
+			<w-status-message variant="success">Build succeeded</w-status-message>
+			<w-status-message variant="error"
+				>Tests failed (3 errors)</w-status-message
+			>
+			<w-status-message variant="warning"
+				>Dependencies outdated</w-status-message
+			>
+			<w-status-message variant="info">Compiling...</w-status-message>
 
 			<!-- Spinner -->
+			<w-text class="font-bold text-white mt-1">Spinner</w-text>
 			<w-box class="flex-row gap-1">
-				<w-text class="text-cyan">{{ spinnerFrame() }}</w-text>
-				<w-text class="text-gray">Loading...</w-text>
+				<w-spinner />
+				<w-text class="text-gray">Loading resources...</w-text>
 			</w-box>
 
-			<!-- Alert Boxes -->
-			<w-box class="flex-col gap-1 mt-1">
-				<!-- Success -->
-				<w-box class="border-single p-1 flex-row gap-1">
-					<w-text class="text-green">✓</w-text>
-					<w-text class="text-green">Operation completed successfully</w-text>
-				</w-box>
-
-				<!-- Warning -->
-				<w-box class="border-single p-1 flex-row gap-1">
-					<w-text class="text-yellow">⚠</w-text>
-					<w-text class="text-yellow">Configuration requires attention</w-text>
-				</w-box>
-
-				<!-- Error -->
-				<w-box class="border-single p-1 flex-row gap-1">
-					<w-text class="text-red">✗</w-text>
-					<w-text class="text-red">Connection failed</w-text>
-				</w-box>
-			</w-box>
-
-			<!-- Progress Indicator -->
-			<w-box class="flex-col mt-1">
-				<w-text class="text-white">Progress:</w-text>
-				<w-box class="flex-row gap-1">
-					<w-text class="text-green">{{ progressBar() }}</w-text>
-					<w-text class="text-gray">{{ progressPercent() }}%</w-text>
-				</w-box>
+			<!-- Progress Bar -->
+			<w-text class="font-bold text-white mt-1">Progress Bar</w-text>
+			<w-box class="flex-col w-[40]">
+				<w-progress-bar [value]="progress()" />
+				<w-text class="text-gray">{{ progress() }}% complete</w-text>
 			</w-box>
 		</w-box>
 	`,
 })
 export class StatusDemoComponent implements OnInit, OnDestroy {
+	//#region Injected Dependencies
+	private ngZone = inject(NgZone)
+	//#endregion Injected Dependencies
+
 	//#region Signals
-	readonly spinnerIndex = signal(0)
 	readonly progress = signal(0)
 	//#endregion Signals
 
-	//#region Computed
-	readonly spinnerFrame = () => SPINNER_FRAMES[this.spinnerIndex()]
-	readonly progressBar = () => {
-		const filled = this.progress()
-		const empty = PROGRESS_MAX - filled
-		return '█'.repeat(filled) + '░'.repeat(empty)
-	}
-	readonly progressPercent = () => this.progress() * 10
-	//#endregion Computed
-
 	//#region Intervals
-	private spinnerInterval: ReturnType<typeof setInterval> | null = null
 	private progressInterval: ReturnType<typeof setInterval> | null = null
 	//#endregion Intervals
 
 	//#region Lifecycle
 	ngOnInit(): void {
-		// Spinner animation
-		this.spinnerInterval = setInterval(() => {
-			this.spinnerIndex.update((i) => (i + 1) % SPINNER_FRAMES.length)
-		}, SPINNER_INTERVAL_MS)
-
-		// Progress animation
-		this.progressInterval = setInterval(() => {
-			this.progress.update((p) => (p + 1) % (PROGRESS_MAX + 1))
-		}, PROGRESS_INTERVAL_MS)
+		// Progress animation - run outside Angular zone to avoid excessive change detection
+		this.ngZone.runOutsideAngular(() => {
+			this.progressInterval = setInterval(() => {
+				this.ngZone.run(() => {
+					this.progress.update((p) => (p >= PROGRESS_MAX ? 0 : p + 1))
+				})
+			}, PROGRESS_INTERVAL_MS)
+		})
 	}
 
 	ngOnDestroy(): void {
-		if (this.spinnerInterval) {
-			clearInterval(this.spinnerInterval)
-			this.spinnerInterval = null
-		}
 		if (this.progressInterval) {
 			clearInterval(this.progressInterval)
 			this.progressInterval = null

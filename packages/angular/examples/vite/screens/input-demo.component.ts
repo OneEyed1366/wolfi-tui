@@ -1,135 +1,133 @@
-import { Component, signal } from '@angular/core'
+import {
+	Component,
+	signal,
+	computed,
+	ChangeDetectionStrategy,
+} from '@angular/core'
 import {
 	BoxComponent,
 	TextComponent,
-	injectInput,
-	type Key,
+	TextInputComponent,
+	PasswordInputComponent,
+	EmailInputComponent,
+	ConfirmInputComponent,
+	FocusService,
 } from '@wolfie/angular'
 
+//#region InputDemoComponent
 @Component({
 	selector: 'app-input-demo',
 	standalone: true,
-	imports: [BoxComponent, TextComponent],
+	imports: [
+		BoxComponent,
+		TextComponent,
+		TextInputComponent,
+		PasswordInputComponent,
+		EmailInputComponent,
+		ConfirmInputComponent,
+	],
+	providers: [FocusService],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `
 		<w-box class="flex-col gap-1 w-full">
-			<!-- Title -->
-			<w-text class="font-bold text-white">Input Demo</w-text>
+			<w-text class="font-bold text-white">Text Inputs</w-text>
 
-			<!-- Instructions -->
-			<w-box class="border-single border-gray p-1 flex-col">
-				<w-text class="text-gray"
-					>Type anything to see input handling in action</w-text
-				>
-				<w-text class="text-gray">Backspace removes last character</w-text>
-				<w-text class="text-gray"
-					>Arrow keys and special keys are detected</w-text
-				>
+			<!-- Text Input -->
+			<w-box class="flex-row">
+				<w-text class="w-[12]">Name: </w-text>
+				<w-text-input
+					placeholder="Enter your name..."
+					[suggestions]="nameSuggestions"
+					id="name-input"
+					[autoFocus]="true"
+					(valueChange)="onNameChange($event)"
+					(submitValue)="onNameSubmit($event)"
+				/>
 			</w-box>
 
-			<!-- Current typed text -->
-			<w-box class="mt-1 flex-col gap-1">
-				<w-text class="text-cyan">Typed text:</w-text>
-				<w-box class="border-single border-gray p-1">
-					<w-text class="text-white">{{ typedText() || '(empty)' }}</w-text>
-				</w-box>
+			<!-- Password Input -->
+			<w-box class="flex-row">
+				<w-text class="w-[12]">Password: </w-text>
+				<w-password-input
+					id="password-input"
+					(valueChange)="onPasswordChange($event)"
+				/>
 			</w-box>
 
-			<!-- Last key info -->
-			<w-box class="mt-1 flex-col gap-1">
-				<w-text class="text-cyan">Last key pressed:</w-text>
-				<w-text class="text-gray">{{ lastKeyInfo() }}</w-text>
+			<!-- Email Input -->
+			<w-box class="flex-row">
+				<w-text class="w-[12]">Email: </w-text>
+				<w-email-input id="email-input" (valueChange)="onEmailChange($event)" />
 			</w-box>
 
-			<!-- Special key detection -->
-			@if (specialKeyMessage()) {
-				<w-box class="mt-1 border-single border-gray p-1">
-					<w-text class="text-cyan">{{ specialKeyMessage() }}</w-text>
-				</w-box>
-			}
+			<!-- Confirm Input -->
+			<w-box class="flex-row">
+				<w-text class="w-[12]">Confirm? </w-text>
+				<w-confirm-input
+					id="confirm-input"
+					(confirm)="onConfirm()"
+					(cancel)="onCancel()"
+				/>
+			</w-box>
+
+			<!-- Current Values -->
+			<w-box class="border-single border-gray p-1 mt-1 flex-col">
+				<w-text class="font-bold text-cyan">Current Values:</w-text>
+				<w-text>Name: {{ name() || '(empty)' }}</w-text>
+				<w-text>Password: {{ maskedPassword() }}</w-text>
+				<w-text>Email: {{ email() || '(empty)' }}</w-text>
+				<w-text>Confirmed: {{ confirmStatus() }}</w-text>
+			</w-box>
+
+			<w-text class="text-gray">
+				Type to enter values. Tab autocompletes suggestions.
+			</w-text>
 		</w-box>
 	`,
 })
 export class InputDemoComponent {
-	typedText = signal('')
-	lastKeyInfo = signal('(none)')
-	specialKeyMessage = signal('')
+	//#region Constants
+	readonly nameSuggestions = ['Alice', 'Bob', 'Charlie', 'Diana', 'Edward']
+	//#endregion Constants
 
-	constructor() {
-		injectInput((input: string, key: Key) => {
-			// Handle backspace
-			if (key.backspace) {
-				this.typedText.update((text) => text.slice(0, -1))
-				this.lastKeyInfo.set('Backspace')
-				this.specialKeyMessage.set('')
-				return
-			}
+	//#region State
+	name = signal('')
+	password = signal('')
+	email = signal('')
+	confirmStatus = signal('pending')
+	//#endregion State
 
-			// Handle arrow keys
-			if (key.upArrow) {
-				this.lastKeyInfo.set('Up Arrow')
-				this.specialKeyMessage.set('Arrow key: UP')
-				return
-			}
-			if (key.downArrow) {
-				this.lastKeyInfo.set('Down Arrow')
-				this.specialKeyMessage.set('Arrow key: DOWN')
-				return
-			}
-			if (key.leftArrow) {
-				this.lastKeyInfo.set('Left Arrow')
-				this.specialKeyMessage.set('Arrow key: LEFT')
-				return
-			}
-			if (key.rightArrow) {
-				this.lastKeyInfo.set('Right Arrow')
-				this.specialKeyMessage.set('Arrow key: RIGHT')
-				return
-			}
+	//#region Computed
+	maskedPassword = computed(() => {
+		const pwd = this.password()
+		return pwd ? '*'.repeat(pwd.length) : '(empty)'
+	})
+	//#endregion Computed
 
-			// Handle Ctrl+C
-			if (key.ctrl && input === 'c') {
-				this.lastKeyInfo.set('Ctrl+C')
-				this.specialKeyMessage.set('Ctrl+C detected (exit handled by app)')
-				return
-			}
-
-			// Handle other Ctrl combinations
-			if (key.ctrl) {
-				this.lastKeyInfo.set(`Ctrl+${input.toUpperCase()}`)
-				this.specialKeyMessage.set(
-					`Ctrl combination: Ctrl+${input.toUpperCase()}`
-				)
-				return
-			}
-
-			// Handle Enter
-			if (key.return) {
-				this.lastKeyInfo.set('Enter')
-				this.specialKeyMessage.set('Enter pressed - text submitted!')
-				return
-			}
-
-			// Handle Escape
-			if (key.escape) {
-				this.lastKeyInfo.set('Escape')
-				this.specialKeyMessage.set('Escape pressed - clearing text')
-				this.typedText.set('')
-				return
-			}
-
-			// Handle Tab
-			if (key.tab) {
-				this.lastKeyInfo.set(key.shift ? 'Shift+Tab' : 'Tab')
-				this.specialKeyMessage.set('Tab key (navigation)')
-				return
-			}
-
-			// Regular character input
-			if (input) {
-				this.typedText.update((text) => text + input)
-				this.lastKeyInfo.set(`Character: "${input}"`)
-				this.specialKeyMessage.set('')
-			}
-		})
+	//#region Event Handlers
+	onNameChange(value: string): void {
+		this.name.set(value)
 	}
+
+	onNameSubmit(value: string): void {
+		this.name.set(value)
+	}
+
+	onPasswordChange(value: string): void {
+		this.password.set(value)
+	}
+
+	onEmailChange(value: string): void {
+		this.email.set(value)
+	}
+
+	onConfirm(): void {
+		this.confirmStatus.set('confirmed')
+	}
+
+	onCancel(): void {
+		this.confirmStatus.set('cancelled')
+	}
+	//#endregion Event Handlers
 }
+//#endregion InputDemoComponent

@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core'
+import { Component, signal, computed, inject } from '@angular/core'
 import {
 	BoxComponent,
 	TextComponent,
@@ -25,6 +25,7 @@ import { SelectDemoComponent } from './screens/select-demo.component'
 import { StatusDemoComponent } from './screens/status-demo.component'
 import { ListDemoComponent } from './screens/list-demo.component'
 import { ErrorDemoComponent } from './screens/error-demo.component'
+import { FocusDemoComponent } from './screens/focus-demo.component'
 
 interface Screen {
 	name: string
@@ -43,6 +44,7 @@ interface Screen {
 		StatusDemoComponent,
 		ListDemoComponent,
 		ErrorDemoComponent,
+		FocusDemoComponent,
 	],
 	template: `
 		<w-box class="flex-col p-1 w-full">
@@ -84,11 +86,16 @@ interface Screen {
 				@case (5) {
 					<app-error-demo />
 				}
+				@case (6) {
+					<app-focus-demo />
+				}
 			}
 
 			<!-- Footer -->
 			<w-box class="mt-1 border-t border-[gray] pt-1">
-				<w-text class="text-[gray]">tab navigate | 1-6 jump | q quit</w-text>
+				<w-text class="text-[gray]"
+					>{{ footerText() }} | 1-7 jump | q quit</w-text
+				>
 			</w-box>
 		</w-box>
 	`,
@@ -101,9 +108,15 @@ export class AppComponent {
 		{ name: 'Status', id: 'status' },
 		{ name: 'Lists', id: 'lists' },
 		{ name: 'Errors', id: 'errors' },
+		{ name: 'Focus', id: 'focus' },
 	]
 
 	activeScreen = signal(0)
+	footerText = computed(() =>
+		this.screens[this.activeScreen()].name === 'Focus'
+			? 'tab focus'
+			: 'tab navigate'
+	)
 	private appService = inject(AppService)
 
 	constructor() {
@@ -112,17 +125,20 @@ export class AppComponent {
 				this.appService.exit()
 			}
 
-			// Tab/Shift+Tab for navigation
-			if (key.tab && !key.shift) {
-				this.activeScreen.update((v) => (v + 1) % this.screens.length)
-			}
-			if (key.tab && key.shift) {
-				this.activeScreen.update(
-					(v) => (v - 1 + this.screens.length) % this.screens.length
-				)
+			// Tab/Shift+Tab for navigation - disabled on Focus screen
+			const isFocusScreen = this.screens[this.activeScreen()].name === 'Focus'
+			if (!isFocusScreen) {
+				if (key.tab && !key.shift) {
+					this.activeScreen.update((v) => (v + 1) % this.screens.length)
+				}
+				if (key.tab && key.shift) {
+					this.activeScreen.update(
+						(v) => (v - 1 + this.screens.length) % this.screens.length
+					)
+				}
 			}
 
-			// Number keys 1-6 to jump to screen
+			// Number keys 1-7 to jump to screen
 			const num = parseInt(input)
 			if (num >= 1 && num <= this.screens.length) {
 				this.activeScreen.set(num - 1)

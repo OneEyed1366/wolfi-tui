@@ -1,59 +1,86 @@
 import { Component } from '@angular/core'
-import { BoxComponent, TextComponent } from '@wolfie/angular'
+import {
+	BoxComponent,
+	TextComponent,
+	OrderedListComponent,
+	OrderedListItemComponent,
+	UnorderedListComponent,
+	UnorderedListItemComponent,
+} from '@wolfie/angular'
 
 @Component({
 	selector: 'app-list-demo',
 	standalone: true,
-	imports: [BoxComponent, TextComponent],
+	imports: [
+		BoxComponent,
+		TextComponent,
+		OrderedListComponent,
+		OrderedListItemComponent,
+		UnorderedListComponent,
+		UnorderedListItemComponent,
+	],
 	template: `
-		<w-box class="flex-col w-full">
-			<!-- Title -->
-			<w-text class="font-bold text-white">List Demo</w-text>
-
+		<w-box class="flex-col gap-1 w-full">
 			<!-- Ordered List -->
-			<w-box class="flex-col gap-1 mt-1">
-				<w-text class="text-gray">Ordered List:</w-text>
-				<w-box class="flex-col p-l-2">
-					<w-text>1. Install dependencies</w-text>
-					<w-text>2. Configure environment</w-text>
-					<w-text>3. Run build command</w-text>
-					<w-text>4. Deploy to production</w-text>
-				</w-box>
-			</w-box>
+			<w-text class="font-bold text-white">Ordered List</w-text>
+			<w-ordered-list>
+				<w-ordered-list-item [index]="1" [maxWidth]="1">
+					<w-text>Install dependencies with pnpm</w-text>
+				</w-ordered-list-item>
+				<w-ordered-list-item [index]="2" [maxWidth]="1">
+					<w-text>Configure your environment</w-text>
+				</w-ordered-list-item>
+				<w-ordered-list-item [index]="3" [maxWidth]="1">
+					<w-text>Run the development server</w-text>
+				</w-ordered-list-item>
+				<w-ordered-list-item [index]="4" [maxWidth]="1">
+					<w-text>Build for production</w-text>
+				</w-ordered-list-item>
+			</w-ordered-list>
 
 			<!-- Unordered List -->
-			<w-box class="flex-col gap-1 mt-1">
-				<w-text class="text-gray">Unordered List:</w-text>
-				<w-box class="flex-col p-l-2">
-					<w-text>• TypeScript support</w-text>
-					<w-text>• Hot module reload</w-text>
-					<w-text>• Tailwind integration</w-text>
-					<w-text>• CSS Modules</w-text>
-				</w-box>
-			</w-box>
+			<w-text class="font-bold text-white mt-1">Unordered List</w-text>
+			<w-unordered-list>
+				<w-unordered-list-item>
+					<w-text>Supports Vue 3 Composition API</w-text>
+				</w-unordered-list-item>
+				<w-unordered-list-item>
+					<w-text>Full TypeScript support</w-text>
+				</w-unordered-list-item>
+				<w-unordered-list-item>
+					<w-text>CSS preprocessing (SCSS, LESS, Stylus)</w-text>
+				</w-unordered-list-item>
+				<w-unordered-list-item>
+					<w-text>Tailwind CSS integration</w-text>
+				</w-unordered-list-item>
+			</w-unordered-list>
 
-			<!-- Nested List -->
-			<w-box class="flex-col gap-1 mt-1">
-				<w-text class="text-gray">Nested List:</w-text>
-				<w-box class="flex-col p-l-2">
-					<w-text>1. Frontend</w-text>
-					<w-box class="flex-col p-l-2">
-						<w-text>• Angular</w-text>
-						<w-text>• Vue</w-text>
-						<w-text>• React</w-text>
-					</w-box>
-					<w-text>2. Backend</w-text>
-					<w-box class="flex-col p-l-2">
-						<w-text>• Node.js</w-text>
-						<w-text>• Python</w-text>
-					</w-box>
-					<w-text>3. Database</w-text>
-					<w-box class="flex-col p-l-2">
-						<w-text>• PostgreSQL</w-text>
-						<w-text>• MongoDB</w-text>
-					</w-box>
-				</w-box>
-			</w-box>
+			<!-- Nested Lists -->
+			<w-text class="font-bold text-white mt-1">Nested Lists</w-text>
+			<w-ordered-list>
+				<w-ordered-list-item [index]="1" [maxWidth]="1">
+					<w-text>Frontend</w-text>
+				</w-ordered-list-item>
+				<w-unordered-list>
+					<w-unordered-list-item>
+						<w-text>Vue components</w-text>
+					</w-unordered-list-item>
+					<w-unordered-list-item>
+						<w-text>Composables</w-text>
+					</w-unordered-list-item>
+				</w-unordered-list>
+				<w-ordered-list-item [index]="2" [maxWidth]="1">
+					<w-text>Backend</w-text>
+				</w-ordered-list-item>
+				<w-unordered-list>
+					<w-unordered-list-item>
+						<w-text>API routes</w-text>
+					</w-unordered-list-item>
+					<w-unordered-list-item>
+						<w-text>Database models</w-text>
+					</w-unordered-list-item>
+				</w-unordered-list>
+			</w-ordered-list>
 		</w-box>
 	`,
 })
