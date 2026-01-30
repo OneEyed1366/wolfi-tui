@@ -132,7 +132,11 @@ export function injectInput(
 		// Handle Ctrl+C exit if enabled
 		if (!(input === 'c' && key.ctrl) || !stdinContext.internal_exitOnCtrlC) {
 			// Run inside Angular zone to trigger change detection
-			ngZone.run(() => handler(input, key))
+			ngZone.run(() => {
+				handler(input, key)
+				// Trigger change detection after handler runs to update views
+				stdinContext.internal_triggerChangeDetection()
+			})
 		}
 	}
 

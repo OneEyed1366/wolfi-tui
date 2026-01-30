@@ -95,6 +95,8 @@ export async function renderWolfie<T>(
 				isRawModeSupported: wolfie.isRawModeSupported,
 				internal_exitOnCtrlC: wolfie.exitOnCtrlC,
 				internal_eventEmitter: wolfie.eventEmitter,
+				// Placeholder - will be set after component creation
+				internal_triggerChangeDetection: () => {},
 			},
 		},
 		{
@@ -151,10 +153,17 @@ export async function renderWolfie<T>(
 		hostElement: wolfie.rootNode as unknown as Element,
 	})
 
-	// 8. Trigger initial change detection to run lifecycle hooks
+	// 8. Set up change detection trigger for input handling
+	// This is stored in STDIN_CONTEXT and called after every input handler
+	const stdinContext = injector.get(STDIN_CONTEXT)
+	stdinContext.internal_triggerChangeDetection = () => {
+		componentRef.changeDetectorRef.detectChanges()
+	}
+
+	// 9. Trigger initial change detection to run lifecycle hooks
 	componentRef.changeDetectorRef.detectChanges()
 
-	// 9. Initial render
+	// 10. Initial render
 	wolfie.onRender()
 
 	// 9. Return instance

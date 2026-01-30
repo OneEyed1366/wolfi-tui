@@ -73,7 +73,11 @@ const createTextTransform = (el: DOMElement): OutputTransformer => {
 /**
  * Get the WolfieAngular instance from any node by traversing to root
  */
-const getInstance = (node: DOMNode): WolfieAngularInstance | undefined => {
+const getInstance = (
+	node: DOMNode | null
+): WolfieAngularInstance | undefined => {
+	if (!node) return undefined
+
 	let current: DOMElement | undefined
 	if (isElement(node)) {
 		current = node
@@ -177,7 +181,9 @@ export class WolfieRenderer implements Renderer2 {
 		return createTextNode(value)
 	}
 
-	appendChild(parent: DOMElement, newChild: DOMNode): void {
+	appendChild(parent: DOMElement | null, newChild: DOMNode | null): void {
+		if (!parent || !newChild) return
+
 		const instance = getInstance(parent)
 
 		if (instance && isElement(newChild)) {
@@ -203,11 +209,13 @@ export class WolfieRenderer implements Renderer2 {
 	}
 
 	insertBefore(
-		parent: DOMElement,
-		newChild: DOMNode,
-		refChild: DOMNode,
+		parent: DOMElement | null,
+		newChild: DOMNode | null,
+		refChild: DOMNode | null,
 		_isMove?: boolean
 	): void {
+		if (!parent || !newChild) return
+
 		const instance = getInstance(parent)
 
 		if (instance && isElement(newChild)) {
@@ -233,12 +241,18 @@ export class WolfieRenderer implements Renderer2 {
 	}
 
 	removeChild(
-		parent: DOMElement,
-		oldChild: DOMNode,
+		parent: DOMElement | null,
+		oldChild: DOMNode | null,
 		_isHostElement?: boolean
 	): void {
-		const instance = getInstance(parent)
-		removeChildNode(parent, oldChild, instance?.layoutTree)
+		if (!oldChild) return
+
+		// Use the child's actual parent if the provided parent is null
+		const actualParent = parent ?? oldChild.parentNode
+		if (!actualParent) return
+
+		const instance = getInstance(actualParent)
+		removeChildNode(actualParent, oldChild, instance?.layoutTree)
 
 		// Trigger re-render on any tree change
 		instance?.onRender()

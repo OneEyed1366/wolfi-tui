@@ -8,6 +8,7 @@ export interface StdinContext {
 	isRawModeSupported: boolean
 	internal_exitOnCtrlC: boolean
 	internal_eventEmitter: EventEmitter
+	internal_triggerChangeDetection: () => void
 }
 
 export const STDIN_CONTEXT = new InjectionToken<StdinContext>(
