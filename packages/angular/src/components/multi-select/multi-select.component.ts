@@ -75,8 +75,25 @@ export interface MultiSelectProps {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MultiSelectComponent implements OnInit, OnDestroy {
+	//#region Internal State
+	private _isDisabled = signal(false)
+	private optionMap = signal<OptionMap>(new OptionMap([]))
+	private visibleCount = signal(5)
+	readonly focusedValue = signal<string | undefined>(undefined)
+	private visibleFromIndex = signal(0)
+	private visibleToIndex = signal(5)
+	readonly value = signal<string[]>([])
+	private previousValue = signal<string[]>([])
+	private lastOptions = signal<Option[]>([])
+	//#endregion Internal State
+
 	//#region Inputs
-	@Input() isDisabled = false
+	@Input() set isDisabled(value: boolean) {
+		this._isDisabled.set(value)
+	}
+	get isDisabled(): boolean {
+		return this._isDisabled()
+	}
 	@Input() visibleOptionCount = 5
 	@Input() highlightText?: string
 	@Input() options: Option[] = []
@@ -98,17 +115,6 @@ export class MultiSelectComponent implements OnInit, OnDestroy {
 	}
 	//#endregion Styles
 
-	//#region Internal State
-	private optionMap = signal<OptionMap>(new OptionMap([]))
-	private visibleCount = signal(5)
-	readonly focusedValue = signal<string | undefined>(undefined)
-	private visibleFromIndex = signal(0)
-	private visibleToIndex = signal(5)
-	readonly value = signal<string[]>([])
-	private previousValue = signal<string[]>([])
-	private lastOptions = signal<Option[]>([])
-	//#endregion Internal State
-
 	//#region Computed State
 	readonly visibleOptions = computed(() => {
 		const options = this.lastOptions()
@@ -116,14 +122,12 @@ export class MultiSelectComponent implements OnInit, OnDestroy {
 			.map((option, index) => ({ ...option, index }))
 			.slice(this.visibleFromIndex(), this.visibleToIndex())
 	})
-
-	private isActive = computed(() => !this.isDisabled)
 	//#endregion Computed State
 
 	//#region Constructor
 	constructor() {
 		injectInput((input: string, key: Key) => this.handleInput(input, key), {
-			isActive: () => this.isActive(),
+			isActive: () => !this._isDisabled(),
 		})
 	}
 	//#endregion Constructor
@@ -251,8 +255,16 @@ export class MultiSelectComponent implements OnInit, OnDestroy {
 		// Cleanup handled by Angular
 	}
 
-	ngOnChanges(): void {
-		this.initializeState()
+	ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
+		// Only re-initialize when options change, NOT when isDisabled changes
+		// Resetting state on isDisabled change causes selected values to be lost
+		if (
+			changes['options'] ||
+			changes['visibleOptionCount'] ||
+			changes['defaultValue']
+		) {
+			this.initializeState()
+		}
 	}
 
 	private initializeState(): void {

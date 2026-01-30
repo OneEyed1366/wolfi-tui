@@ -74,8 +74,25 @@ export interface SelectProps {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponent implements OnInit, OnDestroy {
+	//#region Internal State
+	private _isDisabled = signal(false)
+	private optionMap = signal<OptionMap>(new OptionMap([]))
+	private visibleCount = signal(5)
+	readonly focusedValue = signal<string | undefined>(undefined)
+	private visibleFromIndex = signal(0)
+	private visibleToIndex = signal(5)
+	readonly value = signal<string | undefined>(undefined)
+	private previousValue = signal<string | undefined>(undefined)
+	private lastOptions = signal<Option[]>([])
+	//#endregion Internal State
+
 	//#region Inputs
-	@Input() isDisabled = false
+	@Input() set isDisabled(value: boolean) {
+		this._isDisabled.set(value)
+	}
+	get isDisabled(): boolean {
+		return this._isDisabled()
+	}
 	@Input() visibleOptionCount = 5
 	@Input() highlightText?: string
 	@Input() options: Option[] = []
@@ -96,17 +113,6 @@ export class SelectComponent implements OnInit, OnDestroy {
 	}
 	//#endregion Styles
 
-	//#region Internal State
-	private optionMap = signal<OptionMap>(new OptionMap([]))
-	private visibleCount = signal(5)
-	readonly focusedValue = signal<string | undefined>(undefined)
-	private visibleFromIndex = signal(0)
-	private visibleToIndex = signal(5)
-	readonly value = signal<string | undefined>(undefined)
-	private previousValue = signal<string | undefined>(undefined)
-	private lastOptions = signal<Option[]>([])
-	//#endregion Internal State
-
 	//#region Computed State
 	readonly visibleOptions = computed(() => {
 		const options = this.lastOptions()
@@ -114,14 +120,12 @@ export class SelectComponent implements OnInit, OnDestroy {
 			.map((option, index) => ({ ...option, index }))
 			.slice(this.visibleFromIndex(), this.visibleToIndex())
 	})
-
-	private isActive = computed(() => !this.isDisabled)
 	//#endregion Computed State
 
 	//#region Constructor
 	constructor() {
 		injectInput((input: string, key: Key) => this.handleInput(input, key), {
-			isActive: () => this.isActive(),
+			isActive: () => !this._isDisabled(),
 		})
 	}
 	//#endregion Constructor
@@ -232,8 +236,16 @@ export class SelectComponent implements OnInit, OnDestroy {
 		// Cleanup handled by Angular
 	}
 
-	ngOnChanges(): void {
-		this.initializeState()
+	ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
+		// Only re-initialize when options change, NOT when isDisabled changes
+		// Resetting state on isDisabled change causes selected value to be lost
+		if (
+			changes['options'] ||
+			changes['visibleOptionCount'] ||
+			changes['defaultValue']
+		) {
+			this.initializeState()
+		}
 	}
 
 	private initializeState(): void {
