@@ -1,17 +1,20 @@
 {
 	"compilerOptions": {
-		"target": "ESNext",
+		"target": "ES2022",
 		"module": "ESNext",
 		"moduleResolution": "bundler",
+		"lib": ["ES2023"],
+		"jsx": "react-jsx",
 		"strict": true,
-		"esModuleInterop": true,
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
+		"noEmit": true,
+		"isolatedModules": true,
+		"esModuleInterop": true,
 		"plugins": [
 			{
 				"name": "@wolfie/typescript-plugin"
 			}
 		]
 	},
-	"include": ["src/**/*"]
+	"include": ["*.tsx", "*.d.ts", "styles/**/*.ts"]
 }

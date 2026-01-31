@@ -10,6 +10,7 @@
 		"example": "vite build && node dist/index.cjs"
 	},
 	"devDependencies": {
+		"@wolfie/typescript-plugin": "workspace:*",
 		"@angular/common": "^19.0.0",
 		"@angular/compiler": "^19.0.0",
 		"@angular/core": "^19.0.0",

@@ -365,6 +365,38 @@ The OKLCH shim converts colors to sRGB hex. If colors look wrong:
 - Check color values are valid OKLCH
 - Terminal must support true color (most modern terminals do)
 
+---
+
+## VS Code CSS IntelliSense
+
+This package includes a CSS Custom Data file that provides IntelliSense for Wolfie-specific CSS property values.
+
+### Setup
+
+Add to your `.vscode/settings.json`:
+
+```json
+{
+	"css.customData": ["./node_modules/@wolfie/plugin/wolfie.css-data.json"]
+}
+```
+
+### What it provides
+
+- **Border styles** — `single`, `double`, `round` suggestions for `border-style`
+- **Text wrap** — `wrap`, `truncate`, `truncate-end`, `truncate-middle`, `truncate-start`
+- **Terminal values** — `flex`/`none` for display, `hidden`/`visible` for overflow
+- **Hover documentation** — Descriptions for each terminal-specific value
+
+### Example
+
+```css
+.container {
+	border-style: single; /* ✓ VS Code shows this as valid */
+	text-wrap: truncate; /* ✓ VS Code shows terminal-specific options */
+}
+```
+
 ## License
 
 MIT

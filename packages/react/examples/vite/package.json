@@ -13,6 +13,7 @@
 		"react": "^19.0.0"
 	},
 	"devDependencies": {
+		"@wolfie/typescript-plugin": "workspace:*",
 		"tailwindcss": "^4.1.18",
 		"postcss": "^8.4.0",
 		"autoprefixer": "^10.4.0",

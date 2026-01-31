@@ -1,0 +1,196 @@
+{
+	"version": 1.1,
+	"properties": [
+		{
+			"name": "border-style",
+			"description": "Terminal border style using box drawing characters",
+			"values": [
+				{
+					"name": "single",
+					"description": "Single-line box drawing characters (─ │ ┐ ┘)"
+				},
+				{
+					"name": "double",
+					"description": "Double-line box drawing characters (═ ║ ╗ ╝)"
+				},
+				{
+					"name": "round",
+					"description": "Rounded corners with single lines (─ │ ╮ ╯)"
+				},
+				{
+					"name": "bold",
+					"description": "Bold/thick box drawing characters"
+				},
+				{
+					"name": "singleDouble",
+					"description": "Horizontal single, vertical double lines"
+				},
+				{
+					"name": "doubleSingle",
+					"description": "Horizontal double, vertical single lines"
+				},
+				{
+					"name": "classic",
+					"description": "Classic ASCII border style (+, -, |)"
+				},
+				{
+					"name": "arrow",
+					"description": "Arrow style border characters"
+				}
+			]
+		},
+		{
+			"name": "text-wrap",
+			"description": "Terminal text wrapping behavior",
+			"values": [
+				{
+					"name": "wrap",
+					"description": "Wrap text to next line at container width"
+				},
+				{
+					"name": "truncate",
+					"description": "Truncate text at container width (alias for truncate-end)"
+				},
+				{
+					"name": "truncate-end",
+					"description": "Truncate text at the end with ellipsis"
+				},
+				{
+					"name": "truncate-middle",
+					"description": "Truncate text in the middle with ellipsis"
+				},
+				{
+					"name": "truncate-start",
+					"description": "Truncate text at the start with ellipsis"
+				},
+				{
+					"name": "end",
+					"description": "Alias for truncate-end"
+				},
+				{
+					"name": "middle",
+					"description": "Alias for truncate-middle"
+				}
+			]
+		},
+		{
+			"name": "display",
+			"description": "Terminal display mode (limited to flex layout)",
+			"values": [
+				{
+					"name": "flex",
+					"description": "Flexbox layout (default for all terminal elements)"
+				},
+				{
+					"name": "none",
+					"description": "Hide element from terminal output"
+				}
+			]
+		},
+		{
+			"name": "position",
+			"description": "Terminal positioning mode",
+			"values": [
+				{
+					"name": "relative",
+					"description": "Position relative to normal flow (default)"
+				},
+				{
+					"name": "absolute",
+					"description": "Position absolutely within parent container"
+				}
+			]
+		},
+		{
+			"name": "overflow",
+			"description": "Terminal overflow behavior",
+			"values": [
+				{
+					"name": "visible",
+					"description": "Content overflows container bounds"
+				},
+				{
+					"name": "hidden",
+					"description": "Content is clipped at container bounds"
+				}
+			]
+		},
+		{
+			"name": "overflow-x",
+			"description": "Horizontal overflow behavior",
+			"values": [
+				{
+					"name": "visible",
+					"description": "Content overflows horizontally"
+				},
+				{
+					"name": "hidden",
+					"description": "Content is clipped horizontally"
+				}
+			]
+		},
+		{
+			"name": "overflow-y",
+			"description": "Vertical overflow behavior",
+			"values": [
+				{
+					"name": "visible",
+					"description": "Content overflows vertically"
+				},
+				{
+					"name": "hidden",
+					"description": "Content is clipped vertically"
+				}
+			]
+		},
+		{
+			"name": "font-weight",
+			"description": "Terminal text weight (bold or normal)",
+			"values": [
+				{
+					"name": "bold",
+					"description": "Bold text (ANSI bold escape)"
+				},
+				{
+					"name": "normal",
+					"description": "Normal weight text"
+				}
+			]
+		},
+		{
+			"name": "font-style",
+			"description": "Terminal text style",
+			"values": [
+				{
+					"name": "italic",
+					"description": "Italic text (ANSI italic escape)"
+				},
+				{
+					"name": "normal",
+					"description": "Normal style text"
+				}
+			]
+		},
+		{
+			"name": "text-decoration",
+			"description": "Terminal text decoration",
+			"values": [
+				{
+					"name": "underline",
+					"description": "Underlined text (ANSI underline escape)"
+				},
+				{
+					"name": "line-through",
+					"description": "Strikethrough text (ANSI strikethrough escape)"
+				},
+				{
+					"name": "none",
+					"description": "No decoration"
+				}
+			]
+		}
+	],
+	"atDirectives": [],
+	"pseudoClasses": [],
+	"pseudoElements": []
+}

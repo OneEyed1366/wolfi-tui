@@ -5,7 +5,12 @@
 		"outDir": "dist",
 		"jsx": "react-jsx",
 		"module": "ESNext",
-		"moduleResolution": "bundler"
+		"moduleResolution": "bundler",
+		"plugins": [
+			{
+				"name": "@wolfie/typescript-plugin"
+			}
+		]
 	},
 	"include": ["src/**/*"]
 }

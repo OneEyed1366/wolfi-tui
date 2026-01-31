@@ -28,6 +28,70 @@ pnpm add @wolfie/vue @wolfie/plugin chalk
 - `vue` ^3.5.0
 - `chalk` ^5.0.0
 
+## TypeScript Setup
+
+For full IntelliSense in Vue templates (Volar/vue-tsc), add the global component types to your project:
+
+```ts
+// env.d.ts or shims-vue.d.ts
+/// <reference types="@wolfie/vue/global" />
+
+declare module '*.vue' {
+	import type { DefineComponent } from 'vue'
+	const component: DefineComponent<object, object, any>
+	export default component
+}
+
+// CSS Modules return Styles objects (terminal styles, not class strings)
+declare module '*.module.css' {
+	const styles: Record<string, import('@wolfie/vue').BoxProps['style']>
+	export default styles
+}
+```
+
+This enables autocomplete for `<Box>`, `<Text>`, `<Alert>`, and all other components in your `.vue` templates.
+
+### CSS Module Types with TypeScript Plugin
+
+For enhanced CSS module autocomplete with actual class names (instead of generic `Record<string, Styles>`), install the TypeScript plugin:
+
+```bash
+npm install @wolfie/typescript-plugin -D
+```
+
+Add to your `tsconfig.json`:
+
+```json
+{
+	"compilerOptions": {
+		"plugins": [
+			{
+				"name": "@wolfie/typescript-plugin"
+			}
+		]
+	}
+}
+```
+
+This provides:
+
+- Class name autocomplete when typing `styles.`
+- Type-safe access to CSS module exports
+- Go-to-definition from class usage to CSS file
+
+### CSS IntelliSense in VS Code
+
+For Wolfie-specific CSS property suggestions (e.g., `border-style: single`), add the CSS Custom Data file to your VS Code settings:
+
+```json
+// .vscode/settings.json
+{
+	"css.customData": ["./node_modules/@wolfie/plugin/wolfie.css-data.json"]
+}
+```
+
+This provides autocomplete and validation for terminal-specific CSS values.
+
 ## Quick Start
 
 ### With SFC (Single File Components)

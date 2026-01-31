@@ -4,6 +4,16 @@ import { type ForegroundColorName } from 'ansi-styles' // Note: We import direct
 import type { LayoutStyle, LayoutTree, Dimension, Edges } from './layout-types'
 
 export type IStyles = {
+	/**
+	Text wrapping behavior when content exceeds the container width.
+
+	- `'wrap'` - Wrap text to next line (default)
+	- `'truncate'` / `'truncate-end'` - Truncate text at the end with ellipsis
+	- `'truncate-middle'` / `'middle'` - Truncate in the middle, keeping start and end
+	- `'truncate-start'` / `'end'` - Truncate at the start, keeping the end
+
+	@default 'wrap'
+	*/
 	textWrap?:
 		| 'wrap'
 		| 'end'
@@ -13,6 +23,14 @@ export type IStyles = {
 		| 'truncate-middle'
 		| 'truncate-start'
 
+	/**
+	Positioning mode for the element.
+
+	- `'relative'` - Position in normal flow (default)
+	- `'absolute'` - Position absolutely relative to the nearest positioned ancestor
+
+	@default 'relative'
+	*/
 	position?: 'absolute' | 'relative'
 
 	/**

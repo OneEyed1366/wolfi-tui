@@ -12,6 +12,7 @@
 		"vue": "^3.5.0"
 	},
 	"devDependencies": {
+		"@wolfie/typescript-plugin": "workspace:*",
 		"@vue/compiler-sfc": "^3.5.27",
 		"less": "^4.5.1",
 		"less-loader": "^12.3.0",

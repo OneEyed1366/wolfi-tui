@@ -10,6 +10,9 @@
 			"types": "./build/index.d.ts",
 			"default": "./build/index.js"
 		},
+		"./global": {
+			"types": "./global.d.ts"
+		},
 		"./styles": {
 			"types": "./build/styles/index.d.ts",
 			"default": "./build/styles/index.js"
@@ -27,7 +30,8 @@
 		"example": "pnpm --filter @examples/vue-vite example"
 	},
 	"files": [
-		"build"
+		"build",
+		"global.d.ts"
 	],
 	"dependencies": {
 		"@wolfie/core": "workspace:*",
