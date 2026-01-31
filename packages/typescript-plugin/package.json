@@ -1,0 +1,31 @@
+{
+	"name": "@wolfie/typescript-plugin",
+	"version": "0.1.1",
+	"description": "TypeScript language service plugin for CSS module types in Wolfie",
+	"license": "MIT",
+	"main": "./build/index.js",
+	"types": "./types.d.ts",
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"dev": "vite build --watch",
+		"build": "vite build"
+	},
+	"files": [
+		"build",
+		"types.d.ts"
+	],
+	"dependencies": {
+		"@wolfie/css-parser": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.9",
+		"typescript": "^5.8.3",
+		"vite": "^6.4.1",
+		"vite-plugin-dts": "^4.5.4"
+	},
+	"peerDependencies": {
+		"typescript": ">=5.0"
+	}
+}
