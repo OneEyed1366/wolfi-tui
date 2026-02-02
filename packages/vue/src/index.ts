@@ -1,5 +1,6 @@
 import { createRenderer, ref, type App, type Component, type Ref } from 'vue'
 import { EventEmitter } from 'node:events'
+import ansiEscapes from 'ansi-escapes'
 import { nodeOps } from './renderer/nodeOps'
 import { patchProp } from './renderer/patchProp'
 import {
@@ -87,6 +88,9 @@ class WolfieVue {
 	private layoutTree: LayoutTree
 	private eventEmitter: EventEmitter
 	private lastTerminalWidth: number
+	private lastOutput = ''
+	private lastOutputHeight = 0
+	private isFirstRender = true
 	private unsubscribeResize?: () => void
 	private isScreenReaderEnabled!: boolean
 
@@ -281,36 +285,61 @@ class WolfieVue {
 		if (this.isUnmounted) return
 
 		this.calculateLayout()
-		const { output } = coreRenderer(
+		const { output, outputHeight } = coreRenderer(
 			this.rootNode,
 			this.isScreenReaderEnabled,
 			this.layoutTree
 		)
-		this.log(output)
+
+		// Clear terminal on first render or when output fills the screen
+		// This clears any pre-existing console output (e.g., build logs)
+		// Only do this in TTY mode to avoid breaking tests
+		if (
+			this.stdout.isTTY &&
+			(this.isFirstRender || this.lastOutputHeight >= this.stdout.rows)
+		) {
+			this.stdout.write(ansiEscapes.clearTerminal + output)
+			this.lastOutput = output
+			this.lastOutputHeight = outputHeight
+			this.log.sync(output)
+			this.isFirstRender = false
+			return
+		}
+
+		if (output !== this.lastOutput) {
+			this.log(output)
+		}
+
+		this.lastOutput = output
+		this.lastOutputHeight = outputHeight
 	}
 
 	writeToStdout(data: string): void {
 		if (this.isUnmounted) return
 		this.log.clear()
 		this.stdout.write(data)
-		const { output } = coreRenderer(
+		const { output, outputHeight } = coreRenderer(
 			this.rootNode,
 			this.isScreenReaderEnabled,
 			this.layoutTree
 		)
 		this.log(output)
+		this.lastOutput = output
+		this.lastOutputHeight = outputHeight
 	}
 
 	writeToStderr(data: string): void {
 		if (this.isUnmounted) return
 		this.log.clear()
 		this.stderr.write(data)
-		const { output } = coreRenderer(
+		const { output, outputHeight } = coreRenderer(
 			this.rootNode,
 			this.isScreenReaderEnabled,
 			this.layoutTree
 		)
 		this.log(output)
+		this.lastOutput = output
+		this.lastOutputHeight = outputHeight
 	}
 
 	//#region Focus Management
@@ -528,6 +557,17 @@ export {
 
 export type { ClassNameValue } from './styles'
 
+// Re-export theme utilities
+export {
+	provideTheme,
+	extendTheme,
+	defaultTheme,
+	useComponentTheme,
+	type ITheme,
+	type IComponentTheme,
+	type IComponentStyles,
+} from './theme'
+
 // Re-export components
 export * from './components'
 
@@ -575,4 +615,50 @@ export {
 	onScopeDispose,
 	defineComponent,
 	h,
+	// Template compilation helpers (needed for Vue SFC compiled templates)
+	openBlock,
+	createBlock,
+	createElementBlock,
+	createElementVNode,
+	createVNode,
+	createTextVNode,
+	createCommentVNode,
+	createStaticVNode,
+	Fragment,
+	Teleport,
+	Suspense,
+	KeepAlive,
+	Transition,
+	TransitionGroup,
+	resolveComponent,
+	resolveDirective,
+	resolveDynamicComponent,
+	withDirectives,
+	withModifiers,
+	withKeys,
+	withCtx,
+	renderList,
+	renderSlot,
+	toDisplayString,
+	toHandlers,
+	normalizeClass,
+	normalizeStyle,
+	normalizeProps,
+	guardReactiveProps,
+	mergeProps,
+	cloneVNode,
+	isVNode,
+	vShow,
+	vModelText,
+	vModelCheckbox,
+	vModelRadio,
+	vModelSelect,
+	vModelDynamic,
+	useCssVars,
+	useCssModule,
+	useSlots,
+	useAttrs,
+	// SSR helpers (sometimes used in templates)
+	ssrContextKey,
+	useSSRContext,
 } from 'vue'

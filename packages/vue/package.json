@@ -1,6 +1,6 @@
 {
 	"name": "@wolfie/vue",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Vue 3 adapter for Wolfie",
 	"license": "MIT",
 	"type": "module",

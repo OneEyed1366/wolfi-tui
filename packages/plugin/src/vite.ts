@@ -63,6 +63,7 @@ function findCoreNativeDir(root: string): string | null {
 function createNativeBindingsPlugin(): Plugin {
 	let coreDir: string | null = null
 	let outDir: string = 'dist'
+	let isBuild = false
 
 	return {
 		name: 'wolfie:native-bindings',
@@ -70,9 +71,14 @@ function createNativeBindingsPlugin(): Plugin {
 		configResolved(config) {
 			coreDir = findCoreNativeDir(config.root)
 			outDir = config.build.outDir
+			// Only enable for actual builds, not vite-node/dev mode
+			isBuild = config.command === 'build'
 		},
 
 		closeBundle() {
+			// Skip during dev mode (vite-node)
+			if (!isBuild) return
+
 			if (!coreDir) {
 				console.warn(
 					'[wolfie] Could not find @wolfie/core package for native bindings'
