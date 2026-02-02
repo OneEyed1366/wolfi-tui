@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "dist",
+		"jsx": "react-jsx",
+		"plugins": [
+			{
+				"name": "@wolfie/typescript-plugin"
+			}
+		]
+	},
+	"include": ["src", "env.d.ts"]
+}

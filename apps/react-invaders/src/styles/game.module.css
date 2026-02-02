@@ -1,0 +1,52 @@
+/* Game board styles */
+.gameBoard {
+	border: single;
+	border-color: gray;
+}
+
+.alienRow {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.alienCell {
+	width: 3;
+	text-align: center;
+}
+
+.shieldBlock {
+	width: 1;
+	height: 1;
+}
+
+.hudContainer {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 0 1;
+}
+
+.killLogItem {
+	color: gray;
+}
+
+.pauseOverlay {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.menuItem {
+	padding: 0 2;
+}
+
+.menuItemFocused {
+	background-color: blue;
+	color: white;
+}
+
+.controlsHelp {
+	padding-left: 2;
+}
