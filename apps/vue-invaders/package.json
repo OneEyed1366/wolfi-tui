@@ -1,0 +1,26 @@
+{
+	"name": "@wolfie/vue-game-invaders",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite-node src/index.ts",
+		"build": "vite build",
+		"start": "node dist/index.js"
+	},
+	"dependencies": {
+		"@wolfie/vue": "workspace:*",
+		"vue": "^3.5.16"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^6.0.3",
+		"@wolfie/plugin": "workspace:*",
+		"@wolfie/typescript-plugin": "workspace:*",
+		"@tailwindcss/postcss": "^4.1.18",
+		"postcss": "^8.5.6",
+		"tailwindcss": "~4.1.18",
+		"vite": "^6.0.7",
+		"vite-node": "^3.0.4",
+		"typescript": "^5.8.3"
+	}
+}
