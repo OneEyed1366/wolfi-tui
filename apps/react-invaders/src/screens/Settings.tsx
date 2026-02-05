@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import {
 	Box,
 	Text,
@@ -48,12 +48,8 @@ export function Settings({
 }: SettingsProps) {
 	const [section, setSection] = useState<Section>('difficulty')
 
-	// Track mount state to skip initial onChange calls from components
-	const difficultyMounted = useRef(false)
-	const togglesMounted = useRef(false)
-
-	// Memoize initial toggles - only compute once
-	const initialToggles = useMemo(() => {
+	// Current toggles based on settings
+	const currentToggles = useMemo(() => {
 		const toggles: string[] = []
 		if (settings.showFps) toggles.push('showFps')
 		if (settings.shieldBars) toggles.push('shieldBars')
@@ -61,8 +57,13 @@ export function Settings({
 		if (settings.alienAnim) toggles.push('alienAnim')
 		if (settings.debug) toggles.push('debug')
 		return toggles
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []) // Empty deps - only compute on mount
+	}, [
+		settings.showFps,
+		settings.shieldBars,
+		settings.killLog,
+		settings.alienAnim,
+		settings.debug,
+	])
 
 	useInput((input, key) => {
 		if (key.escape || input === 'q') {
@@ -74,24 +75,23 @@ export function Settings({
 		}
 	})
 
-	// Stable callback references to prevent re-renders
+	// Only update if value actually changed
 	const handleDifficultyChange = useCallback(
 		(value: string) => {
-			if (!difficultyMounted.current) {
-				difficultyMounted.current = true
-				return
-			}
+			if (value === settings.difficulty) return
 			onUpdateSettings({ difficulty: value as Difficulty })
 		},
-		[onUpdateSettings]
+		[onUpdateSettings, settings.difficulty]
 	)
 
 	const handleTogglesChange = useCallback(
 		(values: string[]) => {
-			if (!togglesMounted.current) {
-				togglesMounted.current = true
+			// Only update if values actually changed
+			if (
+				values.length === currentToggles.length &&
+				values.every((v) => currentToggles.includes(v))
+			)
 				return
-			}
 			onUpdateSettings({
 				showFps: values.includes('showFps'),
 				shieldBars: values.includes('shieldBars'),
@@ -100,7 +100,7 @@ export function Settings({
 				debug: values.includes('debug'),
 			})
 		},
-		[onUpdateSettings]
+		[onUpdateSettings, currentToggles]
 	)
 
 	return (
@@ -129,7 +129,7 @@ export function Settings({
 			</Text>
 			<Select
 				options={DIFFICULTY_OPTIONS}
-				defaultValue={settings.difficulty}
+				value={settings.difficulty}
 				onChange={handleDifficultyChange}
 				visibleOptionCount={3}
 				isDisabled={section !== 'difficulty'}
@@ -145,7 +145,7 @@ export function Settings({
 			</Text>
 			<MultiSelect
 				options={TOGGLE_OPTIONS}
-				defaultValue={initialToggles}
+				value={currentToggles}
 				onChange={handleTogglesChange}
 				visibleOptionCount={5}
 				isDisabled={section !== 'options'}

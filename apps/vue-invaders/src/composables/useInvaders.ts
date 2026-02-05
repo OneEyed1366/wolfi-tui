@@ -1,278 +1,35 @@
 import { reactive, readonly, watch, type Ref } from 'vue'
 import { debugTime } from '../debug'
 import {
-	INITIAL_LIVES,
 	INITIAL_ALIEN_MOVE_INTERVAL,
 	MIN_ALIEN_MOVE_INTERVAL,
 	BULLET_SPEED,
-	POINTS_ALIEN_TOP,
-	POINTS_ALIEN_MID,
-	POINTS_ALIEN_BOT,
 	POINTS_PER_WAVE,
-	ALIEN_TYPE_TOP,
-	ALIEN_TYPE_MID,
 } from '../constants'
 
-//#region Dynamic Board Config
-export type BoardConfig = {
-	width: number
-	height: number
-	padding: number
-	alienRows: number
-	alienCols: number
-	alienSpacingX: number
-	alienSpacingY: number
-	alienStartY: number
-	shieldCount: number
-	shieldWidth: number
-	shieldHeight: number
-	shieldYOffset: number
-	playerSpeed: number
-	alienStepX: number
-	alienStepY: number
-}
+//#region Re-exports from game modules
+export type {
+	BoardConfig,
+	Alien,
+	Bullet,
+	ShieldCell,
+	Shield,
+	Kill,
+	Screen,
+	Difficulty,
+	Settings,
+	State,
+} from './game/types'
+//#endregion Re-exports from game modules
 
-export function createBoardConfig(
-	termWidth: number,
-	termHeight: number
-): BoardConfig {
-	// Use full terminal width, reserve header (1) + footer (4)
-	const boardWidth = Math.max(60, termWidth)
-	const boardHeight = Math.max(16, termHeight - 5)
-
-	// Scale alien grid based on board size
-	const alienCols = Math.max(9, Math.min(18, Math.floor(boardWidth / 7)))
-	const alienRows = Math.max(4, Math.min(7, Math.floor(boardHeight / 5)))
-	const alienSpacingX = Math.floor((boardWidth - 10) / alienCols)
-	const alienSpacingY = 2
-	const alienStartY = 2
-
-	// Calculate where aliens end and position shields proportionally
-	const alienEndY = alienStartY + alienRows * alienSpacingY
-	const playerY = boardHeight - 2
-	const middleSpace = playerY - alienEndY
-
-	// Shields positioned at 70% of the way between aliens and player
-	const shieldY = alienEndY + Math.floor(middleSpace * 0.7)
-	const shieldYOffset = boardHeight - shieldY
-
-	return {
-		width: boardWidth,
-		height: boardHeight,
-		padding: 2,
-		alienRows,
-		alienCols,
-		alienSpacingX,
-		alienSpacingY,
-		alienStartY,
-		shieldCount: Math.max(4, Math.min(8, Math.floor(boardWidth / 18))),
-		shieldWidth: 7,
-		shieldHeight: 3,
-		shieldYOffset,
-		playerSpeed: Math.max(3, Math.floor(boardWidth / 25)),
-		alienStepX: 2,
-		alienStepY: 1,
-	}
-}
-//#endregion Dynamic Board Config
-
-//#region Types
-export type Alien = {
-	id: string
-	x: number
-	y: number
-	type: 0 | 1 | 2
-	alive: boolean
-}
-
-export type Bullet = {
-	id: string
-	x: number
-	y: number
-	dy: -1 | 1
-}
-
-export type ShieldCell = {
-	x: number
-	y: number
-	health: number
-}
-
-export type Shield = {
-	x: number
-	y: number
-	cells: ShieldCell[]
-}
-
-export type Kill = {
-	id: string
-	alien: Alien
-	timestamp: number
-	points: number
-}
-
-export type Screen =
-	| 'menu'
-	| 'game'
-	| 'gameover'
-	| 'highscores'
-	| 'settings'
-	| 'help'
-
-export type Difficulty = 'easy' | 'normal' | 'hard'
-
-export type Settings = {
-	sound: boolean
-	difficulty: Difficulty
-	showFps: boolean
-	shieldBars: boolean
-	killLog: boolean
-	alienAnim: boolean
-	screenShake: boolean
-	particles: boolean
-	debug: boolean
-	highContrast: boolean
-	largeText: boolean
-}
-
-export type State = {
-	screen: Screen
-	board: BoardConfig
-	player: { x: number }
-	aliens: Alien[]
-	bullets: Bullet[]
-	shields: Shield[]
-	kills: Kill[]
-	alienDir: 1 | -1
-	alienMoveTimer: number
-	alienMoveInterval: number
-	score: number
-	lives: number
-	wave: number
-	paused: boolean
-	settings: Settings
-	lastShootTime: number
-	waveTransition: boolean
-	gameStartTime: number
-	frame: number
-}
-//#endregion Types
-
-//#region Helpers
-function createAliens(board: BoardConfig): Alien[] {
-	const aliens: Alien[] = []
-	const offsetX = Math.floor(
-		(board.width - board.alienCols * board.alienSpacingX) / 2
-	)
-
-	for (let row = 0; row < board.alienRows; row++) {
-		for (let col = 0; col < board.alienCols; col++) {
-			const type =
-				row === 0 ? ALIEN_TYPE_TOP : row < 3 ? ALIEN_TYPE_MID : (2 as 0 | 1 | 2)
-			aliens.push({
-				id: `alien-${row}-${col}`,
-				x: offsetX + col * board.alienSpacingX,
-				y: board.alienStartY + row * board.alienSpacingY,
-				type,
-				alive: true,
-			})
-		}
-	}
-
-	return aliens
-}
-
-function createShields(board: BoardConfig): Shield[] {
-	const shields: Shield[] = []
-	const shieldSpacing = Math.floor(board.width / (board.shieldCount + 1))
-	const shieldY = board.height - board.shieldYOffset
-
-	for (let i = 0; i < board.shieldCount; i++) {
-		const shieldX = shieldSpacing * (i + 1) - Math.floor(board.shieldWidth / 2)
-		const cells: ShieldCell[] = []
-
-		for (let dy = 0; dy < board.shieldHeight; dy++) {
-			for (let dx = 0; dx < board.shieldWidth; dx++) {
-				if (dy === 0 && (dx === 0 || dx === board.shieldWidth - 1)) continue
-				if (
-					dy === board.shieldHeight - 1 &&
-					dx > 0 &&
-					dx < board.shieldWidth - 1
-				)
-					continue
-
-				cells.push({
-					x: shieldX + dx,
-					y: shieldY + dy,
-					health: 4,
-				})
-			}
-		}
-
-		shields.push({ x: shieldX, y: shieldY, cells })
-	}
-
-	return shields
-}
-
-function getAlienPoints(type: 0 | 1 | 2): number {
-	switch (type) {
-		case 0:
-			return POINTS_ALIEN_TOP
-		case 1:
-			return POINTS_ALIEN_MID
-		default:
-			return POINTS_ALIEN_BOT
-	}
-}
-
-function getDifficultyModifier(difficulty: Difficulty): number {
-	switch (difficulty) {
-		case 'easy':
-			return 1.5
-		case 'hard':
-			return 0.7
-		default:
-			return 1
-	}
-}
-
-function createInitialState(board: BoardConfig): State {
-	return {
-		screen: 'menu',
-		board,
-		player: { x: Math.floor(board.width / 2) },
-		aliens: [],
-		bullets: [],
-		shields: [],
-		kills: [],
-		alienDir: 1,
-		alienMoveTimer: 0,
-		alienMoveInterval: INITIAL_ALIEN_MOVE_INTERVAL,
-		score: 0,
-		lives: INITIAL_LIVES,
-		wave: 1,
-		paused: false,
-		settings: {
-			sound: true,
-			difficulty: 'normal',
-			showFps: false,
-			shieldBars: true,
-			killLog: true,
-			alienAnim: true,
-			screenShake: false,
-			particles: false,
-			debug: false,
-			highContrast: false,
-			largeText: false,
-		},
-		lastShootTime: 0,
-		waveTransition: false,
-		gameStartTime: Date.now(),
-		frame: 0,
-	}
-}
-//#endregion Helpers
+import type { Bullet, Screen, Settings, State } from './game/types'
+import { createBoardConfig } from './game/board'
+import { createAliens, createShields } from './game/entities'
+import {
+	getAlienPoints,
+	getDifficultyModifier,
+	createInitialState,
+} from './game/state'
 
 //#region Composable
 export function useInvaders(termWidth: Ref<number>, termHeight: Ref<number>) {
@@ -300,12 +57,12 @@ export function useInvaders(termWidth: Ref<number>, termHeight: Ref<number>) {
 
 	function startGame() {
 		const board = state.board
-		const settings = state.settings
+		const savedSettings = { ...state.settings }
 		Object.assign(state, createInitialState(board))
 		state.screen = 'game'
 		state.aliens = createAliens(board)
 		state.shields = createShields(board)
-		state.settings = settings
+		Object.assign(state.settings, savedSettings)
 		state.gameStartTime = Date.now()
 	}
 
@@ -369,7 +126,7 @@ export function useInvaders(termWidth: Ref<number>, termHeight: Ref<number>) {
 			const alienBullets = state.bullets.filter((b) => b.dy === 1)
 
 			// Player bullets vs aliens
-			const newKills: Kill[] = []
+			const newKills: State['kills'] = []
 			const totalAliens = board.alienRows * board.alienCols
 			for (const bullet of playerBullets) {
 				for (const alien of state.aliens) {
@@ -491,8 +248,8 @@ export function useInvaders(termWidth: Ref<number>, termHeight: Ref<number>) {
 			if (aliveAliens.length === 0) return
 
 			const { board } = state
-			const bottomAliens: Alien[] = []
-			const columnMap = new Map<number, Alien>()
+			const bottomAliens: State['aliens'] = []
+			const columnMap = new Map<number, State['aliens'][0]>()
 			for (const alien of aliveAliens) {
 				const col = Math.floor(alien.x / board.alienSpacingX)
 				const existing = columnMap.get(col)
@@ -547,12 +304,12 @@ export function useInvaders(termWidth: Ref<number>, termHeight: Ref<number>) {
 
 	function restart() {
 		const board = state.board
-		const settings = state.settings
+		const savedSettings = { ...state.settings }
 		Object.assign(state, createInitialState(board))
 		state.screen = 'game'
 		state.aliens = createAliens(board)
 		state.shields = createShields(board)
-		state.settings = settings
+		Object.assign(state.settings, savedSettings)
 		state.gameStartTime = Date.now()
 	}
 	//#endregion Actions

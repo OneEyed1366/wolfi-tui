@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { Box, Text, Select, MultiSelect, Newline, useInput } from '@wolfie/vue'
 import type {
 	Screen,
@@ -36,12 +36,8 @@ const TOGGLE_OPTIONS = [
 type Section = 'difficulty' | 'options'
 const section = ref<Section>('difficulty')
 
-// Track mount state to skip initial onChange calls
-const difficultyMounted = ref(false)
-const togglesMounted = ref(false)
-
-// Initial toggles (computed once on mount)
-const initialToggles = computed(() => {
+// Current toggles based on settings
+const currentToggles = computed(() => {
 	const toggles: string[] = []
 	if (props.settings.showFps) toggles.push('showFps')
 	if (props.settings.shieldBars) toggles.push('shieldBars')
@@ -64,18 +60,19 @@ useInput((input, key) => {
 })
 
 function handleDifficultyChange(value: string) {
-	if (!difficultyMounted.value) {
-		difficultyMounted.value = true
-		return
-	}
+	// Only update if value actually changed
+	if (value === props.settings.difficulty) return
 	props.onUpdateSettings({ difficulty: value as Difficulty })
 }
 
 function handleTogglesChange(values: string[]) {
-	if (!togglesMounted.value) {
-		togglesMounted.value = true
+	// Only update if values actually changed
+	const current = currentToggles.value
+	if (
+		values.length === current.length &&
+		values.every((v) => current.includes(v))
+	)
 		return
-	}
 	props.onUpdateSettings({
 		showFps: values.includes('showFps'),
 		shieldBars: values.includes('shieldBars'),
@@ -111,7 +108,7 @@ function handleTogglesChange(values: string[]) {
 		</Text>
 		<Select
 			:options="DIFFICULTY_OPTIONS"
-			:default-value="settings.difficulty"
+			:value="settings.difficulty"
 			:visible-option-count="3"
 			:is-disabled="section !== 'difficulty'"
 			@change="handleDifficultyChange"
@@ -125,7 +122,7 @@ function handleTogglesChange(values: string[]) {
 		</Text>
 		<MultiSelect
 			:options="TOGGLE_OPTIONS"
-			:default-value="initialToggles"
+			:value="currentToggles"
 			:visible-option-count="5"
 			:is-disabled="section !== 'options'"
 			@change="handleTogglesChange"
