@@ -35,7 +35,12 @@ export type ISelectProps = {
 	options: Option[]
 
 	/**
-	 * Default value.
+	 * Controlled value. When provided, component always reflects this value.
+	 */
+	value?: string
+
+	/**
+	 * Default value (uncontrolled mode).
 	 */
 	defaultValue?: string
 
@@ -52,12 +57,14 @@ export function Select({
 	visibleOptionCount = 5,
 	highlightText,
 	options,
+	value,
 	defaultValue,
 	onChange,
 }: ISelectProps) {
 	const state = useSelectState({
 		visibleOptionCount,
 		options,
+		value,
 		defaultValue,
 		onChange,
 	})

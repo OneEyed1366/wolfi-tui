@@ -1,5 +1,13 @@
 import { isDeepStrictEqual } from 'node:util'
-import { ref, computed, watch, type Ref, type ComputedRef } from 'vue'
+import {
+	ref,
+	computed,
+	watch,
+	toValue,
+	type Ref,
+	type ComputedRef,
+	type MaybeRef,
+} from 'vue'
 import type { Option } from '../types'
 import OptionMap from '../lib/option-map'
 
@@ -55,7 +63,12 @@ export type UseSelectStateProps = {
 	options: Option[]
 
 	/**
-	 * Initially selected option's value.
+	 * Controlled value. When provided, component reflects this value.
+	 */
+	value?: MaybeRef<string | undefined>
+
+	/**
+	 * Initially selected option's value (uncontrolled mode).
 	 */
 	defaultValue?: string
 
@@ -84,7 +97,7 @@ export type SelectState = {
 	/**
 	 * Value of the selected option.
 	 */
-	value: Ref<string | undefined>
+	value: ComputedRef<string | undefined>
 
 	/**
 	 * Visible options.
@@ -140,12 +153,15 @@ const createDefaultState = ({
 export const useSelectState = ({
 	visibleOptionCount = 5,
 	options,
+	value: controlledValue,
 	defaultValue,
 	onChange,
 }: UseSelectStateProps): SelectState => {
+	// Use controlled value if provided, otherwise use defaultValue
+	const initialValue = toValue(controlledValue) ?? defaultValue
 	const initialState = createDefaultState({
 		visibleOptionCount,
-		defaultValue,
+		defaultValue: initialValue,
 		options,
 	})
 
@@ -155,7 +171,10 @@ export const useSelectState = ({
 	const visibleFromIndex = ref(initialState.visibleFromIndex)
 	const visibleToIndex = ref(initialState.visibleToIndex)
 	const previousValue = ref(initialState.previousValue)
-	const value = ref(initialState.value)
+	const internalValue = ref(initialState.value)
+
+	// Controlled mode: derive value from prop; uncontrolled: use internal state
+	const value = computed(() => toValue(controlledValue) ?? internalValue.value)
 
 	const lastOptions = ref(options)
 
@@ -179,12 +198,22 @@ export const useSelectState = ({
 				visibleFromIndex.value = newState.visibleFromIndex
 				visibleToIndex.value = newState.visibleToIndex
 				previousValue.value = newState.previousValue
-				value.value = newState.value
+				internalValue.value = newState.value
 
 				lastOptions.value = newOptions
 			}
 		},
 		{ deep: true }
+	)
+
+	// Sync focusedValue when controlled value changes
+	watch(
+		() => toValue(controlledValue),
+		(newValue) => {
+			if (newValue !== undefined) {
+				focusedValue.value = newValue
+			}
+		}
 	)
 
 	const focusNextOption = () => {
@@ -251,8 +280,8 @@ export const useSelectState = ({
 	}
 
 	const selectFocusedOption = () => {
-		previousValue.value = value.value
-		value.value = focusedValue.value
+		previousValue.value = internalValue.value
+		internalValue.value = focusedValue.value
 	}
 
 	const visibleOptions = computed(() => {
@@ -264,7 +293,7 @@ export const useSelectState = ({
 			.slice(visibleFromIndex.value, visibleToIndex.value)
 	})
 
-	watch(value, (newValue, oldValue) => {
+	watch(internalValue, (newValue, oldValue) => {
 		if (newValue && oldValue !== newValue) {
 			onChange?.(newValue)
 		}

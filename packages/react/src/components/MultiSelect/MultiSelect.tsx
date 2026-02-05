@@ -36,7 +36,12 @@ export type IMultiSelectProps = {
 	options: Option[]
 
 	/**
-	 * Initially selected option values.
+	 * Controlled value. When provided, component always reflects this value.
+	 */
+	value?: string[]
+
+	/**
+	 * Initially selected option values (uncontrolled mode).
 	 */
 	defaultValue?: string[]
 
@@ -59,6 +64,7 @@ export function MultiSelect({
 	visibleOptionCount = 5,
 	highlightText,
 	options,
+	value,
 	defaultValue,
 	onChange,
 	onSubmit,
@@ -66,6 +72,7 @@ export function MultiSelect({
 	const state = useMultiSelectState({
 		visibleOptionCount,
 		options,
+		value,
 		defaultValue,
 		onChange,
 		onSubmit,

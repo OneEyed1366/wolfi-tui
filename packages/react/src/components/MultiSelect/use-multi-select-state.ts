@@ -53,6 +53,7 @@ type Action =
 	| FocusPreviousOptionAction
 	| ToggleFocusedOptionAction
 	| ResetAction
+	| SyncValueAction
 
 type FocusNextOptionAction = {
 	type: 'focus-next-option'
@@ -71,6 +72,11 @@ type ResetAction = {
 	state: State
 }
 
+type SyncValueAction = {
+	type: 'sync-value'
+	value: string[]
+}
+
 export type UseMultiSelectStateProps = {
 	/**
 	 * Number of visible options.
@@ -85,7 +91,12 @@ export type UseMultiSelectStateProps = {
 	options: Option[]
 
 	/**
-	 * Initially selected option values.
+	 * Controlled value. When provided, component reflects this value.
+	 */
+	value?: string[]
+
+	/**
+	 * Initially selected option values (uncontrolled mode).
 	 */
 	defaultValue?: string[]
 
@@ -240,6 +251,16 @@ const reducer: Reducer<State, Action> = (state, action) => {
 		case 'reset': {
 			return action.state
 		}
+
+		case 'sync-value': {
+			return {
+				...state,
+				value: action.value,
+			}
+		}
+
+		default:
+			return state
 	}
 }
 //#endregion Reducer
@@ -277,25 +298,43 @@ const createDefaultState = ({
 export const useMultiSelectState = ({
 	visibleOptionCount = 5,
 	options,
+	value: controlledValue,
 	defaultValue,
 	onChange,
 	onSubmit,
 }: UseMultiSelectStateProps): MultiSelectState => {
+	// Use controlled value if provided, otherwise use defaultValue
+	const initialValue = controlledValue ?? defaultValue
 	const [state, dispatch] = useReducer(
 		reducer,
-		{ visibleOptionCount, defaultValue, options },
+		{ visibleOptionCount, defaultValue: initialValue, options },
 		createDefaultState
 	)
 
 	const [lastOptions, setLastOptions] = useState(options)
+	const [lastControlledValue, setLastControlledValue] =
+		useState(controlledValue)
 
 	if (options !== lastOptions && !isDeepStrictEqual(options, lastOptions)) {
 		dispatch({
 			type: 'reset',
-			state: createDefaultState({ visibleOptionCount, defaultValue, options }),
+			state: createDefaultState({
+				visibleOptionCount,
+				defaultValue: initialValue,
+				options,
+			}),
 		})
 
 		setLastOptions(options)
+	}
+
+	// Sync with controlled value
+	if (
+		controlledValue !== undefined &&
+		!isDeepStrictEqual(controlledValue, lastControlledValue)
+	) {
+		dispatch({ type: 'sync-value', value: controlledValue })
+		setLastControlledValue(controlledValue)
 	}
 
 	const focusNextOption = useCallback(() => {

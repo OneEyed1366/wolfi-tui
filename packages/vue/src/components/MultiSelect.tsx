@@ -45,7 +45,12 @@ export interface MultiSelectProps {
 	options: Option[]
 
 	/**
-	 * Initially selected option values.
+	 * Controlled value. When provided, component always reflects this value.
+	 */
+	value?: string[]
+
+	/**
+	 * Initially selected option values (uncontrolled mode).
 	 */
 	defaultValue?: string[]
 
@@ -82,6 +87,10 @@ export const MultiSelect: DefineComponent<MultiSelectProps> = defineComponent({
 			type: Array as PropType<Option[]>,
 			required: true,
 		},
+		value: {
+			type: Array as PropType<string[]>,
+			default: undefined,
+		},
 		defaultValue: {
 			type: Array as PropType<string[]>,
 			default: undefined,
@@ -99,6 +108,7 @@ export const MultiSelect: DefineComponent<MultiSelectProps> = defineComponent({
 		const state = useMultiSelectState({
 			visibleOptionCount: props.visibleOptionCount,
 			options: props.options,
+			value: toRef(props, 'value'),
 			defaultValue: props.defaultValue,
 			onChange: props.onChange,
 			onSubmit: props.onSubmit,

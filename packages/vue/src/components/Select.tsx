@@ -40,7 +40,12 @@ export interface SelectProps {
 	options: Option[]
 
 	/**
-	 * Default value.
+	 * Controlled value. When provided, component always reflects this value.
+	 */
+	value?: string
+
+	/**
+	 * Default value (uncontrolled mode).
 	 */
 	defaultValue?: string
 
@@ -71,6 +76,10 @@ export const Select: DefineComponent<SelectProps> = defineComponent({
 			type: Array as PropType<Option[]>,
 			required: true,
 		},
+		value: {
+			type: String,
+			default: undefined,
+		},
 		defaultValue: {
 			type: String,
 			default: undefined,
@@ -84,6 +93,7 @@ export const Select: DefineComponent<SelectProps> = defineComponent({
 		const state = useSelectState({
 			visibleOptionCount: props.visibleOptionCount,
 			options: props.options,
+			value: toRef(props, 'value'),
 			defaultValue: props.defaultValue,
 			onChange: props.onChange,
 		})

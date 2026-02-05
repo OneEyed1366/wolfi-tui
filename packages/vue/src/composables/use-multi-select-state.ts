@@ -1,5 +1,13 @@
 import { isDeepStrictEqual } from 'node:util'
-import { ref, computed, watch, type Ref, type ComputedRef } from 'vue'
+import {
+	ref,
+	computed,
+	watch,
+	toValue,
+	type Ref,
+	type ComputedRef,
+	type MaybeRef,
+} from 'vue'
 import OptionMap from '../lib/option-map'
 import type { Option } from '../types'
 
@@ -55,7 +63,12 @@ export type UseMultiSelectStateProps = {
 	options: Option[]
 
 	/**
-	 * Initially selected option values.
+	 * Controlled value. When provided, component reflects this value.
+	 */
+	value?: MaybeRef<string[] | undefined>
+
+	/**
+	 * Initially selected option values (uncontrolled mode).
 	 */
 	defaultValue?: string[]
 
@@ -90,7 +103,7 @@ export type MultiSelectState = {
 	/**
 	 * Values of selected options.
 	 */
-	value: Ref<string[]>
+	value: ComputedRef<string[]>
 
 	/**
 	 * Visible options.
@@ -152,13 +165,16 @@ const createDefaultState = ({
 export const useMultiSelectState = ({
 	visibleOptionCount = 5,
 	options,
+	value: controlledValue,
 	defaultValue,
 	onChange,
 	onSubmit,
 }: UseMultiSelectStateProps): MultiSelectState => {
+	// Use controlled value if provided, otherwise use defaultValue
+	const initialValue = toValue(controlledValue) ?? defaultValue
 	const initialState = createDefaultState({
 		visibleOptionCount,
-		defaultValue,
+		defaultValue: initialValue,
 		options,
 	})
 
@@ -168,7 +184,10 @@ export const useMultiSelectState = ({
 	const visibleFromIndex = ref(initialState.visibleFromIndex)
 	const visibleToIndex = ref(initialState.visibleToIndex)
 	const previousValue = ref(initialState.previousValue)
-	const value = ref(initialState.value)
+	const internalValue = ref(initialState.value)
+
+	// Controlled mode: derive value from prop; uncontrolled: use internal state
+	const value = computed(() => toValue(controlledValue) ?? internalValue.value)
 
 	const lastOptions = ref(options)
 
@@ -192,7 +211,7 @@ export const useMultiSelectState = ({
 				visibleFromIndex.value = newState.visibleFromIndex
 				visibleToIndex.value = newState.visibleToIndex
 				previousValue.value = newState.previousValue
-				value.value = newState.value
+				internalValue.value = newState.value
 
 				lastOptions.value = newOptions
 			}
@@ -268,14 +287,14 @@ export const useMultiSelectState = ({
 			return
 		}
 
-		if (value.value.includes(focusedValue.value)) {
-			const newValue = new Set(value.value)
-			newValue.delete(focusedValue.value)
-			previousValue.value = value.value
-			value.value = [...newValue]
+		if (internalValue.value.includes(focusedValue.value)) {
+			const newVal = new Set(internalValue.value)
+			newVal.delete(focusedValue.value)
+			previousValue.value = internalValue.value
+			internalValue.value = [...newVal]
 		} else {
-			previousValue.value = value.value
-			value.value = [...value.value, focusedValue.value]
+			previousValue.value = internalValue.value
+			internalValue.value = [...internalValue.value, focusedValue.value]
 		}
 	}
 
@@ -293,7 +312,7 @@ export const useMultiSelectState = ({
 	})
 
 	watch(
-		value,
+		internalValue,
 		(newValue, oldValue) => {
 			if (!isDeepStrictEqual(oldValue, newValue)) {
 				onChange?.(newValue)
