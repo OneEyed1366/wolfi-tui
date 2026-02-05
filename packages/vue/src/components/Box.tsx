@@ -112,7 +112,11 @@ export const Box = defineComponent({
 		})
 
 		// Provide background color to children (called in setup, not render)
-		provide(BackgroundSymbol, computedBackgroundColor)
+		// Pass through inherited value when no explicit value, so children can inherit from grandparent
+		const providedBackgroundColor = computed(
+			() => computedBackgroundColor.value ?? unref(inheritedBackgroundColorRef)
+		)
+		provide(BackgroundSymbol, providedBackgroundColor)
 
 		return () => {
 			const style = props.style ?? {}
@@ -151,8 +155,7 @@ export const Box = defineComponent({
 			return (
 				<wolfie-box
 					style={{
-						backgroundColor:
-							finalBackgroundColor ?? unref(inheritedBackgroundColorRef),
+						backgroundColor: finalBackgroundColor,
 						overflowX:
 							style.overflowX ??
 							resolvedClassName.overflowX ??
