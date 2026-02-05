@@ -5,11 +5,17 @@ import {
 	ChangeDetectionStrategy,
 	signal,
 	computed,
+	inject,
 } from '@angular/core'
 import type { Styles } from '@wolfie/core'
 import figures from 'figures'
 import { BoxComponent } from '../box/box.component'
 import { TextComponent } from '../text/text.component'
+import {
+	THEME_CONTEXT,
+	useComponentTheme,
+	type IComponentTheme,
+} from '../../theme'
 
 //#region Types
 export type AlertVariant = 'info' | 'success' | 'error' | 'warning'
@@ -42,7 +48,7 @@ const iconByVariant: Record<AlertVariant, string> = {
 	warning: figures.warning,
 }
 
-const alertTheme = {
+export const alertTheme: IComponentTheme = {
 	styles: {
 		container: (variant: AlertVariant): Partial<Styles> => ({
 			flexGrow: 1,
@@ -105,22 +111,49 @@ export class AlertComponent implements OnInit, OnDestroy {
 	@Input() title?: string
 	//#endregion Inputs
 
+	//#region Theme
+	private readonly theme = inject(THEME_CONTEXT)
+	private readonly componentTheme = computed(
+		() => useComponentTheme<IComponentTheme>(this.theme, 'Alert') ?? alertTheme
+	)
+	//#endregion Theme
+
 	//#region Internal State
 	private _variant = signal<AlertVariant>('info')
 	//#endregion Internal State
 
 	//#region Computed Properties
-	readonly containerStyle = computed(() =>
-		alertTheme.styles.container(this._variant())
+	readonly containerStyle = computed(
+		() =>
+			this.componentTheme().styles?.container?.(this._variant()) ??
+			alertTheme.styles!.container(this._variant())
 	)
-	readonly iconContainerStyle = computed(() =>
-		alertTheme.styles.iconContainer()
+	readonly iconContainerStyle = computed(
+		() =>
+			this.componentTheme().styles?.iconContainer?.() ??
+			alertTheme.styles!.iconContainer()
 	)
-	readonly iconStyle = computed(() => alertTheme.styles.icon(this._variant()))
-	readonly contentStyle = computed(() => alertTheme.styles.content())
-	readonly titleStyle = computed(() => alertTheme.styles.title())
-	readonly messageStyle = computed(() => alertTheme.styles.message())
-	readonly icon = computed(() => alertTheme.config(this._variant()).icon)
+	readonly iconStyle = computed(
+		() =>
+			this.componentTheme().styles?.icon?.(this._variant()) ??
+			alertTheme.styles!.icon(this._variant())
+	)
+	readonly contentStyle = computed(
+		() =>
+			this.componentTheme().styles?.content?.() ?? alertTheme.styles!.content()
+	)
+	readonly titleStyle = computed(
+		() => this.componentTheme().styles?.title?.() ?? alertTheme.styles!.title()
+	)
+	readonly messageStyle = computed(
+		() =>
+			this.componentTheme().styles?.message?.() ?? alertTheme.styles!.message()
+	)
+	readonly icon = computed(
+		() =>
+			(this.componentTheme().config?.(this._variant()) as { icon: string })
+				?.icon ?? alertTheme.config!(this._variant()).icon
+	)
 	//#endregion Computed Properties
 
 	//#region Lifecycle

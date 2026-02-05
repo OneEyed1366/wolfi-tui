@@ -13,6 +13,11 @@ import { measureElement } from '@wolfie/core'
 import figures from 'figures'
 import { BoxComponent } from '../box/box.component'
 import { TextComponent } from '../text/text.component'
+import {
+	THEME_CONTEXT,
+	useComponentTheme,
+	type IComponentTheme,
+} from '../../theme'
 
 //#region Types
 export interface ProgressBarProps {
@@ -27,7 +32,7 @@ export interface ProgressBarProps {
 //#endregion Types
 
 //#region Theme
-const progressBarTheme = {
+export const progressBarTheme: IComponentTheme = {
 	styles: {
 		container: (): Partial<Styles> => ({
 			flexGrow: 1,
@@ -79,15 +84,36 @@ export class ProgressBarComponent implements OnInit, OnDestroy, AfterViewInit {
 	private elementRef = inject(ElementRef)
 	//#endregion Injected Dependencies
 
+	//#region Theme
+	private readonly theme = inject(THEME_CONTEXT)
+	private readonly componentTheme = computed(
+		() =>
+			useComponentTheme<IComponentTheme>(this.theme, 'ProgressBar') ??
+			progressBarTheme
+	)
+	//#endregion Theme
+
 	//#region Internal State
 	private _value = signal(0)
 	private _width = signal(0)
 	//#endregion Internal State
 
 	//#region Computed Properties
-	readonly containerStyle = computed(() => progressBarTheme.styles.container())
-	readonly completedStyle = computed(() => progressBarTheme.styles.completed())
-	readonly remainingStyle = computed(() => progressBarTheme.styles.remaining())
+	readonly containerStyle = computed(
+		() =>
+			this.componentTheme().styles?.container?.() ??
+			progressBarTheme.styles!.container()
+	)
+	readonly completedStyle = computed(
+		() =>
+			this.componentTheme().styles?.completed?.() ??
+			progressBarTheme.styles!.completed()
+	)
+	readonly remainingStyle = computed(
+		() =>
+			this.componentTheme().styles?.remaining?.() ??
+			progressBarTheme.styles!.remaining()
+	)
 
 	readonly progress = computed(() => Math.min(100, Math.max(0, this._value())))
 	readonly complete = computed(() =>
@@ -95,12 +121,26 @@ export class ProgressBarComponent implements OnInit, OnDestroy, AfterViewInit {
 	)
 	readonly remaining = computed(() => this._width() - this.complete())
 
-	readonly completedBar = computed(() =>
-		progressBarTheme.config().completedCharacter.repeat(this.complete())
-	)
-	readonly remainingBar = computed(() =>
-		progressBarTheme.config().remainingCharacter.repeat(this.remaining())
-	)
+	readonly completedBar = computed(() => {
+		const config = this.componentTheme().config?.() as
+			| { completedCharacter: string }
+			| undefined
+		const char =
+			config?.completedCharacter ??
+			(progressBarTheme.config!() as { completedCharacter: string })
+				.completedCharacter
+		return char.repeat(this.complete())
+	})
+	readonly remainingBar = computed(() => {
+		const config = this.componentTheme().config?.() as
+			| { remainingCharacter: string }
+			| undefined
+		const char =
+			config?.remainingCharacter ??
+			(progressBarTheme.config!() as { remainingCharacter: string })
+				.remainingCharacter
+		return char.repeat(this.remaining())
+	})
 	//#endregion Computed Properties
 
 	//#region Lifecycle

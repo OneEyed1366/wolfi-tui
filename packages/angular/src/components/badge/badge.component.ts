@@ -5,9 +5,15 @@ import {
 	ChangeDetectionStrategy,
 	signal,
 	computed,
+	inject,
 } from '@angular/core'
 import type { Styles } from '@wolfie/core'
 import { TextComponent } from '../text/text.component'
+import {
+	THEME_CONTEXT,
+	useComponentTheme,
+	type IComponentTheme,
+} from '../../theme'
 
 //#region Types
 export interface BadgeProps {
@@ -21,7 +27,7 @@ export interface BadgeProps {
 //#endregion Types
 
 //#region Theme
-const badgeTheme = {
+export const badgeTheme: IComponentTheme = {
 	styles: {
 		container: (color: Styles['color']): Partial<Styles> => ({
 			backgroundColor: color,
@@ -53,15 +59,26 @@ export class BadgeComponent implements OnInit, OnDestroy {
 	@Input() color: Styles['color'] = 'magenta'
 	//#endregion Inputs
 
+	//#region Theme
+	private readonly theme = inject(THEME_CONTEXT)
+	private readonly componentTheme = computed(
+		() => useComponentTheme<IComponentTheme>(this.theme, 'Badge') ?? badgeTheme
+	)
+	//#endregion Theme
+
 	//#region Internal State
 	private _color = signal<Styles['color']>('magenta')
 	//#endregion Internal State
 
 	//#region Computed Properties
-	readonly containerStyle = computed(() =>
-		badgeTheme.styles.container(this._color())
+	readonly containerStyle = computed(
+		() =>
+			this.componentTheme().styles?.container?.(this._color()) ??
+			badgeTheme.styles!.container(this._color())
 	)
-	readonly labelStyle = computed(() => badgeTheme.styles.label())
+	readonly labelStyle = computed(
+		() => this.componentTheme().styles?.label?.() ?? badgeTheme.styles!.label()
+	)
 	//#endregion Computed Properties
 
 	//#region Lifecycle

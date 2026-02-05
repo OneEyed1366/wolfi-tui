@@ -120,3 +120,14 @@ export {
 
 // Types
 export { type Option } from './lib/option-map'
+
+// Theme
+export {
+	THEME_CONTEXT,
+	extendTheme,
+	defaultTheme,
+	useComponentTheme,
+	type ITheme,
+	type IComponentTheme,
+	type IComponentStyles,
+} from './theme'
