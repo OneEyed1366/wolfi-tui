@@ -40,6 +40,8 @@
 		"auto-bind": "^5.0.1",
 		"cli-boxes": "^3.0.0",
 		"cli-cursor": "^4.0.0",
+		"cli-spinners": "^3.4.0",
+		"figures": "^6.1.0",
 		"cli-truncate": "^5.1.1",
 		"code-excerpt": "^4.0.0",
 		"es-toolkit": "^1.39.10",
