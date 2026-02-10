@@ -29,7 +29,7 @@ export default defineConfig({
 			fileName: 'index',
 		},
 		rollupOptions: {
-			external: ['vue', '@wolfie/vue'],
+			external: [/^vue(\/|$)/, /^@wolfie\//],
 		},
 	},
 })

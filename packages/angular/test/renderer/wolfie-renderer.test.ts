@@ -314,25 +314,15 @@ describe('WolfieRenderer', () => {
 
 	//#region setAttribute Tests
 	describe('setAttribute', () => {
-		it('sets class and resolves to styles', () => {
+		it('stores class attribute without resolving to styles', () => {
 			registerStyles({ 'test-class': { padding: 2 } })
 
 			const el = renderer.createElement('w-box')
 			renderer.appendChild(rootNode, el)
 			renderer.setAttribute(el, 'class', 'test-class')
 
+			// Class attribute stored, but style resolution is component responsibility
 			expect(el.attributes['class']).toBe('test-class')
-			expect(el.style.padding).toBe(2)
-		})
-
-		it('creates text transform for wolfie-text', () => {
-			const el = renderer.createElement('w-text')
-			renderer.appendChild(rootNode, el)
-
-			registerStyles({ 'text-bold': { fontWeight: 'bold' } })
-			renderer.setAttribute(el, 'class', 'text-bold')
-
-			expect(typeof el.internal_transform).toBe('function')
 		})
 
 		it('sets internal_static attribute', () => {
@@ -374,7 +364,7 @@ describe('WolfieRenderer', () => {
 			expect(el.attributes['class']).toBe('first second')
 		})
 
-		it('updates resolved styles', () => {
+		it('stores class attribute without resolving styles', () => {
 			registerStyles({
 				base: { padding: 1 },
 				extra: { margin: 2 },
@@ -386,8 +376,8 @@ describe('WolfieRenderer', () => {
 			renderer.setAttribute(el, 'class', 'base')
 			renderer.addClass(el, 'extra')
 
-			expect(el.style.padding).toBe(1)
-			expect(el.style.margin).toBe(2)
+			// Class stored, style resolution is component responsibility
+			expect(el.attributes['class']).toBe('base extra')
 		})
 
 		it('does not add duplicate class', () => {
@@ -423,26 +413,15 @@ describe('WolfieRenderer', () => {
 			expect(el.attributes['class']).toBe('foo baz')
 		})
 
-		it('recalculates class-based styles after removal', () => {
-			registerStyles({
-				base: { padding: 1 },
-				extra: { margin: 2, gap: 4 },
-			})
-
+		it('updates class attribute after removal', () => {
 			const el = renderer.createElement('w-box')
 			renderer.appendChild(rootNode, el)
 
 			renderer.setAttribute(el, 'class', 'base extra')
-			expect(el.style.margin).toBe(2)
-			expect(el.style.gap).toBe(4)
-
 			renderer.removeClass(el, 'extra')
 
-			// After removal, base styles still apply
-			expect(el.style.padding).toBe(1)
-			// Note: Current implementation preserves previously applied styles
-			// bc it merges with existing el.style. This is expected behavior.
-			expect(el.style.margin).toBe(2)
+			// Class attribute updated, style resolution is component responsibility
+			expect(el.attributes['class']).toBe('base')
 		})
 
 		it('handles removing non-existent class', () => {
@@ -487,15 +466,6 @@ describe('WolfieRenderer', () => {
 
 			// applyLayoutStyle internally calls layoutTree.setStyle
 			expect(layoutTree.setStyle).toHaveBeenCalled()
-		})
-
-		it('updates text transform for wolfie-text when style changes', () => {
-			const el = renderer.createElement('w-text')
-			renderer.appendChild(rootNode, el)
-
-			renderer.setStyle(el, 'fontWeight', 'bold')
-
-			expect(typeof el.internal_transform).toBe('function')
 		})
 
 		it('triggers onRender callback', () => {
@@ -712,35 +682,4 @@ describe('WolfieRenderer', () => {
 		})
 	})
 	//#endregion removeAttribute Tests
-
-	//#region Text Transform Tests
-	describe('Text Transform (createTextTransform)', () => {
-		it('applies color to text', () => {
-			registerStyles({ 'text-red': { color: 'red' } })
-
-			const el = renderer.createElement('w-text')
-			renderer.appendChild(rootNode, el)
-			renderer.setAttribute(el, 'class', 'text-red')
-
-			expect(el.internal_transform).toBeDefined()
-			// The transform function exists; actual colorization tested via chalk
-		})
-
-		it('applies multiple text styles', () => {
-			registerStyles({
-				'styled-text': {
-					fontWeight: 'bold',
-					fontStyle: 'italic',
-					textDecoration: 'underline',
-				},
-			})
-
-			const el = renderer.createElement('w-text')
-			renderer.appendChild(rootNode, el)
-			renderer.setAttribute(el, 'class', 'styled-text')
-
-			expect(el.internal_transform).toBeDefined()
-		})
-	})
-	//#endregion Text Transform Tests
 })

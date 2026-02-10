@@ -9,7 +9,6 @@ import {
 	setStyle,
 	setTextNodeValue,
 	applyLayoutStyle,
-	colorize,
 	isElement,
 	isText,
 	type DOMElement,
@@ -20,54 +19,10 @@ import {
 	type LayoutTree,
 	type OutputTransformer,
 } from '@wolfie/core'
-import chalk from 'chalk'
 import {
 	layoutTreeRegistry,
 	type WolfieAngularInstance,
 } from '../wolfie-angular'
-import { resolveClassName } from '../styles'
-
-/**
- * Create a text transform function for wolfie-text elements.
- * This applies color, bold, italic, etc. using chalk.
- */
-const createTextTransform = (el: DOMElement): OutputTransformer => {
-	return (text: string): string => {
-		const styles = el.style || {}
-
-		let result = text
-
-		if (styles.color) {
-			result = colorize(result, styles.color, 'foreground')
-		}
-
-		if (styles.backgroundColor) {
-			result = colorize(result, styles.backgroundColor, 'background')
-		}
-
-		if (styles.fontWeight === 'bold') {
-			result = chalk.bold(result)
-		}
-
-		if (styles.fontStyle === 'italic') {
-			result = chalk.italic(result)
-		}
-
-		if (styles.textDecoration === 'underline') {
-			result = chalk.underline(result)
-		}
-
-		if (styles.textDecoration === 'line-through') {
-			result = chalk.strikethrough(result)
-		}
-
-		if (styles.inverse) {
-			result = chalk.inverse(result)
-		}
-
-		return result
-	}
-}
 
 //#region Helper Functions
 /**
@@ -291,23 +246,8 @@ export class WolfieRenderer implements Renderer2 {
 		const instance = getInstance(el)
 
 		if (name === 'class') {
+			// Store class attribute; components handle className → style resolution internally
 			setAttribute(el, 'class', value)
-
-			// Resolve classes to styles
-			const classStyles = resolveClassName(value)
-			// Merge with existing style prop
-			const existingStyle = el.style || {}
-			const mergedStyles = { ...classStyles, ...existingStyle }
-
-			setStyle(el, mergedStyles)
-			if (instance && el.layoutNodeId !== undefined) {
-				applyLayoutStyle(instance.layoutTree, el.layoutNodeId, mergedStyles)
-			}
-
-			// For wolfie-text elements, create a transform function for text styling
-			if (el.nodeName === 'wolfie-text') {
-				el.internal_transform = createTextTransform(el)
-			}
 		} else if (name === 'internal_transform') {
 			// Set transform function directly on node, not as attribute
 			// This is handled specially in setProperty
@@ -337,18 +277,8 @@ export class WolfieRenderer implements Renderer2 {
 		const classes = currentClass.split(/\s+/).filter(Boolean)
 		if (!classes.includes(name)) {
 			classes.push(name)
-			const newClass = classes.join(' ')
-			setAttribute(el, 'class', newClass)
-
-			// Resolve and apply styles
-			const classStyles = resolveClassName(newClass)
-			const existingStyle = el.style || {}
-			const mergedStyles = { ...classStyles, ...existingStyle }
-
-			setStyle(el, mergedStyles)
-			if (instance && el.layoutNodeId !== undefined) {
-				applyLayoutStyle(instance.layoutTree, el.layoutNodeId, mergedStyles)
-			}
+			// Store class attribute; components handle className → style resolution internally
+			setAttribute(el, 'class', classes.join(' '))
 		}
 		instance?.onRender()
 	}
@@ -357,18 +287,8 @@ export class WolfieRenderer implements Renderer2 {
 		const instance = getInstance(el)
 		const currentClass = (el.attributes['class'] as string) || ''
 		const classes = currentClass.split(/\s+/).filter((c) => c !== name)
-		const newClass = classes.join(' ')
-		setAttribute(el, 'class', newClass)
-
-		// Resolve and apply styles
-		const classStyles = resolveClassName(newClass)
-		const existingStyle = el.style || {}
-		const mergedStyles = { ...classStyles, ...existingStyle }
-
-		setStyle(el, mergedStyles)
-		if (instance && el.layoutNodeId !== undefined) {
-			applyLayoutStyle(instance.layoutTree, el.layoutNodeId, mergedStyles)
-		}
+		// Store class attribute; components handle className → style resolution internally
+		setAttribute(el, 'class', classes.join(' '))
 		instance?.onRender()
 	}
 
@@ -380,14 +300,9 @@ export class WolfieRenderer implements Renderer2 {
 	): void {
 		const instance = getInstance(el)
 
-		// Merge with resolved classes if any
-		const classStyles = resolveClassName(el.attributes['class'] as string)
-		const currentStyle = el.style || {}
-
-		// Update the specific style property
+		// Merge with existing styles (className already resolved by components via setProperty)
 		const updatedStyle = {
-			...classStyles,
-			...currentStyle,
+			...el.style,
 			[style]: value,
 		} as Partial<Styles>
 
@@ -395,11 +310,6 @@ export class WolfieRenderer implements Renderer2 {
 
 		if (instance && el.layoutNodeId !== undefined) {
 			applyLayoutStyle(instance.layoutTree, el.layoutNodeId, updatedStyle)
-		}
-
-		// Update transform for wolfie-text elements when style changes
-		if (el.nodeName === 'wolfie-text') {
-			el.internal_transform = createTextTransform(el)
 		}
 
 		instance?.onRender()
