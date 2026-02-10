@@ -1,4 +1,11 @@
-import { createRenderer, ref, type App, type Component, type Ref } from 'vue'
+import {
+	createRenderer,
+	ref,
+	nextTick,
+	type App,
+	type Component,
+	type Ref,
+} from 'vue'
 import { EventEmitter } from 'node:events'
 import ansiEscapes from 'ansi-escapes'
 import { nodeOps } from './renderer/nodeOps'
@@ -68,7 +75,6 @@ export interface RenderOptions {
 
 export type WolfieVueInstance = {
 	layoutTree: LayoutTree
-	onRender: () => void
 }
 
 export const layoutTreeRegistry = new WeakMap<DOMElement, WolfieVueInstance>()
@@ -136,6 +142,9 @@ class WolfieVue {
 
 		const { scheduleRender, flush } = createRenderScheduler(throttledRender, {
 			sync: unthrottled,
+			queueFn: (cb) => {
+				nextTick(cb)
+			},
 		})
 		this.scheduleRender = scheduleRender
 		this.flushRender = flush
@@ -144,7 +153,6 @@ class WolfieVue {
 
 		layoutTreeRegistry.set(this.rootNode, {
 			layoutTree: this.layoutTree,
-			onRender: scheduleRender,
 		})
 
 		// Set default style for root node to match React behavior
@@ -461,6 +469,15 @@ class WolfieVue {
 
 	render(component: Component) {
 		this.app = getCreateApp()(component)
+
+		// Framework-level render trigger (like Angular's RendererFactory2.end()
+		// and React's resetAfterCommit)
+		const scheduleRender = this.scheduleRender
+		this.app.mixin({
+			updated() {
+				scheduleRender()
+			},
+		})
 
 		// Reference count for raw mode - only disable when all consumers release
 		let rawModeRefCount = 0

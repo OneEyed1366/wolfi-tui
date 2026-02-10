@@ -32,7 +32,6 @@ export interface WolfieOptions {
 
 export type WolfieAngularInstance = {
 	layoutTree: LayoutTree
-	onRender: () => void
 }
 //#endregion Types
 
@@ -112,7 +111,6 @@ export class WolfieAngular {
 
 		layoutTreeRegistry.set(this.rootNode, {
 			layoutTree: this.layoutTree,
-			onRender: scheduleRender,
 		})
 
 		// Set default style for root node to match React/Vue behavior

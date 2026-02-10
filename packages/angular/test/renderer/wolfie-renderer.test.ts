@@ -52,16 +52,14 @@ const createMockLayoutTree = (): LayoutTree => ({
 const createMockContext = () => {
 	const layoutTree = createMockLayoutTree()
 	const rootNode = createNode('wolfie-root' as ElementNames, layoutTree)
-	const onRenderMock = vi.fn()
 
 	const instance: WolfieAngularInstance = {
 		layoutTree,
-		onRender: onRenderMock,
 	}
 
 	layoutTreeRegistry.set(rootNode, instance)
 
-	return { rootNode, layoutTree, onRenderMock, instance }
+	return { rootNode, layoutTree, instance }
 }
 //#endregion Mock Helpers
 
@@ -69,14 +67,12 @@ describe('WolfieRenderer', () => {
 	let renderer: WolfieRenderer
 	let rootNode: DOMElement
 	let layoutTree: LayoutTree
-	let onRenderMock: ReturnType<typeof vi.fn>
 
 	beforeEach(() => {
 		clearGlobalStyles()
 		const ctx = createMockContext()
 		rootNode = ctx.rootNode
 		layoutTree = ctx.layoutTree
-		onRenderMock = ctx.onRenderMock
 
 		renderer = new WolfieRenderer(rootNode)
 	})
@@ -171,13 +167,6 @@ describe('WolfieRenderer', () => {
 			expect(layoutTree.createNode).toHaveBeenCalled()
 		})
 
-		it('triggers onRender callback', () => {
-			const child = renderer.createElement('w-box')
-			renderer.appendChild(rootNode, child)
-
-			expect(onRenderMock).toHaveBeenCalled()
-		})
-
 		it('appends text node to element', () => {
 			const textNode = renderer.createText('Hello')
 			renderer.appendChild(rootNode, textNode)
@@ -227,17 +216,6 @@ describe('WolfieRenderer', () => {
 				(layoutTree.createNode as ReturnType<typeof vi.fn>).mock.calls.length
 			).toBeGreaterThan(callsBefore)
 		})
-
-		it('triggers onRender callback', () => {
-			const first = renderer.createElement('w-box')
-			const second = renderer.createElement('w-box')
-
-			renderer.appendChild(rootNode, first)
-			onRenderMock.mockClear()
-			renderer.insertBefore(rootNode, second, first)
-
-			expect(onRenderMock).toHaveBeenCalled()
-		})
 	})
 	//#endregion insertBefore Tests
 
@@ -249,15 +227,6 @@ describe('WolfieRenderer', () => {
 			renderer.removeChild(rootNode, child)
 
 			expect(rootNode.childNodes).not.toContain(child)
-		})
-
-		it('triggers onRender callback', () => {
-			const child = renderer.createElement('w-box')
-			renderer.appendChild(rootNode, child)
-			onRenderMock.mockClear()
-			renderer.removeChild(rootNode, child)
-
-			expect(onRenderMock).toHaveBeenCalled()
 		})
 	})
 	//#endregion removeChild Tests
@@ -339,15 +308,6 @@ describe('WolfieRenderer', () => {
 			renderer.setAttribute(el, 'aria-label', 'Test Label')
 
 			expect(el.attributes['aria-label']).toBe('Test Label')
-		})
-
-		it('triggers onRender callback', () => {
-			const el = renderer.createElement('w-box')
-			renderer.appendChild(rootNode, el)
-			onRenderMock.mockClear()
-			renderer.setAttribute(el, 'data-test', 'value')
-
-			expect(onRenderMock).toHaveBeenCalled()
 		})
 	})
 	//#endregion setAttribute Tests
@@ -467,15 +427,6 @@ describe('WolfieRenderer', () => {
 			// applyLayoutStyle internally calls layoutTree.setStyle
 			expect(layoutTree.setStyle).toHaveBeenCalled()
 		})
-
-		it('triggers onRender callback', () => {
-			const el = renderer.createElement('w-box')
-			renderer.appendChild(rootNode, el)
-			onRenderMock.mockClear()
-			renderer.setStyle(el, 'padding', 2)
-
-			expect(onRenderMock).toHaveBeenCalled()
-		})
 	})
 	//#endregion setStyle Tests
 
@@ -501,16 +452,6 @@ describe('WolfieRenderer', () => {
 
 			expect(el.style.padding).toBeUndefined()
 			expect(el.style.margin).toBe(3)
-		})
-
-		it('triggers onRender callback', () => {
-			const el = renderer.createElement('w-box')
-			renderer.appendChild(rootNode, el)
-			renderer.setStyle(el, 'padding', 2)
-			onRenderMock.mockClear()
-			renderer.removeStyle(el, 'padding')
-
-			expect(onRenderMock).toHaveBeenCalled()
 		})
 	})
 	//#endregion removeStyle Tests
@@ -588,15 +529,6 @@ describe('WolfieRenderer', () => {
 
 			expect(el.attributes['data-custom']).toBe('value')
 		})
-
-		it('triggers onRender callback', () => {
-			const el = renderer.createElement('w-box')
-			renderer.appendChild(rootNode, el)
-			onRenderMock.mockClear()
-			renderer.setProperty(el, 'style', { padding: 2 })
-
-			expect(onRenderMock).toHaveBeenCalled()
-		})
 	})
 	//#endregion setProperty Tests
 
@@ -609,15 +541,6 @@ describe('WolfieRenderer', () => {
 			renderer.setValue(textNode, 'Updated')
 
 			expect(textNode.nodeValue).toBe('Updated')
-		})
-
-		it('triggers onRender callback', () => {
-			const textNode = renderer.createText('Initial')
-			renderer.appendChild(rootNode, textNode)
-			onRenderMock.mockClear()
-			renderer.setValue(textNode, 'Updated')
-
-			expect(onRenderMock).toHaveBeenCalled()
 		})
 
 		it('does nothing for non-text nodes', () => {
@@ -669,16 +592,6 @@ describe('WolfieRenderer', () => {
 			renderer.removeAttribute(el, 'aria-label')
 
 			expect(el.attributes['aria-label']).toBeUndefined()
-		})
-
-		it('triggers onRender callback', () => {
-			const el = renderer.createElement('w-box')
-			renderer.appendChild(rootNode, el)
-			renderer.setAttribute(el, 'aria-label', 'Test')
-			onRenderMock.mockClear()
-			renderer.removeAttribute(el, 'aria-label')
-
-			expect(onRenderMock).toHaveBeenCalled()
 		})
 	})
 	//#endregion removeAttribute Tests

@@ -101,9 +101,6 @@ export const nodeOps: Omit<
 		) {
 			instance.layoutTree.markDirty(parent.layoutNodeId ?? child.layoutNodeId!)
 		}
-
-		// Trigger re-render on any tree change
-		instance?.onRender()
 	},
 
 	remove(child) {
@@ -111,9 +108,6 @@ export const nodeOps: Omit<
 		if (parent) {
 			const instance = getInstance(parent)
 			removeChildNode(parent, child, instance?.layoutTree)
-
-			// Trigger re-render on any tree change
-			instance?.onRender()
 		}
 	},
 
@@ -141,9 +135,6 @@ export const nodeOps: Omit<
 			const textNode = createTextNode(text)
 			appendChildNode(el, textNode, instance?.layoutTree)
 		}
-
-		// Trigger re-render on element text change
-		instance?.onRender()
 	},
 
 	setText(node, text) {
@@ -152,9 +143,6 @@ export const nodeOps: Omit<
 		if (isText(node)) {
 			setTextNodeValue(node as TextNode, text, instance?.layoutTree)
 		}
-
-		// Trigger re-render on text node change
-		instance?.onRender()
 	},
 
 	parentNode(node) {
@@ -196,8 +184,6 @@ export const nodeOps: Omit<
 		} else {
 			appendChildNode(parent, staticNode, instance?.layoutTree)
 		}
-
-		instance?.onRender()
 
 		// Return [el, anchor] tuple as Vue expects
 		return [staticNode, staticNode]

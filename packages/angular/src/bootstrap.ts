@@ -4,25 +4,43 @@ import {
 	NgZone,
 	RendererFactory2,
 	createEnvironmentInjector,
-	Injectable,
 	ɵChangeDetectionScheduler as ChangeDetectionScheduler,
 } from '@angular/core'
 
-//#region NoopChangeDetectionScheduler
+//#region WolfieChangeDetectionScheduler
 /**
- * Minimal ChangeDetectionScheduler implementation for effect() support.
- * Since Wolfie manages change detection manually, we just need to satisfy
- * the interface without actually scheduling anything.
+ * Microtask-batched ChangeDetectionScheduler for signal reactivity.
+ * Angular calls notify() whenever a signal read in a template changes.
+ * We batch these into a single detectChanges() per microtask to keep
+ * signal-driven state (setInterval ticks, setTimeout, etc.) reactive
+ * without relying on zone.js-triggered CD.
  */
-@Injectable()
-class NoopChangeDetectionScheduler {
-	notify(_source?: number): void {
-		// Noop - Wolfie handles change detection manually
+class WolfieChangeDetectionScheduler {
+	private _detectChanges: (() => void) | null = null
+	private _scheduled = false
+	runningTick = false
+
+	/** Wire up after componentRef is created */
+	setDetectChanges(fn: () => void): void {
+		this._detectChanges = fn
 	}
 
-	runningTick = false
+	notify(_source?: number): void {
+		if (this._scheduled || this.runningTick || !this._detectChanges) return
+		this._scheduled = true
+		queueMicrotask(() => {
+			this._scheduled = false
+			if (!this._detectChanges || this.runningTick) return
+			this.runningTick = true
+			try {
+				this._detectChanges()
+			} finally {
+				this.runningTick = false
+			}
+		})
+	}
 }
-//#endregion NoopChangeDetectionScheduler
+//#endregion WolfieChangeDetectionScheduler
 import cliCursor from 'cli-cursor'
 import { WolfieAngular, type WolfieOptions } from './wolfie-angular'
 import { WolfieRendererFactory } from './renderer/wolfie-renderer-factory'
@@ -99,8 +117,9 @@ export async function renderWolfie<T>(
 		})
 	}
 
-	// 4. Create NgZone for Angular change detection
+	// 4. Create NgZone and CD scheduler
 	const ngZone = new NgZone({ enableLongStackTrace: false })
+	const cdScheduler = new WolfieChangeDetectionScheduler()
 
 	// 5. Create providers
 	const providers: Provider[] = [
@@ -151,10 +170,10 @@ export async function renderWolfie<T>(
 			provide: NgZone,
 			useValue: ngZone,
 		},
-		// Required for effect() to work
+		// Signal reactivity — schedules CD via microtask when signals change
 		{
 			provide: ChangeDetectionScheduler,
-			useClass: NoopChangeDetectionScheduler,
+			useValue: cdScheduler,
 		},
 		StdinService,
 		StdoutService,
@@ -176,14 +195,16 @@ export async function renderWolfie<T>(
 		hostElement: wolfie.rootNode as unknown as Element,
 	})
 
-	// 8. Set up change detection trigger for input handling
+	// 8. Wire up CD scheduler so signal changes trigger detectChanges()
+	const detectChanges = () => componentRef.changeDetectorRef.detectChanges()
+	cdScheduler.setDetectChanges(detectChanges)
+
+	// 9. Set up change detection trigger for input handling
 	// This is stored in STDIN_CONTEXT and called after every input handler
 	const stdinContext = injector.get(STDIN_CONTEXT)
-	stdinContext.internal_triggerChangeDetection = () => {
-		componentRef.changeDetectorRef.detectChanges()
-	}
+	stdinContext.internal_triggerChangeDetection = detectChanges
 
-	// 9. Trigger initial change detection to run lifecycle hooks
+	// 10. Trigger initial change detection to run lifecycle hooks
 	componentRef.changeDetectorRef.detectChanges()
 
 	// 10. Initial render

@@ -73,7 +73,4 @@ export const patchProp = (
 	} else {
 		setAttribute(el, key, nextValue as string)
 	}
-
-	// Trigger re-render on any prop change
-	instance?.onRender()
 }

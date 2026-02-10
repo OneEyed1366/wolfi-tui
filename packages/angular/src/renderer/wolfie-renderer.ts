@@ -159,9 +159,6 @@ export class WolfieRenderer implements Renderer2 {
 				instance.layoutTree.markDirty(nodeId)
 			}
 		}
-
-		// Trigger re-render on any tree change
-		instance?.onRender()
 	}
 
 	insertBefore(
@@ -196,9 +193,6 @@ export class WolfieRenderer implements Renderer2 {
 				instance.layoutTree.markDirty(nodeId)
 			}
 		}
-
-		// Trigger re-render on any tree change
-		instance?.onRender()
 	}
 
 	removeChild(
@@ -214,9 +208,6 @@ export class WolfieRenderer implements Renderer2 {
 
 		const instance = getInstance(actualParent)
 		removeChildNode(actualParent, oldChild, instance?.layoutTree)
-
-		// Trigger re-render on any tree change
-		instance?.onRender()
 	}
 
 	selectRootElement(
@@ -243,8 +234,6 @@ export class WolfieRenderer implements Renderer2 {
 		value: string,
 		_namespace?: string | null
 	): void {
-		const instance = getInstance(el)
-
 		if (name === 'class') {
 			// Store class attribute; components handle className → style resolution internally
 			setAttribute(el, 'class', value)
@@ -256,9 +245,6 @@ export class WolfieRenderer implements Renderer2 {
 		} else {
 			setAttribute(el, name, value)
 		}
-
-		// Trigger re-render on any prop change
-		instance?.onRender()
 	}
 
 	removeAttribute(
@@ -266,13 +252,10 @@ export class WolfieRenderer implements Renderer2 {
 		name: string,
 		_namespace?: string | null
 	): void {
-		const instance = getInstance(el)
 		setAttribute(el, name, undefined as unknown as string)
-		instance?.onRender()
 	}
 
 	addClass(el: DOMElement, name: string): void {
-		const instance = getInstance(el)
 		const currentClass = (el.attributes['class'] as string) || ''
 		const classes = currentClass.split(/\s+/).filter(Boolean)
 		if (!classes.includes(name)) {
@@ -280,16 +263,13 @@ export class WolfieRenderer implements Renderer2 {
 			// Store class attribute; components handle className → style resolution internally
 			setAttribute(el, 'class', classes.join(' '))
 		}
-		instance?.onRender()
 	}
 
 	removeClass(el: DOMElement, name: string): void {
-		const instance = getInstance(el)
 		const currentClass = (el.attributes['class'] as string) || ''
 		const classes = currentClass.split(/\s+/).filter((c) => c !== name)
 		// Store class attribute; components handle className → style resolution internally
 		setAttribute(el, 'class', classes.join(' '))
-		instance?.onRender()
 	}
 
 	setStyle(
@@ -311,8 +291,6 @@ export class WolfieRenderer implements Renderer2 {
 		if (instance && el.layoutNodeId !== undefined) {
 			applyLayoutStyle(instance.layoutTree, el.layoutNodeId, updatedStyle)
 		}
-
-		instance?.onRender()
 	}
 
 	removeStyle(
@@ -328,8 +306,6 @@ export class WolfieRenderer implements Renderer2 {
 		if (instance && el.layoutNodeId !== undefined) {
 			applyLayoutStyle(instance.layoutTree, el.layoutNodeId, currentStyle)
 		}
-
-		instance?.onRender()
 	}
 
 	setProperty(el: DOMElement, name: string, value: unknown): void {
@@ -373,18 +349,13 @@ export class WolfieRenderer implements Renderer2 {
 		} else {
 			setAttribute(el, name, value as string)
 		}
-
-		instance?.onRender()
 	}
 
 	setValue(node: DOMNode, value: string): void {
-		const instance = getInstance(node)
-
 		if (isText(node)) {
+			const instance = getInstance(node)
 			setTextNodeValue(node as TextNode, value, instance?.layoutTree)
 		}
-
-		instance?.onRender()
 	}
 
 	listen(
