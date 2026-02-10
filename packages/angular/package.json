@@ -31,6 +31,7 @@
 	],
 	"dependencies": {
 		"@wolfie/core": "workspace:*",
+		"@wolfie/shared": "workspace:*",
 		"ansi-escapes": "^7.2.0",
 		"cli-spinners": "^3.4.0",
 		"figures": "^6.1.0",

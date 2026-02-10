@@ -12,7 +12,7 @@ import { BoxComponent } from '../box/box.component'
 import { TextComponent } from '../text/text.component'
 import { SelectOptionComponent } from './select-option.component'
 import { injectInput, type Key } from '../../services/stdin.service'
-import OptionMap, { type Option } from '../../lib/option-map'
+import { OptionMap, type Option } from '@wolfie/shared'
 import type { Styles } from '@wolfie/core'
 
 //#region Types

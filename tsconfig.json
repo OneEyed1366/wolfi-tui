@@ -3,8 +3,10 @@
 	"references": [
 		{ "path": "internal/core" },
 		{ "path": "internal/css-parser" },
+		{ "path": "internal/shared" },
 		{ "path": "packages/react" },
 		{ "path": "packages/vue" },
+		{ "path": "packages/angular" },
 		{ "path": "packages/plugin" }
 	]
 }

@@ -179,6 +179,8 @@ async function getBundleWebpack(code: string) {
 						'wrap-ansi',
 						'cli-cursor',
 						'stack-utils',
+						'chalk',
+						'@wolfie/shared',
 					]
 					if (
 						externals.some((e) => request?.startsWith(e)) ||

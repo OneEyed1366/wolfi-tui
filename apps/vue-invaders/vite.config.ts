@@ -39,6 +39,7 @@ export default defineConfig({
 			fileName: 'index',
 		},
 		rollupOptions: {
+			preserveEntrySignatures: 'exports-only',
 			external: ['vue', '@wolfie/vue', ...nodeBuiltins],
 		},
 	},

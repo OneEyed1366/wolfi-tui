@@ -10,6 +10,7 @@ import {
 	ChangeDetectionStrategy,
 } from '@angular/core'
 import chalk from 'chalk'
+import { DEFAULT_DOMAINS } from '@wolfie/shared'
 import { TextComponent } from '../text/text.component'
 import { injectInput, type Key } from '../../services/stdin.service'
 import { FocusService } from '../../services/focus.service'
@@ -54,17 +55,6 @@ export interface EmailInputProps {
 
 //#region Constants
 const CURSOR = chalk.inverse(' ')
-
-const DEFAULT_DOMAINS = [
-	'aol.com',
-	'gmail.com',
-	'yahoo.com',
-	'hotmail.com',
-	'live.com',
-	'outlook.com',
-	'icloud.com',
-	'hey.com',
-]
 //#endregion Constants
 
 //#region EmailInputComponent

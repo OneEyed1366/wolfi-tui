@@ -7,8 +7,7 @@ import {
 	useState,
 	useEffect,
 } from 'react'
-import OptionMap from '../../lib/option-map'
-import type { Option } from '../types'
+import { OptionMap, type Option } from '@wolfie/shared'
 
 //#region Types
 type State = {

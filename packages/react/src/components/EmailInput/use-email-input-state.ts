@@ -5,6 +5,7 @@ import {
 	type Reducer,
 	useMemo,
 } from 'react'
+import { DEFAULT_DOMAINS } from '@wolfie/shared'
 
 //#region State Types
 type State = {
@@ -146,17 +147,6 @@ export type EmailInputState = State & {
 //#endregion Hook Types
 
 //#region Hook
-const DEFAULT_DOMAINS = [
-	'aol.com',
-	'gmail.com',
-	'yahoo.com',
-	'hotmail.com',
-	'live.com',
-	'outlook.com',
-	'icloud.com',
-	'hey.com',
-]
-
 export const useEmailInputState = ({
 	defaultValue = '',
 	domains = DEFAULT_DOMAINS,

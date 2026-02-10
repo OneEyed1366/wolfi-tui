@@ -4,6 +4,6 @@ export {
 	clearGlobalStyles,
 	getGlobalStyle,
 	resolveClassName,
-} from './registry'
+} from '@wolfie/shared'
 
-export type { ClassNameValue } from './registry'
+export type { ClassNameValue } from '@wolfie/shared'

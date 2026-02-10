@@ -1,86 +1,10 @@
+import { useReducer, useCallback, useEffect, useMemo } from 'react'
 import {
-	useReducer,
-	useCallback,
-	useEffect,
-	type Reducer,
-	useMemo,
-} from 'react'
-
-//#region State Types
-type State = {
-	previousValue: string
-	value: string
-	cursorOffset: number
-}
-
-type Action =
-	| MoveCursorLeftAction
-	| MoveCursorRightAction
-	| InsertAction
-	| DeleteAction
-
-type MoveCursorLeftAction = {
-	type: 'move-cursor-left'
-}
-
-type MoveCursorRightAction = {
-	type: 'move-cursor-right'
-}
-
-type InsertAction = {
-	type: 'insert'
-	text: string
-}
-
-type DeleteAction = {
-	type: 'delete'
-}
-//#endregion State Types
-
-//#region Reducer
-const reducer: Reducer<State, Action> = (state, action) => {
-	switch (action.type) {
-		case 'move-cursor-left': {
-			return {
-				...state,
-				cursorOffset: Math.max(0, state.cursorOffset - 1),
-			}
-		}
-
-		case 'move-cursor-right': {
-			return {
-				...state,
-				cursorOffset: Math.min(state.value.length, state.cursorOffset + 1),
-			}
-		}
-
-		case 'insert': {
-			return {
-				...state,
-				previousValue: state.value,
-				value:
-					state.value.slice(0, state.cursorOffset) +
-					action.text +
-					state.value.slice(state.cursorOffset),
-				cursorOffset: state.cursorOffset + action.text.length,
-			}
-		}
-
-		case 'delete': {
-			const newCursorOffset = Math.max(0, state.cursorOffset - 1)
-
-			return {
-				...state,
-				previousValue: state.value,
-				value:
-					state.value.slice(0, newCursorOffset) +
-					state.value.slice(newCursorOffset + 1),
-				cursorOffset: newCursorOffset,
-			}
-		}
-	}
-}
-//#endregion Reducer
+	textInputReducer,
+	createInitialTextInputState,
+	findSuggestion,
+	type TextInputState as SharedTextInputState,
+} from '@wolfie/shared'
 
 //#region Hook Types
 export type UseTextInputStateProps = {
@@ -105,7 +29,7 @@ export type UseTextInputStateProps = {
 	onSubmit?: (value: string) => void
 }
 
-export type TextInputState = State & {
+export type TextInputState = SharedTextInputState & {
 	/**
 	 * Suggested auto completion.
 	 */
@@ -145,21 +69,16 @@ export const useTextInputState = ({
 	onChange,
 	onSubmit,
 }: UseTextInputStateProps): TextInputState => {
-	const [state, dispatch] = useReducer(reducer, {
-		previousValue: defaultValue,
-		value: defaultValue,
-		cursorOffset: defaultValue.length,
-	})
+	const [state, dispatch] = useReducer(
+		textInputReducer,
+		defaultValue,
+		createInitialTextInputState
+	)
 
-	const suggestion = useMemo(() => {
-		if (state.value.length === 0) {
-			return
-		}
-
-		return suggestions
-			?.find((suggestion) => suggestion.startsWith(state.value))
-			?.replace(state.value, '')
-	}, [state.value, suggestions])
+	const suggestion = useMemo(
+		() => findSuggestion(state.value, suggestions),
+		[state.value, suggestions]
+	)
 
 	const moveCursorLeft = useCallback(() => {
 		dispatch({

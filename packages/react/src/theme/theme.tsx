@@ -1,6 +1,5 @@
 import { type ReactNode, createContext, useContext } from 'react'
-import * as deepmergeModule from 'deepmerge'
-const deepmerge = deepmergeModule.default ?? deepmergeModule
+import { type ITheme, type IComponentTheme } from '@wolfie/shared'
 import { badgeTheme } from '../components/Badge'
 import { spinnerTheme } from '../components/Spinner'
 import { progressBarTheme } from '../components/ProgressBar'
@@ -15,16 +14,8 @@ import { emailInputTheme } from '../components/EmailInput/index'
 import { selectTheme } from '../components/Select/index'
 import { multiSelectTheme } from '../components/MultiSelect/index'
 
-export type ITheme = {
-	components: Record<string, IComponentTheme>
-}
-
-export type IComponentTheme = {
-	styles?: Record<string, (props?: any) => IComponentStyles>
-	config?: (props?: any) => Record<string, unknown>
-}
-
-export type IComponentStyles = Record<string, unknown>
+export type { ITheme, IComponentTheme, IComponentStyles } from '@wolfie/shared'
+export { extendTheme } from '@wolfie/shared'
 
 export const defaultTheme: ITheme = {
 	components: {
@@ -53,10 +44,6 @@ export type ThemeProviderProps = {
 
 export function ThemeProvider({ children, theme }: ThemeProviderProps) {
 	return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
-}
-
-export const extendTheme = (originalTheme: ITheme, newTheme: ITheme) => {
-	return deepmerge(originalTheme, newTheme)
 }
 
 export const useComponentTheme = <Theme extends IComponentTheme>(

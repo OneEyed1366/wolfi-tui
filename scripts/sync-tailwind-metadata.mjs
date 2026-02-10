@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url)
 
 const OUTPUT_PATH = path.resolve(
 	__dirname,
-	'../packages/react/src/styles/tailwind-data.generated.ts'
+	'../internal/shared/src/styles/tailwind-data.generated.ts'
 )
 
 async function run() {

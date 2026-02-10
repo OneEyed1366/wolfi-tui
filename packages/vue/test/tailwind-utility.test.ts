@@ -3,7 +3,7 @@ import {
 	clearGlobalStyles,
 	resolveClassName,
 	registerStyles,
-} from '../src/styles/registry'
+} from '@wolfie/shared'
 
 beforeEach(() => {
 	clearGlobalStyles()

@@ -1,92 +1,9 @@
 import { useEffect } from 'react'
-import { parseKeypress, nonAlphanumericKeys } from '@wolfie/core'
+import { parseInputData, type IKey } from '@wolfie/shared'
 import reconciler from '../reconciler'
 import { useStdin } from './use-stdin'
 
-/**
-Handy information about a key that was pressed.
-*/
-export type IKey = {
-	/**
-	Up arrow key was pressed.
-	*/
-	upArrow: boolean
-
-	/**
-	Down arrow key was pressed.
-	*/
-	downArrow: boolean
-
-	/**
-	Left arrow key was pressed.
-	*/
-	leftArrow: boolean
-
-	/**
-	Right arrow key was pressed.
-	*/
-	rightArrow: boolean
-
-	/**
-	Page Down key was pressed.
-	*/
-	pageDown: boolean
-
-	/**
-	Page Up key was pressed.
-	*/
-	pageUp: boolean
-
-	/**
-	Home key was pressed.
-	*/
-	home: boolean
-
-	/**
-	End key was pressed.
-	*/
-	end: boolean
-
-	/**
-	Return (Enter) key was pressed.
-	*/
-	return: boolean
-
-	/**
-	Escape key was pressed.
-	*/
-	escape: boolean
-
-	/**
-	Ctrl key was pressed.
-	*/
-	ctrl: boolean
-
-	/**
-	Shift key was pressed.
-	*/
-	shift: boolean
-
-	/**
-	Tab key was pressed.
-	*/
-	tab: boolean
-
-	/**
-	Backspace key was pressed.
-	*/
-	backspace: boolean
-
-	/**
-	Delete key was pressed.
-	*/
-	delete: boolean
-
-	/**
-	[Meta key](https://en.wikipedia.org/wiki/Meta_key) was pressed.
-	*/
-	meta: boolean
-}
+export type { IKey }
 
 type IHandler = (input: string, key: IKey) => void
 
@@ -142,50 +59,7 @@ export const useInput = (inputHandler: IHandler, options: IOptions = {}) => {
 		}
 
 		const handleData = (data: string) => {
-			const keypress = parseKeypress(data)
-
-			const key = {
-				upArrow: keypress.name === 'up',
-				downArrow: keypress.name === 'down',
-				leftArrow: keypress.name === 'left',
-				rightArrow: keypress.name === 'right',
-				pageDown: keypress.name === 'pagedown',
-				pageUp: keypress.name === 'pageup',
-				home: keypress.name === 'home',
-				end: keypress.name === 'end',
-				return: keypress.name === 'return',
-				escape: keypress.name === 'escape',
-				ctrl: keypress.ctrl,
-				shift: keypress.shift,
-				tab: keypress.name === 'tab',
-				backspace: keypress.name === 'backspace',
-				delete: keypress.name === 'delete',
-				// `parseKeypress` parses \u001B\u001B[A (meta + up arrow) as meta = false
-				// but with option = true, so we need to take this into account here
-				// to avoid breaking changes in Wolfie.
-				// TODO(vadimdemedes): consider removing this in the next major version.
-				meta: keypress.meta || keypress.name === 'escape' || keypress.option,
-			}
-
-			let input = keypress.ctrl ? keypress.name : keypress.sequence
-
-			if (nonAlphanumericKeys.includes(keypress.name)) {
-				input = ''
-			}
-
-			// Strip meta if it's still remaining after `parseKeypress`
-			// TODO(vadimdemedes): remove this in the next major version.
-			if (input.startsWith('\u001B')) {
-				input = input.slice(1)
-			}
-
-			if (
-				input.length === 1 &&
-				typeof input[0] === 'string' &&
-				/[A-Z]/.test(input[0])
-			) {
-				key.shift = true
-			}
+			const { input, key } = parseInputData(data)
 
 			// If app is not supposed to exit on Ctrl+C, then let input listener handle it
 			if (!(input === 'c' && key.ctrl) || !internal_exitOnCtrlC) {

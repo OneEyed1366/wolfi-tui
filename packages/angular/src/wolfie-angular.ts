@@ -16,6 +16,7 @@ import {
 } from '@wolfie/core'
 import { LayoutTree as TaffyLayoutTree } from '@wolfie/core/layout'
 import { throttle } from 'es-toolkit/compat'
+import { createRenderScheduler } from '@wolfie/shared'
 import signalExit from 'signal-exit'
 
 //#region Types
@@ -54,6 +55,7 @@ export class WolfieAngular {
 	public readonly isScreenReaderEnabled: boolean
 	public readonly exitOnCtrlC: boolean
 	public readonly onRender: () => void
+	private flushRender!: () => void
 
 	private log: LogUpdate
 	private isUnmounted = false
@@ -100,12 +102,17 @@ export class WolfieAngular {
 					})
 				: renderFn
 
-		this.rootNode.onRender = throttledRender
-		this.onRender = throttledRender
+		const { scheduleRender, flush } = createRenderScheduler(throttledRender, {
+			sync: unthrottled,
+		})
+		this.flushRender = flush
+
+		this.rootNode.onRender = scheduleRender
+		this.onRender = scheduleRender
 
 		layoutTreeRegistry.set(this.rootNode, {
 			layoutTree: this.layoutTree,
-			onRender: throttledRender,
+			onRender: scheduleRender,
 		})
 
 		// Set default style for root node to match React/Vue behavior
@@ -148,7 +155,7 @@ export class WolfieAngular {
 		}
 
 		this.calculateLayout()
-		this._onRender()
+		this.flushRender()
 
 		this.lastTerminalWidth = currentWidth
 	}

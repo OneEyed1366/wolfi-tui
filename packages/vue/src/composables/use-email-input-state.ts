@@ -1,4 +1,5 @@
 import { ref, computed, watch, type Ref, type ComputedRef } from 'vue'
+import { DEFAULT_DOMAINS } from '@wolfie/shared'
 
 //#region Hook Types
 export type UseEmailInputStateProps = {
@@ -74,17 +75,6 @@ export type EmailInputState = {
 //#endregion Hook Types
 
 //#region Composable
-const DEFAULT_DOMAINS = [
-	'aol.com',
-	'gmail.com',
-	'yahoo.com',
-	'hotmail.com',
-	'live.com',
-	'outlook.com',
-	'icloud.com',
-	'hey.com',
-]
-
 export const useEmailInputState = ({
 	defaultValue = '',
 	domains = DEFAULT_DOMAINS,

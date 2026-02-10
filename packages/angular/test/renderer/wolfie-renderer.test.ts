@@ -11,7 +11,7 @@ import {
 	layoutTreeRegistry,
 	type WolfieAngularInstance,
 } from '../../src/wolfie-angular'
-import { registerStyles, clearGlobalStyles } from '../../src/styles/registry'
+import { registerStyles, clearGlobalStyles } from '@wolfie/shared'
 
 //#region Mock Helpers
 /**

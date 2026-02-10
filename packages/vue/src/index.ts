@@ -21,6 +21,7 @@ import {
 } from '@wolfie/core'
 import { LayoutTree as TaffyLayoutTree } from '@wolfie/core/layout'
 import { throttle } from 'es-toolkit/compat'
+import { createRenderScheduler } from '@wolfie/shared'
 import signalExit from 'signal-exit'
 import {
 	StdinSymbol,
@@ -93,6 +94,8 @@ class WolfieVue {
 	private isFirstRender = true
 	private unsubscribeResize?: () => void
 	private isScreenReaderEnabled!: boolean
+	private scheduleRender!: () => void
+	private flushRender!: () => void
 
 	//#region Focus State
 	private focusables: Ref<Focusable[]> = ref([])
@@ -131,11 +134,17 @@ class WolfieVue {
 					})
 				: renderFn
 
-		this.rootNode.onRender = throttledRender
+		const { scheduleRender, flush } = createRenderScheduler(throttledRender, {
+			sync: unthrottled,
+		})
+		this.scheduleRender = scheduleRender
+		this.flushRender = flush
+
+		this.rootNode.onRender = scheduleRender
 
 		layoutTreeRegistry.set(this.rootNode, {
 			layoutTree: this.layoutTree,
-			onRender: throttledRender,
+			onRender: scheduleRender,
 		})
 
 		// Set default style for root node to match React behavior
@@ -175,7 +184,7 @@ class WolfieVue {
 		}
 
 		this.calculateLayout()
-		this.onRender()
+		this.flushRender()
 
 		this.lastTerminalWidth = currentWidth
 	}
@@ -519,7 +528,7 @@ class WolfieVue {
 		const { mount } = this.app
 		this.app.mount = (container: DOMElement) => {
 			const proxy = mount(container)
-			this.onRender()
+			this.flushRender()
 			return proxy
 		}
 

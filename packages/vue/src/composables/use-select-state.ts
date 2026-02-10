@@ -8,8 +8,7 @@ import {
 	type ComputedRef,
 	type MaybeRef,
 } from 'vue'
-import type { Option } from '../types'
-import OptionMap from '../lib/option-map'
+import { OptionMap, type Option } from '@wolfie/shared'
 
 //#region Types
 type State = {

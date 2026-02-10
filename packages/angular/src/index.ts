@@ -119,7 +119,7 @@ export {
 } from './styles'
 
 // Types
-export { type Option } from './lib/option-map'
+export { type Option } from '@wolfie/shared'
 
 // Theme
 export {

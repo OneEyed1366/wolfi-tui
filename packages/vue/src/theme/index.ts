@@ -1,19 +1,9 @@
 import { inject, provide, type InjectionKey } from 'vue'
-import { merge } from 'es-toolkit/compat'
+import { type ITheme, type IComponentTheme } from '@wolfie/shared'
 import { ThemeSymbol } from '../context/symbols'
 
-//#region Types
-export type ITheme = {
-	components: Record<string, IComponentTheme>
-}
-
-export type IComponentTheme = {
-	styles?: Record<string, (props?: any) => IComponentStyles>
-	config?: (props?: any) => Record<string, unknown>
-}
-
-export type IComponentStyles = Record<string, unknown>
-//#endregion Types
+export type { ITheme, IComponentTheme, IComponentStyles } from '@wolfie/shared'
+export { extendTheme } from '@wolfie/shared'
 
 //#region Default Theme
 // Empty default theme - components provide their own fallbacks
@@ -26,13 +16,6 @@ export const ThemeKey = ThemeSymbol as InjectionKey<ITheme>
 
 export function provideTheme(theme: ITheme): void {
 	provide(ThemeKey, theme)
-}
-
-export const extendTheme = (
-	originalTheme: ITheme,
-	newTheme: ITheme
-): ITheme => {
-	return merge(originalTheme, newTheme) as ITheme
 }
 
 export const useComponentTheme = <Theme extends IComponentTheme>(

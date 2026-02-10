@@ -1,0 +1,38 @@
+{
+	"name": "@wolfie/shared",
+	"version": "1.0.0",
+	"description": "Shared framework-agnostic logic for wolfie adapters",
+	"license": "MIT",
+	"type": "module",
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"types": "./build/index.d.ts",
+			"default": "./build/index.js"
+		}
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"dev": "vite build --watch",
+		"build": "vite build",
+		"test": "vitest run"
+	},
+	"files": [
+		"build"
+	],
+	"dependencies": {
+		"cli-spinners": "^3.4.0",
+		"es-toolkit": "^1.39.10"
+	},
+	"peerDependencies": {
+		"@wolfie/core": "workspace:*",
+		"chalk": "^5.0.0"
+	},
+	"peerDependenciesMeta": {
+		"@wolfie/core": {
+			"optional": false
+		}
+	}
+}

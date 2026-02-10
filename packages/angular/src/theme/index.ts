@@ -1,18 +1,8 @@
 import { InjectionToken } from '@angular/core'
-import { merge } from 'es-toolkit'
+import type { ITheme, IComponentTheme } from '@wolfie/shared'
 
-//#region Types
-export type ITheme = {
-	components: Record<string, IComponentTheme>
-}
-
-export type IComponentTheme = {
-	styles?: Record<string, (props?: any) => IComponentStyles>
-	config?: (props?: any) => Record<string, unknown>
-}
-
-export type IComponentStyles = Record<string, unknown>
-//#endregion Types
+export type { ITheme, IComponentTheme, IComponentStyles } from '@wolfie/shared'
+export { extendTheme } from '@wolfie/shared'
 
 //#region Default Theme
 export const defaultTheme: ITheme = {
@@ -28,10 +18,6 @@ export const THEME_CONTEXT = new InjectionToken<ITheme>('WolfieTheme', {
 //#endregion Theme Token
 
 //#region Helper Functions
-export function extendTheme(base: ITheme, extension: Partial<ITheme>): ITheme {
-	return merge(base, extension) as ITheme
-}
-
 export function useComponentTheme<T extends IComponentTheme>(
 	theme: ITheme,
 	componentName: string

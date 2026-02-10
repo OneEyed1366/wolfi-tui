@@ -3,7 +3,7 @@ import {
 	registerStyles,
 	clearGlobalStyles,
 	resolveClassName,
-} from '../../src/styles/registry'
+} from '@wolfie/shared'
 
 describe('Compound Selectors', () => {
 	beforeEach(() => {

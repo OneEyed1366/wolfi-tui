@@ -4,7 +4,7 @@ import {
 	clearGlobalStyles,
 	getGlobalStyle,
 	resolveClassName,
-} from '../../src/styles/registry'
+} from '@wolfie/shared'
 
 describe('Style Registry', () => {
 	beforeEach(() => {
