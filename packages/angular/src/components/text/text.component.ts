@@ -9,7 +9,7 @@ import {
 import chalk from 'chalk'
 import { colorize, type Styles, type DOMElement } from '@wolfie/core'
 import { BACKGROUND_CONTEXT } from '../../tokens'
-import type { ClassNameValue } from '../../styles'
+import { resolveClassName, type ClassNameValue } from '../../styles'
 
 //#region TextComponent
 /**
@@ -36,15 +36,16 @@ export class TextComponent implements OnInit, OnDestroy, AfterViewInit {
 	//#endregion Injected Dependencies
 
 	//#region Computed Properties
-	/**
-	 * Get effective styles from the DOM element.
-	 * Note: The renderer's setAttribute already resolved class -> styles,
-	 * so el.style contains the resolved styles.
-	 */
 	private getEffectiveStyles(): Partial<Styles> {
 		const el = this.elementRef.nativeElement as DOMElement
-		// The renderer has already resolved class -> styles and set el.style
-		return el.style || {}
+		const nativeClass = el.attributes?.['class'] as string | undefined
+		const className = nativeClass ?? this.className
+		const resolvedClassName = resolveClassName(className)
+		const style = el.style || {}
+		return {
+			...resolvedClassName,
+			...style,
+		}
 	}
 	//#endregion Computed Properties
 
