@@ -51,13 +51,9 @@ export class OrderedListComponent implements OnInit, OnDestroy {
 	//#endregion Computed Properties
 
 	//#region Lifecycle
-	ngOnInit(): void {
-		// Component initialized
-	}
+	ngOnInit(): void {}
 
-	ngOnDestroy(): void {
-		// Cleanup handled by Angular
-	}
+	ngOnDestroy(): void {}
 	//#endregion Lifecycle
 }
 //#endregion OrderedListComponent

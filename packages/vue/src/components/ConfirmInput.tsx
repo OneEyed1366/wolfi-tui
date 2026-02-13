@@ -115,11 +115,13 @@ export const ConfirmInput: DefineComponent<ConfirmInputProps> = defineComponent(
 			const theme = useComponentTheme<ConfirmInputTheme>('ConfirmInput')
 			const { styles } = theme ?? confirmInputTheme
 
-			return () => (
-				<Text {...styles.input({ isFocused: !props.isDisabled })}>
-					{props.defaultChoice === 'confirm' ? 'Y/n' : 'y/N'}
-				</Text>
-			)
+			return () => {
+				return (
+					<Text {...styles.input({ isFocused: !props.isDisabled })}>
+						{props.defaultChoice === 'confirm' ? 'Y/n' : 'y/N'}
+					</Text>
+				)
+			}
 		},
 	}
 )

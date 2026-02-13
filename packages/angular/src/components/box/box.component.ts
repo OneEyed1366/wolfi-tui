@@ -65,6 +65,12 @@ const defaultBoxStyles: Partial<Styles> = {
 	standalone: true,
 	template: `<ng-content />`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [
+		{
+			provide: BACKGROUND_CONTEXT,
+			useFactory: () => ({ backgroundColor: undefined }),
+		},
+	],
 	host: {
 		'[style]': 'computedStyle()',
 		'[attr.internal_accessibility]': 'accessibilityAttr()',
@@ -82,9 +88,11 @@ export class BoxComponent implements OnInit, OnDestroy {
 
 	//#region Injected Dependencies
 	private elementRef = inject(ElementRef)
-	// Note: accessibility context reserved for future screen reader support
-	// private accessibility = inject(ACCESSIBILITY_CONTEXT, { optional: true })
-	private inheritedBackground = inject(BACKGROUND_CONTEXT, { optional: true })
+	private parentBackground = inject(BACKGROUND_CONTEXT, {
+		optional: true,
+		skipSelf: true,
+	})
+	private ownBackground = inject(BACKGROUND_CONTEXT)
 	//#endregion Injected Dependencies
 
 	//#region Internal State
@@ -105,7 +113,7 @@ export class BoxComponent implements OnInit, OnDestroy {
 		const finalBackgroundColor =
 			style.backgroundColor ??
 			resolvedClassName.backgroundColor ??
-			this.inheritedBackground?.backgroundColor
+			this.parentBackground?.backgroundColor
 
 		return {
 			backgroundColor: finalBackgroundColor,
@@ -139,6 +147,7 @@ export class BoxComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this._className.set(this.className)
 		this._style.set(this.style)
+		this.updateBackgroundContext()
 	}
 
 	ngOnDestroy(): void {
@@ -148,7 +157,19 @@ export class BoxComponent implements OnInit, OnDestroy {
 	ngOnChanges(): void {
 		this._className.set(this.className)
 		this._style.set(this.style)
+		this.updateBackgroundContext()
 	}
 	//#endregion Lifecycle
+
+	//#region Private Methods
+	private updateBackgroundContext(): void {
+		const style = this._style() ?? {}
+		const resolvedClassName = resolveClassName(this._className())
+		this.ownBackground.backgroundColor =
+			style.backgroundColor ??
+			resolvedClassName.backgroundColor ??
+			this.parentBackground?.backgroundColor
+	}
+	//#endregion Private Methods
 }
 //#endregion BoxComponent

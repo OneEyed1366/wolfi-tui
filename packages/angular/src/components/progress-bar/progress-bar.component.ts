@@ -152,9 +152,7 @@ export class ProgressBarComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.measureWidth()
 	}
 
-	ngOnDestroy(): void {
-		// Cleanup handled by Angular
-	}
+	ngOnDestroy(): void {}
 
 	ngOnChanges(): void {
 		this._value.set(this.value)

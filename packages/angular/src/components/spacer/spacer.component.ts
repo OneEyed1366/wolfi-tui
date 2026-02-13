@@ -13,5 +13,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core'
 		'[style.flexGrow]': '1',
 	},
 })
-export class SpacerComponent {}
+export class SpacerComponent {
+	constructor() {}
+}
 //#endregion SpacerComponent

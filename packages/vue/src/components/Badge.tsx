@@ -103,12 +103,13 @@ export const Badge: DefineComponent<{ color?: Styles['color'] }> =
 					? text.toUpperCase()
 					: children
 
-				return (
+				const result = (
 					<Text {...styles.container({ color })}>
 						{' '}
 						<Text {...styles.label()}>{displayContent}</Text>{' '}
 					</Text>
 				)
+				return result
 			}
 		},
 	})

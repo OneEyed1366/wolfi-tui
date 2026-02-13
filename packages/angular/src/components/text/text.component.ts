@@ -35,13 +35,19 @@ export class TextComponent implements OnInit, OnDestroy, AfterViewInit {
 	private inheritedBackground = inject(BACKGROUND_CONTEXT, { optional: true })
 	//#endregion Injected Dependencies
 
+	//#region Internal State
+	private capturedClassName?: ClassNameValue
+	private capturedStyle?: Partial<Styles>
+	//#endregion Internal State
+
 	//#region Computed Properties
 	private getEffectiveStyles(): Partial<Styles> {
 		const el = this.elementRef.nativeElement as DOMElement
-		const nativeClass = el.attributes?.['class'] as string | undefined
-		const className = nativeClass ?? this.className
+		// Use captured values from ngOnInit bc @Input() style takes priority
+		// over renderer setProperty — el.style may not reflect input bindings
+		const className = this.capturedClassName
 		const resolvedClassName = resolveClassName(className)
-		const style = el.style || {}
+		const style = this.capturedStyle || el.style || {}
 		return {
 			...resolvedClassName,
 			...style,
@@ -102,7 +108,9 @@ export class TextComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	//#region Lifecycle
 	ngOnInit(): void {
-		// Component initialized
+		// Capture inputs early — @Input() style doesn't flow to el.style
+		this.capturedClassName = this.className
+		this.capturedStyle = this.style
 	}
 
 	ngAfterViewInit(): void {

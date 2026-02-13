@@ -126,9 +126,7 @@ export class StaticComponent<T = unknown>
 		this.setInternalStatic()
 	}
 
-	ngOnDestroy(): void {
-		// Cleanup handled by Angular
-	}
+	ngOnDestroy(): void {}
 
 	private setInternalStatic(): void {
 		// Set internal_static property on the DOM element

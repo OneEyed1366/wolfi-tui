@@ -91,7 +91,7 @@ export const ProgressBar = defineComponent({
 			const complete = Math.round((progress / 100) * width.value)
 			const remaining = width.value - complete
 
-			return (
+			const result = (
 				<Box ref={setRef as never} {...styles.container()}>
 					{complete > 0 && (
 						<Text {...styles.completed()}>
@@ -106,6 +106,7 @@ export const ProgressBar = defineComponent({
 					)}
 				</Box>
 			)
+			return result
 		}
 	},
 })

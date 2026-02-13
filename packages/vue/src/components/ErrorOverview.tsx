@@ -59,7 +59,7 @@ export const ErrorOverview = defineComponent({
 				}
 			}
 
-			return (
+			const result = (
 				<Box style={{ flexDirection: 'column', padding: 1 }}>
 					<Box>
 						<Text style={{ backgroundColor: 'red', color: 'white' }}>
@@ -154,6 +154,7 @@ export const ErrorOverview = defineComponent({
 					)}
 				</Box>
 			)
+			return result
 		}
 	},
 })

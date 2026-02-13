@@ -85,7 +85,7 @@ export const StatusMessage = defineComponent({
 			const { variant } = props
 			const { styles, config } = statusMessageTheme
 
-			return (
+			const result = (
 				<Box {...styles.container()}>
 					<Box {...styles.iconContainer()}>
 						<Text {...styles.icon({ variant })}>
@@ -96,6 +96,7 @@ export const StatusMessage = defineComponent({
 					<Text {...styles.message()}>{slots.default?.()}</Text>
 				</Box>
 			)
+			return result
 		}
 	},
 })

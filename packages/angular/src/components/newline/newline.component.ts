@@ -13,5 +13,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core'
 		'[style.height]': '1',
 	},
 })
-export class NewlineComponent {}
+export class NewlineComponent {
+	constructor() {}
+}
 //#endregion NewlineComponent

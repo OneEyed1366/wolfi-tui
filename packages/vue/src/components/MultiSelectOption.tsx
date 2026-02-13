@@ -111,26 +111,28 @@ export const MultiSelectOption: DefineComponent<MultiSelectOptionProps> =
 			const theme = useComponentTheme<MultiSelectTheme>('MultiSelect')
 			const { styles } = theme ?? multiSelectTheme
 
-			return () => (
-				<Box {...styles.option({ isFocused: props.isFocused })}>
-					{props.isFocused && (
-						<Text {...styles.focusIndicator()}>{figures.pointer}</Text>
-					)}
+			return () => {
+				return (
+					<Box {...styles.option({ isFocused: props.isFocused })}>
+						{props.isFocused && (
+							<Text {...styles.focusIndicator()}>{figures.pointer}</Text>
+						)}
 
-					<Text
-						{...styles.label({
-							isFocused: props.isFocused,
-							isSelected: props.isSelected,
-						})}
-					>
-						{slots.default?.()}
-					</Text>
+						<Text
+							{...styles.label({
+								isFocused: props.isFocused,
+								isSelected: props.isSelected,
+							})}
+						>
+							{slots.default?.()}
+						</Text>
 
-					{props.isSelected && (
-						<Text {...styles.selectedIndicator()}>{figures.tick}</Text>
-					)}
-				</Box>
-			)
+						{props.isSelected && (
+							<Text {...styles.selectedIndicator()}>{figures.tick}</Text>
+						)}
+					</Box>
+				)
+			}
 		},
 	})
 //#endregion Component

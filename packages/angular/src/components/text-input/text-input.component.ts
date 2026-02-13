@@ -284,7 +284,6 @@ export class TextInputComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		// Unregister from focus service
 		if (this.focusService && this.id) {
 			this.focusService.removeFocusable(this.id)
 		}

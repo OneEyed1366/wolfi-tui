@@ -59,12 +59,13 @@ export const Spinner = defineComponent({
 			const { label } = props
 			const { styles } = spinnerTheme
 
-			return (
+			const result = (
 				<Box {...styles.container()}>
 					<Text {...styles.frame()}>{spinnerResult.frame}</Text>
 					{label && <Text {...styles.label()}>{label}</Text>}
 				</Box>
 			)
+			return result
 		}
 	},
 })

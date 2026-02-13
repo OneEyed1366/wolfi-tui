@@ -114,7 +114,7 @@ export const Alert = defineComponent({
 			const { variant, title } = props
 			const { styles, config } = alertTheme
 
-			return (
+			const result = (
 				<Box {...styles.container({ variant })}>
 					<Box {...styles.iconContainer()}>
 						<Text {...styles.icon({ variant })}>
@@ -128,6 +128,7 @@ export const Alert = defineComponent({
 					</Box>
 				</Box>
 			)
+			return result
 		}
 	},
 })

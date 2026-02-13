@@ -47,23 +47,64 @@ const getInstance = (
 }
 
 /**
+ * Find the nearest ancestor with a layout node ID.
+ * Used to attach children of host elements to the correct layout parent.
+ */
+const findLayoutAncestorId = (node: DOMElement): number | undefined => {
+	let current = node.parentNode
+	while (current) {
+		if (current.layoutNodeId !== undefined) return current.layoutNodeId
+		current = current.parentNode
+	}
+	return undefined
+}
+
+/**
  * Recursively initialize layout tree nodes when inserting into the tree
  * Critical: Layout nodes must be created when nodes are attached to the tree,
  * not when they are created (bc layoutTree is not available at creation time)
  */
 const initLayoutTreeRecursively = (
 	node: DOMElement,
-	layoutTree: LayoutTree
+	layoutTree: LayoutTree,
+	effectiveLayoutParentId?: number
 ): void => {
 	const wasUndefined = node.layoutNodeId === undefined
+	const isHostElement = node.internal_isHostElement === true
 
-	if (wasUndefined && node.nodeName !== 'wolfie-virtual-text') {
+	if (
+		wasUndefined &&
+		node.nodeName !== 'wolfie-virtual-text' &&
+		!isHostElement
+	) {
 		node.layoutNodeId = layoutTree.createNode({})
 		node.layoutTree = layoutTree
 		if (Object.keys(node.style).length > 0) {
 			applyLayoutStyle(layoutTree, node.layoutNodeId, node.style)
 		}
 	}
+
+	// For host elements: propagate styles to effective layout parent
+	// Host elements don't have their own layout node, so styles must be applied to ancestor
+	if (
+		isHostElement &&
+		effectiveLayoutParentId !== undefined &&
+		Object.keys(node.style).length > 0
+	) {
+		applyLayoutStyle(layoutTree, effectiveLayoutParentId, node.style)
+	}
+
+	// Propagate layoutTree to host elements (needed for child operations)
+	if (!node.layoutTree) {
+		node.layoutTree = layoutTree
+	}
+
+	// For host elements, children's layout nodes are inserted into the
+	// effective layout parent (inherited from the caller). For normal
+	// elements, children are inserted into this node's own layout node.
+	const childLayoutParentId = isHostElement
+		? effectiveLayoutParentId
+		: node.layoutNodeId
 
 	const children = node.childNodes
 	// Track actual layout child index separately since not all DOM children
@@ -72,19 +113,22 @@ const initLayoutTreeRecursively = (
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i]
 		if (isElement(child)) {
-			initLayoutTreeRecursively(child, layoutTree)
+			initLayoutTreeRecursively(child, layoutTree, childLayoutParentId)
 
-			if (
-				wasUndefined &&
-				node.layoutNodeId !== undefined &&
-				child.layoutNodeId !== undefined
-			) {
-				layoutTree.insertChild(
-					node.layoutNodeId,
-					child.layoutNodeId,
-					layoutChildIndex
-				)
-				layoutChildIndex++
+			if (wasUndefined && child.layoutNodeId !== undefined) {
+				if (node.layoutNodeId !== undefined) {
+					// Normal case: insert into this node's layout
+					layoutTree.insertChild(
+						node.layoutNodeId,
+						child.layoutNodeId,
+						layoutChildIndex
+					)
+					layoutChildIndex++
+				} else if (childLayoutParentId !== undefined) {
+					// Host element case: insert into effective layout ancestor
+					const index = layoutTree.getChildCount(childLayoutParentId)
+					layoutTree.insertChild(childLayoutParentId, child.layoutNodeId, index)
+				}
 			}
 		}
 	}
@@ -110,6 +154,7 @@ export class WolfieRenderer implements Renderer2 {
 		// Map Angular component selectors to Wolfie element names
 		// Only wolfie-root, wolfie-box, wolfie-text, wolfie-virtual-text are valid ElementNames
 		let wolfieTag: ElementNames
+		let isHostElement = false
 		if (name === 'wolfie-root') {
 			wolfieTag = 'wolfie-root'
 		} else if (name === 'w-box' || name === 'wolfie-box') {
@@ -120,11 +165,15 @@ export class WolfieRenderer implements Renderer2 {
 			wolfieTag = 'wolfie-virtual-text'
 		} else {
 			// All other elements (w-alert, w-select, w-ordered-list, app-*, etc.)
-			// become wolfie-box containers since that's the only valid container type
+			// become wolfie-box containers — marked as host elements for layout transparency
 			wolfieTag = 'wolfie-box'
+			isHostElement = true
 		}
 		// Don't pass layoutTree here - init recursively on insert (Vue pattern)
 		const node = createNode(wolfieTag)
+		if (isHostElement) {
+			node.internal_isHostElement = true
+		}
 		return node
 	}
 
@@ -143,10 +192,34 @@ export class WolfieRenderer implements Renderer2 {
 		const instance = getInstance(parent)
 
 		if (instance && isElement(newChild)) {
-			initLayoutTreeRecursively(newChild, instance.layoutTree)
+			initLayoutTreeRecursively(
+				newChild,
+				instance.layoutTree,
+				parent.layoutNodeId
+			)
 		}
 
 		appendChildNode(parent, newChild, instance?.layoutTree)
+
+		// Host element parent (already in tree): adopt child's layout node into ancestor.
+		// Only needed when parent.layoutNodeId is undefined (host element) —
+		// initLayoutTreeRecursively handles subtrees built detached via effectiveLayoutParentId.
+		if (
+			parent.internal_isHostElement &&
+			instance &&
+			isElement(newChild) &&
+			newChild.layoutNodeId !== undefined
+		) {
+			const layoutAncestorId = findLayoutAncestorId(parent)
+			if (layoutAncestorId !== undefined) {
+				const index = instance.layoutTree.getChildCount(layoutAncestorId)
+				instance.layoutTree.insertChild(
+					layoutAncestorId,
+					newChild.layoutNodeId,
+					index
+				)
+			}
+		}
 
 		// Mark dirty if text component
 		if (
@@ -172,7 +245,11 @@ export class WolfieRenderer implements Renderer2 {
 		const instance = getInstance(parent)
 
 		if (instance && isElement(newChild)) {
-			initLayoutTreeRecursively(newChild, instance.layoutTree)
+			initLayoutTreeRecursively(
+				newChild,
+				instance.layoutTree,
+				parent.layoutNodeId
+			)
 		}
 
 		// If refChild is null, append to end (insertBeforeNode requires non-null refChild)
@@ -180,6 +257,24 @@ export class WolfieRenderer implements Renderer2 {
 			insertBeforeNode(parent, newChild, refChild, instance?.layoutTree)
 		} else {
 			appendChildNode(parent, newChild, instance?.layoutTree)
+		}
+
+		// Host element parent: manually insert child's layout node into layout ancestor
+		if (
+			parent.internal_isHostElement &&
+			instance &&
+			isElement(newChild) &&
+			newChild.layoutNodeId !== undefined
+		) {
+			const layoutAncestorId = findLayoutAncestorId(parent)
+			if (layoutAncestorId !== undefined) {
+				const index = instance.layoutTree.getChildCount(layoutAncestorId)
+				instance.layoutTree.insertChild(
+					layoutAncestorId,
+					newChild.layoutNodeId,
+					index
+				)
+			}
 		}
 
 		// Mark dirty if text component
@@ -207,6 +302,20 @@ export class WolfieRenderer implements Renderer2 {
 		if (!actualParent) return
 
 		const instance = getInstance(actualParent)
+
+		// Host element parent: manually remove from layout ancestor before core removal
+		if (
+			actualParent.internal_isHostElement &&
+			instance &&
+			isElement(oldChild) &&
+			oldChild.layoutNodeId !== undefined
+		) {
+			const layoutAncestorId = findLayoutAncestorId(actualParent)
+			if (layoutAncestorId !== undefined) {
+				instance.layoutTree.removeChild(layoutAncestorId, oldChild.layoutNodeId)
+			}
+		}
+
 		removeChildNode(actualParent, oldChild, instance?.layoutTree)
 	}
 

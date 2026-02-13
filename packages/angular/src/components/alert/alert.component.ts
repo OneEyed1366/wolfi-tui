@@ -161,9 +161,7 @@ export class AlertComponent implements OnInit, OnDestroy {
 		this._variant.set(this.variant)
 	}
 
-	ngOnDestroy(): void {
-		// Cleanup handled by Angular
-	}
+	ngOnDestroy(): void {}
 
 	ngOnChanges(): void {
 		this._variant.set(this.variant)

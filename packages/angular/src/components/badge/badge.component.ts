@@ -86,9 +86,7 @@ export class BadgeComponent implements OnInit, OnDestroy {
 		this._color.set(this.color)
 	}
 
-	ngOnDestroy(): void {
-		// Cleanup handled by Angular
-	}
+	ngOnDestroy(): void {}
 
 	ngOnChanges(): void {
 		this._color.set(this.color)

@@ -232,9 +232,7 @@ export class SelectComponent implements OnInit, OnDestroy {
 		this.initializeState()
 	}
 
-	ngOnDestroy(): void {
-		// Cleanup handled by Angular
-	}
+	ngOnDestroy(): void {}
 
 	ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
 		// Only re-initialize when options change, NOT when isDisabled changes

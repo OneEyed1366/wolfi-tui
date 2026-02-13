@@ -99,9 +99,7 @@ export class OrderedListItemComponent implements OnInit, OnDestroy, OnChanges {
 		this._parentMarker.set(this.parentMarker)
 	}
 
-	ngOnDestroy(): void {
-		// Cleanup handled by Angular
-	}
+	ngOnDestroy(): void {}
 	//#endregion Lifecycle
 }
 //#endregion OrderedListItemComponent

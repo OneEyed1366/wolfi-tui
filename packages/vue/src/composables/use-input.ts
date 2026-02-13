@@ -17,7 +17,6 @@ export type Options = {
 }
 
 // Debug flag - set to true to see input handling logs
-const DEBUG_INPUT = process.env.DEBUG_INPUT === 'true'
 
 export const useInput = (inputHandler: Handler, options: Options = {}) => {
 	const { setRawMode, internal_exitOnCtrlC, internal_eventEmitter } = useStdin()
@@ -29,12 +28,9 @@ export const useInput = (inputHandler: Handler, options: Options = {}) => {
 		if (isActive === false) {
 			return // Early return - no cleanup registered for inactive components
 		}
-
-		if (DEBUG_INPUT) console.error('[useInput] setRawMode(true)')
 		setRawMode(true)
 
 		onCleanup(() => {
-			if (DEBUG_INPUT) console.error('[useInput] setRawMode(false) - cleanup')
 			setRawMode(false)
 		})
 	})

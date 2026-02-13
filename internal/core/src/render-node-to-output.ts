@@ -142,22 +142,33 @@ const renderNodeToOutput = (
 
 	const computedLayout = getComputedLayout(node, layoutTree)
 
+	// Apply transform even for transparent/host element nodes
+	let newTransformers = transformers
+	if (typeof node.internal_transform === 'function') {
+		newTransformers = [node.internal_transform, ...transformers]
+	}
+
 	// Need computed layout from Taffy
 	if (!computedLayout) {
+		// Pass-through for transparent nodes (e.g., Angular host elements):
+		// recurse into children using parent's offsets
+		if (node.nodeName === 'wolfie-box' || node.nodeName === 'wolfie-root') {
+			for (const childNode of node.childNodes) {
+				renderNodeToOutput(childNode as DOMElement, output, {
+					offsetX,
+					offsetY,
+					transformers: newTransformers,
+					skipStaticElements,
+					layoutTree,
+				})
+			}
+		}
 		return
 	}
 
 	// Left and top positions are relative to parent node
 	const x = offsetX + computedLayout.x
 	const y = offsetY + computedLayout.y
-
-	// Transformers are functions that transform final text output of each component
-	// See Output class for logic that applies transformers
-	let newTransformers = transformers
-
-	if (typeof node.internal_transform === 'function') {
-		newTransformers = [node.internal_transform, ...transformers]
-	}
 
 	if (node.nodeName === 'wolfie-text') {
 		let text = squashTextNodes(node)

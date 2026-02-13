@@ -100,7 +100,9 @@ export const TextInput: DefineComponent<TextInputProps> = defineComponent({
 		const theme = useComponentTheme<TextInputTheme>('TextInput')
 		const { styles } = theme ?? textInputTheme
 
-		return () => <Text {...styles.value()}>{inputValue.value}</Text>
+		return () => {
+			return <Text {...styles.value()}>{inputValue.value}</Text>
+		}
 	},
 })
 //#endregion Component

@@ -220,7 +220,8 @@ const OrderedListComponent = defineComponent({
 				)
 			})
 
-			return <Box {...styles.list()}>{wrappedChildren}</Box>
+			const result = <Box {...styles.list()}>{wrappedChildren}</Box>
+			return result
 		}
 	},
 })

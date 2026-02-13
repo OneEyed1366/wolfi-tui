@@ -81,7 +81,9 @@ export const PasswordInput: DefineComponent<PasswordInputProps> =
 			const theme = useComponentTheme<PasswordInputTheme>('PasswordInput')
 			const { styles } = theme ?? passwordInputTheme
 
-			return () => <Text {...styles.value()}>{inputValue.value}</Text>
+			return () => {
+				return <Text {...styles.value()}>{inputValue.value}</Text>
+			}
 		},
 	})
 //#endregion Component

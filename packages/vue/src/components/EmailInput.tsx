@@ -102,7 +102,9 @@ export const EmailInput: DefineComponent<EmailInputProps> = defineComponent({
 		const theme = useComponentTheme<EmailInputTheme>('EmailInput')
 		const { styles } = theme ?? emailInputTheme
 
-		return () => <Text {...styles.value()}>{inputValue.value}</Text>
+		return () => {
+			return <Text {...styles.value()}>{inputValue.value}</Text>
+		}
 	},
 })
 //#endregion Component

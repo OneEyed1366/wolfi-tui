@@ -59,9 +59,7 @@ export class TransformComponent
 	//#endregion Injected Dependencies
 
 	//#region Lifecycle
-	ngOnInit(): void {
-		// Component initialized
-	}
+	ngOnInit(): void {}
 
 	ngAfterViewInit(): void {
 		this.setInternalTransform()
@@ -71,9 +69,7 @@ export class TransformComponent
 		this.setInternalTransform()
 	}
 
-	ngOnDestroy(): void {
-		// Cleanup handled by Angular
-	}
+	ngOnDestroy(): void {}
 
 	private setInternalTransform(): void {
 		// Set internal_transform directly on the DOM element

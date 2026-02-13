@@ -148,30 +148,31 @@ export const Box = defineComponent({
 
 			const finalBackgroundColor = computedBackgroundColor.value
 
+			const finalStyle = {
+				backgroundColor: finalBackgroundColor,
+				overflowX:
+					style.overflowX ??
+					resolvedClassName.overflowX ??
+					style.overflow ??
+					resolvedClassName.overflow ??
+					'visible',
+				overflowY:
+					style.overflowY ??
+					resolvedClassName.overflowY ??
+					style.overflow ??
+					resolvedClassName.overflow ??
+					'visible',
+				...defaultBoxStyles,
+				...resolvedClassName,
+				...style,
+			}
+
 			const label = ariaLabel ? (
 				<wolfie-text>{ariaLabel}</wolfie-text>
 			) : undefined
-
 			return (
 				<wolfie-box
-					style={{
-						backgroundColor: finalBackgroundColor,
-						overflowX:
-							style.overflowX ??
-							resolvedClassName.overflowX ??
-							style.overflow ??
-							resolvedClassName.overflow ??
-							'visible',
-						overflowY:
-							style.overflowY ??
-							resolvedClassName.overflowY ??
-							style.overflow ??
-							resolvedClassName.overflow ??
-							'visible',
-						...defaultBoxStyles,
-						...resolvedClassName,
-						...style,
-					}}
+					style={finalStyle}
 					internal_accessibility={{
 						role: ariaRole,
 						state: ariaState,

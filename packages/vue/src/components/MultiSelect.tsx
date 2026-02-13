@@ -119,40 +119,45 @@ export const MultiSelect: DefineComponent<MultiSelectProps> = defineComponent({
 		const theme = useComponentTheme<MultiSelectTheme>('MultiSelect')
 		const { styles } = theme ?? multiSelectTheme
 
-		return () => (
-			<Box {...styles.container()}>
-				{state.visibleOptions.value.map((option) => {
-					let label: VNode | VNode[] | string = option.label
+		return () => {
+			const result = (
+				<Box {...styles.container()}>
+					{state.visibleOptions.value.map((option) => {
+						let label: VNode | VNode[] | string = option.label
 
-					if (
-						props.highlightText &&
-						option.label.includes(props.highlightText)
-					) {
-						const index = option.label.indexOf(props.highlightText)
+						if (
+							props.highlightText &&
+							option.label.includes(props.highlightText)
+						) {
+							const index = option.label.indexOf(props.highlightText)
 
-						label = (
-							<>
-								{option.label.slice(0, index)}
-								<Text {...styles.highlightedText()}>{props.highlightText}</Text>
-								{option.label.slice(index + props.highlightText.length)}
-							</>
-						) as unknown as VNode
-					}
+							label = (
+								<>
+									{option.label.slice(0, index)}
+									<Text {...styles.highlightedText()}>
+										{props.highlightText}
+									</Text>
+									{option.label.slice(index + props.highlightText.length)}
+								</>
+							) as unknown as VNode
+						}
 
-					return (
-						<MultiSelectOption
-							key={option.value}
-							isFocused={
-								!props.isDisabled && state.focusedValue.value === option.value
-							}
-							isSelected={state.value.value.includes(option.value)}
-						>
-							{label}
-						</MultiSelectOption>
-					)
-				})}
-			</Box>
-		)
+						return (
+							<MultiSelectOption
+								key={option.value}
+								isFocused={
+									!props.isDisabled && state.focusedValue.value === option.value
+								}
+								isSelected={state.value.value.includes(option.value)}
+							>
+								{label}
+							</MultiSelectOption>
+						)
+					})}
+				</Box>
+			)
+			return result
+		}
 	},
 })
 //#endregion Component

@@ -103,40 +103,45 @@ export const Select: DefineComponent<SelectProps> = defineComponent({
 		const theme = useComponentTheme<SelectTheme>('Select')
 		const { styles } = theme ?? selectTheme
 
-		return () => (
-			<Box {...styles.container()}>
-				{state.visibleOptions.value.map((option) => {
-					let label: VNode | VNode[] | string = option.label
+		return () => {
+			const result = (
+				<Box {...styles.container()}>
+					{state.visibleOptions.value.map((option) => {
+						let label: VNode | VNode[] | string = option.label
 
-					if (
-						props.highlightText &&
-						option.label.includes(props.highlightText)
-					) {
-						const index = option.label.indexOf(props.highlightText)
+						if (
+							props.highlightText &&
+							option.label.includes(props.highlightText)
+						) {
+							const index = option.label.indexOf(props.highlightText)
 
-						label = (
-							<>
-								{option.label.slice(0, index)}
-								<Text {...styles.highlightedText()}>{props.highlightText}</Text>
-								{option.label.slice(index + props.highlightText.length)}
-							</>
-						) as unknown as VNode
-					}
+							label = (
+								<>
+									{option.label.slice(0, index)}
+									<Text {...styles.highlightedText()}>
+										{props.highlightText}
+									</Text>
+									{option.label.slice(index + props.highlightText.length)}
+								</>
+							) as unknown as VNode
+						}
 
-					return (
-						<SelectOption
-							key={option.value}
-							isFocused={
-								!props.isDisabled && state.focusedValue.value === option.value
-							}
-							isSelected={state.value.value === option.value}
-						>
-							{label}
-						</SelectOption>
-					)
-				})}
-			</Box>
-		)
+						return (
+							<SelectOption
+								key={option.value}
+								isFocused={
+									!props.isDisabled && state.focusedValue.value === option.value
+								}
+								isSelected={state.value.value === option.value}
+							>
+								{label}
+							</SelectOption>
+						)
+					})}
+				</Box>
+			)
+			return result
+		}
 	},
 })
 //#endregion Component

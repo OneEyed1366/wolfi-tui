@@ -9,6 +9,8 @@ import { Box } from './Box'
 export const Spacer = defineComponent({
 	name: 'Spacer',
 	setup() {
-		return () => <Box style={{ flexGrow: 1 }} />
+		return () => {
+			return <Box style={{ flexGrow: 1 }} />
+		}
 	},
 })

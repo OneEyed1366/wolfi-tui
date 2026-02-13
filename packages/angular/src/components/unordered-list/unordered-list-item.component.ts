@@ -81,9 +81,7 @@ export class UnorderedListItemComponent
 		this._marker.set(this.marker)
 	}
 
-	ngOnDestroy(): void {
-		// Cleanup handled by Angular
-	}
+	ngOnDestroy(): void {}
 	//#endregion Lifecycle
 }
 //#endregion UnorderedListItemComponent

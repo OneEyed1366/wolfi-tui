@@ -25,6 +25,7 @@ export type DOMElement = {
 	attributes: Record<string, DOMNodeAttribute>
 	childNodes: DOMNode[]
 	internal_transform?: IOutputTransformer
+	internal_isHostElement?: boolean
 
 	internal_accessibility?: {
 		role?:

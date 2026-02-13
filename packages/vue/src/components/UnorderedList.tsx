@@ -197,7 +197,8 @@ const UnorderedListComponent = defineComponent({
 				return h(UnorderedListItem, null, () => child)
 			})
 
-			return <Box {...styles.list()}>{wrappedChildren}</Box>
+			const result = <Box {...styles.list()}>{wrappedChildren}</Box>
+			return result
 		}
 	},
 })
