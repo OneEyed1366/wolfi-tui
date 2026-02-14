@@ -1,4 +1,4 @@
-import type { OnInit, OnDestroy, AfterViewInit } from '@angular/core'
+import type { OnInit, OnDestroy, OnChanges, AfterViewInit } from '@angular/core'
 import {
 	Component,
 	Input,
@@ -21,7 +21,9 @@ import { resolveClassName, type ClassNameValue } from '../../styles'
 	template: `<ng-content />`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextComponent implements OnInit, OnDestroy, AfterViewInit {
+export class TextComponent
+	implements OnInit, OnChanges, OnDestroy, AfterViewInit
+{
 	private elementRef = inject(ElementRef)
 
 	//#region Inputs
@@ -48,14 +50,6 @@ export class TextComponent implements OnInit, OnDestroy, AfterViewInit {
 		const className = this.capturedClassName
 		const resolvedClassName = resolveClassName(className)
 		const style = this.capturedStyle || el.style || {}
-
-		// DEBUG: Compare capturedStyle (frozen at ngOnInit) vs current @Input() style
-		console.error('[Text.getEffectiveStyles]', {
-			capturedStyle: this.capturedStyle,
-			currentInputStyle: this.style,
-			usedStyle: style,
-			finalResult: { ...resolvedClassName, ...style },
-		})
 
 		return {
 			...resolvedClassName,
@@ -118,6 +112,11 @@ export class TextComponent implements OnInit, OnDestroy, AfterViewInit {
 	//#region Lifecycle
 	ngOnInit(): void {
 		// Capture inputs early — @Input() style doesn't flow to el.style
+		this.capturedClassName = this.className
+		this.capturedStyle = this.style
+	}
+
+	ngOnChanges(): void {
 		this.capturedClassName = this.className
 		this.capturedStyle = this.style
 	}
