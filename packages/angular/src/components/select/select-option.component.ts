@@ -95,8 +95,20 @@ export class SelectOptionComponent {
 
 	//#region Lifecycle
 	ngOnChanges(): void {
+		// DEBUG: Confirm Angular propagates the [isSelected] binding change
+		console.error('[SelectOption.ngOnChanges]', {
+			isFocused: this.isFocused,
+			isSelected: this.isSelected,
+			labelStyleBefore: this.labelStyle(),
+		})
+
 		this._isFocused.set(this.isFocused)
 		this._isSelected.set(this.isSelected)
+
+		// Log again AFTER updating signals — labelStyle() should now reflect new state
+		console.error('[SelectOption.ngOnChanges] after signal update', {
+			labelStyleAfter: this.labelStyle(),
+		})
 	}
 	//#endregion Lifecycle
 }

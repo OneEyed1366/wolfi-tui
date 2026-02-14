@@ -202,6 +202,12 @@ export class SelectComponent implements OnInit, OnDestroy {
 		const currentFocused = this.focusedValue()
 		const currentValue = this.value()
 
+		// DEBUG: Confirm selection actually changes
+		console.error('[Select.selectFocusedOption]', {
+			from: currentValue,
+			to: currentFocused,
+		})
+
 		this.previousValue.set(currentValue)
 		this.value.set(currentFocused)
 

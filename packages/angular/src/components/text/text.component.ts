@@ -48,6 +48,15 @@ export class TextComponent implements OnInit, OnDestroy, AfterViewInit {
 		const className = this.capturedClassName
 		const resolvedClassName = resolveClassName(className)
 		const style = this.capturedStyle || el.style || {}
+
+		// DEBUG: Compare capturedStyle (frozen at ngOnInit) vs current @Input() style
+		console.error('[Text.getEffectiveStyles]', {
+			capturedStyle: this.capturedStyle,
+			currentInputStyle: this.style,
+			usedStyle: style,
+			finalResult: { ...resolvedClassName, ...style },
+		})
+
 		return {
 			...resolvedClassName,
 			...style,
