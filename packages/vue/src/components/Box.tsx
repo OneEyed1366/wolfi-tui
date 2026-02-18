@@ -7,41 +7,15 @@ import {
 	type PropType,
 } from 'vue'
 import type { Styles } from '@wolfie/core'
+import {
+	computeBoxStyle,
+	computeBoxBackground,
+	type ClassNameValue,
+} from '@wolfie/shared'
 import { AccessibilitySymbol, BackgroundSymbol } from '../context/symbols'
-import { resolveClassName, type ClassNameValue } from '../styles'
 
 //#region Types
-type AriaRole =
-	| 'button'
-	| 'checkbox'
-	| 'combobox'
-	| 'list'
-	| 'listbox'
-	| 'listitem'
-	| 'menu'
-	| 'menuitem'
-	| 'option'
-	| 'progressbar'
-	| 'radio'
-	| 'radiogroup'
-	| 'tab'
-	| 'tablist'
-	| 'table'
-	| 'textbox'
-	| 'timer'
-	| 'toolbar'
-
-type AriaState = {
-	busy?: boolean
-	checked?: boolean
-	disabled?: boolean
-	expanded?: boolean
-	multiline?: boolean
-	multiselectable?: boolean
-	readonly?: boolean
-	required?: boolean
-	selected?: boolean
-}
+import type { AriaRole, AriaState } from '@wolfie/shared'
 
 export interface BoxProps {
 	className?: ClassNameValue
@@ -52,15 +26,6 @@ export interface BoxProps {
 	'aria-state'?: AriaState
 }
 //#endregion Types
-
-//#region Default Styles
-const defaultBoxStyles: Partial<Styles> = {
-	flexWrap: 'nowrap',
-	flexDirection: 'row',
-	flexGrow: 0,
-	flexShrink: 1,
-}
-//#endregion Default Styles
 
 /**
  * `<Box>` is an essential Wolfie component to build your layout.
@@ -102,24 +67,21 @@ export const Box = defineComponent({
 		const inheritedBackgroundColorRef = inject(BackgroundSymbol, undefined)
 
 		// Compute background color reactively for provide (must be in setup, not render)
-		const computedBackgroundColor = computed(() => {
-			const style = props.style ?? {}
-			const mergedClassName = attrs.class ?? props.className
-			const resolvedClassName = resolveClassName(
-				mergedClassName as ClassNameValue
+		const computedBackgroundColor = computed(() =>
+			computeBoxBackground(
+				{
+					className: (attrs.class ?? props.className) as ClassNameValue,
+					style: props.style,
+				},
+				unref(inheritedBackgroundColorRef)
 			)
-			return style.backgroundColor ?? resolvedClassName.backgroundColor
-		})
-
-		// Provide background color to children (called in setup, not render)
-		// Pass through inherited value when no explicit value, so children can inherit from grandparent
-		const providedBackgroundColor = computed(
-			() => computedBackgroundColor.value ?? unref(inheritedBackgroundColorRef)
 		)
-		provide(BackgroundSymbol, providedBackgroundColor)
+
+		// Provide background color to children — pass through inherited value when no
+		// explicit value, so children can inherit from grandparent
+		provide(BackgroundSymbol, computedBackgroundColor)
 
 		return () => {
-			const style = props.style ?? {}
 			// Vue converts kebab-case props to camelCase internally
 			const ariaLabel = (props as Record<string, unknown>).ariaLabel as
 				| string
@@ -140,32 +102,13 @@ export const Box = defineComponent({
 				return null
 			}
 
-			// Merge attrs.class with props.className (attrs.class takes precedence for Vue SFC usage)
-			const mergedClassName = attrs.class ?? props.className
-			const resolvedClassName = resolveClassName(
-				mergedClassName as ClassNameValue
+			const finalStyle = computeBoxStyle(
+				{
+					className: (attrs.class ?? props.className) as ClassNameValue,
+					style: props.style,
+				},
+				unref(inheritedBackgroundColorRef)
 			)
-
-			const finalBackgroundColor = computedBackgroundColor.value
-
-			const finalStyle = {
-				backgroundColor: finalBackgroundColor,
-				overflowX:
-					style.overflowX ??
-					resolvedClassName.overflowX ??
-					style.overflow ??
-					resolvedClassName.overflow ??
-					'visible',
-				overflowY:
-					style.overflowY ??
-					resolvedClassName.overflowY ??
-					style.overflow ??
-					resolvedClassName.overflow ??
-					'visible',
-				...defaultBoxStyles,
-				...resolvedClassName,
-				...style,
-			}
 
 			const label = ariaLabel ? (
 				<wolfie-text>{ariaLabel}</wolfie-text>

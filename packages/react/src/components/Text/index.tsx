@@ -1,9 +1,8 @@
 import React, { useContext } from 'react'
-import chalk from 'chalk'
-import { colorize, type Styles } from '@wolfie/core'
+import { type Styles } from '@wolfie/core'
+import { computeTextTransform, resolveClassName } from '@wolfie/shared'
 import { accessibilityContext } from '../../context/AccessibilityContext'
 import { backgroundContext } from '../../context/BackgroundContext'
-import { resolveClassName } from '../../styles/index'
 import type { IProps } from './types'
 
 /**
@@ -26,55 +25,13 @@ export function Text({
 	}
 
 	const resolvedClassName = resolveClassName(className)
+	const effectiveWrap =
+		(style as Partial<Styles>).textWrap ?? resolvedClassName.textWrap ?? 'wrap'
 
-	const effectiveStyles: Styles = {
-		...resolvedClassName,
-		...style,
-	}
-
-	const effectiveColor = effectiveStyles.color
-	const effectiveBackgroundColor = effectiveStyles.backgroundColor
-	const effectiveBold = effectiveStyles.fontWeight === 'bold'
-	const effectiveItalic = effectiveStyles.fontStyle === 'italic'
-	const effectiveUnderline = effectiveStyles.textDecoration === 'underline'
-	const effectiveStrikethrough =
-		effectiveStyles.textDecoration === 'line-through'
-	const effectiveInverse = effectiveStyles.inverse ?? false
-	const effectiveWrap = effectiveStyles.textWrap ?? 'wrap'
-
-	const transform = (children: string): string => {
-		if (effectiveColor) {
-			children = colorize(children, effectiveColor, 'foreground')
-		}
-
-		const finalBackgroundColor =
-			effectiveBackgroundColor ?? inheritedBackgroundColor
-		if (finalBackgroundColor) {
-			children = colorize(children, finalBackgroundColor, 'background')
-		}
-
-		if (effectiveBold) {
-			children = chalk.bold(children)
-		}
-
-		if (effectiveItalic) {
-			children = chalk.italic(children)
-		}
-
-		if (effectiveUnderline) {
-			children = chalk.underline(children)
-		}
-
-		if (effectiveStrikethrough) {
-			children = chalk.strikethrough(children)
-		}
-
-		if (effectiveInverse) {
-			children = chalk.inverse(children)
-		}
-
-		return children
-	}
+	const transform = computeTextTransform(
+		{ className, style: style as Partial<Styles> },
+		inheritedBackgroundColor ?? undefined
+	)
 
 	if (isScreenReaderEnabled && ariaHidden) {
 		return null
@@ -83,7 +40,8 @@ export function Text({
 	return (
 		<wolfie-text
 			style={{
-				...effectiveStyles,
+				...resolvedClassName,
+				...style,
 				textWrap: effectiveWrap,
 			}}
 			internal_transform={transform}

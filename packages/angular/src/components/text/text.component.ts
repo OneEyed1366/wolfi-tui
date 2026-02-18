@@ -6,10 +6,9 @@ import {
 	ChangeDetectionStrategy,
 	ElementRef,
 } from '@angular/core'
-import chalk from 'chalk'
-import { colorize, type Styles, type DOMElement } from '@wolfie/core'
+import type { Styles, DOMElement } from '@wolfie/core'
+import { computeTextTransform, type ClassNameValue } from '@wolfie/shared'
 import { BACKGROUND_CONTEXT } from '../../tokens'
-import { resolveClassName, type ClassNameValue } from '../../styles'
 
 //#region TextComponent
 /**
@@ -42,90 +41,34 @@ export class TextComponent
 	private capturedStyle?: Partial<Styles>
 	//#endregion Internal State
 
-	//#region Computed Properties
-	private getEffectiveStyles(): Partial<Styles> {
+	//#region Private Methods
+	private rebuildTransform(): void {
+		const transform = computeTextTransform(
+			{ className: this.capturedClassName, style: this.capturedStyle },
+			this.inheritedBackground?.backgroundColor
+		)
 		const el = this.elementRef.nativeElement as DOMElement
-		// Use captured values from ngOnInit bc @Input() style takes priority
-		// over renderer setProperty — el.style may not reflect input bindings
-		const className = this.capturedClassName
-		const resolvedClassName = resolveClassName(className)
-		const style = this.capturedStyle || el.style || {}
-
-		return {
-			...resolvedClassName,
-			...style,
-		}
+		el.internal_transform = transform
 	}
-	//#endregion Computed Properties
-
-	//#region Transform Function
-	/**
-	 * Transform function applied to text content for chalk styling
-	 */
-	readonly transform = (text: string): string => {
-		const styles = this.getEffectiveStyles()
-
-		const effectiveColor = styles.color
-		const effectiveBackgroundColor = styles.backgroundColor
-		const effectiveBold = styles.fontWeight === 'bold'
-		const effectiveItalic = styles.fontStyle === 'italic'
-		const effectiveUnderline = styles.textDecoration === 'underline'
-		const effectiveStrikethrough = styles.textDecoration === 'line-through'
-		const effectiveInverse = styles.inverse ?? false
-
-		let result = text
-
-		if (effectiveColor) {
-			result = colorize(result, effectiveColor, 'foreground')
-		}
-
-		const finalBackgroundColor =
-			effectiveBackgroundColor ?? this.inheritedBackground?.backgroundColor
-		if (finalBackgroundColor) {
-			result = colorize(result, finalBackgroundColor, 'background')
-		}
-
-		if (effectiveBold) {
-			result = chalk.bold(result)
-		}
-
-		if (effectiveItalic) {
-			result = chalk.italic(result)
-		}
-
-		if (effectiveUnderline) {
-			result = chalk.underline(result)
-		}
-
-		if (effectiveStrikethrough) {
-			result = chalk.strikethrough(result)
-		}
-
-		if (effectiveInverse) {
-			result = chalk.inverse(result)
-		}
-
-		return result
-	}
-	//#endregion Transform Function
+	//#endregion Private Methods
 
 	//#region Lifecycle
 	ngOnInit(): void {
 		// Capture inputs early — @Input() style doesn't flow to el.style
 		this.capturedClassName = this.className
 		this.capturedStyle = this.style
+		this.rebuildTransform()
 	}
 
 	ngOnChanges(): void {
 		this.capturedClassName = this.className
 		this.capturedStyle = this.style
+		this.rebuildTransform()
 	}
 
 	ngAfterViewInit(): void {
-		// Set internal_transform directly on the DOM element
-		// This must be a function, not an attribute string
-		const el = this.elementRef.nativeElement as DOMElement
-		el.internal_transform = this.transform
+		// Rebuild after view is initialized to ensure element is in DOM
+		this.rebuildTransform()
 	}
 
 	ngOnDestroy(): void {

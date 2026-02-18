@@ -9,51 +9,14 @@ import {
 	ElementRef,
 } from '@angular/core'
 import type { Styles, DOMElement } from '@wolfie/core'
+import {
+	computeBoxStyle,
+	computeBoxBackground,
+	type ClassNameValue,
+	type AriaRole,
+	type AriaState,
+} from '@wolfie/shared'
 import { BACKGROUND_CONTEXT } from '../../tokens'
-import { resolveClassName, type ClassNameValue } from '../../styles'
-
-//#region Types
-type AriaRole =
-	| 'button'
-	| 'checkbox'
-	| 'combobox'
-	| 'list'
-	| 'listbox'
-	| 'listitem'
-	| 'menu'
-	| 'menuitem'
-	| 'option'
-	| 'progressbar'
-	| 'radio'
-	| 'radiogroup'
-	| 'tab'
-	| 'tablist'
-	| 'table'
-	| 'textbox'
-	| 'timer'
-	| 'toolbar'
-
-type AriaState = {
-	busy?: boolean
-	checked?: boolean
-	disabled?: boolean
-	expanded?: boolean
-	multiline?: boolean
-	multiselectable?: boolean
-	readonly?: boolean
-	required?: boolean
-	selected?: boolean
-}
-//#endregion Types
-
-//#region Default Styles
-const defaultBoxStyles: Partial<Styles> = {
-	flexWrap: 'nowrap',
-	flexDirection: 'row',
-	flexGrow: 0,
-	flexShrink: 1,
-}
-//#endregion Default Styles
 
 //#region BoxComponent
 /**
@@ -106,33 +69,13 @@ export class BoxComponent implements OnInit, OnDestroy {
 		// This mirrors Vue's attrs.class ?? props.className pattern
 		const el = this.elementRef.nativeElement as DOMElement
 		const nativeClass = el.attributes?.['class'] as string | undefined
-		const className = nativeClass ?? this._className()
-		const style = this._style() ?? {}
-		const resolvedClassName = resolveClassName(className)
-
-		const finalBackgroundColor =
-			style.backgroundColor ??
-			resolvedClassName.backgroundColor ??
+		return computeBoxStyle(
+			{
+				className: nativeClass ?? this._className(),
+				style: this._style() ?? {},
+			},
 			this.parentBackground?.backgroundColor
-
-		return {
-			backgroundColor: finalBackgroundColor,
-			overflowX:
-				style.overflowX ??
-				resolvedClassName.overflowX ??
-				style.overflow ??
-				resolvedClassName.overflow ??
-				'visible',
-			overflowY:
-				style.overflowY ??
-				resolvedClassName.overflowY ??
-				style.overflow ??
-				resolvedClassName.overflow ??
-				'visible',
-			...defaultBoxStyles,
-			...resolvedClassName,
-			...style,
-		} as Partial<Styles>
+		) as Partial<Styles>
 	})
 
 	readonly accessibilityAttr = computed(() => {
@@ -163,12 +106,10 @@ export class BoxComponent implements OnInit, OnDestroy {
 
 	//#region Private Methods
 	private updateBackgroundContext(): void {
-		const style = this._style() ?? {}
-		const resolvedClassName = resolveClassName(this._className())
-		this.ownBackground.backgroundColor =
-			style.backgroundColor ??
-			resolvedClassName.backgroundColor ??
+		this.ownBackground.backgroundColor = computeBoxBackground(
+			{ className: this._className(), style: this._style() ?? {} },
 			this.parentBackground?.backgroundColor
+		)
 	}
 	//#endregion Private Methods
 }

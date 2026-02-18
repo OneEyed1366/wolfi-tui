@@ -1,10 +1,9 @@
 import React, { forwardRef, useContext, type PropsWithChildren } from 'react'
 import { type DOMElement } from '@wolfie/core'
+import { computeBoxStyle, computeBoxBackground } from '@wolfie/shared'
 import { accessibilityContext } from '../../context/AccessibilityContext'
 import { backgroundContext } from '../../context/BackgroundContext'
-import { resolveClassName } from '../../styles/index'
 import type { IProps } from './types'
-import styles from './Box.module.css'
 
 /**
 `<Box>` is an essential Wolfie component to build your layout. It's like `<div style="display: flex">` in the browser.
@@ -28,30 +27,13 @@ export const Box = forwardRef<DOMElement, PropsWithChildren<IProps>>(
 			return null
 		}
 
-		const resolvedClassName = resolveClassName(className)
+		const finalStyle = computeBoxStyle({ className, style })
+		const finalBg = computeBoxBackground({ className, style })
 
 		const boxElement = (
 			<wolfie-box
 				ref={ref}
-				style={{
-					backgroundColor:
-						style.backgroundColor ?? resolvedClassName.backgroundColor,
-					overflowX:
-						style.overflowX ??
-						resolvedClassName.overflowX ??
-						style.overflow ??
-						resolvedClassName.overflow ??
-						'visible',
-					overflowY:
-						style.overflowY ??
-						resolvedClassName.overflowY ??
-						style.overflow ??
-						resolvedClassName.overflow ??
-						'visible',
-					...styles.box,
-					...resolvedClassName,
-					...style,
-				}}
+				style={finalStyle}
 				internal_accessibility={{
 					role,
 					state: ariaState,
@@ -61,11 +43,9 @@ export const Box = forwardRef<DOMElement, PropsWithChildren<IProps>>(
 			</wolfie-box>
 		)
 
-		const finalBackgroundColor =
-			style.backgroundColor ?? resolvedClassName.backgroundColor
-		if (finalBackgroundColor) {
+		if (finalBg) {
 			return (
-				<backgroundContext.Provider value={finalBackgroundColor}>
+				<backgroundContext.Provider value={finalBg}>
 					{boxElement}
 				</backgroundContext.Provider>
 			)

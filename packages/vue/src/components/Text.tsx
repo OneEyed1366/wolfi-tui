@@ -1,8 +1,11 @@
 import { defineComponent, inject, unref, type PropType } from 'vue'
-import chalk from 'chalk'
-import { colorize, type Styles } from '@wolfie/core'
+import type { Styles } from '@wolfie/core'
+import {
+	computeTextTransform,
+	resolveClassName,
+	type ClassNameValue,
+} from '@wolfie/shared'
 import { AccessibilitySymbol, BackgroundSymbol } from '../context/symbols'
-import { resolveClassName, type ClassNameValue } from '../styles'
 
 //#region Types
 export interface TextProps {
@@ -67,66 +70,23 @@ export const Text = defineComponent({
 			}
 
 			// Merge attrs.class with props.className (attrs.class takes precedence for Vue SFC usage)
-			const mergedClassName = attrs.class ?? props.className
-			const resolvedClassName = resolveClassName(
-				mergedClassName as ClassNameValue
+			const mergedClassName = (attrs.class ?? props.className) as ClassNameValue
+			const resolvedClassName = resolveClassName(mergedClassName)
+			const effectiveWrap =
+				(style as Partial<Styles>).textWrap ??
+				resolvedClassName.textWrap ??
+				'wrap'
+
+			const transform = computeTextTransform(
+				{ className: mergedClassName, style: style as Partial<Styles> },
+				unref(inheritedBackgroundColorRef)
 			)
-
-			const effectiveStyles: Styles = {
-				...resolvedClassName,
-				...style,
-			}
-
-			const effectiveColor = effectiveStyles.color
-			const effectiveBackgroundColor = effectiveStyles.backgroundColor
-			const effectiveBold = effectiveStyles.fontWeight === 'bold'
-			const effectiveItalic = effectiveStyles.fontStyle === 'italic'
-			const effectiveUnderline = effectiveStyles.textDecoration === 'underline'
-			const effectiveStrikethrough =
-				effectiveStyles.textDecoration === 'line-through'
-			const effectiveInverse = effectiveStyles.inverse ?? false
-			const effectiveWrap = effectiveStyles.textWrap ?? 'wrap'
-
-			const transform = (text: string): string => {
-				let result = text
-
-				if (effectiveColor) {
-					result = colorize(result, effectiveColor, 'foreground')
-				}
-
-				const finalBackgroundColor =
-					effectiveBackgroundColor ?? unref(inheritedBackgroundColorRef)
-				if (finalBackgroundColor) {
-					result = colorize(result, finalBackgroundColor, 'background')
-				}
-
-				if (effectiveBold) {
-					result = chalk.bold(result)
-				}
-
-				if (effectiveItalic) {
-					result = chalk.italic(result)
-				}
-
-				if (effectiveUnderline) {
-					result = chalk.underline(result)
-				}
-
-				if (effectiveStrikethrough) {
-					result = chalk.strikethrough(result)
-				}
-
-				if (effectiveInverse) {
-					result = chalk.inverse(result)
-				}
-
-				return result
-			}
 
 			return (
 				<wolfie-text
 					style={{
-						...effectiveStyles,
+						...resolvedClassName,
+						...style,
 						textWrap: effectiveWrap,
 					}}
 					internal_transform={transform}
