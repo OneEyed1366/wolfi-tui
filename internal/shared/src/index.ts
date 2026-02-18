@@ -1,5 +1,8 @@
 export * from './styles'
 export * from './types'
+export * from './types/aria'
+export * from './compute/box'
+export * from './compute/text'
 export { default as OptionMap } from './lib/option-map'
 export * from './theme/types'
 export { extendTheme } from './theme/extend-theme'
