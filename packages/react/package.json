@@ -74,6 +74,7 @@
 	"devDependencies": {
 		"@wolfie/css-parser": "workspace:*",
 		"@wolfie/plugin": "workspace:*",
+		"@wolfie/spec": "workspace:*",
 		"memfs": "^4.56.10",
 		"ts-loader": "^9.5.4"
 	},

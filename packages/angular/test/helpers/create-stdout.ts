@@ -1,25 +1,3 @@
-import EventEmitter from 'node:events'
-import { spy } from 'sinon'
-
-// Fake process.stdout
-type FakeStdout = {
-	get: () => string
-} & NodeJS.WriteStream
-
-const createStdout = (options?: {
-	columns?: number
-	rows?: number
-}): FakeStdout => {
-	const stdout = new EventEmitter() as unknown as FakeStdout
-	stdout.columns = options?.columns ?? 100
-	stdout.rows = options?.rows ?? 24
-
-	const write = spy()
-	stdout.write = write
-
-	stdout.get = () => (write.lastCall?.args[0] as string) ?? ''
-
-	return stdout
-}
-
-export default createStdout
+// Re-exported from shared spec package
+export { createStdout, type FakeStdout } from '@wolfie/spec'
+export { createStdout as default } from '@wolfie/spec'
