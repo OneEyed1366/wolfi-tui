@@ -108,6 +108,9 @@ export {
 	type UseSpinnerResult,
 } from './components/use-spinner'
 
+// Context
+export { backgroundContext } from './context/BackgroundContext'
+
 // Context Props
 export type { IProps as AppContextProps } from './context/AppContext'
 export type { IProps as StdinProps } from './context/StdinContext'

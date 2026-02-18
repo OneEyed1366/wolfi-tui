@@ -440,6 +440,22 @@ importers:
         specifier: ^1.39.10
         version: 1.44.0
 
+  internal/spec:
+    dependencies:
+      '@wolfie/core':
+        specifier: workspace:*
+        version: link:../core
+      '@wolfie/shared':
+        specifier: workspace:*
+        version: link:../shared
+      sinon:
+        specifier: ^21.0.1
+        version: 21.0.1
+    devDependencies:
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.10.9)(jiti@2.6.1)(jsdom@27.4.0)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.64.0)(terser@5.46.0)(yaml@2.8.2)
+
   packages/angular:
     dependencies:
       '@wolfie/core':
@@ -518,6 +534,9 @@ importers:
       '@wolfie/plugin':
         specifier: workspace:*
         version: link:../plugin
+      '@wolfie/spec':
+        specifier: workspace:*
+        version: link:../../internal/spec
       memfs:
         specifier: ^4.56.10
         version: 4.56.10(tslib@2.8.1)
@@ -692,6 +711,9 @@ importers:
       '@wolfie/plugin':
         specifier: workspace:*
         version: link:../plugin
+      '@wolfie/spec':
+        specifier: workspace:*
+        version: link:../../internal/spec
       memfs:
         specifier: ^4.56.10
         version: 4.56.10(tslib@2.8.1)
@@ -892,6 +914,9 @@ importers:
       '@wolfie/plugin':
         specifier: workspace:*
         version: link:../plugin
+      '@wolfie/spec':
+        specifier: workspace:*
+        version: link:../../internal/spec
       memfs:
         specifier: ^4.56.10
         version: 4.56.10(tslib@2.8.1)
