@@ -335,12 +335,12 @@ export const createTextNode = (text: string): TextNode => {
 
 	setTextNodeValue(node, text)
 
-	// WHY: slice to 80 chars — text nodes can contain long strings that bloat the log
+	// WHY: String() guard — adapters may pass non-string primitives; slice is eager
 	logger.log({
 		ts: performance.now(),
 		cat: 'dom',
 		op: 'createText',
-		preview: text.slice(0, 80),
+		preview: String(text).slice(0, 80),
 	})
 	return node
 }

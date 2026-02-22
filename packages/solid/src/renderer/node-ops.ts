@@ -83,22 +83,27 @@ export function createNodeOps(config: NodeOpsConfig): RendererOptions<DOMNode> {
 			return createNode(wolfieTag as ElementNames)
 		},
 
-		createTextNode(value: string): DOMNode {
+		createTextNode(value: unknown): DOMNode {
+			// WHY: Solid universal renderer passes numbers/booleans from dynamic JSX
+			// expressions (e.g. {score}, {wave}) — coerce to string before hitting core
+			const str = value == null ? '' : String(value)
 			if (logger.enabled) {
 				logger.log({
 					ts: performance.now(),
 					cat: 'solid',
 					op: 'createTextNode',
-					value,
+					value: str,
 				})
 			}
-			return createTextNode(value)
+			return createTextNode(str)
 		},
 
-		replaceText(textNode: DOMNode, value: string): void {
+		replaceText(textNode: DOMNode, value: unknown): void {
 			if (isText(textNode)) {
+				// WHY: same coercion as createTextNode — Solid may pass non-strings on reactive updates
+				const str = value == null ? '' : String(value)
 				const layoutTree = config.getLayoutTree()
-				setTextNodeValue(textNode as TextNode, value, layoutTree)
+				setTextNodeValue(textNode as TextNode, str, layoutTree)
 				config.getScheduleRender()?.()
 			}
 		},
