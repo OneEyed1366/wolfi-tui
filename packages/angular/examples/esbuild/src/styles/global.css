@@ -1,0 +1,12 @@
+.text-base {
+	color: white;
+}
+
+.text-muted {
+	color: gray;
+}
+
+.header {
+	color: blue;
+	font-weight: bold;
+}

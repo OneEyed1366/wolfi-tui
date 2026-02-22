@@ -1,0 +1,10 @@
+.button {
+	padding-x: 2;
+	padding-y: 1;
+	border-style: single;
+	border-color: cyan;
+}
+
+.text {
+	color: cyan;
+}
