@@ -100,11 +100,41 @@ render(App)
 // vite.config.ts
 import { defineConfig } from 'vite'
 import solidPlugin from 'vite-plugin-solid'
-import wolfiePlugin from '@wolfie/plugin'
+import { wolfie } from '@wolfie/plugin/vite'
 
 export default defineConfig({
-	plugins: [solidPlugin(), wolfiePlugin({ framework: 'solid' })],
+	plugins: [solidPlugin(), wolfie('solid')],
 })
+```
+
+### esbuild Configuration
+
+```ts
+// build.mjs
+import * as esbuild from 'esbuild'
+import { wolfie, generateNativeBanner } from '@wolfie/plugin/esbuild'
+
+await esbuild.build({
+	entryPoints: ['src/index.tsx'],
+	bundle: true,
+	platform: 'node',
+	format: 'cjs',
+	banner: {
+		js: generateNativeBanner('cjs'), // Required for native binding resolution
+	},
+	plugins: [wolfie('solid')],
+})
+```
+
+### webpack Configuration
+
+```js
+// webpack.config.cjs
+const { wolfie } = require('@wolfie/plugin/webpack')
+
+module.exports = {
+	plugins: [wolfie('solid')],
+}
 ```
 
 ## Render Function
@@ -737,7 +767,6 @@ import {
 
 ```tsx
 import './styles.css'
-
 ;<Box className="flex-col p-4 gap-2 border-round">
 	<Text className="text-green-500 font-bold">Tailwind styled</Text>
 </Box>
@@ -747,7 +776,6 @@ import './styles.css'
 
 ```tsx
 import styles from './App.module.css'
-
 ;<Box className={styles.container}>
 	<Text className={styles.title}>CSS Modules</Text>
 </Box>
