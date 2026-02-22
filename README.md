@@ -121,15 +121,16 @@ render(App, { stdout: process.stdout, stdin: process.stdin })
 
 ## Packages
 
-| Package                                             | Description                                | Version |
-| --------------------------------------------------- | ------------------------------------------ | ------- |
-| [@wolfie/core](internal/core/README.md)             | Framework-agnostic TUI core engine         | 2.0.0   |
-| [@wolfie/react](packages/react/README.md)           | React adapter (fork of Ink)                | 0.10.0  |
-| [@wolfie/vue](packages/vue/README.md)               | Vue 3 adapter                              | 0.1.0   |
-| [@wolfie/angular](packages/angular/README.md)       | Angular adapter                            | 0.1.0   |
-| [@wolfie/solid](packages/solid/README.md)           | SolidJS adapter                            | 1.0.0   |
-| [@wolfie/plugin](packages/plugin/README.md)         | Build plugin (Vite/esbuild/webpack/Rollup) | 0.1.0   |
-| [@wolfie/css-parser](internal/css-parser/README.md) | CSS/SCSS/LESS/Stylus parser                | 0.1.0   |
+| Package                                                           | Description                                | Version |
+| ----------------------------------------------------------------- | ------------------------------------------ | ------- |
+| [@wolfie/core](internal/core/README.md)                           | Framework-agnostic TUI core engine         | 2.0.0   |
+| [@wolfie/react](packages/react/README.md)                         | React adapter (fork of Ink)                | 1.1.0   |
+| [@wolfie/vue](packages/vue/README.md)                             | Vue 3 adapter                              | 1.1.0   |
+| [@wolfie/angular](packages/angular/README.md)                     | Angular adapter                            | 1.1.0   |
+| [@wolfie/solid](packages/solid/README.md)                         | SolidJS adapter                            | 1.1.0   |
+| [@wolfie/plugin](packages/plugin/README.md)                       | Build plugin (Vite/esbuild/webpack/Rollup) | 1.1.0   |
+| [@wolfie/typescript-plugin](packages/typescript-plugin/README.md) | TypeScript plugin for CSS module types     | 1.0.1   |
+| [@wolfie/css-parser](internal/css-parser/README.md)               | CSS/SCSS/LESS/Stylus parser                | 0.1.0   |
 
 ## Layout Engine (Taffy)
 
@@ -232,13 +233,13 @@ pnpm dev
 
 ## Status
 
-| Package         | Status          |
-| --------------- | --------------- |
-| @wolfie/react   | Stable (0.10.0) |
-| @wolfie/vue     | Early (0.1.0)   |
-| @wolfie/angular | Early (0.1.0)   |
-| @wolfie/solid   | Early (1.0.0)   |
-| Taffy migration | Complete        |
+| Package         | Status         |
+| --------------- | -------------- |
+| @wolfie/react   | Stable (1.1.0) |
+| @wolfie/vue     | Stable (1.1.0) |
+| @wolfie/angular | Stable (1.1.0) |
+| @wolfie/solid   | Stable (1.1.0) |
+| Taffy migration | Complete       |
 
 ## Contributing
 

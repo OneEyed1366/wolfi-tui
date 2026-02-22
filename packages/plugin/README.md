@@ -28,7 +28,7 @@ import wolfie from '@wolfie/plugin/vite'
 
 export default defineConfig({
 	plugins: [
-		wolfie('react'), // or 'vue', 'angular'
+		wolfie('react'), // or 'vue', 'angular', 'solid'
 	],
 })
 ```
@@ -49,7 +49,7 @@ await esbuild.build({
 		js: generateNativeBanner('cjs'), // Required for native bindings
 	},
 	plugins: [
-		wolfie('react'), // or 'vue', 'angular'
+		wolfie('react'), // or 'vue', 'angular', 'solid'
 	],
 })
 ```
@@ -64,7 +64,7 @@ const wolfie = require('@wolfie/plugin/webpack').default
 
 module.exports = {
 	plugins: [
-		wolfie('react'), // or 'vue', 'angular'
+		wolfie('react'), // or 'vue', 'angular', 'solid'
 	],
 }
 ```
@@ -77,7 +77,7 @@ import wolfie from '@wolfie/plugin/rollup'
 
 export default {
 	plugins: [
-		wolfie('react'), // or 'vue', 'angular'
+		wolfie('react'), // or 'vue', 'angular', 'solid'
 	],
 }
 ```
@@ -333,11 +333,11 @@ All extensions support the `.module.` prefix for CSS Modules.
 
 ## Framework Differences
 
-| Feature       | React     | Vue        | Angular    |
-| ------------- | --------- | ---------- | ---------- |
-| Class names   | camelCase | kebab-case | kebab-case |
-| Import syntax | ESM       | ESM        | ESM        |
-| SFC styles    | —         | Supported  | Inline     |
+| Feature       | React     | Vue        | Angular    | Solid     |
+| ------------- | --------- | ---------- | ---------- | --------- |
+| Class names   | camelCase | kebab-case | kebab-case | camelCase |
+| Import syntax | ESM       | ESM        | ESM        | ESM       |
+| SFC styles    | —         | Supported  | Inline     | —         |
 
 ---
 

@@ -88,14 +88,16 @@ instance.unmount()
 
 #### Options
 
-| Option      | Type                 | Default          | Description             |
-| ----------- | -------------------- | ---------------- | ----------------------- |
-| `stdout`    | `NodeJS.WriteStream` | `process.stdout` | Output stream           |
-| `stdin`     | `NodeJS.ReadStream`  | `process.stdin`  | Input stream            |
-| `stderr`    | `NodeJS.WriteStream` | `process.stderr` | Error stream            |
-| `maxFps`    | `number`             | `30`             | Maximum render FPS      |
-| `debug`     | `boolean`            | `false`          | Disable throttling      |
-| `providers` | `Provider[]`         | `[]`             | Additional DI providers |
+| Option                  | Type                 | Default          | Description               |
+| ----------------------- | -------------------- | ---------------- | ------------------------- |
+| `stdout`                | `NodeJS.WriteStream` | `process.stdout` | Output stream             |
+| `stdin`                 | `NodeJS.ReadStream`  | `process.stdin`  | Input stream              |
+| `stderr`                | `NodeJS.WriteStream` | `process.stderr` | Error stream              |
+| `maxFps`                | `number`             | `30`             | Maximum render FPS        |
+| `debug`                 | `boolean`            | `false`          | Disable throttling        |
+| `exitOnCtrlC`           | `boolean`            | `true`           | Exit app on Ctrl+C        |
+| `isScreenReaderEnabled` | `boolean`            | `false`          | Enable screen reader mode |
+| `providers`             | `Provider[]`         | `[]`             | Additional DI providers   |
 
 ---
 
@@ -305,7 +307,7 @@ export class MyComponent {
 #### `<w-select>` / `<w-select-option>`
 
 ```html
-<w-select (change)="handleChange($event)">
+<w-select (selectChange)="handleChange($event)">
 	<w-select-option value="a" label="Option A"></w-select-option>
 	<w-select-option value="b" label="Option B"></w-select-option>
 </w-select>
@@ -314,7 +316,7 @@ export class MyComponent {
 #### `<w-multi-select>` / `<w-multi-select-option>`
 
 ```html
-<w-multi-select (change)="handleChange($event)">
+<w-multi-select (selectionChange)="handleChange($event)">
 	<w-multi-select-option value="a" label="Option A"></w-multi-select-option>
 	<w-multi-select-option value="b" label="Option B"></w-multi-select-option>
 </w-multi-select>
@@ -363,6 +365,10 @@ export class MyComponent {
 | `downArrow`  | `boolean` | Down arrow pressed  |
 | `leftArrow`  | `boolean` | Left arrow pressed  |
 | `rightArrow` | `boolean` | Right arrow pressed |
+| `pageUp`     | `boolean` | Page Up pressed     |
+| `pageDown`   | `boolean` | Page Down pressed   |
+| `home`       | `boolean` | Home pressed        |
+| `end`        | `boolean` | End pressed         |
 | `return`     | `boolean` | Enter pressed       |
 | `escape`     | `boolean` | Escape pressed      |
 | `ctrl`       | `boolean` | Ctrl held           |

@@ -299,8 +299,12 @@ Transforms child text.
 #### `<ProgressBar>`
 
 ```vue
-<ProgressBar :value="0.5" />
+<ProgressBar :value="50" />
 ```
+
+| Prop    | Type     | Description      |
+| ------- | -------- | ---------------- |
+| `value` | `number` | Progress (0-100) |
 
 #### `<StatusMessage>`
 
@@ -312,21 +316,25 @@ Transforms child text.
 
 ### List Components
 
-#### `<OrderedList>`
+#### `<OrderedList>` / `<OrderedListItem>`
+
+Numbered lists.
 
 ```vue
 <OrderedList>
-  <li>First item</li>
-  <li>Second item</li>
+  <OrderedListItem>First item</OrderedListItem>
+  <OrderedListItem>Second item</OrderedListItem>
 </OrderedList>
 ```
 
-#### `<UnorderedList>`
+#### `<UnorderedList>` / `<UnorderedListItem>`
+
+Bullet lists.
 
 ```vue
 <UnorderedList>
-  <li>Item one</li>
-  <li>Item two</li>
+  <UnorderedListItem>Item one</UnorderedListItem>
+  <UnorderedListItem>Item two</UnorderedListItem>
 </UnorderedList>
 ```
 
@@ -377,23 +385,64 @@ const value = ref('')
 <ConfirmInput @confirm="handleYes" @cancel="handleNo" />
 ```
 
-#### `<Select>` / `<SelectOption>`
+#### `<Select>`
+
+Single selection from a list of options.
 
 ```vue
-<Select @change="handleChange">
-  <SelectOption value="a" label="Option A" />
-  <SelectOption value="b" label="Option B" />
-</Select>
+<script setup>
+const options = [
+	{ label: 'Option A', value: 'a' },
+	{ label: 'Option B', value: 'b' },
+]
+</script>
+
+<template>
+	<Select :options="options" :onChange="handleChange" />
+</template>
 ```
 
-#### `<MultiSelect>` / `<MultiSelectOption>`
+| Prop                 | Type                      | Default | Description                  |
+| -------------------- | ------------------------- | ------- | ---------------------------- |
+| `options`            | `Option[]`                |         | Array of `{ label, value }`  |
+| `onChange`           | `(value: string) => void` |         | Selection change handler     |
+| `value`              | `string`                  |         | Controlled value             |
+| `defaultValue`       | `string`                  |         | Default value (uncontrolled) |
+| `visibleOptionCount` | `number`                  | `5`     | Number of visible options    |
+| `highlightText`      | `string`                  |         | Highlight text in labels     |
+| `isDisabled`         | `boolean`                 | `false` | Disable user input           |
+
+#### `<MultiSelect>`
+
+Multiple selection from a list of options.
 
 ```vue
-<MultiSelect @change="handleChange">
-  <MultiSelectOption value="a" label="Option A" />
-  <MultiSelectOption value="b" label="Option B" />
-</MultiSelect>
+<script setup>
+const options = [
+	{ label: 'Option A', value: 'a' },
+	{ label: 'Option B', value: 'b' },
+]
+</script>
+
+<template>
+	<MultiSelect
+		:options="options"
+		:onChange="handleChange"
+		:onSubmit="handleSubmit"
+	/>
+</template>
 ```
+
+| Prop                 | Type                        | Default | Description                  |
+| -------------------- | --------------------------- | ------- | ---------------------------- |
+| `options`            | `Option[]`                  |         | Array of `{ label, value }`  |
+| `onChange`           | `(value: string[]) => void` |         | Selection change handler     |
+| `onSubmit`           | `(value: string[]) => void` |         | Submit handler (Enter)       |
+| `value`              | `string[]`                  |         | Controlled value             |
+| `defaultValue`       | `string[]`                  |         | Default value (uncontrolled) |
+| `visibleOptionCount` | `number`                    | `5`     | Number of visible options    |
+| `highlightText`      | `string`                    |         | Highlight text in labels     |
+| `isDisabled`         | `boolean`                   | `false` | Disable user input           |
 
 #### `<ErrorOverview>`
 

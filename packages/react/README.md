@@ -235,14 +235,12 @@ Loading spinner.
 Progress indicator.
 
 ```tsx
-<ProgressBar value={0.5} />
+<ProgressBar value={50} />
 ```
 
-| Prop    | Type     | Description    |
-| ------- | -------- | -------------- |
-| `value` | `number` | Progress (0-1) |
-| `left`  | `number` | Left position  |
-| `right` | `number` | Right position |
+| Prop    | Type     | Description      |
+| ------- | -------- | ---------------- |
+| `value` | `number` | Progress (0-100) |
 
 #### `<StatusMessage>`
 
@@ -345,29 +343,54 @@ Yes/No confirmation.
 />
 ```
 
-#### `<Select>` / `<SelectOption>`
+#### `<Select>`
 
-Single selection dropdown.
-
-```tsx
-<Select onChange={handleChange}>
-	<SelectOption value="a" label="Option A" />
-	<SelectOption value="b" label="Option B" />
-	<SelectOption value="c" label="Option C" />
-</Select>
-```
-
-#### `<MultiSelect>` / `<MultiSelectOption>`
-
-Multiple selection.
+Single selection from a list of options.
 
 ```tsx
-<MultiSelect onChange={handleChange}>
-	<MultiSelectOption value="a" label="Option A" />
-	<MultiSelectOption value="b" label="Option B" />
-	<MultiSelectOption value="c" label="Option C" />
-</MultiSelect>
+const options = [
+	{ label: 'Option A', value: 'a' },
+	{ label: 'Option B', value: 'b' },
+	{ label: 'Option C', value: 'c' },
+]
+
+<Select options={options} onChange={handleChange} />
 ```
+
+| Prop                 | Type                      | Default | Description                  |
+| -------------------- | ------------------------- | ------- | ---------------------------- |
+| `options`            | `Option[]`                |         | Array of `{ label, value }`  |
+| `onChange`           | `(value: string) => void` |         | Selection change handler     |
+| `value`              | `string`                  |         | Controlled value             |
+| `defaultValue`       | `string`                  |         | Default value (uncontrolled) |
+| `visibleOptionCount` | `number`                  | `5`     | Number of visible options    |
+| `highlightText`      | `string`                  |         | Highlight text in labels     |
+| `isDisabled`         | `boolean`                 | `false` | Disable user input           |
+
+#### `<MultiSelect>`
+
+Multiple selection from a list of options.
+
+```tsx
+const options = [
+	{ label: 'Option A', value: 'a' },
+	{ label: 'Option B', value: 'b' },
+	{ label: 'Option C', value: 'c' },
+]
+
+<MultiSelect options={options} onChange={handleChange} onSubmit={handleSubmit} />
+```
+
+| Prop                 | Type                        | Default | Description                  |
+| -------------------- | --------------------------- | ------- | ---------------------------- |
+| `options`            | `Option[]`                  |         | Array of `{ label, value }`  |
+| `onChange`           | `(value: string[]) => void` |         | Selection change handler     |
+| `onSubmit`           | `(value: string[]) => void` |         | Submit handler (Enter)       |
+| `value`              | `string[]`                  |         | Controlled value             |
+| `defaultValue`       | `string[]`                  |         | Default value (uncontrolled) |
+| `visibleOptionCount` | `number`                    | `5`     | Number of visible options    |
+| `highlightText`      | `string`                    |         | Highlight text in labels     |
+| `isDisabled`         | `boolean`                   | `false` | Disable user input           |
 
 ---
 
