@@ -1,0 +1,17 @@
+{
+	"extends": "../../../../tsconfig.base.json",
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "dist",
+		"jsx": "preserve",
+		"jsxImportSource": "solid-js",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"plugins": [
+			{
+				"name": "@wolfie/typescript-plugin"
+			}
+		]
+	},
+	"include": ["src/**/*"]
+}
