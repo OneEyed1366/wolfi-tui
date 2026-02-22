@@ -7,7 +7,6 @@ import { Controls } from '../components/Controls'
 import { useGameLoop } from '../hooks/useGameLoop'
 import type { State, Screen } from '../hooks/useInvaders'
 import { ALIEN_SHOOT_INTERVAL } from '../constants'
-import { debugLog } from '../debug'
 import { BRAND } from '../theme'
 
 //#region Types
@@ -99,7 +98,6 @@ export function Game({
 			} else if (key.rightArrow) {
 				onMovePlayer(1)
 			} else if (input === ' ') {
-				debugLog('Input: SPACE pressed')
 				onShoot()
 			}
 		},

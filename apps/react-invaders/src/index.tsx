@@ -1,7 +1,6 @@
 import { render } from '@wolfie/react'
 import { App } from './App'
 import './styles/tailwind.css'
-import { debugLog } from './debug'
 
 export { App } from './App'
 
@@ -14,11 +13,6 @@ if (process.env['WOLFIE_VERIFY'] !== '1') {
 
 		// Input options
 		exitOnCtrlC: true,
-
-		// Debug callback
-		onRender: (metrics) => {
-			debugLog(`Render: ${metrics.renderTime}ms`)
-		},
 	})
 }
 //#endregion Render Configuration

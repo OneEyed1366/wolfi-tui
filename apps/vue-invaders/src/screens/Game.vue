@@ -8,7 +8,6 @@ import Controls from '../components/Controls.vue'
 import { useGameLoop } from '../composables/useGameLoop'
 import type { State, Screen } from '../composables/useInvaders'
 import { ALIEN_SHOOT_INTERVAL } from '../constants'
-import { debugLog } from '../debug'
 import { BRAND } from '../theme'
 
 //#region Props
@@ -126,7 +125,6 @@ useInput(
 		} else if (key.rightArrow) {
 			props.onMovePlayer(1)
 		} else if (input === ' ') {
-			debugLog('Input: SPACE pressed')
 			props.onShoot()
 		}
 	},

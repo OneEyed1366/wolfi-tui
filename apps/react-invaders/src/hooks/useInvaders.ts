@@ -1,5 +1,4 @@
 import { useReducer, useCallback, useEffect } from 'react'
-import { debugTime } from '../debug'
 import {
 	INITIAL_ALIEN_MOVE_INTERVAL,
 	MIN_ALIEN_MOVE_INTERVAL,
@@ -326,9 +325,8 @@ function reducerImpl(state: State, action: Action): State {
 	}
 }
 
-// Wrapper that times each action
 function reducer(state: State, action: Action): State {
-	return debugTime(`Action:${action.type}`, () => reducerImpl(state, action))
+	return reducerImpl(state, action)
 }
 //#endregion Reducer
 
