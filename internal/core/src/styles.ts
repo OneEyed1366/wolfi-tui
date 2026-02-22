@@ -2,6 +2,7 @@ import { type Boxes, type BoxStyle } from 'cli-boxes'
 import { type LiteralUnion } from 'type-fest'
 import { type ForegroundColorName } from 'ansi-styles' // Note: We import directly from `ansi-styles` to avoid a bug in TypeScript.
 import type { LayoutStyle, LayoutTree, Dimension, Edges } from './layout-types'
+import { logger } from './logger'
 
 export type IStyles = {
 	/**
@@ -639,7 +640,18 @@ export const applyLayoutStyle = (
 	nodeId: number,
 	style: IStyles = {}
 ): void => {
-	layoutTree.setStyle(nodeId, toLayoutStyle(style))
+	const taffyStyle = toLayoutStyle(style)
+	if (logger.enabled) {
+		logger.log({
+			ts: performance.now(),
+			cat: 'style',
+			op: 'applyStyle',
+			nodeId,
+			inputStyle: style,
+			taffyStyle,
+		})
+	}
+	layoutTree.setStyle(nodeId, taffyStyle)
 }
 
 /**

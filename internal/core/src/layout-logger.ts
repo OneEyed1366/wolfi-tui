@@ -64,14 +64,12 @@ export class LoggedLayoutTree implements LayoutTree {
 
 	setStyle(node: number, style: LayoutStyle): void {
 		if (this.log.enabled) {
-			// WHY: log only key names, not values — values are large layout style objects
-			// that would bloat the log with redundant data not needed for adapter debugging
 			this.log.log({
 				ts: performance.now(),
 				cat: 'layout',
 				op: 'setStyle',
 				nodeId: node,
-				keys: Object.keys(style),
+				style,
 			})
 		}
 		this.inner.setStyle(node, style)

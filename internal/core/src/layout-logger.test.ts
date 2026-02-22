@@ -75,7 +75,7 @@ describe('LoggedLayoutTree', () => {
 		expect(typeof evt.durationMs).toBe('number')
 	})
 
-	it('logs setStyle with keys array not values', () => {
+	it('logs setStyle with full style object', () => {
 		const inner = makeInnerStub()
 		const events: unknown[] = []
 		const spyLogger = {
@@ -84,14 +84,14 @@ describe('LoggedLayoutTree', () => {
 			flush: () => {},
 		}
 		const tree = new LoggedLayoutTree(inner, spyLogger)
-		tree.setStyle(3, {
+		const inputStyle = {
 			flexDirection: 'column',
 			width: { value: 80, unit: 'px' },
-		} as LayoutStyle)
-		const evt = events[0] as { keys: string[] }
-		// WHY: log only keys, not values — values can be large style objects that bloat the log
-		expect(evt.keys).toEqual(expect.arrayContaining(['flexDirection', 'width']))
-		expect((evt as { value?: unknown }).value).toBeUndefined()
+		} as LayoutStyle
+		tree.setStyle(3, inputStyle)
+		const evt = events[0] as { style: LayoutStyle; nodeId: number }
+		expect(evt.nodeId).toBe(3)
+		expect(evt.style).toEqual(inputStyle)
 	})
 
 	it('does not log when logger is disabled', () => {
