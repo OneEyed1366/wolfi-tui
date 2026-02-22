@@ -17,7 +17,10 @@ export type SelectTheme = IComponentTheme & {
 		option: (props: { isFocused: boolean }) => Partial<BoxProps>
 		selectedIndicator: () => Partial<TextProps>
 		focusIndicator: () => Partial<TextProps>
-		label: (props: { isFocused: boolean; isSelected: boolean }) => Partial<TextProps>
+		label: (props: {
+			isFocused: boolean
+			isSelected: boolean
+		}) => Partial<TextProps>
 		highlightedText: () => Partial<TextProps>
 	}
 }

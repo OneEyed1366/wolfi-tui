@@ -79,12 +79,16 @@ export function Select(props: ISelectProps): JSX.Element {
 		<Box {...styles.container()}>
 			<For each={state.visibleOptions()}>
 				{(option) => {
-					const isFocused = !local.isDisabled && state.focusedValue() === option.value
+					const isFocused =
+						!local.isDisabled && state.focusedValue() === option.value
 					const isSelected = state.value() === option.value
 
 					let label: JSX.Element = <>{option.label}</>
 
-					if (local.highlightText && option.label.includes(local.highlightText)) {
+					if (
+						local.highlightText &&
+						option.label.includes(local.highlightText)
+					) {
 						const idx = option.label.indexOf(local.highlightText)
 						label = (
 							<>

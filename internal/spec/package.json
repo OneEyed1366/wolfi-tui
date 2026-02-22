@@ -9,6 +9,7 @@
 	"dependencies": {
 		"@wolfie/core": "workspace:*",
 		"@wolfie/shared": "workspace:*",
+		"chalk": "^5.0.0",
 		"sinon": "^21.0.1"
 	},
 	"devDependencies": {

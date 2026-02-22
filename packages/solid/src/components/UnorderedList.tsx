@@ -21,7 +21,9 @@ const defaultMarkers = [figures.bullet, figures.line, figures.pointer]
 //#region Context
 // WHY: local contexts — no need to export to symbols.ts, scoped to this component tree
 const UnorderedListCtx = createContext<{ depth: number }>({ depth: 0 })
-const UnorderedListItemCtx = createContext<{ marker: string }>({ marker: defaultMarker })
+const UnorderedListItemCtx = createContext<{ marker: string }>({
+	marker: defaultMarker,
+})
 //#endregion Context
 
 //#region UnorderedListItem Component
@@ -44,15 +46,12 @@ function UnorderedListBase(props: IUnorderedListProps): JSX.Element {
 	const listCtx = useContext(UnorderedListCtx)
 	const depth = listCtx.depth
 
-	const marker =
-		defaultMarkers[depth % defaultMarkers.length] ?? figures.bullet
+	const marker = defaultMarkers[depth % defaultMarkers.length] ?? figures.bullet
 
 	return (
 		<UnorderedListCtx.Provider value={{ depth: depth + 1 }}>
 			<UnorderedListItemCtx.Provider value={{ marker }}>
-				<Box style={{ flexDirection: 'column' }}>
-					{props.children}
-				</Box>
+				<Box style={{ flexDirection: 'column' }}>{props.children}</Box>
 			</UnorderedListItemCtx.Provider>
 		</UnorderedListCtx.Provider>
 	)

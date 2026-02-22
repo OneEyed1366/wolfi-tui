@@ -59,7 +59,7 @@ export function ConfirmInput(props: IConfirmInputProps): JSX.Element {
 				}
 			}
 		},
-		{ isActive },
+		{ isActive }
 	)
 
 	const theme = useComponentTheme<ConfirmInputTheme>('ConfirmInput')

@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import chalk, { supportsColor } from 'chalk'
 import type { Styles } from '@wolfie/core'
 import type { ClassNameValue } from '@wolfie/shared'
 
@@ -22,6 +23,15 @@ const stripAnsi = (str: string) => str.replace(/\x1b\[[0-9;]*m/g, '')
 const hasAnsi = (str: string) => str.includes(ESC + '[')
 
 export function describeTextContract(renderText: TextTestRenderer) {
+	// Force chalk to output ANSI codes even in non-TTY test environments.
+	// Text rendering assertions check for actual ANSI escape sequences.
+	beforeAll(() => {
+		chalk.level = 3
+	})
+	afterAll(() => {
+		chalk.level = supportsColor ? supportsColor.level : 0
+	})
+
 	describe('Text contract: content preservation', () => {
 		it('renders text content', () => {
 			const { output } = renderText({ children: 'hello world' })

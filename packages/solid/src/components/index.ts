@@ -39,7 +39,10 @@ export { ProgressBar } from './ProgressBar'
 export type { IProgressBarProps } from './ProgressBar'
 
 export { UnorderedList, UnorderedListItem } from './UnorderedList'
-export type { IUnorderedListProps, IUnorderedListItemProps } from './UnorderedList'
+export type {
+	IUnorderedListProps,
+	IUnorderedListItemProps,
+} from './UnorderedList'
 
 export { OrderedList, OrderedListItem } from './OrderedList'
 export type { IOrderedListProps, IOrderedListItemProps } from './OrderedList'

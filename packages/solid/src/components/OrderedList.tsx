@@ -43,9 +43,7 @@ function OrderedListBase(props: IOrderedListProps): JSX.Element {
 
 	return (
 		<OrderedListCtx.Provider value={{ getNextIndex }}>
-			<Box style={{ flexDirection: 'column' }}>
-				{props.children}
-			</Box>
+			<Box style={{ flexDirection: 'column' }}>{props.children}</Box>
 		</OrderedListCtx.Provider>
 	)
 }

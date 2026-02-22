@@ -578,7 +578,10 @@ export { useStdout } from './composables/use-stdout'
 export { useStderr } from './composables/use-stderr'
 export { useIsScreenReaderEnabled } from './composables/use-is-screen-reader-enabled'
 export { useSpinner } from './composables/use-spinner'
-export type { UseSpinnerProps, UseSpinnerResult } from './composables/use-spinner'
+export type {
+	UseSpinnerProps,
+	UseSpinnerResult,
+} from './composables/use-spinner'
 export { useTextInputState } from './composables/use-text-input-state'
 export type {
 	UseTextInputStateProps,

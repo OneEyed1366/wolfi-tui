@@ -6,7 +6,9 @@ export type UseSpinnerProps = { type?: SpinnerName }
 export type UseSpinnerResult = { frame: () => string }
 //#endregion Types
 
-export const useSpinner = ({ type = 'dots' }: UseSpinnerProps = {}): UseSpinnerResult => {
+export const useSpinner = ({
+	type = 'dots',
+}: UseSpinnerProps = {}): UseSpinnerResult => {
 	const spinner = spinners[type]
 	const [frameIndex, setFrameIndex] = createSignal(0)
 

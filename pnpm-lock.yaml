@@ -491,6 +491,9 @@ importers:
       '@wolfie/shared':
         specifier: workspace:*
         version: link:../shared
+      chalk:
+        specifier: ^5.0.0
+        version: 5.6.2
       sinon:
         specifier: ^21.0.1
         version: 21.0.1
@@ -1024,6 +1027,9 @@ importers:
       '@wolfie/plugin':
         specifier: workspace:*
         version: link:../plugin
+      '@wolfie/spec':
+        specifier: workspace:*
+        version: link:../../internal/spec
       memfs:
         specifier: ^4.56.10
         version: 4.56.10(tslib@2.8.1)

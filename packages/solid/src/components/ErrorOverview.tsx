@@ -42,7 +42,9 @@ export function ErrorOverview(props: IErrorOverviewProps): JSX.Element {
 
 	const filePath = () => cleanupPath(origin()?.file)
 
-	const excerptData = (): { excerpt: CodeExcerpt[]; lineWidth: number } | undefined => {
+	const excerptData = ():
+		| { excerpt: CodeExcerpt[]; lineWidth: number }
+		| undefined => {
 		const fp = filePath()
 		const orig = origin()
 		if (fp && orig?.line && fs.existsSync(fp)) {
@@ -62,9 +64,7 @@ export function ErrorOverview(props: IErrorOverviewProps): JSX.Element {
 	return (
 		<Box style={{ flexDirection: 'column', padding: 1 }}>
 			<Box>
-				<Text style={{ backgroundColor: 'red', color: 'white' }}>
-					{' '}ERROR{' '}
-				</Text>
+				<Text style={{ backgroundColor: 'red', color: 'white' }}> ERROR </Text>
 				<Text> {props.error.message}</Text>
 			</Box>
 
@@ -99,7 +99,8 @@ export function ErrorOverview(props: IErrorOverviewProps): JSX.Element {
 								</Box>
 								<Text
 									style={{
-										backgroundColor: line === origin()!.line ? 'red' : undefined,
+										backgroundColor:
+											line === origin()!.line ? 'red' : undefined,
 										color: line === origin()!.line ? 'white' : undefined,
 									}}
 								>
@@ -114,13 +115,16 @@ export function ErrorOverview(props: IErrorOverviewProps): JSX.Element {
 			<Show when={props.error.stack}>
 				<Box style={{ marginTop: 1, flexDirection: 'column' }}>
 					<For
-						each={props.error.stack!.split('\n').slice(1).map((line, index) => ({
-							line,
-							index,
-							parsed: stackUtils.parseLine(line),
-						}))}
+						each={props.error
+							.stack!.split('\n')
+							.slice(1)
+							.map((line, index) => ({
+								line,
+								index,
+								parsed: stackUtils.parseLine(line),
+							}))}
 					>
-						{({ line, index, parsed }) => (
+						{({ line, index: _index, parsed }) => (
 							<Show
 								when={parsed}
 								fallback={

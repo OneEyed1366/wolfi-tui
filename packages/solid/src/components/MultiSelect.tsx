@@ -85,7 +85,9 @@ export function MultiSelect(props: IMultiSelectProps): JSX.Element {
 			<For each={state.visibleOptions()}>
 				{(option) => (
 					<MultiSelectOption
-						isFocused={!local.isDisabled && state.focusedValue() === option.value}
+						isFocused={
+							!local.isDisabled && state.focusedValue() === option.value
+						}
 						isSelected={state.value().includes(option.value)}
 					>
 						{option.label}
