@@ -8,6 +8,7 @@ export type LogCategory =
 	| 'measure'
 	| 'angular'
 	| 'vue'
+	| 'solid'
 	| 'style'
 	| 'input'
 

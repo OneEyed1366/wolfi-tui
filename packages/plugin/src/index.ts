@@ -17,7 +17,7 @@ import {
 
 //#region Types
 
-export type Framework = 'react' | 'vue' | 'angular'
+export type Framework = 'react' | 'vue' | 'angular' | 'solid'
 
 /**
  * Wolfie plugin options.

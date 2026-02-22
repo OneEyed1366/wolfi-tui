@@ -260,7 +260,9 @@ function generateCode(
 				? '@wolfie/vue'
 				: options.framework === 'angular'
 					? '@wolfie/angular'
-					: '@wolfie/react/styles'
+					: options.framework === 'solid'
+						? '@wolfie/solid'
+						: '@wolfie/react/styles'
 		lines.push(
 			`import { registerStyles, registerTailwindMetadata } from '${pkg}'`
 		)
