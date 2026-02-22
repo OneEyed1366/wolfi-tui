@@ -1,3 +1,4 @@
+import { logger } from './logger'
 import { type LayoutTree } from './layout-types'
 import { type IStyles } from './styles'
 import { type IOutputTransformer } from './render-node-to-output'
@@ -119,6 +120,13 @@ export const createNode = (
 
 	// Note: Text measurement for Taffy handled via setTextDimensions() called from renderer
 
+	logger.log({
+		ts: performance.now(),
+		cat: 'dom',
+		op: 'createNode',
+		name: nodeName,
+		nodeId: node.layoutNodeId,
+	})
 	return node
 }
 
@@ -135,6 +143,16 @@ export const appendChildNode = (
 	}
 
 	childNode.parentNode = node
+	// WHY: log after parentNode is set so the event reflects the final state
+	logger.log({
+		ts: performance.now(),
+		cat: 'dom',
+		op: 'appendChild',
+		parentName: node.nodeName,
+		parentId: node.layoutNodeId,
+		childName: childNode.nodeName,
+		childId: (childNode as { layoutNodeId?: number }).layoutNodeId,
+	})
 	node.childNodes.push(childNode)
 
 	// Propagate layoutTree to child if it doesn't have one
@@ -177,6 +195,15 @@ export const insertBeforeNode = (
 	}
 
 	newChildNode.parentNode = node
+	logger.log({
+		ts: performance.now(),
+		cat: 'dom',
+		op: 'insertBefore',
+		parentName: node.nodeName,
+		parentId: node.layoutNodeId,
+		childName: newChildNode.nodeName,
+		childId: (newChildNode as { layoutNodeId?: number }).layoutNodeId,
+	})
 
 	// Propagate layoutTree to child if it doesn't have one
 	if (!newChildNode.layoutTree && effectiveLayoutTree) {
@@ -255,6 +282,16 @@ export const removeChildNode = (
 		)
 	}
 
+	// WHY: log before clearing parentNode so we can still read parent info
+	logger.log({
+		ts: performance.now(),
+		cat: 'dom',
+		op: 'removeChild',
+		parentName: node.nodeName,
+		parentId: node.layoutNodeId,
+		childName: removeNode.nodeName,
+		childId: (removeNode as { layoutNodeId?: number }).layoutNodeId,
+	})
 	removeNode.parentNode = undefined
 
 	const index = node.childNodes.indexOf(removeNode)
@@ -298,6 +335,13 @@ export const createTextNode = (text: string): TextNode => {
 
 	setTextNodeValue(node, text)
 
+	// WHY: slice to 80 chars — text nodes can contain long strings that bloat the log
+	logger.log({
+		ts: performance.now(),
+		cat: 'dom',
+		op: 'createText',
+		preview: text.slice(0, 80),
+	})
 	return node
 }
 
@@ -317,6 +361,16 @@ export const markNodeAsDirty = (
 		const layoutNodeId = findClosestLayoutNodeId(node)
 		if (layoutNodeId !== undefined) {
 			layoutTree.markDirty(layoutNodeId)
+			// WHY: guard with logger.enabled — markNodeAsDirty is called from every text change
+			// and every appendChild to text nodes; it's one of the hottest paths in the renderer
+			if (logger.enabled) {
+				logger.log({
+					ts: performance.now(),
+					cat: 'dom',
+					op: 'markDirty',
+					nodeId: layoutNodeId,
+				})
+			}
 		}
 	}
 }
@@ -331,6 +385,15 @@ export const setTextNodeValue = (
 	}
 
 	node.nodeValue = text
+	if (logger.enabled) {
+		// WHY: guard — called on every keystroke and game tick text update
+		logger.log({
+			ts: performance.now(),
+			cat: 'dom',
+			op: 'setTextValue',
+			len: text.length,
+		})
+	}
 	markNodeAsDirty(node, layoutTree ?? node.layoutTree)
 }
 
