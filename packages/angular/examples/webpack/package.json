@@ -1,0 +1,30 @@
+{
+	"name": "@examples/angular-webpack",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "webpack",
+		"start": "node dist/index.cjs",
+		"example": "webpack && node dist/index.cjs"
+	},
+	"dependencies": {
+		"@wolfie/angular": "workspace:*",
+		"@angular/compiler": "^19.0.0",
+		"zone.js": "^0.16.0"
+	},
+	"devDependencies": {
+		"@angular/common": "^19.0.0",
+		"@angular/core": "^19.0.0",
+		"@wolfie/plugin": "workspace:*",
+		"@wolfie/typescript-plugin": "workspace:*",
+		"less": "^4.2.0",
+		"rxjs": "^7.8.0",
+		"sass": "^1.70.0",
+		"stylus": "^0.62.0",
+		"ts-loader": "^9.5.1",
+		"typescript": "^5.4.5",
+		"webpack": "^5.91.0",
+		"webpack-cli": "^5.1.4"
+	}
+}

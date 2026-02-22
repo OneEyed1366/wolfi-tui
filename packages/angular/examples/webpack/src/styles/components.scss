@@ -1,0 +1,23 @@
+$primary: magenta;
+
+.card {
+	border-style: single;
+	padding: 1;
+	border-color: $primary;
+
+	&-title {
+		color: $primary;
+		font-weight: bold;
+	}
+}
+
+.btn {
+	padding-x: 2;
+	padding-y: 1;
+	border-style: single;
+	border-color: $primary;
+
+	&.primary {
+		border-color: $primary;
+	}
+}
