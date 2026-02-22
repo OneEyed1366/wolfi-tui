@@ -10,6 +10,7 @@ import {
 	applyLayoutStyle,
 	isElement,
 	isText,
+	logger,
 	type DOMElement,
 	type DOMNode,
 	type TextNode,
@@ -71,10 +72,26 @@ export function createNodeOps(config: NodeOpsConfig): RendererOptions<DOMNode> {
 	return {
 		createElement(tag: string): DOMNode {
 			const wolfieTag = tag.startsWith('wolfie-') ? tag : `wolfie-${tag}`
+			if (logger.enabled) {
+				logger.log({
+					ts: performance.now(),
+					cat: 'solid',
+					op: 'createElement',
+					name: wolfieTag,
+				})
+			}
 			return createNode(wolfieTag as ElementNames)
 		},
 
 		createTextNode(value: string): DOMNode {
+			if (logger.enabled) {
+				logger.log({
+					ts: performance.now(),
+					cat: 'solid',
+					op: 'createTextNode',
+					value,
+				})
+			}
 			return createTextNode(value)
 		},
 
@@ -96,6 +113,15 @@ export function createNodeOps(config: NodeOpsConfig): RendererOptions<DOMNode> {
 			const layoutTree = config.getLayoutTree()
 
 			if (name === 'style') {
+				if (logger.enabled) {
+					logger.log({
+						ts: performance.now(),
+						cat: 'solid',
+						op: 'setProperty',
+						name: 'style',
+						nodeName: el.nodeName,
+					})
+				}
 				const styles = value as Styles
 				setStyle(el, styles)
 				if (el.layoutNodeId !== undefined) {
@@ -120,6 +146,15 @@ export function createNodeOps(config: NodeOpsConfig): RendererOptions<DOMNode> {
 		},
 
 		insertNode(parent: DOMNode, node: DOMNode, anchor?: DOMNode): void {
+			if (logger.enabled) {
+				logger.log({
+					ts: performance.now(),
+					cat: 'solid',
+					op: 'insertNode',
+					parentName: parent.nodeName,
+					childName: node.nodeName,
+				})
+			}
 			const layoutTree = config.getLayoutTree()
 
 			if (isElement(node)) {
@@ -149,6 +184,15 @@ export function createNodeOps(config: NodeOpsConfig): RendererOptions<DOMNode> {
 		},
 
 		removeNode(parent: DOMNode, node: DOMNode): void {
+			if (logger.enabled) {
+				logger.log({
+					ts: performance.now(),
+					cat: 'solid',
+					op: 'removeNode',
+					parentName: parent.nodeName,
+					childName: node.nodeName,
+				})
+			}
 			const layoutTree = config.getLayoutTree()
 			removeChildNode(parent as DOMElement, node, layoutTree)
 			config.getScheduleRender()?.()
