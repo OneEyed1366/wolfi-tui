@@ -576,6 +576,53 @@ export { useFocusManager } from './composables/use-focus-manager'
 export { useStdin } from './composables/use-stdin'
 export { useStdout } from './composables/use-stdout'
 export { useStderr } from './composables/use-stderr'
+export { useIsScreenReaderEnabled } from './composables/use-is-screen-reader-enabled'
+export { useSpinner } from './composables/use-spinner'
+export type { UseSpinnerProps, UseSpinnerResult } from './composables/use-spinner'
+export { useTextInputState } from './composables/use-text-input-state'
+export type {
+	UseTextInputStateProps,
+	TextInputState,
+} from './composables/use-text-input-state'
+export { useTextInput } from './composables/use-text-input'
+export type {
+	UseTextInputProps,
+	UseTextInputResult,
+} from './composables/use-text-input'
+export { usePasswordInputState } from './composables/use-password-input-state'
+export type {
+	UsePasswordInputStateProps,
+	PasswordInputState,
+} from './composables/use-password-input-state'
+export { usePasswordInput } from './composables/use-password-input'
+export type {
+	UsePasswordInputProps,
+	UsePasswordInputResult,
+} from './composables/use-password-input'
+export { useEmailInputState } from './composables/use-email-input-state'
+export type {
+	UseEmailInputStateProps,
+	EmailInputState,
+} from './composables/use-email-input-state'
+export { useEmailInput } from './composables/use-email-input'
+export type {
+	UseEmailInputProps,
+	UseEmailInputResult,
+} from './composables/use-email-input'
+export { useSelectState } from './composables/use-select-state'
+export type {
+	UseSelectStateProps,
+	SelectState,
+} from './composables/use-select-state'
+export { useSelect } from './composables/use-select'
+export type { UseSelectProps } from './composables/use-select'
+export { useMultiSelectState } from './composables/use-multi-select-state'
+export type {
+	UseMultiSelectStateProps,
+	MultiSelectState,
+} from './composables/use-multi-select-state'
+export { useMultiSelect } from './composables/use-multi-select'
+export type { UseMultiSelectProps } from './composables/use-multi-select'
 //#endregion Composable Exports
 
 //#region Solid Re-exports
