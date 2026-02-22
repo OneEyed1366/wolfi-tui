@@ -1,3 +1,5 @@
+import { logger } from '@wolfie/core'
+
 type SchedulerOptions = {
 	/** Bypass async batching — call renderFn synchronously on every scheduleRender() */
 	sync?: boolean
@@ -26,6 +28,14 @@ export function createRenderScheduler(
 		// Reset isDirty BEFORE calling renderFn, but keep isScheduled = true
 		// to prevent re-entrant scheduling during renderFn execution.
 		isDirty = false
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'render',
+				op: 'flush',
+				reason: 'scheduled',
+			})
+		}
 		renderFn()
 		// After renderFn completes: check if re-entrant mutations occurred
 		if (isDirty) {
@@ -37,6 +47,9 @@ export function createRenderScheduler(
 
 	const scheduleRender = () => {
 		isDirty = true
+		if (logger.enabled) {
+			logger.log({ ts: performance.now(), cat: 'render', op: 'schedule' })
+		}
 		if (!isScheduled) {
 			isScheduled = true
 			queue(_flush)
@@ -47,6 +60,14 @@ export function createRenderScheduler(
 	const flush = () => {
 		isDirty = false
 		isScheduled = false
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'render',
+				op: 'flush',
+				reason: 'forced',
+			})
+		}
 		renderFn()
 	}
 
