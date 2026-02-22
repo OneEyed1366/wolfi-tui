@@ -1,9 +1,10 @@
 {
-	"extends": "../../../../tsconfig.base.json",
+	"extends": "../../../tsconfig.base.json",
 	"compilerOptions": {
 		"rootDir": "src",
 		"outDir": "dist",
-		"jsx": "react-jsx",
+		"jsx": "preserve",
+		"jsxImportSource": "solid-js",
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"plugins": [

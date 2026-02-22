@@ -623,9 +623,11 @@ registerStyles(parsedStyles)
 
 ## Examples
 
-See [`examples/`](examples/) directory:
+See [`examples/angular/`](../../examples/angular/) directory:
 
-- `angular-vite/` — Vite setup with Angular
+- [`vite/`](../../examples/angular/vite/) — Vite setup with Angular
+- [`esbuild/`](../../examples/angular/esbuild/) — esbuild setup
+- [`webpack/`](../../examples/angular/webpack/) — webpack setup
 
 ## License
 

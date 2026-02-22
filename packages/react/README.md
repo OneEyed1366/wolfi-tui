@@ -635,11 +635,11 @@ const customAlertTheme = {
 
 ## Examples
 
-See [`examples/`](examples/) directory for complete examples:
+See [`examples/react/`](../../examples/react/) directory for complete examples:
 
-- `react-vite/` — Vite setup
-- `react-esbuild/` — esbuild setup
-- `react-webpack/` — webpack setup
+- [`vite/`](../../examples/react/vite/) — Vite setup
+- [`esbuild/`](../../examples/react/esbuild/) — esbuild setup
+- [`webpack/`](../../examples/react/webpack/) — webpack setup
 
 ## License
 

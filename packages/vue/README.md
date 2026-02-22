@@ -670,9 +670,11 @@ import {
 
 ## Examples
 
-See [`examples/`](examples/) directory:
+See [`examples/vue/`](../../examples/vue/) directory:
 
-- `vue-vite/` — Vite setup with Vue SFC
+- [`vite/`](../../examples/vue/vite/) — Vite setup with Vue SFC
+- [`esbuild/`](../../examples/vue/esbuild/) — esbuild setup
+- [`webpack/`](../../examples/vue/webpack/) — webpack setup
 
 ## License
 

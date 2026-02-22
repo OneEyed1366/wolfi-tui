@@ -856,7 +856,12 @@ import {
 
 ## Examples
 
-See [`../../apps/solid-invaders/`](../../apps/solid-invaders/) for a complete game built with `@wolfie/solid`.
+See [`examples/solid/`](../../examples/solid/) directory:
+
+- [`esbuild/`](../../examples/solid/esbuild/) — esbuild setup
+- [`webpack/`](../../examples/solid/webpack/) — webpack setup
+
+See also [`../../apps/solid-invaders/`](../../apps/solid-invaders/) for a complete game built with `@wolfie/solid`.
 
 ## License
 
