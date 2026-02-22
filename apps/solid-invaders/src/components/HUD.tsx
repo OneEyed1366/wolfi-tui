@@ -1,5 +1,5 @@
 import { createMemo } from 'solid-js'
-import { Box, Text, Spacer, Show } from '@wolfie/solid'
+import { Box, Text, Spacer, Show, Badge } from '@wolfie/solid'
 import { BRAND } from '../theme'
 
 //#region Props
@@ -50,12 +50,7 @@ export default function HUD(props: HUDProps) {
 				<Text style={{ color: BRAND.primary }} className="font-bold">
 					WAVE{' '}
 				</Text>
-				<Text
-					style={{ color: BRAND.bgDark, backgroundColor: BRAND.primaryDark }}
-					className="font-bold"
-				>
-					{' ' + props.wave + ' '}
-				</Text>
+				<Badge color={BRAND.primaryDark}>{props.wave.toString()}</Badge>
 			</Box>
 
 			<Show when={props.showFps}>

@@ -1,5 +1,5 @@
 import { createMemo } from 'solid-js'
-import { Box, Text, useInput } from '@wolfie/solid'
+import { Box, Text, useInput, Alert } from '@wolfie/solid'
 import type { Screen } from '../composables/useInvaders'
 import { BRAND } from '../theme'
 
@@ -53,13 +53,10 @@ export default function GameOver(props: GameOverProps) {
 				{GAME_OVER_ASCII}
 			</Text>
 
-			<Box
-				style={{ marginTop: 2, flexDirection: 'column', alignItems: 'center' }}
-			>
-				<Text style={{ color: BRAND.primary }} className="font-bold text-lg">
-					SCORE: {formattedScore()}
-				</Text>
-				<Text style={{ color: BRAND.primaryDark }}>Wave {props.wave}</Text>
+			<Box style={{ marginTop: 2, width: '60%' }}>
+				<Alert variant="success" title="Game Over">
+					Final score: {formattedScore()} — Wave {props.wave}
+				</Alert>
 			</Box>
 
 			<Box
