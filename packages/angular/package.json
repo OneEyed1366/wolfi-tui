@@ -59,7 +59,8 @@
 		"@wolfie/spec": "workspace:*",
 		"memfs": "^4.56.10",
 		"rxjs": "^7.8.0",
-		"ts-loader": "^9.5.4"
+		"ts-loader": "^9.5.4",
+		"zone.js": "^0.16.0"
 	},
 	"peerDependencies": {
 		"@angular/core": ">=17.0.0",

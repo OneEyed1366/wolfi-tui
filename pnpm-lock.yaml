@@ -157,7 +157,7 @@ importers:
         version: 4.1.18
       ts-loader:
         specifier: ^9.5.4
-        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1)
+        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1)))
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
@@ -184,7 +184,7 @@ importers:
         version: 3.5.27(typescript@5.9.3)
       webpack:
         specifier: ^5.104.1
-        version: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+        version: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.104.1)
@@ -548,7 +548,50 @@ importers:
         version: 7.8.2
       ts-loader:
         specifier: ^9.5.4
-        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1)
+        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1)))
+      zone.js:
+        specifier: ^0.16.0
+        version: 0.16.0
+
+  packages/angular/examples/esbuild:
+    dependencies:
+      '@angular/compiler':
+        specifier: ^19.0.0
+        version: 19.2.18
+      '@wolfie/angular':
+        specifier: workspace:*
+        version: link:../..
+      zone.js:
+        specifier: ^0.16.0
+        version: 0.16.0
+    devDependencies:
+      '@angular/common':
+        specifier: ^19.0.0
+        version: 19.2.18(@angular/core@19.2.18(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2)
+      '@angular/core':
+        specifier: ^19.0.0
+        version: 19.2.18(rxjs@7.8.2)(zone.js@0.16.0)
+      '@wolfie/plugin':
+        specifier: workspace:*
+        version: link:../../../plugin
+      '@wolfie/typescript-plugin':
+        specifier: workspace:*
+        version: link:../../../typescript-plugin
+      esbuild:
+        specifier: ^0.24.0
+        version: 0.24.2
+      less:
+        specifier: ^4.2.0
+        version: 4.5.1
+      rxjs:
+        specifier: ^7.8.0
+        version: 7.8.2
+      sass:
+        specifier: ^1.70.0
+        version: 1.97.3
+      stylus:
+        specifier: ^0.62.0
+        version: 0.62.0
 
   packages/angular/examples/vite:
     dependencies:
@@ -599,6 +642,55 @@ importers:
         specifier: ^6.0.0
         version: 6.4.1(@types/node@24.10.9)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.62.0)(terser@5.46.0)(yaml@2.8.2)
 
+  packages/angular/examples/webpack:
+    dependencies:
+      '@angular/compiler':
+        specifier: ^19.0.0
+        version: 19.2.18
+      '@wolfie/angular':
+        specifier: workspace:*
+        version: link:../..
+      zone.js:
+        specifier: ^0.16.0
+        version: 0.16.0
+    devDependencies:
+      '@angular/common':
+        specifier: ^19.0.0
+        version: 19.2.18(@angular/core@19.2.18(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2)
+      '@angular/core':
+        specifier: ^19.0.0
+        version: 19.2.18(rxjs@7.8.2)(zone.js@0.16.0)
+      '@wolfie/plugin':
+        specifier: workspace:*
+        version: link:../../../plugin
+      '@wolfie/typescript-plugin':
+        specifier: workspace:*
+        version: link:../../../typescript-plugin
+      less:
+        specifier: ^4.2.0
+        version: 4.5.1
+      rxjs:
+        specifier: ^7.8.0
+        version: 7.8.2
+      sass:
+        specifier: ^1.70.0
+        version: 1.97.3
+      stylus:
+        specifier: ^0.62.0
+        version: 0.62.0
+      ts-loader:
+        specifier: ^9.5.1
+        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1)))
+      typescript:
+        specifier: ^5.4.5
+        version: 5.9.3
+      webpack:
+        specifier: ^5.91.0
+        version: 5.104.1(esbuild@0.24.2)(webpack-cli@5.1.4)
+      webpack-cli:
+        specifier: ^5.1.4
+        version: 5.1.4(webpack@5.104.1)
+
   packages/plugin:
     dependencies:
       '@wolfie/css-parser':
@@ -618,7 +710,7 @@ importers:
         version: 2.3.11
       webpack:
         specifier: '>=5.0'
-        version: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+        version: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
     devDependencies:
       '@types/node':
         specifier: ^24.10.9
@@ -722,7 +814,7 @@ importers:
         version: 4.56.10(tslib@2.8.1)
       ts-loader:
         specifier: ^9.5.4
-        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1)
+        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1)))
 
   packages/react/examples/esbuild:
     dependencies:
@@ -812,7 +904,7 @@ importers:
         version: 8.2.0(postcss@8.5.6)(typescript@5.9.3)(webpack@5.104.1)
       ts-loader:
         specifier: ^9.5.1
-        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1)
+        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1)))
       typescript:
         specifier: ^5.4.5
         version: 5.9.3
@@ -925,7 +1017,7 @@ importers:
         version: 4.56.10(tslib@2.8.1)
       ts-loader:
         specifier: ^9.5.4
-        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1)
+        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1)))
       vue:
         specifier: ^3.5.0
         version: 3.5.27(typescript@5.9.3)
@@ -1053,7 +1145,7 @@ importers:
         version: 8.1.2(stylus@0.64.0)(webpack@5.104.1)
       ts-loader:
         specifier: ^9.5.0
-        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1)
+        version: 9.5.4(typescript@5.9.3)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1)))
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
@@ -8485,9 +8577,9 @@ snapshots:
       webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.104.1)
 
-  '@webpack-cli/configtest@3.0.1(webpack-cli@6.0.1)(webpack@5.104.1)':
+  '@webpack-cli/configtest@3.0.1(webpack-cli@6.0.1(webpack@5.104.1))(webpack@5.104.1)':
     dependencies:
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
       webpack-cli: 6.0.1(webpack@5.104.1)
 
   '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.104.1)':
@@ -8495,9 +8587,9 @@ snapshots:
       webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.104.1)
 
-  '@webpack-cli/info@3.0.1(webpack-cli@6.0.1)(webpack@5.104.1)':
+  '@webpack-cli/info@3.0.1(webpack-cli@6.0.1(webpack@5.104.1))(webpack@5.104.1)':
     dependencies:
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
       webpack-cli: 6.0.1(webpack@5.104.1)
 
   '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack@5.104.1)':
@@ -8505,9 +8597,9 @@ snapshots:
       webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.104.1)
 
-  '@webpack-cli/serve@3.0.1(webpack-cli@6.0.1)(webpack@5.104.1)':
+  '@webpack-cli/serve@3.0.1(webpack-cli@6.0.1(webpack@5.104.1))(webpack@5.104.1)':
     dependencies:
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
       webpack-cli: 6.0.1(webpack@5.104.1)
 
   '@xtuc/ieee754@1.2.0': {}
@@ -8926,7 +9018,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.7.3
     optionalDependencies:
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
 
   css-tree@3.1.0:
     dependencies:
@@ -10092,7 +10184,7 @@ snapshots:
   node-loader@2.1.0(webpack@5.104.1):
     dependencies:
       loader-utils: 2.0.4
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
 
   node-pty@1.1.0:
     dependencies:
@@ -10106,7 +10198,7 @@ snapshots:
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
 
   object-assign@4.1.1: {}
 
@@ -10288,7 +10380,7 @@ snapshots:
       postcss: 8.5.6
       semver: 7.7.3
     optionalDependencies:
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
     transitivePeerDependencies:
       - typescript
 
@@ -10814,6 +10906,17 @@ snapshots:
 
   tapable@2.3.0: {}
 
+  terser-webpack-plugin@5.3.16(esbuild@0.24.2)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.3
+      serialize-javascript: 6.0.2
+      terser: 5.46.0
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
+    optionalDependencies:
+      esbuild: 0.24.2
+
   terser-webpack-plugin@5.3.16(esbuild@0.24.2)(webpack@5.104.1):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
@@ -10821,7 +10924,7 @@ snapshots:
       schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       terser: 5.46.0
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@5.1.4)
     optionalDependencies:
       esbuild: 0.24.2
 
@@ -10877,7 +10980,7 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  ts-loader@9.5.4(typescript@5.9.3)(webpack@5.104.1):
+  ts-loader@9.5.4(typescript@5.9.3)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))):
     dependencies:
       chalk: 4.1.2
       enhanced-resolve: 5.18.4
@@ -10885,7 +10988,7 @@ snapshots:
       semver: 7.7.3
       source-map: 0.7.6
       typescript: 5.9.3
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
 
   tslib@2.8.1: {}
 
@@ -11249,9 +11352,9 @@ snapshots:
   webpack-cli@6.0.1(webpack@5.104.1):
     dependencies:
       '@discoveryjs/json-ext': 0.6.3
-      '@webpack-cli/configtest': 3.0.1(webpack-cli@6.0.1)(webpack@5.104.1)
-      '@webpack-cli/info': 3.0.1(webpack-cli@6.0.1)(webpack@5.104.1)
-      '@webpack-cli/serve': 3.0.1(webpack-cli@6.0.1)(webpack@5.104.1)
+      '@webpack-cli/configtest': 3.0.1(webpack-cli@6.0.1(webpack@5.104.1))(webpack@5.104.1)
+      '@webpack-cli/info': 3.0.1(webpack-cli@6.0.1(webpack@5.104.1))(webpack@5.104.1)
+      '@webpack-cli/serve': 3.0.1(webpack-cli@6.0.1(webpack@5.104.1))(webpack@5.104.1)
       colorette: 2.0.20
       commander: 12.1.0
       cross-spawn: 7.0.6
@@ -11260,7 +11363,7 @@ snapshots:
       import-local: 3.2.0
       interpret: 3.1.1
       rechoir: 0.8.0
-      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1)
+      webpack: 5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1))
       webpack-merge: 6.0.1
 
   webpack-merge@5.10.0:
@@ -11308,6 +11411,40 @@ snapshots:
       webpack-sources: 3.3.3
     optionalDependencies:
       webpack-cli: 5.1.4(webpack@5.104.1)
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
+
+  webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1)):
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.8
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.15.0
+      acorn-import-phases: 1.0.4(acorn@8.15.0)
+      browserslist: 4.28.1
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.18.4
+      es-module-lexer: 2.0.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.1
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.3
+      tapable: 2.3.0
+      terser-webpack-plugin: 5.3.16(esbuild@0.24.2)(webpack@5.104.1(esbuild@0.24.2)(webpack-cli@6.0.1(webpack@5.104.1)))
+      watchpack: 2.5.1
+      webpack-sources: 3.3.3
+    optionalDependencies:
+      webpack-cli: 6.0.1(webpack@5.104.1)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild

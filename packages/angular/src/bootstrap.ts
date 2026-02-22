@@ -59,6 +59,7 @@ import {
 	AppService,
 	FocusService,
 } from './services'
+import { THEME_CONTEXT, defaultTheme } from './theme'
 
 //#region Types
 export interface RenderOptions extends WolfieOptions {
@@ -180,6 +181,13 @@ export async function renderWolfie<T>(
 		StderrService,
 		AppService,
 		FocusService,
+		// WHY: THEME_CONTEXT uses providedIn:'root' but renderWolfie creates a
+		// null-parent injector (no real ApplicationRef chain). Without explicit
+		// provision here, AlertComponent/BadgeComponent/ProgressBarComponent all
+		// throw NullInjectorError when they inject(THEME_CONTEXT).
+		// Users can override by passing { provide: THEME_CONTEXT, useValue: myTheme }
+		// in options.providers (later providers override earlier ones in R3Injector).
+		{ provide: THEME_CONTEXT, useValue: defaultTheme },
 		...(options.providers ?? []),
 	]
 
