@@ -1,4 +1,4 @@
-import { parseKeypress, nonAlphanumericKeys } from '@wolfie/core'
+import { parseKeypress, nonAlphanumericKeys, logger } from '@wolfie/core'
 
 //#region Types
 export type IKey = {
@@ -61,6 +61,19 @@ export function parseInputData(data: string): { input: string; key: IKey } {
 		/[A-Z]/.test(input[0])
 	) {
 		key.shift = true
+	}
+
+	if (logger.enabled) {
+		logger.log({
+			ts: performance.now(),
+			cat: 'input',
+			op: 'key',
+			name: keypress.name,
+			ctrl: keypress.ctrl,
+			meta: keypress.meta,
+			shift: keypress.shift,
+			sequence: keypress.sequence,
+		})
 	}
 
 	return { input, key }

@@ -9,6 +9,7 @@ export type LogCategory =
 	| 'angular'
 	| 'vue'
 	| 'style'
+	| 'input'
 
 export type LogEvent = {
 	ts: number
