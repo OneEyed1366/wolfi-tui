@@ -149,7 +149,8 @@ export function wolfie(
 
 	const isVue = framework === 'vue'
 	const isAngular = framework === 'angular'
-	// Hardcoded: React uses camelCase, Vue/Angular use kebab-case
+	const isSolid = framework === 'solid'
+	// Hardcoded: React/Solid use camelCase, Vue/Angular use kebab-case
 	const camelCase = !isVue && !isAngular
 	// Hardcoded: always inline styles (terminal UI has no stylesheets)
 	const inline = true
@@ -227,7 +228,9 @@ export function wolfie(
 				? '@wolfie/vue'
 				: isAngular
 					? '@wolfie/angular'
-					: '@wolfie/react'
+					: isSolid
+						? '@wolfie/solid'
+						: '@wolfie/react'
 			const code = `import { registerStyles } from '${pkg}'
 registerStyles(${JSON.stringify(scopedStyles)})
 export default ${JSON.stringify(classNameMap)}`
