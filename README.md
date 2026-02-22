@@ -2,7 +2,7 @@
 
 <!-- TODO: Add logo -->
 
-**Build beautiful TUI apps with React, Vue, or Angular**
+**Build beautiful TUI apps with React, Vue, Angular, or SolidJS**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-green)](https://nodejs.org/)
@@ -11,7 +11,7 @@
 
 ## What is wolf-tui?
 
-wolf-tui is a framework-agnostic Terminal User Interface (TUI) library that lets you build interactive command-line applications using familiar web component syntax. Write your CLI apps with React, Vue, or Angular using JSX/template syntax, Flexbox/Grid layouts, and CSS-like styling.
+wolf-tui is a framework-agnostic Terminal User Interface (TUI) library that lets you build interactive command-line applications using familiar web component syntax. Write your CLI apps with React, Vue, Angular, or SolidJS using JSX/template syntax, Flexbox/Grid layouts, and CSS-like styling.
 
 ## Credits
 
@@ -19,7 +19,7 @@ This project started as a fork of [Ink](https://github.com/vadimdemedes/ink) by 
 
 ## Features
 
-- **Multi-framework** — React 19+, Vue 3.5+, Angular 17+
+- **Multi-framework** — React 19+, Vue 3.5+, Angular 17+, SolidJS 1.9+
 - **Modern layout** — Flexbox & CSS Grid via Taffy engine
 - **Rich styling** — Tailwind CSS (v3 & v4), SCSS, LESS, Stylus, CSS Modules
 - **Tree-shakeable** — Only bundle what you use; tested with esbuild, Vite, webpack
@@ -30,11 +30,12 @@ This project started as a fork of [Ink](https://github.com/vadimdemedes/ink) by 
 
 ### Framework-Specific Features
 
-| Framework   | Key Features                                                      |
-| ----------- | ----------------------------------------------------------------- |
-| **React**   | React Compiler for automatic memoization, React 19+ features      |
-| **Vue**     | SFC (`.vue`) and JSX/TSX support, Composition API                 |
-| **Angular** | Signals (`signal`, `computed`, `effect`), OnPush change detection |
+| Framework   | Key Features                                                             |
+| ----------- | ------------------------------------------------------------------------ |
+| **React**   | React Compiler for automatic memoization, React 19+ features             |
+| **Vue**     | SFC (`.vue`) and JSX/TSX support, Composition API                        |
+| **Angular** | Signals (`signal`, `computed`, `effect`), OnPush change detection        |
+| **Solid**   | Fine-grained reactivity, `createSignal`/`createMemo`, universal renderer |
 
 ## Quick Start
 
@@ -98,6 +99,26 @@ import { BoxComponent, TextComponent } from '@wolfie/angular'
 export class AppComponent {}
 ```
 
+### SolidJS
+
+```bash
+npm install @wolfie/solid @wolfie/plugin chalk solid-js
+```
+
+```tsx
+import { render, Box, Text } from '@wolfie/solid'
+
+function App() {
+	return (
+		<Box style={{ flexDirection: 'column' }}>
+			<Text style={{ color: 'green' }}>Hello from Solid TUI!</Text>
+		</Box>
+	)
+}
+
+render(App, { stdout: process.stdout, stdin: process.stdin })
+```
+
 ## Packages
 
 | Package                                             | Description                                | Version |
@@ -106,6 +127,7 @@ export class AppComponent {}
 | [@wolfie/react](packages/react/README.md)           | React adapter (fork of Ink)                | 0.10.0  |
 | [@wolfie/vue](packages/vue/README.md)               | Vue 3 adapter                              | 0.1.0   |
 | [@wolfie/angular](packages/angular/README.md)       | Angular adapter                            | 0.1.0   |
+| [@wolfie/solid](packages/solid/README.md)           | SolidJS adapter                            | 1.0.0   |
 | [@wolfie/plugin](packages/plugin/README.md)         | Build plugin (Vite/esbuild/webpack/Rollup) | 0.1.0   |
 | [@wolfie/css-parser](internal/css-parser/README.md) | CSS/SCSS/LESS/Stylus parser                | 0.1.0   |
 
@@ -215,6 +237,7 @@ pnpm dev
 | @wolfie/react   | Stable (0.10.0) |
 | @wolfie/vue     | Early (0.1.0)   |
 | @wolfie/angular | Early (0.1.0)   |
+| @wolfie/solid   | Early (1.0.0)   |
 | Taffy migration | Complete        |
 
 ## Contributing
