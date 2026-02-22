@@ -1,6 +1,7 @@
 import wrapAnsi from 'wrap-ansi'
 import cliTruncate from 'cli-truncate'
 import { type IStyles } from './styles'
+import { logger } from './logger'
 
 const cache: Record<string, string> = {}
 
@@ -13,6 +14,17 @@ const wrapText = (
 	const cachedText = cache[cacheKey]
 
 	if (cachedText) {
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'measure',
+				op: 'wrapText',
+				textLen: text.length,
+				maxWidth,
+				wrapType: String(wrapType),
+				cached: true,
+			})
+		}
 		return cachedText
 	}
 
@@ -39,6 +51,17 @@ const wrapText = (
 		wrappedText = cliTruncate(text, maxWidth, { position })
 	}
 
+	if (logger.enabled) {
+		logger.log({
+			ts: performance.now(),
+			cat: 'measure',
+			op: 'wrapText',
+			textLen: text.length,
+			maxWidth,
+			wrapType: String(wrapType),
+			cached: false,
+		})
+	}
 	cache[cacheKey] = wrappedText
 
 	return wrappedText

@@ -1,4 +1,5 @@
 import widestLine from 'widest-line'
+import { logger } from './logger'
 
 const cache = new Map<string, Output>()
 
@@ -18,12 +19,34 @@ const measureText = (text: string): Output => {
 	const cachedDimensions = cache.get(text)
 
 	if (cachedDimensions) {
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'measure',
+				op: 'measureText',
+				textLen: text.length,
+				width: cachedDimensions.width,
+				height: cachedDimensions.height,
+				cached: true,
+			})
+		}
 		return cachedDimensions
 	}
 
 	const width = widestLine(text)
 	const height = text.split('\n').length
 	const dimensions = { width, height }
+	if (logger.enabled) {
+		logger.log({
+			ts: performance.now(),
+			cat: 'measure',
+			op: 'measureText',
+			textLen: text.length,
+			width: dimensions.width,
+			height: dimensions.height,
+			cached: false,
+		})
+	}
 	cache.set(text, dimensions)
 
 	return dimensions
