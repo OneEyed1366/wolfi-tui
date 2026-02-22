@@ -1,14 +1,18 @@
+import { readFileSync } from 'node:fs'
 import { createUnplugin } from 'unplugin'
 import type {
 	UnpluginFactory,
 	UnpluginInstance,
 	UnpluginOptions,
 } from 'unplugin'
+import glob from 'fast-glob'
 import {
 	compile,
 	detectLanguage,
 	parseCSS,
 	generateJavaScript,
+	scanCandidates,
+	tailwind,
 } from '@wolfie/css-parser'
 
 //#region Types
@@ -61,6 +65,41 @@ export const unpluginFactory: UnpluginFactory<[Framework, WolfieOptions?]> = (
 	// Main CSS transform plugin
 	const mainPlugin: UnpluginOptions = {
 		name: 'wolfie',
+
+		// WHY: webpack doesn't have a buildStart with config access like Vite/esbuild.
+		// We tap beforeRun + watchRun to scan source files for Tailwind candidates
+		// before any CSS transforms execute. Without this, tailwind.build([]) produces
+		// zero utility classes → Tailwind classes (flex-col, p-1, etc.) missing from
+		// the style registry → broken layout.
+		webpack(compiler) {
+			const scanAndAddCandidates = async () => {
+				const rootDir = compiler.context || process.cwd()
+				const sourceFiles = await glob(['**/*.{tsx,jsx,ts,js,vue,html}'], {
+					cwd: rootDir,
+					ignore: ['**/node_modules/**', '**/dist/**', '**/build/**'],
+					absolute: true,
+				})
+				for (const file of sourceFiles) {
+					try {
+						const content = readFileSync(file, 'utf-8')
+						const candidates = scanCandidates(content)
+						if (candidates.size > 0) {
+							tailwind.addCandidates(candidates)
+						}
+					} catch {
+						// ignore unreadable files
+					}
+				}
+			}
+			compiler.hooks.beforeRun.tapPromise(
+				'wolfie:tailwind-scan',
+				scanAndAddCandidates
+			)
+			compiler.hooks.watchRun.tapPromise(
+				'wolfie:tailwind-scan',
+				scanAndAddCandidates
+			)
+		},
 
 		transformInclude(id) {
 			// Skip virtual modules and node_modules
