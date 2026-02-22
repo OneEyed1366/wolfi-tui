@@ -45,6 +45,7 @@
 		"@wolfie/core": "workspace:*",
 		"@wolfie/css-parser": "workspace:*",
 		"@wolfie/react": "workspace:*",
+		"@wolfie/solid": "workspace:*",
 		"@wolfie/vue": "workspace:*",
 		"ansi-to-html": "^0.7.2",
 		"babel-plugin-react-compiler": "^1.0.0",

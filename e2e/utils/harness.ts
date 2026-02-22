@@ -3,7 +3,7 @@ import { createRequire } from 'module'
 import { resolve } from 'path'
 
 //#region Types
-type Framework = 'react' | 'vue' | 'angular'
+type Framework = 'react' | 'vue' | 'angular' | 'solid'
 
 interface FakeStdout extends EventEmitter {
 	columns: number
@@ -134,6 +134,21 @@ export async function createApp(
 				debug: false,
 				maxFps: 30,
 				exitOnCtrlC: false,
+			})
+			unmountFn = () => instance.unmount()
+			break
+		}
+		case 'solid': {
+			const bundlePath = resolve(ROOT, 'apps/solid-invaders/dist/index.js')
+			const { App } = await import(bundlePath)
+			const { render } = await import('@wolfie/solid')
+			// debug: false + maxFps: 30 — same as Vue; solid uses data events
+			const instance = render(App, {
+				stdout: stdout as unknown as NodeJS.WriteStream,
+				stdin: stdin as unknown as NodeJS.ReadStream,
+				stderr: stderr as unknown as NodeJS.WriteStream,
+				debug: false,
+				maxFps: 30,
 			})
 			unmountFn = () => instance.unmount()
 			break
