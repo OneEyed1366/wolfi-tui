@@ -18,6 +18,7 @@ import {
 	type DOMNode,
 	type LayoutTree,
 	type OutputTransformer,
+	logger,
 } from '@wolfie/core'
 import {
 	layoutTreeRegistry,
@@ -57,6 +58,34 @@ const findLayoutAncestorId = (node: DOMElement): number | undefined => {
 		current = current.parentNode
 	}
 	return undefined
+}
+
+/**
+ * Recursively remove layout tree nodes from a host element subtree.
+ * When a host element (layoutNodeId === undefined) is removed from a non-host parent,
+ * core removeChildNode skips it bc layoutNodeId is undefined. Its children's layout
+ * nodes become orphaned in Taffy, inflating computed root height.
+ */
+const removeLayoutTreeRecursively = (
+	node: DOMNode,
+	layoutTree: LayoutTree
+): void => {
+	if (!isElement(node)) return
+
+	for (const child of node.childNodes) {
+		if (!isElement(child)) continue
+		// Recurse first (depth-first) so children are detached before parents
+		removeLayoutTreeRecursively(child, layoutTree)
+
+		if (child.layoutNodeId !== undefined) {
+			// Find the layout parent: for normal nodes it's node.layoutNodeId,
+			// for children of host elements it's the nearest ancestor with a layout ID
+			const layoutParentId = node.layoutNodeId ?? findLayoutAncestorId(node)
+			if (layoutParentId !== undefined) {
+				layoutTree.removeChild(layoutParentId, child.layoutNodeId)
+			}
+		}
+	}
 }
 
 /**
@@ -174,6 +203,13 @@ export class WolfieRenderer implements Renderer2 {
 		if (isHostElement) {
 			node.internal_isHostElement = true
 		}
+		logger.log({
+			ts: performance.now(),
+			cat: 'angular',
+			op: 'createElement',
+			name,
+			isHost: isHostElement,
+		})
 		return node
 	}
 
@@ -200,6 +236,15 @@ export class WolfieRenderer implements Renderer2 {
 		}
 
 		appendChildNode(parent, newChild, instance?.layoutTree)
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'angular',
+				op: 'appendChild',
+				parentName: parent.nodeName,
+				childName: isElement(newChild) ? newChild.nodeName : '#text',
+			})
+		}
 
 		// Host element parent (already in tree): adopt child's layout node into ancestor.
 		// Only needed when parent.layoutNodeId is undefined (host element) —
@@ -257,6 +302,15 @@ export class WolfieRenderer implements Renderer2 {
 			insertBeforeNode(parent, newChild, refChild, instance?.layoutTree)
 		} else {
 			appendChildNode(parent, newChild, instance?.layoutTree)
+		}
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'angular',
+				op: 'insertBefore',
+				parentName: parent.nodeName,
+				childName: isElement(newChild) ? newChild.nodeName : '#text',
+			})
 		}
 
 		// Host element parent: manually insert child's layout node into layout ancestor
@@ -316,6 +370,23 @@ export class WolfieRenderer implements Renderer2 {
 			}
 		}
 
+		// Host element child being removed: its layoutNodeId is undefined so
+		// core removeChildNode won't clean up its children's layout nodes.
+		// Recursively detach them from Taffy before DOM removal.
+		if (isElement(oldChild) && oldChild.internal_isHostElement && instance) {
+			removeLayoutTreeRecursively(oldChild, instance.layoutTree)
+		}
+
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'angular',
+				op: 'removeChild',
+				parentName: actualParent.nodeName,
+				childName: isElement(oldChild) ? oldChild.nodeName : '#text',
+				isHostChild: isElement(oldChild) && !!oldChild.internal_isHostElement,
+			})
+		}
 		removeChildNode(actualParent, oldChild, instance?.layoutTree)
 	}
 
@@ -400,6 +471,15 @@ export class WolfieRenderer implements Renderer2 {
 		if (instance && el.layoutNodeId !== undefined) {
 			applyLayoutStyle(instance.layoutTree, el.layoutNodeId, updatedStyle)
 		}
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'angular',
+				op: 'setStyle',
+				nodeId: el.layoutNodeId,
+				key: style,
+			})
+		}
 	}
 
 	removeStyle(
@@ -418,6 +498,14 @@ export class WolfieRenderer implements Renderer2 {
 	}
 
 	setProperty(el: DOMElement, name: string, value: unknown): void {
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'angular',
+				op: 'setProperty',
+				name,
+			})
+		}
 		const instance = getInstance(el)
 
 		if (name === 'style') {
