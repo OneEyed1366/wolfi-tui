@@ -53,3 +53,5 @@ export {
 	type ComputedLayout,
 } from './get-computed-layout'
 export type { LayoutTree, LayoutStyle } from './layout-types'
+export { logger, createLogger, type LogEvent, type LogCategory } from './logger'
+export { LoggedLayoutTree } from './layout-logger'
