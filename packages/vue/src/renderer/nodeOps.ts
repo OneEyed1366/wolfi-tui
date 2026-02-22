@@ -9,6 +9,7 @@ import {
 	applyLayoutStyle,
 	isElement,
 	isText,
+	logger,
 	type DOMElement,
 	type TextNode,
 	type ElementNames,
@@ -77,11 +78,28 @@ export const nodeOps: Omit<
 > = {
 	createElement(tag) {
 		const wolfieTag = tag.startsWith('wolfie-') ? tag : `wolfie-${tag}`
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'vue',
+				op: 'createElement',
+				name: wolfieTag,
+			})
+		}
 		const node = createNode(wolfieTag as ElementNames)
 		return node
 	},
 
 	insert(child, parent, anchor) {
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'vue',
+				op: 'insert',
+				parentName: parent.nodeName,
+				childName: child.nodeName,
+			})
+		}
 		const instance = getInstance(parent)
 
 		if (instance && isElement(child)) {
@@ -105,6 +123,15 @@ export const nodeOps: Omit<
 
 	remove(child) {
 		const parent = child.parentNode
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'vue',
+				op: 'remove',
+				parentName: parent?.nodeName,
+				childName: child.nodeName,
+			})
+		}
 		if (parent) {
 			const instance = getInstance(parent)
 			removeChildNode(parent, child, instance?.layoutTree)
