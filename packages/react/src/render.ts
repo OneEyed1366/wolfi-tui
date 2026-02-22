@@ -2,6 +2,7 @@ import { Stream } from 'node:stream'
 import process from 'node:process'
 import type { ReactNode } from 'react'
 import { LayoutTree } from '@wolfie/core/layout'
+import { LoggedLayoutTree, logger } from '@wolfie/core'
 import WolfieReact, {
 	type IOptions as WolfieOptions,
 	type IRenderMetrics,
@@ -112,7 +113,12 @@ const render = (
 	options?: NodeJS.WriteStream | RenderOptions
 ): Instance => {
 	// Create a new Taffy layout tree for layout calculations
-	const layoutTree = new LayoutTree()
+	const rawLayoutTree = new LayoutTree()
+	// WHY: LoggedLayoutTree is only constructed when logging is enabled —
+	// zero allocation cost in production
+	const layoutTree = logger.enabled
+		? new LoggedLayoutTree(rawLayoutTree, logger)
+		: rawLayoutTree
 
 	const inkOptions: WolfieOptions = {
 		stdout: process.stdout,

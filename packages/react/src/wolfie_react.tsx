@@ -23,6 +23,7 @@ import {
 	applyLayoutStyle,
 	parseNumericValue,
 	isElement,
+	logger,
 } from '@wolfie/core'
 import reconciler, {
 	registerLayoutTree,
@@ -359,11 +360,24 @@ export default class WolfieReact {
 		}
 
 		const startTime = performance.now()
+		if (logger.enabled) {
+			logger.log({ ts: startTime, cat: 'render', op: 'start' })
+		}
 		const { output, outputHeight, staticOutput } = renderer(
 			this.rootNode,
 			this.isScreenReaderEnabled,
 			this.layoutTree
 		)
+		if (logger.enabled) {
+			logger.log({
+				ts: startTime,
+				cat: 'render',
+				op: 'end',
+				durationMs: performance.now() - startTime,
+				outputChanged: output !== this.lastOutput,
+				outputHeight,
+			})
+		}
 
 		this.options.onRender?.({ renderTime: performance.now() - startTime })
 

@@ -25,6 +25,8 @@ import {
 	type LayoutTree,
 	type ElementNames,
 	type DOMNode,
+	LoggedLayoutTree,
+	logger,
 } from '@wolfie/core'
 import { LayoutTree as TaffyLayoutTree } from '@wolfie/core/layout'
 import { throttle } from 'es-toolkit/compat'
@@ -114,7 +116,11 @@ class WolfieVue {
 		this.stdin = options.stdin || process.stdin
 		this.stderr = options.stderr || process.stderr
 
-		this.layoutTree = new TaffyLayoutTree()
+		const rawLayoutTree = new TaffyLayoutTree()
+		// WHY: LoggedLayoutTree is only constructed when logging is enabled
+		this.layoutTree = logger.enabled
+			? new LoggedLayoutTree(rawLayoutTree, logger)
+			: rawLayoutTree
 		this.rootNode = createNode('wolfie-root' as ElementNames, this.layoutTree)
 
 		this.log = logUpdate.create(this.stdout)
@@ -302,11 +308,25 @@ class WolfieVue {
 		if (this.isUnmounted) return
 
 		this.calculateLayout()
+		const t0 = performance.now()
+		if (logger.enabled) {
+			logger.log({ ts: t0, cat: 'render', op: 'start' })
+		}
 		const { output, outputHeight } = coreRenderer(
 			this.rootNode,
 			this.isScreenReaderEnabled,
 			this.layoutTree
 		)
+		if (logger.enabled) {
+			logger.log({
+				ts: t0,
+				cat: 'render',
+				op: 'end',
+				durationMs: performance.now() - t0,
+				outputChanged: output !== this.lastOutput,
+				outputHeight,
+			})
+		}
 
 		// Clear terminal on first render or when output fills the screen
 		// This clears any pre-existing console output (e.g., build logs)

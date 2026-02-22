@@ -13,6 +13,8 @@ import {
 	type DOMElement,
 	type LayoutTree,
 	type ElementNames,
+	LoggedLayoutTree,
+	logger,
 } from '@wolfie/core'
 import { LayoutTree as TaffyLayoutTree } from '@wolfie/core/layout'
 import { throttle } from 'es-toolkit/compat'
@@ -70,7 +72,11 @@ export class WolfieAngular {
 		this.stderr = options.stderr || process.stderr
 		this.exitOnCtrlC = options.exitOnCtrlC ?? true
 
-		this.layoutTree = new TaffyLayoutTree()
+		const rawLayoutTree = new TaffyLayoutTree()
+		// WHY: LoggedLayoutTree is only constructed when logging is enabled
+		this.layoutTree = logger.enabled
+			? new LoggedLayoutTree(rawLayoutTree, logger)
+			: rawLayoutTree
 		this.rootNode = createNode('wolfie-root' as ElementNames, this.layoutTree)
 
 		this.log = logUpdate.create(this.stdout)
@@ -289,11 +295,23 @@ export class WolfieAngular {
 		if (this.isUnmounted) return
 
 		this.calculateLayout()
+		const t0 = performance.now()
+		if (logger.enabled) {
+			logger.log({ ts: t0, cat: 'render', op: 'start' })
+		}
 		const { output } = coreRenderer(
 			this.rootNode,
 			this.isScreenReaderEnabled,
 			this.layoutTree
 		)
+		if (logger.enabled) {
+			logger.log({
+				ts: t0,
+				cat: 'render',
+				op: 'end',
+				durationMs: performance.now() - t0,
+			})
+		}
 		this.log(output)
 	}
 	//#endregion Rendering
