@@ -6,3 +6,4 @@ node_modules
 .pnpm-store/v10
 **/tsconfig.tsbuildinfo
 **/dist
+.worktrees
