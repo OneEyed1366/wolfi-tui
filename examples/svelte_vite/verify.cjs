@@ -67,27 +67,39 @@ function check(label, actual, expected) {
 	}
 }
 
+// Test 1 & 2 — initial render: header + first tab active
 setTimeout(() => {
 	const plain0 = stripAnsi(frames.join(''))
-	const match0 = plain0.match(/Counter:\s*(\d+)/)
-	check('Initial render shows Counter: 0', match0?.[1], '0')
-	check('Svelte Counter visible', plain0.includes('Svelte Counter'), true)
+	check(
+		'Header shows "Wolfie Svelte Comprehensive Demo"',
+		plain0.includes('Wolfie Svelte Comprehensive Demo'),
+		true
+	)
+	check('First tab [1] Styles visible', plain0.includes('[1] Styles'), true)
 
+	// Test 3 — Tab key switches to Runes screen
 	frames = []
-	fakeStdin.emit('data', Buffer.from('\x1b[A')) // upArrow
+	fakeStdin.emit('data', Buffer.from('\t')) // Tab
 
 	setTimeout(() => {
 		const plain1 = stripAnsi(frames.join(''))
-		const match1 = plain1.match(/Counter:\s*(\d+)/)
-		check('Counter increments to 1 after ↑', match1?.[1], '1')
+		check(
+			'Tab switches to [2] Runes screen',
+			plain1.includes('[2] Runes') && plain1.includes('$state'),
+			true
+		)
 
+		// Test 4 — number key '3' jumps to Input screen
 		frames = []
-		fakeStdin.emit('data', Buffer.from('\x1b[B')) // downArrow
+		fakeStdin.emit('data', Buffer.from('3'))
 
 		setTimeout(() => {
 			const plain2 = stripAnsi(frames.join(''))
-			const match2 = plain2.match(/Counter:\s*(\d+)/)
-			check('Counter decrements to 0 after ↓', match2?.[1], '0')
+			check(
+				'Key "3" jumps to Input screen',
+				plain2.includes('Type anything'),
+				true
+			)
 
 			log(`\nverify.cjs: ${passed} passed, ${failed} failed`)
 			Object.defineProperty(process, 'stdout', {
