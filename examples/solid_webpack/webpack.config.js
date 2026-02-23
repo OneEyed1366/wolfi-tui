@@ -8,8 +8,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 class CopyNativeBinariesPlugin {
 	apply(compiler) {
-		compiler.hooks.afterEmit.tap('CopyNativeBinariesPlugin', (compilation) => {
-			const coreDir = path.resolve(__dirname, '../../../internal/core')
+		compiler.hooks.afterEmit.tap('CopyNativeBinariesPlugin', () => {
+			const coreDir = path.resolve(__dirname, '../../internal/core')
 			const distNativeDir = path.resolve(__dirname, 'dist/native')
 
 			if (!fs.existsSync(distNativeDir)) {
@@ -19,14 +19,11 @@ class CopyNativeBinariesPlugin {
 			const files = fs.readdirSync(coreDir)
 			for (const file of files) {
 				if (file.endsWith('.node')) {
-					// We rename wolfie-core to wolfie-layout if needed by the loader
-					// Or just copy all of them.
 					fs.copyFileSync(
 						path.join(coreDir, file),
 						path.join(distNativeDir, file)
 					)
 
-					// Also provide the non-gnu version for the loader if it expects it
 					if (file.includes('linux-arm64-gnu')) {
 						fs.copyFileSync(
 							path.join(coreDir, file),
@@ -55,36 +52,46 @@ export default {
 		alias: {
 			'@wolfie/core/layout': path.resolve(
 				__dirname,
-				'../../../internal/core/layout.js'
+				'../../internal/core/layout.js'
 			),
 			'@wolfie/core': path.resolve(
 				__dirname,
-				'../../../internal/core/src/index.ts'
+				'../../internal/core/src/index.ts'
 			),
-			'@wolfie/react/styles': path.resolve(
+			'@wolfie/solid/styles': path.resolve(
 				__dirname,
-				'../../../packages/react/src/styles/index.ts'
+				'../../packages/solid/src/styles/index.ts'
 			),
-			'@wolfie/react': path.resolve(
+			'@wolfie/solid/renderer': path.resolve(
 				__dirname,
-				'../../../packages/react/src/index.ts'
+				'../../packages/solid/src/renderer/index.ts'
+			),
+			'@wolfie/solid': path.resolve(
+				__dirname,
+				'../../packages/solid/src/index.tsx'
 			),
 		},
-		conditionNames: ['node', 'import', 'require'],
+		conditionNames: ['browser', 'development', 'node', 'import', 'require'],
 	},
 	module: {
 		rules: [
 			{
 				test: /\.tsx?$/,
-				use: [
-					{
-						loader: 'ts-loader',
-						options: {
-							transpileOnly: true,
-							configFile: 'tsconfig.json',
-						},
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: [
+							[
+								'babel-preset-solid',
+								{
+									generate: 'universal',
+									moduleName: '@wolfie/solid/renderer',
+								},
+							],
+							'@babel/preset-typescript',
+						],
 					},
-				],
+				},
 				exclude: /node_modules/,
 			},
 			{
@@ -94,29 +101,13 @@ export default {
 					name: 'native/[name].[ext]',
 				},
 			},
-			{
-				test: /\.css$/,
-				use: [
-					{
-						loader: 'null-loader',
-					},
-					{
-						loader: 'postcss-loader',
-						options: {
-							postcssOptions: {
-								config: path.resolve(__dirname, 'postcss.config.cjs'),
-							},
-						},
-					},
-				],
-			},
 		],
 	},
 	optimization: {
 		minimize: false,
 	},
 	plugins: [
-		wolfie('react'),
+		wolfie('solid'),
 		new webpack.BannerPlugin({
 			banner:
 				'#!/usr/bin/env node\nprocess.env.NAPI_RS_NATIVE_LIBRARY_PATH = require("path").join(__dirname, "native/wolfie-core.' +
@@ -132,11 +123,4 @@ export default {
 		__dirname: false,
 		__filename: false,
 	},
-	// Ignore warnings for optional ws dependencies (native performance modules)
-	ignoreWarnings: [
-		{
-			module: /node_modules\/ws\/lib\//,
-			message: /Can't resolve '(bufferutil|utf-8-validate)'/,
-		},
-	],
 }

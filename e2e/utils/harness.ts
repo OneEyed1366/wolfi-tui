@@ -91,7 +91,7 @@ export async function createApp(
 
 	switch (framework) {
 		case 'react': {
-			const bundlePath = resolve(ROOT, 'apps/react-invaders/dist/index.js')
+			const bundlePath = resolve(ROOT, 'examples/react_invaders/dist/index.js')
 			const { App } = await import(bundlePath)
 			const React = await import('react')
 			const { render } = await import('@wolfie/react')
@@ -107,7 +107,7 @@ export async function createApp(
 			break
 		}
 		case 'vue': {
-			const bundlePath = resolve(ROOT, 'apps/vue-invaders/dist/index.js')
+			const bundlePath = resolve(ROOT, 'examples/vue_invaders/dist/index.js')
 			const { App } = await import(bundlePath)
 			const { render } = await import('@wolfie/vue')
 			const instance = render(App, {
@@ -122,7 +122,10 @@ export async function createApp(
 		}
 		case 'angular': {
 			const esmRequire = createRequire(import.meta.url)
-			const bundlePath = resolve(ROOT, 'apps/angular-invaders/dist/index.cjs')
+			const bundlePath = resolve(
+				ROOT,
+				'examples/angular_invaders/dist/index.cjs'
+			)
 			const { AppComponent } = esmRequire(bundlePath)
 			const { renderWolfie } = esmRequire('@wolfie/angular')
 			// debug: false + maxFps: 30 — same as Vue; debug: true floods
@@ -139,7 +142,7 @@ export async function createApp(
 			break
 		}
 		case 'solid': {
-			const bundlePath = resolve(ROOT, 'apps/solid-invaders/dist/index.js')
+			const bundlePath = resolve(ROOT, 'examples/solid_invaders/dist/index.js')
 			const { App } = await import(bundlePath)
 			const { render } = await import('@wolfie/solid')
 			// debug: false + maxFps: 30 — same as Vue; solid uses data events

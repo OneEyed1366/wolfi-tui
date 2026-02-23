@@ -18,7 +18,7 @@ import { Help } from './screens/Help'
 
 //#region Error Boundary
 function ErrorBoundary({ children }: { children: React.ReactNode }) {
-	const [error, setError] = useState<Error | null>(null)
+	const [error] = useState<Error | null>(null)
 	const { write: writeStderr } = useStderr()
 
 	if (error) {

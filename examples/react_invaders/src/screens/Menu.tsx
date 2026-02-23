@@ -1,11 +1,4 @@
-import {
-	Box,
-	Text,
-	Select,
-	SelectOption,
-	useFocusManager,
-	useInput,
-} from '@wolfie/react'
+import { Box, Text, Select, useFocusManager, useInput } from '@wolfie/react'
 import type { Screen } from '../hooks/useInvaders'
 import { useQuit } from '../hooks/useQuit'
 import { BRAND } from '../theme'

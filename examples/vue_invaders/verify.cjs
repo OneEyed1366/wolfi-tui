@@ -1,4 +1,4 @@
-// apps/vue-invaders/verify.cjs
+// examples/vue_invaders/verify.cjs
 process.env.WOLFIE_VERIFY = '1'
 
 const { EventEmitter } = require('events')

@@ -1,4 +1,4 @@
-// apps/angular-invaders/verify.cjs
+// examples/angular_invaders/verify.cjs
 // Headless render harness for visual verification
 // MUST set env BEFORE requiring bundle (zone.js patches timers on import)
 process.env.WOLFIE_VERIFY = '1'

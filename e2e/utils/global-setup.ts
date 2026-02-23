@@ -4,7 +4,7 @@ export default async function globalSetup() {
 	console.log('[e2e] Building all apps...')
 
 	// Build all three apps in parallel
-	execSync('pnpm -r --filter="./apps/*" build', {
+	execSync('pnpm -r --filter="@wolfie/*-game-invaders" build', {
 		cwd: process.cwd(),
 		stdio: 'inherit',
 	})

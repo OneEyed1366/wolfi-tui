@@ -14,7 +14,7 @@ type FocusableItemProps = {
 export function FocusableItem({
 	id,
 	children,
-	onSelect,
+	onSelect: _onSelect,
 	autoFocus = false,
 }: FocusableItemProps) {
 	const { isFocused } = useFocus({ id, autoFocus })

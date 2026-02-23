@@ -1,4 +1,4 @@
-// apps/react-invaders/verify.cjs
+// examples/react_invaders/verify.cjs
 // WHY: env vars must be set BEFORE any require/import — React reads them at module eval
 process.env.WOLFIE_VERIFY = '1'
 
