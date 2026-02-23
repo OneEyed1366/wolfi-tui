@@ -71,7 +71,9 @@ export function Text(props: TextProps) {
 				style={{ ...styles, textWrap: effectiveWrap }}
 				internal_transform={transform}
 			>
-				{children}
+				{() =>
+					isScreenReaderEnabled && ariaLabel ? ariaLabel : props.children
+				}
 			</wolfie-text>
 		)
 	})()
