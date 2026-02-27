@@ -2,7 +2,7 @@
 	<Box class="flex-col p-1 w-full">
 		<!-- Header -->
 		<Box class="mb-1">
-			<Text class="text-blue font-bold"> Wolfie Vue Comprehensive Demo </Text>
+			<Text class="text-[blue] font-bold"> Wolfie Vue Comprehensive Demo </Text>
 		</Box>
 
 		<!-- Screen tabs -->
@@ -10,7 +10,7 @@
 			<Text
 				v-for="(screen, i) in screens"
 				:key="screen.name"
-				:class="i === activeScreen ? 'text-cyan font-bold' : 'text-gray'"
+				:class="i === activeScreen ? 'text-[cyan] font-bold' : 'text-[gray]'"
 			>
 				[{{ i + 1 }}] {{ screen.name }}
 			</Text>
@@ -20,8 +20,8 @@
 		<component :is="screens[activeScreen].component" />
 
 		<!-- Footer -->
-		<Box class="mt-1 border-t-single border-gray p-t-1">
-			<Text class="text-gray">
+		<Box class="mt-1 border-t-single border-[gray] pt-1">
+			<Text class="text-[gray]">
 				{{
 					screens[activeScreen].name === 'Focus' ? 'tab focus' : 'tab navigate'
 				}}

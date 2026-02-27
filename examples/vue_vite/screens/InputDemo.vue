@@ -32,8 +32,8 @@
 		</Box>
 
 		<!-- Current Values -->
-		<Box class="border-single border-gray p-1 mt-1 flex-col">
-			<Text class="font-bold text-cyan">Current Values:</Text>
+		<Box class="border-single border-[gray] p-1 mt-1 flex-col">
+			<Text class="font-bold text-[cyan]">Current Values:</Text>
 			<Text>Name: {{ name || '(empty)' }}</Text>
 			<Text
 				>Password:
@@ -43,7 +43,7 @@
 			<Text>Confirmed: {{ confirmStatus }}</Text>
 		</Box>
 
-		<Text class="text-gray">
+		<Text class="text-[gray]">
 			Type to enter values. Tab autocompletes suggestions.
 		</Text>
 	</Box>

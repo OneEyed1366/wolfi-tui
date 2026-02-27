@@ -26,14 +26,14 @@
 		<Text class="font-bold text-white mt-1">Spinner</Text>
 		<Box class="flex-row gap-1">
 			<Spinner />
-			<Text class="text-gray">Loading resources...</Text>
+			<Text class="text-[gray]">Loading resources...</Text>
 		</Box>
 
 		<!-- Progress Bar -->
 		<Text class="font-bold text-white mt-1">Progress Bar</Text>
 		<Box class="flex-col w-[40]">
 			<ProgressBar :value="75" />
-			<Text class="text-gray">75% complete</Text>
+			<Text class="text-[gray]">75% complete</Text>
 		</Box>
 	</Box>
 </template>

@@ -1,13 +1,13 @@
 <template>
 	<Box class="flex-col gap-1 w-full">
 		<Text class="font-bold text-white">Error Overview</Text>
-		<Text class="text-gray mb-1">
+		<Text class="text-[gray] mb-1">
 			Displays errors with stack traces for debugging
 		</Text>
 
 		<ErrorOverview :error="sampleError" />
 
-		<Text class="text-gray mt-1">
+		<Text class="text-[gray] mt-1">
 			ErrorOverview automatically formats stack traces and highlights relevant
 			information for easier debugging.
 		</Text>

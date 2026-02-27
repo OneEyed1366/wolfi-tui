@@ -3,12 +3,12 @@
 		<!-- Single Select -->
 		<Text
 			:class="
-				focusedList === 'color' ? 'font-bold text-cyan' : 'font-bold text-white'
+				focusedList === 'color' ? 'font-bold text-[cyan]' : 'font-bold text-white'
 			"
 		>
 			Single Select {{ focusedList === 'color' ? '(active)' : '' }}
 		</Text>
-		<Text class="text-gray"
+		<Text class="text-[gray]"
 			>Arrows navigate, Enter selects (auto-advances to next)</Text
 		>
 		<Select
@@ -22,14 +22,14 @@
 		<Text
 			:class="
 				focusedList === 'features'
-					? 'font-bold text-cyan'
+					? 'font-bold text-[cyan]'
 					: 'font-bold text-white'
 			"
 			class="mt-1"
 		>
 			Multi Select {{ focusedList === 'features' ? '(active)' : '' }}
 		</Text>
-		<Text class="text-gray">Space toggles, Enter confirms</Text>
+		<Text class="text-[gray]">Space toggles, Enter confirms</Text>
 		<MultiSelect
 			:options="featureOptions"
 			:visible-option-count="4"
@@ -38,8 +38,8 @@
 		/>
 
 		<!-- Selected Values -->
-		<Box class="border-single border-gray p-1 mt-1 flex-col">
-			<Text class="font-bold text-cyan">Selected Values:</Text>
+		<Box class="border-single border-[gray] p-1 mt-1 flex-col">
+			<Text class="font-bold text-[cyan]">Selected Values:</Text>
 			<Text>Color: {{ selectedColor || '(none)' }}</Text>
 			<Text
 				>Features:

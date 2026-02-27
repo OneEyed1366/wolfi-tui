@@ -1,6 +1,6 @@
 <template>
 	<Box class="flex-col gap-1 w-full">
-		<Text class="text-gray">Tab/Shift+Tab to navigate between items</Text>
+		<Text class="text-[gray]">Tab/Shift+Tab to navigate between items</Text>
 
 		<!-- Focusable Items -->
 		<Box class="flex-col gap-1">
@@ -15,11 +15,11 @@
 		</Box>
 
 		<!-- Focus Controls -->
-		<Box class="border-single border-gray p-1 mt-1 flex-col">
-			<Text class="font-bold text-cyan">Focus Controls:</Text>
-			<Text class="text-gray">Press 1-4 to focus item directly</Text>
-			<Text class="text-gray">Press 'd' to disable/enable item 2</Text>
-			<Text class="text-gray mt-1"
+		<Box class="border-single border-[gray] p-1 mt-1 flex-col">
+			<Text class="font-bold text-[cyan]">Focus Controls:</Text>
+			<Text class="text-[gray]">Press 1-4 to focus item directly</Text>
+			<Text class="text-[gray]">Press 'd' to disable/enable item 2</Text>
+			<Text class="text-[gray] mt-1"
 				>Item 2 active: {{ item2Active ? 'Yes' : 'No' }}</Text
 			>
 		</Box>
@@ -78,21 +78,22 @@ const FocusableItem = defineComponent({
 					class: [
 						'p-1',
 						isFocused.value ? 'border-double' : 'border-single',
-						isFocused.value ? `border-${props.color}` : 'border-gray',
 						!isActive.value ? 'opacity-50' : '',
 					]
 						.filter(Boolean)
 						.join(' '),
+					style: { borderColor: isFocused.value ? props.color : 'gray' },
 				},
 				() => [
 					h(
 						Text,
 						{
 							class: isFocused.value
-								? `text-${props.color} font-bold`
+								? 'font-bold'
 								: isActive.value
 									? 'text-white'
-									: 'text-gray',
+									: 'text-[gray]',
+							style: isFocused.value ? { color: props.color } : {},
 						},
 						() =>
 							`${isFocused.value ? '> ' : '  '}${props.label}${isFocused.value ? ' (focused)' : ''}${!isActive.value ? ' (disabled)' : ''}`

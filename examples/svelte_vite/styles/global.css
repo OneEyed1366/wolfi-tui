@@ -7,10 +7,12 @@ body {
 	background-color: black;
 }
 
-.text-base {
-	color: white;
-}
+.text-base { color: white; }
+.text-muted { color: gray; }
 
-.text-muted {
-	color: gray;
+/* Complex selector test case */
+.bg-\[magenta\]\.border-\[cyan\] {
+	background-color: magenta;
+	border-color: cyan;
+	border-style: single;
 }

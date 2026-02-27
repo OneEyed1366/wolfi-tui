@@ -29,7 +29,7 @@ function App() {
 			</Box>
 
 			{/* Tailwind Section */}
-			<Box className="border-double border-yellow p-1 mb-1 flex-col w-full">
+			<Box className="border-double border-[yellow] p-1 mb-1 flex-col w-full">
 				<Text className="text-[cyan]">
 					Tailwind: border-double + arbitrary text-[cyan]
 				</Text>
@@ -71,7 +71,7 @@ function App() {
 				<Box className={buttonStyles.button}>
 					<Text className={buttonStyles.text}>Module Btn</Text>
 				</Box>
-				<Box className="bg-blue-600 p-x-2">
+				<Box className="bg-blue-600 px-2">
 					<Text className="text-white">Tailwind Btn</Text>
 				</Box>
 			</Box>

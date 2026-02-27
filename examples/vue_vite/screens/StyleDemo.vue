@@ -1,7 +1,7 @@
 <template>
 	<Box class="flex-col w-full">
 		<!-- Tailwind Section -->
-		<Box class="border-double border-yellow p-1 mb-1 flex-col w-full">
+		<Box class="border-double border-[yellow] p-1 mb-1 flex-col w-full">
 			<Text class="text-[cyan]">
 				Tailwind: border-double + arbitrary text-[cyan]
 			</Text>
@@ -45,7 +45,7 @@
 			<Box :class="buttonStyles.button">
 				<Text :class="buttonStyles.text">Module Btn</Text>
 			</Box>
-			<Box class="bg-blue-600 p-x-2">
+			<Box class="bg-blue-600 px-2">
 				<Text class="text-white">Tailwind Btn</Text>
 			</Box>
 		</Box>
