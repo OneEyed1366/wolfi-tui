@@ -192,6 +192,16 @@ function initLayoutTreeRecursively(
 		node.layoutNodeId = layoutTree.createNode({})
 		node.layoutTree = layoutTree
 		if (Object.keys(node.style).length > 0) {
+			if (logger.enabled) {
+				logger.log({
+					ts: performance.now(),
+					cat: 'svelte',
+					op: 'initStyle',
+					nodeId: node.layoutNodeId,
+					style: node.style,
+					node: node.nodeName,
+				})
+			}
 			applyLayoutStyle(layoutTree, node.layoutNodeId, node.style)
 		}
 	}
@@ -379,6 +389,16 @@ class _WolfieElement extends WolfieNodeBase {
 	//#endregion Svelte DOM Interface
 
 	setAttribute(name: string, value: string): void {
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'svelte',
+				op: 'setAttribute',
+				name,
+				value: String(value).slice(0, 80),
+				node: this.el.nodeName,
+			})
+		}
 		if (name === 'style') return
 		if (name === 'class' || name === 'className') {
 			setAttribute(this.el, 'class', value)
@@ -448,6 +468,40 @@ export class WolfieElement extends _WolfieElement {
 						cfg.getScheduleRender()?.()
 					}
 					return true
+				}
+				// WHY: set_custom_element_data() calls element.style = mergedStyles when
+				// 'style' in element is true. Route to setStyle(el, ...) so el.style is
+				// populated and initLayoutTreeRecursively can apply it. Must NOT fall
+				// through to catch-all — that overwrites the CSSStyleDeclaration proxy
+				// with the raw IStyles object, leaving el.style empty.
+				if (prop === 'style' && value !== null && typeof value === 'object') {
+					if (logger.enabled) {
+						logger.log({
+							ts: performance.now(),
+							cat: 'svelte',
+							op: 'style_set',
+							value,
+							hasLayoutNode: target.el.layoutNodeId !== undefined,
+							node: target.el.nodeName,
+						})
+					}
+					setStyle(target.el, value as Styles)
+					const lt2 = cfg.getLayoutTree()
+					if (target.el.layoutNodeId !== undefined) {
+						applyLayoutStyle(lt2, target.el.layoutNodeId, value as Styles)
+						cfg.getScheduleRender()?.()
+					}
+					return true
+				}
+				if (logger.enabled) {
+					logger.log({
+						ts: performance.now(),
+						cat: 'svelte',
+						op: 'prop_fallthrough',
+						prop: String(prop),
+						valueType: typeof value,
+						node: target.el.nodeName,
+					})
 				}
 				;(target as Record<string, unknown>)[prop as string] = value
 				return true

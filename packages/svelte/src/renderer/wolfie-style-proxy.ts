@@ -1,6 +1,7 @@
 import {
 	setStyle,
 	applyLayoutStyle,
+	logger,
 	type DOMElement,
 	type Styles,
 	type LayoutTree,
@@ -63,6 +64,17 @@ export function createStyleProxy(cfg: StyleProxyConfig): CSSStyleDeclaration {
 	return new Proxy({} as CSSStyleDeclaration, {
 		set(_t, prop: string, value: string) {
 			const key = CSS_TO_WOLFIE[prop]
+			if (logger.enabled) {
+				logger.log({
+					ts: performance.now(),
+					cat: 'svelte',
+					op: 'styleProxy_set',
+					prop,
+					mapped: key ?? null,
+					value: String(value),
+					hasLayoutNode: cfg.el.layoutNodeId !== undefined,
+				})
+			}
 			if (key) {
 				const partial = { [key]: value } as Partial<Styles>
 				setStyle(cfg.el, partial as Styles)
