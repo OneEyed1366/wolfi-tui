@@ -9,7 +9,4 @@ export {
 	type UseEmailInputStateProps,
 	type EmailInputState,
 } from './use-email-input-state'
-export {
-	default as emailInputTheme,
-	type Theme as EmailInputTheme,
-} from './theme'
+export { defaultTextInputTheme as emailInputTheme, type TextInputRenderTheme as EmailInputTheme } from '@wolfie/shared'
