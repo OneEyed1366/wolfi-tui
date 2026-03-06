@@ -66,3 +66,24 @@ export type SpinnerViewState = {
 	label?: string
 }
 //#endregion Spinner
+
+//#region ProgressBar
+export type ProgressBarViewState = {
+	value: number
+	width: number
+}
+//#endregion ProgressBar
+
+//#region ErrorOverview
+export type ErrorOverviewStackFrame =
+	| { parsed: true; fn?: string; file?: string; line?: number; column?: number }
+	| { parsed: false; raw: string }
+
+export type ErrorOverviewData = {
+	message: string
+	origin?: { filePath?: string; line?: number; column?: number }
+	excerpt?: Array<{ line: number; value: string }>
+	lineWidth: number
+	stackFrames: ErrorOverviewStackFrame[]
+}
+//#endregion ErrorOverview
