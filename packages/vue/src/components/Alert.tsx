@@ -65,7 +65,9 @@ export const Alert = defineComponent({
 		return () => {
 			const { variant, title } = props
 			const message = extractTextFromSlot(slots.default?.())
-			return wNodeToVue(renderAlert({ variant, title, message }, { styles, config }))
+			return wNodeToVue(
+				renderAlert({ variant, title, message }, { styles, config })
+			)
 		}
 	},
 })

@@ -56,7 +56,9 @@ export const StatusMessage = defineComponent({
 		return () => {
 			const { variant } = props
 			const message = extractTextFromSlot(slots.default?.())
-			return wNodeToVue(renderStatusMessage({ variant, message }, { styles, config }))
+			return wNodeToVue(
+				renderStatusMessage({ variant, message }, { styles, config })
+			)
 		}
 	},
 })

@@ -9,4 +9,7 @@ export {
 	type UseTextInputStateProps,
 	type TextInputState,
 } from './use-text-input-state'
-export { defaultTextInputTheme as textInputTheme, type TextInputRenderTheme as TextInputTheme } from '@wolfie/shared'
+export {
+	defaultTextInputTheme as textInputTheme,
+	type TextInputRenderTheme as TextInputTheme,
+} from '@wolfie/shared'

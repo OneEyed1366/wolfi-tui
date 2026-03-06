@@ -36,7 +36,10 @@ export const Spinner = defineComponent({
 
 		return () => {
 			return wNodeToVue(
-				renderSpinner({ frame: spinnerResult.frame, label: props.label }, { styles })
+				renderSpinner(
+					{ frame: spinnerResult.frame, label: props.label },
+					{ styles }
+				)
 			)
 		}
 	},

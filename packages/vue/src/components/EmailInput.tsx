@@ -94,11 +94,16 @@ export const EmailInput: DefineComponent<EmailInputProps> = defineComponent({
 		const { styles } = theme ?? defaultTextInputTheme
 
 		return () => {
-			return wNodeToVue(renderTextInput({ inputValue: inputValue.value }, { styles }))
+			return wNodeToVue(
+				renderTextInput({ inputValue: inputValue.value }, { styles })
+			)
 		}
 	},
 })
 //#endregion Component
 
-export { defaultTextInputTheme as emailInputTheme, type TextInputRenderTheme as EmailInputTheme }
+export {
+	defaultTextInputTheme as emailInputTheme,
+	type TextInputRenderTheme as EmailInputTheme,
+}
 export type { EmailInputProps as Props, EmailInputProps as IProps }

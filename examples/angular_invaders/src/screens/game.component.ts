@@ -128,9 +128,11 @@ import { BRAND } from '../theme'
 				</w-box>
 
 				@if (!isRawModeSupported) {
-					<w-alert variant="warning" title="Warning">
-						Raw mode not supported — input may be limited
-					</w-alert>
+					<w-alert
+						variant="warning"
+						title="Warning"
+						message="Raw mode not supported — input may be limited"
+					/>
 				}
 			</w-box>
 		}

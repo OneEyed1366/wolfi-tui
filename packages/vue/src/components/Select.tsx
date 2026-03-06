@@ -123,5 +123,8 @@ export const Select: DefineComponent<SelectProps> = defineComponent({
 })
 //#endregion Component
 
-export { defaultSelectTheme as selectTheme, type SelectRenderTheme as SelectTheme }
+export {
+	defaultSelectTheme as selectTheme,
+	type SelectRenderTheme as SelectTheme,
+}
 export type { SelectProps as Props, SelectProps as IProps }

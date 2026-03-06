@@ -1,7 +1,10 @@
 import figures from 'figures'
 import { wbox, wtext } from './types'
 import type { WNode, WNodeProps } from './types'
-import type { StatusMessageVariant, StatusMessageViewState } from './view-states'
+import type {
+	StatusMessageVariant,
+	StatusMessageViewState,
+} from './view-states'
 
 //#region Theme
 export type StatusMessageRenderTheme = {

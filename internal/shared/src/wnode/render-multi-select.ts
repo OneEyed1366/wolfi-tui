@@ -75,7 +75,9 @@ export function renderMultiSelect(
 		if (isFocused) {
 			rowChildren.push(wtext(styles.focusIndicator(), [figures.pointer]))
 		}
-		rowChildren.push(wtext(styles.label({ isFocused, isSelected }), labelChildren))
+		rowChildren.push(
+			wtext(styles.label({ isFocused, isSelected }), labelChildren)
+		)
 		if (isSelected) {
 			rowChildren.push(wtext(styles.selectedIndicator(), [figures.tick]))
 		}

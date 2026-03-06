@@ -77,9 +77,7 @@ export const Badge: DefineComponent<{ color?: Styles['color'] }> =
 
 				const children = slots.default?.()
 				const text = extractTextFromSlot(children)
-				const label = text
-					? text.toUpperCase()
-					: String(children?.[0] ?? '')
+				const label = text ? text.toUpperCase() : String(children?.[0] ?? '')
 
 				return wNodeToVue(renderBadge({ label, color }, { styles }))
 			}

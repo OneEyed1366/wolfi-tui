@@ -92,11 +92,16 @@ export const TextInput: DefineComponent<TextInputProps> = defineComponent({
 		const { styles } = theme ?? defaultTextInputTheme
 
 		return () => {
-			return wNodeToVue(renderTextInput({ inputValue: inputValue.value }, { styles }))
+			return wNodeToVue(
+				renderTextInput({ inputValue: inputValue.value }, { styles })
+			)
 		}
 	},
 })
 //#endregion Component
 
-export { defaultTextInputTheme as textInputTheme, type TextInputRenderTheme as TextInputTheme }
+export {
+	defaultTextInputTheme as textInputTheme,
+	type TextInputRenderTheme as TextInputTheme,
+}
 export type { TextInputProps as Props, TextInputProps as IProps }

@@ -12,4 +12,7 @@ export {
 	type UsePasswordInputStateProps,
 	type PasswordInputState,
 } from './use-password-input-state'
-export { defaultTextInputTheme as passwordInputTheme, type TextInputRenderTheme as PasswordInputTheme } from '@wolfie/shared'
+export {
+	defaultTextInputTheme as passwordInputTheme,
+	type TextInputRenderTheme as PasswordInputTheme,
+} from '@wolfie/shared'

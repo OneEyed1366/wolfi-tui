@@ -73,11 +73,16 @@ export const PasswordInput: DefineComponent<PasswordInputProps> =
 			const { styles } = theme ?? defaultTextInputTheme
 
 			return () => {
-				return wNodeToVue(renderTextInput({ inputValue: inputValue.value }, { styles }))
+				return wNodeToVue(
+					renderTextInput({ inputValue: inputValue.value }, { styles })
+				)
 			}
 		},
 	})
 //#endregion Component
 
-export { defaultTextInputTheme as passwordInputTheme, type TextInputRenderTheme as PasswordInputTheme }
+export {
+	defaultTextInputTheme as passwordInputTheme,
+	type TextInputRenderTheme as PasswordInputTheme,
+}
 export type { PasswordInputProps as Props, PasswordInputProps as IProps }

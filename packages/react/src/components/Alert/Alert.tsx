@@ -14,6 +14,8 @@ export function Alert({ children, variant, title }: IAlertProps) {
 
 	const message = String(children ?? '')
 
-	return wNodeToReact(renderAlert({ variant, title, message }, { styles, config }))
+	return wNodeToReact(
+		renderAlert({ variant, title, message }, { styles, config })
+	)
 }
 //#endregion Component

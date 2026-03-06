@@ -31,6 +31,8 @@ export function StatusMessage({ children, variant }: IStatusMessageProps) {
 
 	const message = String(children ?? '')
 
-	return wNodeToReact(renderStatusMessage({ variant, message }, { styles, config }))
+	return wNodeToReact(
+		renderStatusMessage({ variant, message }, { styles, config })
+	)
 }
 //#endregion Component
