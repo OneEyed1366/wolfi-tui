@@ -58,7 +58,7 @@ jobs:
           key: ${{ matrix.target }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build native module
         working-directory: internal/core
