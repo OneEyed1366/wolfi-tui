@@ -35,6 +35,9 @@ jobs:
         working-directory: internal/core
         run: pnpm build:rust
 
+      - name: Debug - list built files
+        run: ls -la internal/core/ || echo "internal/core missing"
+
       - name: Upload native bindings
         uses: actions/upload-artifact@v4
         with:
@@ -66,6 +69,9 @@ jobs:
         with:
           name: wolfie-core-node
           path: .
+
+      - name: Debug - list downloaded files
+        run: find . -name "*.node" -o -name "index.cjs" 2>/dev/null | head -20 || echo "no native files found"
 
       - name: Check
         run: pnpm check
