@@ -62,6 +62,9 @@ jobs:
         working-directory: internal/core
         run: pnpm build:rust
 
+      - name: Generate index.cjs
+        run: cp internal/core/index.js internal/core/index.cjs
+
       - name: Upload native bindings
         uses: actions/upload-artifact@v4
         with:
