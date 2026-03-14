@@ -1,5 +1,5 @@
 build/
 node_modules/
 pnpm-lock.yaml
+.claude/
 unsloth/
-.claude/worktrees/

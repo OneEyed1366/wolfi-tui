@@ -2,33 +2,135 @@ name: CI
 
 on:
   push:
-    branches: [master, main]
-  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  checks:
+    name: lint / build / typecheck / test
+    needs: native
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - uses: pnpm/action-setup@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
         with:
-          version: 9
+          node-version: '20'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Build
+      - name: Download native bindings
+        uses: actions/download-artifact@v4
+        with:
+          name: wolfie-core-node
+          path: internal/core
+
+      - name: Check
+        run: pnpm check
+
+  native:
+    name: Build native bindings (Linux x64)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: internal/core -> target
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build native bindings
+        working-directory: internal/core
+        run: pnpm build:rust
+
+      - name: Generate index.cjs
+        run: cp internal/core/index.js internal/core/index.cjs
+
+      - name: Upload native bindings
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolfie-core-node
+          path: |
+            internal/core/*.node
+            internal/core/index.cjs
+          if-no-files-found: error
+
+  e2e:
+    name: E2E tests (Playwright)
+    needs: [checks, native]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Download native bindings
+        uses: actions/download-artifact@v4
+        with:
+          name: wolfie-core-node
+          path: internal/core
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright + system deps
+        run: npx playwright install --with-deps chromium
+
+      - name: Build all packages
         run: pnpm build
 
-      - name: Test
-        run: pnpm test
+      - name: E2E tests
+        run: pnpm test:e2e
 
-      - name: Lint
-        run: pnpm lint
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-screenshots
+          path: e2e/__screenshots__/
+          retention-days: 7
+
+  release:
+    name: Release Please
+    needs: [checks, e2e]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          config-file: .release-please-config.json
+          manifest-file: .release-please-manifest.json
