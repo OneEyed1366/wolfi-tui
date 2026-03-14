@@ -112,6 +112,19 @@ export default {
 			},
 		],
 	},
+	externals: [
+		({ request }, callback) => {
+			// Optional napi-rs platform packages and platform-specific .node files
+			// are all wrapped in try-catch in index.cjs — pass them through as-is
+			if (
+				/^@wolfie\/core-/.test(request) ||
+				/^\.\/wolfie-layout\.\S+\.node$/.test(request)
+			) {
+				return callback(null, `commonjs ${request}`)
+			}
+			callback()
+		},
+	],
 	optimization: {
 		minimize: false,
 	},
