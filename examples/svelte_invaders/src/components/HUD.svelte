@@ -46,7 +46,7 @@
 		<Text style={{ color: BRAND.primary }} className="font-bold">
 			WAVE{' '}
 		</Text>
-		<Badge color={BRAND.primaryDark}>{wave.toString()}</Badge>
+		<Badge color={BRAND.primaryDark} label={wave.toString()} />
 	</Box>
 
 	{#if showFps}

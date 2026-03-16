@@ -73,11 +73,14 @@ export const unpluginFactory: UnpluginFactory<[Framework, WolfieOptions?]> = (
 		webpack(compiler) {
 			const scanAndAddCandidates = async () => {
 				const rootDir = compiler.context || process.cwd()
-				const sourceFiles = await glob(['**/*.{tsx,jsx,ts,js,vue,html}'], {
-					cwd: rootDir,
-					ignore: ['**/node_modules/**', '**/dist/**', '**/build/**'],
-					absolute: true,
-				})
+				const sourceFiles = await glob(
+					['**/*.{tsx,jsx,ts,js,vue,svelte,html}'],
+					{
+						cwd: rootDir,
+						ignore: ['**/node_modules/**', '**/dist/**', '**/build/**'],
+						absolute: true,
+					}
+				)
 				for (const file of sourceFiles) {
 					try {
 						const content = readFileSync(file, 'utf-8')

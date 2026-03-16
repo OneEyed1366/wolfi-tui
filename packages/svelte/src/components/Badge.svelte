@@ -8,16 +8,16 @@
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
 
-	let { color, children }: {
+	let { color, label = '' }: {
 		color?: Styles['color']
-		children?: string
+		label?: string
 	} = $props()
 
 	const theme = useComponentTheme<BadgeRenderTheme>('Badge')
 	const { styles } = theme ?? defaultBadgeTheme
 
 	let wnode = $derived(renderBadge(
-		{ label: String(children ?? '').toUpperCase(), color },
+		{ label: label.toUpperCase(), color },
 		{ styles }
 	))
 </script>

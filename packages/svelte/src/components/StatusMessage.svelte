@@ -11,16 +11,16 @@
 	type StatusMessageVariant = 'info' | 'success' | 'error' | 'warning'
 	//#endregion Types
 
-	let { variant, children }: {
+	let { variant, message = '' }: {
 		variant: StatusMessageVariant
-		children?: string
+		message?: string
 	} = $props()
 
 	const theme = useComponentTheme<StatusMessageRenderTheme>('StatusMessage')
 	const { styles, config } = theme ?? defaultStatusMessageTheme
 
 	let wnode = $derived(renderStatusMessage(
-		{ variant, message: String(children ?? '') },
+		{ variant, message },
 		{ styles, config }
 	))
 </script>

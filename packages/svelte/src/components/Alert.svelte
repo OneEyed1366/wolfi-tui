@@ -11,17 +11,17 @@
 	type AlertVariant = 'info' | 'success' | 'error' | 'warning'
 	//#endregion Types
 
-	let { variant, title, children }: {
+	let { variant, title, message = '' }: {
 		variant: AlertVariant
 		title?: string
-		children?: string
+		message?: string
 	} = $props()
 
 	const theme = useComponentTheme<AlertRenderTheme>('Alert')
 	const { styles, config } = theme ?? defaultAlertTheme
 
 	let wnode = $derived(renderAlert(
-		{ variant, title, message: String(children ?? '') },
+		{ variant, title, message },
 		{ styles, config }
 	))
 </script>
