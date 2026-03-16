@@ -578,7 +578,11 @@ class WolfieSvelte {
 			context: contextMap,
 		})
 
-		this.flushRender()
+		// Svelte's mount() is synchronous but actions (use:wolfieProps) execute
+		// in Svelte's effect queue (microtask). Flushing immediately would render
+		// the first frame with empty styles. Defer to next microtask so actions
+		// have applied real styles to layout nodes before the first paint.
+		queueMicrotask(() => this.flushRender())
 	}
 
 	unmount() {
