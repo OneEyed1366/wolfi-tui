@@ -14,9 +14,9 @@ interface WolfiePropsPayload {
  * Svelte action that applies style objects, internal_transform functions, and
  * internal_static flags directly to a WolfieElement's core DOMElement.
  *
- * Svelte's compiled `set_custom_element_data()` calls `setAttribute()` which
- * stringifies objects to '[object Object]' and functions to 'function...'.
- * This action bypasses that by writing to the core DOM API directly.
+ * Svelte's set_custom_element_data() explicitly blocks style from the setter
+ * path (prop !== 'style'). Functions get typeof === 'function', not 'object',
+ * so Svelte would stringify them via setAttribute. This action bypasses both.
  */
 export function wolfieProps(node: WolfieElement, props: WolfiePropsPayload) {
 	function apply(p: WolfiePropsPayload) {
@@ -50,7 +50,10 @@ export function wolfieProps(node: WolfieElement, props: WolfiePropsPayload) {
 			apply(newProps)
 		},
 		destroy() {
-			// No cleanup needed — DOM element lifecycle handles teardown
+			// Mark as dead — purgeDeadWrapperNodes filters these during reconciliation.
+			// Safety net for edge cases where Svelte's teardown doesn't call remove()
+			// on every element (e.g., component-level unmount removes only outermost).
+			node._wdead = true
 		},
 	}
 }

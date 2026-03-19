@@ -11,8 +11,8 @@ import {
 	logger,
 	type DOMElement,
 	type TextNode,
-	type ElementNames,
 	type LayoutTree,
+	type ElementNames,
 } from '@wolfie/core'
 import type { Styles } from '@wolfie/core'
 
@@ -29,8 +29,8 @@ function isElementName(tag: string): tag is ElementNames {
 	return VALID_ELEMENT_NAMES.has(tag)
 }
 
-function isNodeConnected(node: WolfieNodeBase): boolean {
-	let current: WolfieNodeBase | null = node
+function isNodeConnected(node: WolfieNode): boolean {
+	let current: WolfieNode | null = node
 	while (current) {
 		if (current.nodeName === 'wolfie-root') return true
 		current = current._wparent
@@ -78,18 +78,27 @@ function scheduleRender(): void {
 
 //#endregion Config
 
-//#region WolfieNodeBase
+//#region WolfieNode
 
 /**
- * Abstract base class for all wolfie DOM wrapper nodes.
- * Provides the standard DOM navigation and mutation API that Svelte 5 expects.
+ * Base class for all wolfie DOM wrapper nodes. Assigned to globalThis.Node so
+ * Svelte's init_operations() finds our prototype getters via
+ * Object.getOwnPropertyDescriptor(Node.prototype, 'firstChild').
  *
- * Svelte's compiled output calls appendChild, insertBefore, removeChild, firstChild,
- * nextSibling, etc. — all routed through this base class.
+ * All traversal getters, ChildNode methods (remove, before, after, replaceWith),
+ * and ParentNode methods (appendChild, insertBefore, removeChild, append) live
+ * here. WolfieElement overrides the core-DOM delegation hooks.
  */
-export abstract class WolfieNodeBase {
-	_wchildren: WolfieNodeBase[] = []
-	_wparent: WolfieNodeBase | null = null
+export abstract class WolfieNode {
+	// Static constants matching DOM spec — Svelte reads these from Node
+	static readonly ELEMENT_NODE = 1
+	static readonly TEXT_NODE = 3
+	static readonly COMMENT_NODE = 8
+	static readonly DOCUMENT_FRAGMENT_NODE = 11
+
+	_wchildren: WolfieNode[] = []
+	_wparent: WolfieNode | null = null
+	_wdead = false
 
 	abstract readonly nodeType: number
 	abstract readonly nodeName: string
@@ -101,44 +110,43 @@ export abstract class WolfieNodeBase {
 	declare __style: unknown
 	declare __e: unknown
 
-	//#region Navigation
+	//#region Navigation — prototype getters found by Object.getOwnPropertyDescriptor
 
-	get firstChild(): WolfieNodeBase | null {
+	get firstChild(): WolfieNode | null {
 		return this._wchildren[0] ?? null
 	}
 
-	get lastChild(): WolfieNodeBase | null {
+	get lastChild(): WolfieNode | null {
 		return this._wchildren[this._wchildren.length - 1] ?? null
 	}
 
-	get nextSibling(): WolfieNodeBase | null {
+	get nextSibling(): WolfieNode | null {
 		if (!this._wparent) return null
 		const siblings = this._wparent._wchildren
 		const idx = siblings.indexOf(this)
 		return siblings[idx + 1] ?? null
 	}
 
-	get previousSibling(): WolfieNodeBase | null {
+	get previousSibling(): WolfieNode | null {
 		if (!this._wparent) return null
 		const siblings = this._wparent._wchildren
 		const idx = siblings.indexOf(this)
 		return idx > 0 ? (siblings[idx - 1] ?? null) : null
 	}
 
-	get parentNode(): WolfieNodeBase | null {
+	get parentNode(): WolfieNode | null {
 		return this._wparent
 	}
 
-	get parentElement(): WolfieNodeBase | null {
+	get parentElement(): WolfieNode | null {
 		return this._wparent
 	}
 
-	get childNodes(): WolfieNodeBase[] {
+	get childNodes(): WolfieNode[] {
 		return this._wchildren
 	}
 
 	get isConnected(): boolean {
-		// Walk parent chain to find root. Using a helper to avoid this-alias.
 		return isNodeConnected(this)
 	}
 
@@ -148,9 +156,9 @@ export abstract class WolfieNodeBase {
 
 	//#endregion Navigation
 
-	//#region Mutation
+	//#region Mutation — ParentNode + ChildNode methods
 
-	appendChild(child: WolfieNodeBase): WolfieNodeBase {
+	appendChild(child: WolfieNode): WolfieNode {
 		// Fragment: move children, not the fragment itself (standard DOM behavior)
 		if (child instanceof WolfieDocumentFragment) {
 			const kids = [...child._wchildren]
@@ -160,7 +168,7 @@ export abstract class WolfieNodeBase {
 			return child
 		}
 
-		// Detach from current parent
+		// Detach from current parent — triggers core DOM + Taffy cleanup
 		if (child._wparent) {
 			child._wparent.removeChild(child)
 		}
@@ -174,10 +182,7 @@ export abstract class WolfieNodeBase {
 		return child
 	}
 
-	insertBefore(
-		newChild: WolfieNodeBase,
-		refChild: WolfieNodeBase | null
-	): WolfieNodeBase {
+	insertBefore(newChild: WolfieNode, refChild: WolfieNode | null): WolfieNode {
 		if (!refChild) return this.appendChild(newChild)
 
 		// Fragment: insert all children before refChild
@@ -208,7 +213,7 @@ export abstract class WolfieNodeBase {
 		return newChild
 	}
 
-	removeChild(child: WolfieNodeBase): WolfieNodeBase {
+	removeChild(child: WolfieNode): WolfieNode {
 		const idx = this._wchildren.indexOf(child)
 		if (idx >= 0) {
 			this._wchildren.splice(idx, 1)
@@ -221,16 +226,14 @@ export abstract class WolfieNodeBase {
 		return child
 	}
 
-	replaceChild(
-		newChild: WolfieNodeBase,
-		oldChild: WolfieNodeBase
-	): WolfieNodeBase {
+	replaceChild(newChild: WolfieNode, oldChild: WolfieNode): WolfieNode {
 		this.insertBefore(newChild, oldChild)
 		this.removeChild(oldChild)
 		return oldChild
 	}
 
-	append(...nodes: Array<WolfieNodeBase | string>): void {
+	/** ParentNode.append — Svelte calls element.append(child) heavily */
+	append(...nodes: Array<WolfieNode | string>): void {
 		for (const node of nodes) {
 			if (typeof node === 'string') {
 				this.appendChild(new WolfieText(node))
@@ -240,38 +243,58 @@ export abstract class WolfieNodeBase {
 		}
 	}
 
-	before(newNode: WolfieNodeBase): void {
-		if (this._wparent) {
-			this._wparent.insertBefore(newNode, this)
+	/** ParentNode.prepend */
+	prepend(...nodes: Array<WolfieNode | string>): void {
+		const ref = this.firstChild
+		for (const node of nodes) {
+			const child = typeof node === 'string' ? new WolfieText(node) : node
+			this.insertBefore(child, ref)
 		}
 	}
 
-	after(newNode: WolfieNodeBase): void {
-		if (this._wparent) {
-			const next = this.nextSibling
-			if (next) {
-				this._wparent.insertBefore(newNode, next)
-			} else {
-				this._wparent.appendChild(newNode)
-			}
+	/** ChildNode.before — Svelte calls anchor.before(node) for insertion */
+	before(...nodes: Array<WolfieNode | string>): void {
+		if (!this._wparent) return
+		for (const node of nodes) {
+			const child = typeof node === 'string' ? new WolfieText(node) : node
+			this._wparent.insertBefore(child, this)
 		}
 	}
 
+	/** ChildNode.after — Svelte calls node.after(text) */
+	after(...nodes: Array<WolfieNode | string>): void {
+		if (!this._wparent) return
+		let ref = this.nextSibling
+		for (const node of nodes) {
+			const child = typeof node === 'string' ? new WolfieText(node) : node
+			this._wparent.insertBefore(child, ref)
+			// After inserting, the next insert goes after the one we just inserted
+			ref = child.nextSibling
+		}
+	}
+
+	/** ChildNode.remove — THE key fix for Svelte's remove_effect_dom() */
 	remove(): void {
 		if (this._wparent) {
 			this._wparent.removeChild(this)
 		}
 	}
 
-	replaceWith(newNode: WolfieNodeBase): void {
-		if (this._wparent) {
-			this._wparent.replaceChild(newNode, this)
+	/** ChildNode.replaceWith */
+	replaceWith(...nodes: Array<WolfieNode | string>): void {
+		if (!this._wparent) return
+		const parent = this._wparent
+		const ref = this.nextSibling
+		parent.removeChild(this)
+		for (const node of nodes) {
+			const child = typeof node === 'string' ? new WolfieText(node) : node
+			parent.insertBefore(child, ref)
 		}
 	}
 
-	contains(node: WolfieNodeBase | null): boolean {
+	contains(node: WolfieNode | null): boolean {
 		if (!node) return false
-		let current: WolfieNodeBase | null = node
+		let current: WolfieNode | null = node
 		while (current) {
 			if (current === this) return true
 			current = current._wparent
@@ -279,7 +302,7 @@ export abstract class WolfieNodeBase {
 		return false
 	}
 
-	cloneNode(deep?: boolean): WolfieNodeBase {
+	cloneNode(deep?: boolean): WolfieNode {
 		return this._cloneImpl(deep ?? false)
 	}
 
@@ -301,37 +324,38 @@ export abstract class WolfieNodeBase {
 
 	//#endregion Mutation
 
-	//#region Protected — override in subclasses
+	//#region Protected — override in subclasses for core DOM delegation
 
-	protected _coreDomAppend(_child: WolfieNodeBase): void {
+	protected _coreDomAppend(_child: WolfieNode): void {
 		// Default: no-op for comment/fragment
 	}
 
 	protected _coreDomInsertBefore(
-		_newChild: WolfieNodeBase,
-		_refChild: WolfieNodeBase
+		_newChild: WolfieNode,
+		_refChild: WolfieNode
 	): void {
 		// Default: no-op
 	}
 
-	protected _coreDomRemove(_child: WolfieNodeBase): void {
+	protected _coreDomRemove(_child: WolfieNode): void {
 		// Default: no-op
 	}
 
-	protected abstract _cloneImpl(deep: boolean): WolfieNodeBase
+	protected abstract _cloneImpl(deep: boolean): WolfieNode
 
 	//#endregion Protected
 }
 
-//#endregion WolfieNodeBase
+//#endregion WolfieNode
 
 //#region WolfieElement
 
 /**
  * Wraps a core DOMElement. Each WolfieElement owns one DOMElement from @wolfie/core.
  * All attribute/style/child operations delegate to the core DOM API.
+ * Assigned to globalThis.Element and globalThis.HTMLElement.
  */
-export class WolfieElement extends WolfieNodeBase {
+export class WolfieElement extends WolfieNode {
 	readonly nodeType = 1
 	readonly nodeName: string
 	readonly domElement: DOMElement
@@ -341,13 +365,6 @@ export class WolfieElement extends WolfieNodeBase {
 		string,
 		Set<EventListenerOrEventListenerObject>
 	>()
-
-	// Svelte V8 shape hints
-	declare __click: unknown
-	declare __className: unknown
-	declare __attributes: unknown
-	declare __style: unknown
-	declare __e: unknown
 
 	constructor(tagName: string, domEl?: DOMElement) {
 		super()
@@ -460,6 +477,16 @@ export class WolfieElement extends WolfieNodeBase {
 			},
 			get(_target, prop) {
 				if (prop === 'cssText') return ''
+				if (prop === 'setProperty') {
+					return (key: string, value: string) => {
+						const merged: Styles = { ...domEl.style, [key]: value }
+						setStyle(domEl, merged)
+						if (domEl.layoutNodeId !== undefined && domEl.layoutTree) {
+							applyLayoutStyle(domEl.layoutTree, domEl.layoutNodeId, merged)
+						}
+						scheduleRender()
+					}
+				}
 				if (typeof prop === 'string') {
 					const val = Reflect.get(domEl.style, prop)
 					return val !== undefined ? String(val) : ''
@@ -542,8 +569,7 @@ export class WolfieElement extends WolfieNodeBase {
 	}
 
 	set innerHTML(_value: string) {
-		// Svelte template fallback uses innerHTML on <template> elements.
-		// We handle <template> specially in wolfie-document, so this is a no-op stub.
+		// No-op stub — with fragments:'tree', Svelte doesn't use innerHTML
 	}
 
 	/** Template compat — `content` returns self so `template.content.cloneNode()` works */
@@ -579,20 +605,20 @@ export class WolfieElement extends WolfieNodeBase {
 
 	//#region Core DOM delegation
 
-	protected override _coreDomAppend(child: WolfieNodeBase): void {
+	protected override _coreDomAppend(child: WolfieNode): void {
 		const lt = getLayoutTree()
 		if (child instanceof WolfieElement) {
 			appendChildNode(this.domElement, child.domElement, lt)
 		} else if (child instanceof WolfieText) {
 			appendChildNode(this.domElement, child.textNode, lt)
 		}
-		// WolfieComment: no core DOM node, just tracked in _wchildren
+		// WolfieComment: no core DOM node, just tracked in _wchildren for navigation
 		scheduleRender()
 	}
 
 	protected override _coreDomInsertBefore(
-		newChild: WolfieNodeBase,
-		refChild: WolfieNodeBase
+		newChild: WolfieNode,
+		refChild: WolfieNode
 	): void {
 		const lt = getLayoutTree()
 		const refDomNode =
@@ -653,7 +679,7 @@ export class WolfieElement extends WolfieNodeBase {
 		scheduleRender()
 	}
 
-	protected override _coreDomRemove(child: WolfieNodeBase): void {
+	protected override _coreDomRemove(child: WolfieNode): void {
 		const lt = getLayoutTree()
 		if (child instanceof WolfieElement) {
 			removeChildNode(this.domElement, child.domElement, lt)
@@ -699,13 +725,14 @@ export class WolfieElement extends WolfieNodeBase {
 
 /**
  * Wraps a core TextNode. Delegates text value changes to setTextNodeValue().
+ * Assigned to globalThis.Text.
  */
-export class WolfieText extends WolfieNodeBase {
+export class WolfieText extends WolfieNode {
 	readonly nodeType = 3
 	readonly nodeName = '#text'
 	readonly textNode: TextNode
 
-	// Svelte V8 shape hint
+	// Svelte V8 shape hint — written on Text.prototype
 	declare __t: unknown
 
 	constructor(text?: string) {
@@ -754,12 +781,9 @@ export class WolfieText extends WolfieNodeBase {
 /**
  * Dummy node for Svelte's anchor comments ({#if}, {#each}, etc.).
  * No core DOM node — purely tracked in the wrapper tree for sibling navigation.
- *
- * CRITICAL: These must NOT become Taffy children. When Svelte inserts an anchor
- * comment inside a wolfie-text element, initLayoutTreeRecursively early-returns
- * to prevent comments from becoming layout children of text nodes.
+ * Assigned to globalThis.Comment.
  */
-export class WolfieComment extends WolfieNodeBase {
+export class WolfieComment extends WolfieNode {
 	readonly nodeType = 8
 	readonly nodeName = '#comment'
 	data: string
@@ -797,8 +821,9 @@ export class WolfieComment extends WolfieNodeBase {
 /**
  * Fragment node. When appended to a parent, its children move to the parent
  * (standard DOM fragment semantics). Used by Svelte for {#if}/{#each} blocks.
+ * Assigned to globalThis.DocumentFragment.
  */
-export class WolfieDocumentFragment extends WolfieNodeBase {
+export class WolfieDocumentFragment extends WolfieNode {
 	readonly nodeType = 11
 	readonly nodeName = '#document-fragment'
 

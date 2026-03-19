@@ -1,5 +1,5 @@
-import type { WolfieNodeBase } from './wolfie-element.js'
 import {
+	WolfieNode,
 	WolfieElement,
 	WolfieText,
 	WolfieComment,
@@ -18,6 +18,7 @@ interface SavedGlobals {
 	SVGElement: typeof globalThis.SVGElement | undefined
 	Text: typeof globalThis.Text | undefined
 	Comment: typeof globalThis.Comment | undefined
+	DocumentFragment: typeof globalThis.DocumentFragment | undefined
 	window: typeof globalThis.window | undefined
 	navigator: typeof globalThis.navigator | undefined
 	requestAnimationFrame: typeof globalThis.requestAnimationFrame | undefined
@@ -41,11 +42,14 @@ let saved: SavedGlobals | null = null
 //#region patchGlobals
 
 /**
- * Patch globalThis.document and related globals so Svelte 5's compiled
- * `document.createElement()` calls produce WolfieElement wrappers that
- * delegate to wolfie's core DOM API.
+ * Replace globalThis.Node/Element/Text/Comment/DocumentFragment with our real
+ * classes so Svelte's init_operations() finds proper prototype getters via
+ * Object.getOwnPropertyDescriptor(Node.prototype, 'firstChild').
  *
- * Must be called BEFORE Svelte's `mount()`. Call `restoreGlobals()` on cleanup.
+ * With fragments:'tree' in svelte compiler, no HTML parser is needed —
+ * Svelte generates from_tree() which calls document.createElement() directly.
+ *
+ * Must be called BEFORE Svelte's mount(). Call restoreGlobals() on cleanup.
  */
 export function patchGlobals(patchConfig: PatchConfig): void {
 	if (saved) return // Already patched
@@ -62,6 +66,7 @@ export function patchGlobals(patchConfig: PatchConfig): void {
 		SVGElement: globalThis.SVGElement,
 		Text: globalThis.Text,
 		Comment: globalThis.Comment,
+		DocumentFragment: globalThis.DocumentFragment,
 		window: globalThis.window,
 		navigator: globalThis.navigator,
 		requestAnimationFrame: globalThis.requestAnimationFrame,
@@ -69,105 +74,10 @@ export function patchGlobals(patchConfig: PatchConfig): void {
 		customElements: globalThis.customElements,
 	}
 
-	//#region Node class
+	//#region Template HTML parser (fallback for from_html() paths)
 
-	// Svelte's init_operations() steals firstChild/nextSibling via
-	// Object.getOwnPropertyDescriptor(Node.prototype, 'firstChild').
-	// We MUST define these as property descriptors with get functions.
-	class WNode {
-		static readonly ELEMENT_NODE = 1
-		static readonly TEXT_NODE = 3
-		static readonly COMMENT_NODE = 8
-		static readonly DOCUMENT_FRAGMENT_NODE = 11
-	}
-
-	Object.defineProperties(WNode.prototype, {
-		firstChild: {
-			get(this: WolfieNodeBase) {
-				return this.firstChild
-			},
-			configurable: true,
-		},
-		nextSibling: {
-			get(this: WolfieNodeBase) {
-				return this.nextSibling
-			},
-			configurable: true,
-		},
-		previousSibling: {
-			get(this: WolfieNodeBase) {
-				return this.previousSibling
-			},
-			configurable: true,
-		},
-		lastChild: {
-			get(this: WolfieNodeBase) {
-				return this.lastChild
-			},
-			configurable: true,
-		},
-		parentNode: {
-			get(this: WolfieNodeBase) {
-				return this.parentNode
-			},
-			configurable: true,
-		},
-		childNodes: {
-			get(this: WolfieNodeBase) {
-				return this.childNodes
-			},
-			configurable: true,
-		},
-		textContent: {
-			get(this: WolfieNodeBase) {
-				return this.textContent
-			},
-			set(this: WolfieNodeBase, value: string) {
-				this.textContent = value
-			},
-			configurable: true,
-		},
-		nodeType: {
-			get(this: WolfieNodeBase) {
-				return this.nodeType
-			},
-			configurable: true,
-		},
-	})
-
-	//#endregion Node class
-
-	//#region Element/HTMLElement/SVGElement/Text/Comment classes
-
-	class WElement extends WNode {
-		// V8 shape hints that Svelte writes on Element.prototype
-		declare __click: unknown
-		declare __className: unknown
-		declare __attributes: unknown
-		declare __style: unknown
-		declare __e: unknown
-	}
-
-	class WHTMLElement extends WElement {}
-	class WSVGElement extends WElement {}
-
-	class WText extends WNode {
-		// Svelte writes __t on Text.prototype
-		declare __t: unknown
-	}
-
-	class WComment extends WNode {}
-
-	//#endregion Element/HTMLElement/SVGElement/Text/Comment classes
-
-	//#region Document object
-
-	const noop = () => {}
-
-	//#region Template HTML Parser
-	// Minimal HTML parser for Svelte's compiled template fragments.
-	// Svelte sends simple HTML: <!---> comments, <wolfie-*> self-closing or
-	// paired elements, and bare text. No attributes need to be parsed.
+	/** Parse simple HTML from Svelte templates into wolfie nodes.
+	 *  Svelte sends: <!---> comments, <wolfie-*> elements, text. */
 	function parseHTMLIntoFragment(
 		parent: WolfieDocumentFragment,
 		html: string
@@ -181,19 +91,15 @@ export function patchGlobals(patchConfig: PatchConfig): void {
 
 		while (i < html.length) {
 			if (html.startsWith('<!--', i)) {
-				// Comment node
 				const end = html.indexOf('-->', i + 4)
 				const text = end >= 0 ? html.slice(i + 4, end) : ''
-				const comment = new WolfieComment(text)
-				currentParent().appendChild(comment)
+				currentParent().appendChild(new WolfieComment(text))
 				i = end >= 0 ? end + 3 : html.length
 			} else if (html.startsWith('</', i)) {
-				// Closing tag
 				const end = html.indexOf('>', i + 2)
 				i = end >= 0 ? end + 1 : html.length
 				if (stack.length > 1) stack.pop()
 			} else if (html[i] === '<') {
-				// Opening tag
 				const tagEnd = html.indexOf('>', i + 1)
 				if (tagEnd < 0) break
 				const tagContent = html.slice(i + 1, tagEnd)
@@ -201,55 +107,57 @@ export function patchGlobals(patchConfig: PatchConfig): void {
 				const tagName = (selfClosing ? tagContent.slice(0, -1) : tagContent)
 					.split(/[\s/]/)[0]!
 					.toLowerCase()
-
 				const normalized = tagName.startsWith('wolfie-')
 					? tagName
 					: `wolfie-${tagName}`
 				const el = new WolfieElement(normalized)
 				currentParent().appendChild(el)
-
 				if (!selfClosing) {
 					stack.push(el)
 				}
 				i = tagEnd + 1
 			} else {
-				// Text content
 				const nextTag = html.indexOf('<', i)
 				const text = nextTag >= 0 ? html.slice(i, nextTag) : html.slice(i)
 				if (text) {
-					const textNode = new WolfieText(text)
-					currentParent().appendChild(textNode)
+					currentParent().appendChild(new WolfieText(text))
 				}
 				i = nextTag >= 0 ? nextTag : html.length
 			}
 		}
 	}
-	//#endregion Template HTML Parser
+
+	/** Create a fragment that acts as a <template> element for Svelte's from_html() */
+	function createTemplateFragment(): WolfieDocumentFragment {
+		const frag = new WolfieDocumentFragment()
+		Object.defineProperty(frag, 'innerHTML', {
+			set(html: string) {
+				parseHTMLIntoFragment(frag, html)
+			},
+			get() {
+				return ''
+			},
+		})
+		Object.defineProperty(frag, 'content', {
+			get() {
+				return frag
+			},
+		})
+		return frag
+	}
+
+	//#endregion Template HTML parser
+
+	//#region Document object
+
+	const noop = () => {}
 
 	const wolfieDocument = {
 		createElement(tag: string): WolfieElement | WolfieDocumentFragment {
-			// Template compat — Svelte uses <template> for fragment-from-HTML
+			// Template compat — Svelte uses <template> for from_html() fallback
 			if (tag === 'template') {
-				const frag = new WolfieDocumentFragment()
-				Object.defineProperty(frag, 'innerHTML', {
-					set(html: string) {
-						// Parse simple HTML from Svelte templates into wolfie nodes.
-						// Svelte sends: <!----> comments, <wolfie-*> elements, text.
-						parseHTMLIntoFragment(frag, html)
-					},
-					get() {
-						return ''
-					},
-				})
-				Object.defineProperty(frag, 'content', {
-					get() {
-						return frag
-					},
-				})
-				return frag
+				return createTemplateFragment()
 			}
-
-			// Normalize tag: prefix with 'wolfie-' if not already
 			const normalized = tag.startsWith('wolfie-') ? tag : `wolfie-${tag}`
 			return new WolfieElement(normalized)
 		},
@@ -258,27 +166,26 @@ export function patchGlobals(patchConfig: PatchConfig): void {
 			_ns: string | null,
 			tag: string
 		): WolfieElement | WolfieDocumentFragment {
-			// Template compat — same handling as createElement
 			if (tag === 'template') {
-				return wolfieDocument.createElement('template')
+				return createTemplateFragment()
 			}
 			const normalized = tag.startsWith('wolfie-') ? tag : `wolfie-${tag}`
 			return new WolfieElement(normalized)
 		},
 
 		createTextNode(text: string): WolfieText {
-			return new WolfieText(text)
+			return new WolfieText(String(text ?? ''))
 		},
 
 		createComment(data: string): WolfieComment {
-			return new WolfieComment(data)
+			return new WolfieComment(data ?? '')
 		},
 
 		createDocumentFragment(): WolfieDocumentFragment {
 			return new WolfieDocumentFragment()
 		},
 
-		importNode(node: WolfieNodeBase, deep?: boolean): WolfieNodeBase {
+		importNode(node: WolfieNode, deep?: boolean): WolfieNode {
 			return node.cloneNode(deep ?? false)
 		},
 
@@ -294,6 +201,7 @@ export function patchGlobals(patchConfig: PatchConfig): void {
 		},
 
 		get head(): WolfieElement {
+			// Stub for svelte-head.js
 			return new WolfieElement('wolfie-box')
 		},
 
@@ -306,47 +214,45 @@ export function patchGlobals(patchConfig: PatchConfig): void {
 		},
 
 		createEvent(type: string): Event {
+			// infrastructure: minimal Event shim for Svelte's event system
 			return { type, bubbles: false, cancelable: false } as unknown as Event
 		},
 	}
 
 	//#endregion Document object
 
-	//#region Window object
+	//#region Apply patches — real classes, not proxies
 
-	const wolfieWindow = {
-		document: wolfieDocument,
-		getComputedStyle() {
-			return {}
-		},
-		addEventListener: noop,
-		removeEventListener: noop,
-	}
-
-	//#endregion Window object
-
-	//#region Apply patches
-
-	// Using Object.defineProperty to handle readonly/non-configurable globals
 	const g = globalThis as Record<string, unknown>
+
+	// Core DOM class hierarchy — Svelte's init_operations() reads these
+	// via Object.getOwnPropertyDescriptor(Node.prototype, 'firstChild') etc.
+	g['Node'] = WolfieNode
+	g['Element'] = WolfieElement
+	g['HTMLElement'] = WolfieElement
+	g['SVGElement'] = WolfieElement
+	g['Text'] = WolfieText
+	g['Comment'] = WolfieComment
+	g['DocumentFragment'] = WolfieDocumentFragment
+
 	g['document'] = wolfieDocument
-	g['Node'] = WNode
-	g['Element'] = WElement
-	g['HTMLElement'] = WHTMLElement
-	g['SVGElement'] = WSVGElement
-	g['Text'] = WText
-	g['Comment'] = WComment
-	g['window'] = wolfieWindow
+	g['window'] = globalThis
+	// Svelte's style.js calls window.getComputedStyle(); event delegation
+	// calls window.addEventListener/removeEventListener. Stub them.
+	g['getComputedStyle'] = () => ({})
+	g['addEventListener'] = noop
+	g['removeEventListener'] = noop
+
 	try {
 		g['navigator'] = { userAgent: 'wolfie' }
 	} catch {
-		// navigator is read-only in some Node.js environments
 		Object.defineProperty(globalThis, 'navigator', {
 			value: { userAgent: 'wolfie' },
 			writable: true,
 			configurable: true,
 		})
 	}
+
 	g['requestAnimationFrame'] = (cb: () => void) => setTimeout(cb, 16)
 	g['cancelAnimationFrame'] = (id: ReturnType<typeof setTimeout>) =>
 		clearTimeout(id)
@@ -360,8 +266,7 @@ export function patchGlobals(patchConfig: PatchConfig): void {
 //#region restoreGlobals
 
 /**
- * Restore all globals that were patched by `patchGlobals()`.
- * Safe to call multiple times — only restores if currently patched.
+ * Restore all globals patched by patchGlobals(). Idempotent.
  */
 export function restoreGlobals(): void {
 	if (!saved) return
@@ -374,6 +279,7 @@ export function restoreGlobals(): void {
 	g['SVGElement'] = saved.SVGElement
 	g['Text'] = saved.Text
 	g['Comment'] = saved.Comment
+	g['DocumentFragment'] = saved.DocumentFragment
 	g['window'] = saved.window
 	try {
 		g['navigator'] = saved.navigator

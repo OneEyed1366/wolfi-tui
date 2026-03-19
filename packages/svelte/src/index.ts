@@ -708,6 +708,7 @@ export { wNodeToSvelte, mountWNode } from './wnode/wnode-to-svelte.js'
 //#region Renderer Re-exports
 export { patchGlobals, restoreGlobals } from './renderer/wolfie-document.js'
 export {
+	WolfieNode,
 	WolfieElement,
 	WolfieText,
 	WolfieComment,

@@ -1,20 +1,19 @@
-import { applyLayoutStyle, type LayoutTree } from '@wolfie/core'
+import { logger, type LayoutTree } from '@wolfie/core'
 import { WolfieElement } from './wolfie-element.js'
 
 /**
- * Recursively walk the wrapper tree starting from `element` and ensure every
- * WolfieElement has a Taffy layout node.
+ * Verification pass: walk the wrapper tree and confirm every WolfieElement
+ * has a Taffy layout node. With eager Taffy node creation in WolfieElement's
+ * constructor and cloneNode, this should always hold — log warnings if not.
  *
  * CRITICAL: early-return when nodeName === 'wolfie-text'.
- * Svelte's {#if} blocks insert anchor comment (WolfieComment) nodes INSIDE
- * wolfie-text elements. Without this guard, initLayoutTreeRecursively would
- * add them as Taffy children of wolfie-text, turning it from a leaf node
- * (text-measured by Taffy) into a flex container with zero-size children
- * — resulting in width=0 for all text.
+ * Svelte's {#if} blocks insert anchor comment nodes INSIDE wolfie-text elements.
+ * Recursing into their children would corrupt Taffy layout — text nodes are
+ * leaves measured by setTextDimensions, not flex containers.
  */
 export function initLayoutTreeRecursively(
 	element: WolfieElement,
-	layoutTree: LayoutTree
+	_layoutTree: LayoutTree
 ): void {
 	// wolfie-text is a leaf: Taffy measures it via setTextDimensions.
 	// Recursing into its children would corrupt layout — abort.
@@ -22,19 +21,18 @@ export function initLayoutTreeRecursively(
 
 	const domEl = element.domElement
 
-	// Already initialized — skip
-	if (domEl.layoutNodeId !== undefined) return
-
-	domEl.layoutNodeId = layoutTree.createNode({})
-	domEl.layoutTree = layoutTree
-
-	if (domEl.style) {
-		applyLayoutStyle(layoutTree, domEl.layoutNodeId, domEl.style)
+	if (logger.enabled && domEl.layoutNodeId === undefined) {
+		logger.log({
+			ts: performance.now(),
+			cat: 'svelte',
+			op: 'initLayoutTree:missing',
+			name: element.nodeName,
+		})
 	}
 
 	for (const child of element._wchildren) {
 		if (child instanceof WolfieElement) {
-			initLayoutTreeRecursively(child, layoutTree)
+			initLayoutTreeRecursively(child, _layoutTree)
 		}
 	}
 }

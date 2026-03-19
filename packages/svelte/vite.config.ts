@@ -46,6 +46,7 @@ export default defineConfig({
 			compilerOptions: {
 				customElement: false,
 				css: 'external',
+				fragments: 'tree',
 			},
 		}),
 		dts({ rollupTypes: false }),
