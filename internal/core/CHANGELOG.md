@@ -1,0 +1,22 @@
+# Changelog
+
+## [1.2.0](https://github.com/OneEyed1366/wolfi-tui/compare/core@v1.1.0...core@v1.2.0) (2026-03-15)
+
+
+### Features
+
+* **core:** add createLogger factory and logger singleton for WOLFIE_LOG ([cb0e969](https://github.com/OneEyed1366/wolfi-tui/commit/cb0e969559cb85f33ef07718f738f59446e723e8))
+* **core:** add LoggedLayoutTree decorator for layout event capture ([33260f5](https://github.com/OneEyed1366/wolfi-tui/commit/33260f537c6b32735b0f16c8fe4b7f1790ed320d))
+* **core:** export logger and LoggedLayoutTree from @wolfie/core ([dc8f025](https://github.com/OneEyed1366/wolfi-tui/commit/dc8f025e90a52b87ad1362e452ed591be5206db1))
+* **core:** instrument dom.ts with cat:dom log events ([e444530](https://github.com/OneEyed1366/wolfi-tui/commit/e4445301dd913abf183105cabf38fb33f175ea93))
+* **core:** instrument measureText and wrapText with cat:measure log events ([2308a60](https://github.com/OneEyed1366/wolfi-tui/commit/2308a603b086facd941842927aed7ed2bd905c19))
+* **core:** log inputStyle+taffyStyle in applyLayoutStyle for cross-adapter comparison ([49f7078](https://github.com/OneEyed1366/wolfi-tui/commit/49f7078df389a4ff47884bc1dc8a93eb2b1cbb42))
+* **logger:** add input category for key event tracing ([6a99960](https://github.com/OneEyed1366/wolfi-tui/commit/6a999606f77a13e98f89b4c9b3d67f8a39f609a5))
+* **plugin:** add solid to Framework type and LogCategory ([10af364](https://github.com/OneEyed1366/wolfi-tui/commit/10af364cbf439e588415fdc3e5af4148da1d65a4))
+* **vue:** add component library and comprehensive test suite (130 tests) ([7bd9446](https://github.com/OneEyed1366/wolfi-tui/commit/7bd9446db6dfdd6ba43f9328f8b66fa2376c7dc5))
+* **vue:** improve example app, fix background color reactivity ([b6820bc](https://github.com/OneEyed1366/wolfi-tui/commit/b6820bcc47f7b524d7abe1e853e5ad8ac0db1db4))
+
+
+### Bug Fixes
+
+* **solid:** coerce non-string text nodes to string in createTextNode/replaceText ([97ff82d](https://github.com/OneEyed1366/wolfi-tui/commit/97ff82d17dca5e540aff4717393925c972f5dad2))
