@@ -58,7 +58,7 @@ import {
 	PasswordInput,
 	EmailInput,
 	ConfirmInput,
-} from '@wolfie/vue'
+} from '@wolf-tui/vue'
 
 const nameSuggestions = ['Alice', 'Bob', 'Charlie', 'Diana', 'Edward']
 

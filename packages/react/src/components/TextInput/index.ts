@@ -12,4 +12,4 @@ export {
 export {
 	defaultTextInputTheme as textInputTheme,
 	type TextInputRenderTheme as TextInputTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'

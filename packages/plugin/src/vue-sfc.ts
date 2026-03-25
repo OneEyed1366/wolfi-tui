@@ -4,10 +4,10 @@
  * Handles:
  * - Vue SFC <style> blocks
  * - CSS Module imports (.module.css, etc.)
- * - Vue import rewriting ('vue' → '@wolfie/vue')
+ * - Vue import rewriting ('vue' → '@wolf-tui/vue')
  */
 import type { Plugin } from 'vite'
-import { compile, parseCSS } from '@wolfie/css-parser'
+import { compile, parseCSS } from '@wolf-tui/css-parser'
 
 const WOLFIE_STYLE_PREFIX = '\x00wolfie-vue-style:'
 const WOLFIE_CSS_MODULE_PREFIX = '\x00wolfie-vue-css-module:'
@@ -155,7 +155,7 @@ export function createVueSfcPlugin(): Plugin {
 				}
 
 				return {
-					code: `import { registerStyles } from '@wolfie/vue'
+					code: `import { registerStyles } from '@wolf-tui/vue'
 registerStyles(${JSON.stringify(scopedStyles)})
 export default ${JSON.stringify(classNameMap)}`,
 					map: null,
@@ -231,7 +231,7 @@ export default ${JSON.stringify(classNameMap)}`,
 				}
 
 				return {
-					code: `import { registerStyles } from '@wolfie/vue'
+					code: `import { registerStyles } from '@wolf-tui/vue'
 registerStyles(${JSON.stringify(scopedStyles)})
 export default ${JSON.stringify(classNameMap)}`,
 					map: null,
@@ -242,7 +242,7 @@ export default ${JSON.stringify(classNameMap)}`,
 			const stylesJson = JSON.stringify(styles)
 
 			return {
-				code: `import { registerStyles } from '@wolfie/vue'
+				code: `import { registerStyles } from '@wolf-tui/vue'
 const styles = ${stylesJson}
 registerStyles(styles)
 export default styles`,
@@ -258,7 +258,7 @@ export default styles`,
 
 /**
  * Main Vue plugin - runs AFTER @vitejs/plugin-vue compiles SFCs
- * Rewrites Vue imports to use @wolfie/vue
+ * Rewrites Vue imports to use @wolf-tui/vue
  */
 export function createVueImportPlugin(): Plugin {
 	return {
@@ -267,7 +267,7 @@ export function createVueImportPlugin(): Plugin {
 		async transform(code, id) {
 			// Rewrite Vue imports in compiled .vue files
 			if (id.endsWith('.vue')) {
-				code = code.replace(/from\s+['"]vue['"]/g, 'from "@wolfie/vue"')
+				code = code.replace(/from\s+['"]vue['"]/g, 'from "@wolf-tui/vue"')
 				return { code, map: null }
 			}
 			return null

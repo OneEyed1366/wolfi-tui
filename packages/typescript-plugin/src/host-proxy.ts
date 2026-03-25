@@ -56,7 +56,7 @@ export function createLanguageServiceHostProxy(
 	// Cache for generated .d.ts content
 	const dtsCache = new Map<string, { content: string; version: string }>()
 
-	logger?.info('[@wolfie/typescript-plugin] Creating host proxy...')
+	logger?.info('[@wolf-tui/typescript-plugin] Creating host proxy...')
 
 	/**
 	 * Get or generate the .d.ts content for a CSS module.
@@ -64,7 +64,7 @@ export function createLanguageServiceHostProxy(
 	function getDtsContent(cssPath: string): string {
 		const classNames = cssResolver.getClassNames(cssPath)
 		logger?.info(
-			`[@wolfie/typescript-plugin] getDtsContent for ${cssPath}: ${classNames?.length || 0} classes`
+			`[@wolf-tui/typescript-plugin] getDtsContent for ${cssPath}: ${classNames?.length || 0} classes`
 		)
 		return generateDtsContent(classNames || [])
 	}
@@ -116,7 +116,7 @@ export function createLanguageServiceHostProxy(
 		getScriptKind(fileName: string): ts.ScriptKind {
 			if (isCSSModule(fileName, matcher)) {
 				logger?.info(
-					`[@wolfie/typescript-plugin] getScriptKind: ${fileName} -> TS`
+					`[@wolf-tui/typescript-plugin] getScriptKind: ${fileName} -> TS`
 				)
 				return typescript.ScriptKind.TS
 			}
@@ -128,7 +128,7 @@ export function createLanguageServiceHostProxy(
 		getScriptSnapshot(fileName: string): ts.IScriptSnapshot | undefined {
 			if (isCSSModule(fileName, matcher)) {
 				logger?.info(
-					`[@wolfie/typescript-plugin] getScriptSnapshot: ${fileName}`
+					`[@wolf-tui/typescript-plugin] getScriptSnapshot: ${fileName}`
 				)
 				const { content } = getCachedDts(fileName)
 				return typescript.ScriptSnapshot.fromString(content)
@@ -147,7 +147,7 @@ export function createLanguageServiceHostProxy(
 			reusedNames: readonly ts.StringLiteralLike[] | undefined
 		): readonly ts.ResolvedModuleWithFailedLookupLocations[] {
 			logger?.info(
-				`[@wolfie/typescript-plugin] resolveModuleNameLiterals called for ${containingFile}`
+				`[@wolf-tui/typescript-plugin] resolveModuleNameLiterals called for ${containingFile}`
 			)
 
 			return moduleLiterals.map((literal) => {
@@ -155,7 +155,7 @@ export function createLanguageServiceHostProxy(
 
 				if (isCSSModule(moduleName, matcher)) {
 					logger?.info(
-						`[@wolfie/typescript-plugin] Resolving CSS module: ${moduleName}`
+						`[@wolf-tui/typescript-plugin] Resolving CSS module: ${moduleName}`
 					)
 
 					// Resolve the path
@@ -170,7 +170,7 @@ export function createLanguageServiceHostProxy(
 					// Check if file exists
 					const exists = host.fileExists?.(resolvedPath) ?? false
 					logger?.info(
-						`[@wolfie/typescript-plugin] Resolved to: ${resolvedPath}, exists: ${exists}`
+						`[@wolf-tui/typescript-plugin] Resolved to: ${resolvedPath}, exists: ${exists}`
 					)
 
 					if (exists) {
@@ -206,7 +206,7 @@ export function createLanguageServiceHostProxy(
 	// Also add resolveModuleNames for TS 4.x compatibility
 	if (!host.resolveModuleNameLiterals) {
 		logger?.info(
-			'[@wolfie/typescript-plugin] Adding resolveModuleNames for TS 4.x'
+			'[@wolf-tui/typescript-plugin] Adding resolveModuleNames for TS 4.x'
 		)
 		;(overrides as any).resolveModuleNames = (
 			moduleNames: string[],
@@ -246,7 +246,7 @@ export function createLanguageServiceHostProxy(
 		}
 	}
 
-	logger?.info('[@wolfie/typescript-plugin] Host proxy created')
+	logger?.info('[@wolf-tui/typescript-plugin] Host proxy created')
 
 	return overrides
 }

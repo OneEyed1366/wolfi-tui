@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from 'node:util'
-import { OptionMap, type Option } from '@wolfie/shared'
+import { OptionMap, type Option } from '@wolf-tui/shared'
 
 //#region Types
 type State = {

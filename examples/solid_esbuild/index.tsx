@@ -1,4 +1,4 @@
-import { render, Box, Text } from '@wolfie/solid'
+import { render, Box, Text } from '@wolf-tui/solid'
 import './styles/global.css'
 import './styles/components.scss'
 import './styles/styles.less'

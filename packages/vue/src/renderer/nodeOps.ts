@@ -15,7 +15,7 @@ import {
 	type ElementNames,
 	type LayoutTree,
 	type DOMNode,
-} from '@wolfie/core'
+} from '@wolf-tui/core'
 import { type RendererOptions } from 'vue'
 import { layoutTreeRegistry, type WolfieVueInstance } from '../index'
 

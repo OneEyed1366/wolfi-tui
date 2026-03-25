@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text } from '@wolfie/svelte'
+	import { Box, Text } from '@wolf-tui/svelte'
 </script>
 
 <Box className="less-box flex-col mb-1 w-full">

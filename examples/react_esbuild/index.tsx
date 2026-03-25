@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, Box, Text } from '@wolfie/react'
+import { render, Box, Text } from '@wolf-tui/react'
 import './styles/global.css'
 import './styles/components.scss'
 import './styles/styles.less'

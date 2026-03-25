@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte'
-import { wolfie } from '@wolfie/plugin/vite'
-import { wolfiePreprocess } from '@wolfie/plugin/svelte'
+import { wolfie } from '@wolf-tui/plugin/vite'
+import { wolfiePreprocess } from '@wolf-tui/plugin/svelte'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { builtinModules } from 'node:module'
@@ -36,8 +36,8 @@ export default defineConfig({
 		rollupOptions: {
 			preserveEntrySignatures: 'exports-only',
 			external: (id) =>
-				id === '@wolfie/svelte' ||
-				id.startsWith('@wolfie/svelte/') ||
+				id === '@wolf-tui/svelte' ||
+				id.startsWith('@wolf-tui/svelte/') ||
 				id === 'svelte' ||
 				id.startsWith('svelte/') ||
 				nodeBuiltins.includes(id),

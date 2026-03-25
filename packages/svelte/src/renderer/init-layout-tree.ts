@@ -1,4 +1,4 @@
-import { logger, type LayoutTree } from '@wolfie/core'
+import { logger, type LayoutTree } from '@wolf-tui/core'
 import { WolfieElement } from './wolfie-element.js'
 
 /**

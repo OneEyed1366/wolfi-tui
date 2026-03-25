@@ -1,4 +1,4 @@
-import { Box, Text } from '@wolfie/react'
+import { Box, Text } from '@wolf-tui/react'
 import { BULLET_SPRITE_UP, BULLET_SPRITE_DOWN } from '../constants'
 import type { Bullet } from '../hooks/useInvaders'
 

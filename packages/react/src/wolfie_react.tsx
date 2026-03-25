@@ -24,7 +24,7 @@ import {
 	parseNumericValue,
 	isElement,
 	logger,
-} from '@wolfie/core'
+} from '@wolf-tui/core'
 import reconciler, {
 	registerLayoutTree,
 	unregisterLayoutTree,

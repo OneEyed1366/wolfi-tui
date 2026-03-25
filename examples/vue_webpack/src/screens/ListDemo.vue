@@ -36,5 +36,5 @@
 </template>
 
 <script setup lang="ts">
-import { Box, Text, OrderedList, UnorderedList } from '@wolfie/vue'
+import { Box, Text, OrderedList, UnorderedList } from '@wolf-tui/vue'
 </script>

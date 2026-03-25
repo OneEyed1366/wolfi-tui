@@ -1,1 +1,1 @@
-export type { Option } from '@wolfie/shared'
+export type { Option } from '@wolf-tui/shared'

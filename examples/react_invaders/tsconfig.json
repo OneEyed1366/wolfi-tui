@@ -6,7 +6,7 @@
 		"jsx": "react-jsx",
 		"plugins": [
 			{
-				"name": "@wolfie/typescript-plugin"
+				"name": "@wolf-tui/typescript-plugin"
 			}
 		]
 	},

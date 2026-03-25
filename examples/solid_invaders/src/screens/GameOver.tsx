@@ -1,5 +1,5 @@
 import { createMemo } from 'solid-js'
-import { Box, Text, useInput, Alert } from '@wolfie/solid'
+import { Box, Text, useInput, Alert } from '@wolf-tui/solid'
 import type { Screen } from '../composables/useInvaders'
 import { BRAND } from '../theme'
 

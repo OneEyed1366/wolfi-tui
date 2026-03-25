@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Box, Text, useFocus } from '@wolfie/react'
+import { Box, Text, useFocus } from '@wolf-tui/react'
 
 //#region Types
 type FocusableItemProps = {

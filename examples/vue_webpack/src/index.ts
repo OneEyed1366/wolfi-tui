@@ -1,4 +1,4 @@
-import { render } from '@wolfie/vue'
+import { render } from '@wolf-tui/vue'
 import { h } from 'vue'
 import App from './App.vue'
 

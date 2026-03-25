@@ -1,7 +1,7 @@
-import type { Styles } from '@wolfie/core'
-import type { ClassNameValue } from '@wolfie/shared'
-import { describeTextContract, type TextRenderResult } from '@wolfie/spec'
-import { Text, backgroundContext } from '@wolfie/react'
+import type { Styles } from '@wolf-tui/core'
+import type { ClassNameValue } from '@wolf-tui/shared'
+import { describeTextContract, type TextRenderResult } from '@wolf-tui/spec'
+import { Text, backgroundContext } from '@wolf-tui/react'
 import { renderToString } from '../helpers/render-to-string'
 
 function reactTextRenderer(

@@ -1,9 +1,13 @@
 import { inject, provide, type InjectionKey } from 'vue'
-import { type ITheme, type IComponentTheme } from '@wolfie/shared'
+import { type ITheme, type IComponentTheme } from '@wolf-tui/shared'
 import { ThemeSymbol } from '../context/symbols'
 
-export type { ITheme, IComponentTheme, IComponentStyles } from '@wolfie/shared'
-export { extendTheme } from '@wolfie/shared'
+export type {
+	ITheme,
+	IComponentTheme,
+	IComponentStyles,
+} from '@wolf-tui/shared'
+export { extendTheme } from '@wolf-tui/shared'
 
 //#region Default Theme
 // Empty default theme - components provide their own fallbacks

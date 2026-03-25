@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue'
-import { renderSpacer } from '@wolfie/shared'
+import { renderSpacer } from '@wolf-tui/shared'
 import { wNodeToVue } from '../wnode/wnode-to-vue'
 
 /**

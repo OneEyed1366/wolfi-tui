@@ -1,5 +1,5 @@
 import { createMemo, For } from 'solid-js'
-import { Box, Text } from '@wolfie/solid'
+import { Box, Text } from '@wolf-tui/solid'
 import {
 	ALIEN_SPRITE_FRAMES,
 	PLAYER_SPRITE,

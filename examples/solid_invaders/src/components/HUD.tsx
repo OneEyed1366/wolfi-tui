@@ -1,5 +1,5 @@
 import { createMemo } from 'solid-js'
-import { Box, Text, Spacer, Show, Badge } from '@wolfie/solid'
+import { Box, Text, Spacer, Show, Badge } from '@wolf-tui/solid'
 import { BRAND } from '../theme'
 
 //#region Props

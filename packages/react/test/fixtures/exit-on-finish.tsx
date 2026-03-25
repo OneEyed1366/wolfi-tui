@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, Text } from '@wolfie/react'
+import { render, Text } from '@wolf-tui/react'
 
 class Test extends React.Component<
 	Record<string, unknown>,

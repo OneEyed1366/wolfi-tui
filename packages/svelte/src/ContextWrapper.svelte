@@ -10,7 +10,7 @@
 		THEME_CTX,
 	} from './context/symbols.js'
 	import type { StdinContextValue, StdoutContextValue, StderrContextValue, AppContextValue, FocusContextValue, AccessibilityContextValue } from './context/types.js'
-	import type { ITheme } from '@wolfie/shared'
+	import type { ITheme } from '@wolf-tui/shared'
 
 	interface Props {
 		stdinValue: StdinContextValue

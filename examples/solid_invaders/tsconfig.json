@@ -7,7 +7,7 @@
 		"jsxImportSource": "solid-js",
 		"plugins": [
 			{
-				"name": "@wolfie/typescript-plugin"
+				"name": "@wolf-tui/typescript-plugin"
 			}
 		]
 	},

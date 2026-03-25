@@ -1,6 +1,6 @@
 import process from 'node:process'
 import React from 'react'
-import { Text, render, useStdin } from '@wolfie/react'
+import { Text, render, useStdin } from '@wolf-tui/react'
 
 class ExitDoubleRawMode extends React.Component<{
 	setRawMode: (value: boolean) => void

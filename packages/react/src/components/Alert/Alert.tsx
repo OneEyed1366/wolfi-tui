@@ -2,7 +2,7 @@ import {
 	renderAlert,
 	defaultAlertTheme,
 	type AlertRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../../theme/theme'
 import { wNodeToReact } from '../../wnode/wnode-to-react'
 import type { IAlertProps } from './types'

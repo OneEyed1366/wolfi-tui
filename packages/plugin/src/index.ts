@@ -13,7 +13,7 @@ import {
 	generateJavaScript,
 	scanCandidates,
 	tailwind,
-} from '@wolfie/css-parser'
+} from '@wolf-tui/css-parser'
 
 //#region Svelte Style Extraction (webpack)
 
@@ -97,7 +97,7 @@ export interface WolfieOptions {
 	/** File pattern to exclude */
 	exclude?: RegExp
 	/**
-	 * Handle native bindings for @wolfie/core (default: true)
+	 * Handle native bindings for @wolf-tui/core (default: true)
 	 * - Copies .node files to output/native/
 	 * - Injects banner to set NAPI_RS_NATIVE_LIBRARY_PATH
 	 */

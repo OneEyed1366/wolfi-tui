@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { parseInputData, type IKey } from '@wolfie/shared'
+import { parseInputData, type IKey } from '@wolf-tui/shared'
 import reconciler from '../reconciler'
 import { useStdin } from './use-stdin'
 

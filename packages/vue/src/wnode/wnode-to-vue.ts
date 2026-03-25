@@ -1,5 +1,5 @@
 import { h, type VNode } from 'vue'
-import type { WNode } from '@wolfie/shared'
+import type { WNode } from '@wolf-tui/shared'
 
 //#region wNodeToVue
 /**

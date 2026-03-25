@@ -14,7 +14,7 @@ import {
 	StatusMessageComponent,
 	SpinnerComponent,
 	ProgressBarComponent,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 
 //#region Constants
 const PROGRESS_INTERVAL_MS = 100

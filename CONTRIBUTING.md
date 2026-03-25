@@ -30,14 +30,14 @@ Thank you for your interest in contributing to wolf-tui!
 ```
 wolf-tui/
 ├── internal/
-│   ├── core/           # @wolfie/core - Framework-agnostic TUI engine
+│   ├── core/           # @wolf-tui/core - Framework-agnostic TUI engine
 │   │   └── rust/       # Taffy layout bindings (napi-rs)
-│   └── css-parser/     # @wolfie/css-parser - CSS preprocessing
+│   └── css-parser/     # @wolf-tui/css-parser - CSS preprocessing
 ├── packages/
-│   ├── react/          # @wolfie/react - React adapter
-│   ├── vue/            # @wolfie/vue - Vue 3 adapter
-│   ├── angular/        # @wolfie/angular - Angular adapter
-│   └── plugin/         # @wolfie/plugin - Build tool plugin
+│   ├── react/          # @wolf-tui/react - React adapter
+│   ├── vue/            # @wolf-tui/vue - Vue 3 adapter
+│   ├── angular/        # @wolf-tui/angular - Angular adapter
+│   └── plugin/         # @wolf-tui/plugin - Build tool plugin
 ├── scripts/            # Build utilities
 └── .github/            # CI workflows
 ```
@@ -189,7 +189,7 @@ pnpm test
 pnpm -r test:watch
 
 # Single package
-pnpm --filter @wolfie/react test
+pnpm --filter @wolf-tui/react test
 ```
 
 ### Writing Tests

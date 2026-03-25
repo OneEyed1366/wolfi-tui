@@ -7,7 +7,7 @@
 		"jsxImportSource": "vue",
 		"plugins": [
 			{
-				"name": "@wolfie/typescript-plugin"
+				"name": "@wolf-tui/typescript-plugin"
 			}
 		]
 	},

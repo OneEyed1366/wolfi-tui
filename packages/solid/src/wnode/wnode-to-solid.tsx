@@ -1,5 +1,5 @@
 import { type JSX } from 'solid-js'
-import type { WNode } from '@wolfie/shared'
+import type { WNode } from '@wolf-tui/shared'
 
 //#region wNodeToSolid
 /**

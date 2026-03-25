@@ -8,7 +8,7 @@ import {
 	EmailInput,
 	Newline,
 	useInput,
-} from '@wolfie/vue'
+} from '@wolf-tui/vue'
 import type { Screen } from '../composables/useInvaders'
 import { BRAND } from '../theme'
 

@@ -5,7 +5,7 @@
  * React/Vue/Angular users don't pay for Svelte-specific code.
  *
  * @example
- * import { wolfiePreprocess } from '@wolfie/plugin/svelte'
+ * import { wolfiePreprocess } from '@wolf-tui/plugin/svelte'
  *
  * svelte({
  *   preprocess: [vitePreprocess(), wolfiePreprocess()],

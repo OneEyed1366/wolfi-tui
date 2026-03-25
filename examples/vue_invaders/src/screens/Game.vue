@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { Box, Text, Spinner, Alert, useInput, useStdin } from '@wolfie/vue'
+import { Box, Text, Spinner, Alert, useInput, useStdin } from '@wolf-tui/vue'
 import GameCanvas from '../components/GameCanvas.vue'
 import HUD from '../components/HUD.vue'
 import KillLog from '../components/KillLog.vue'

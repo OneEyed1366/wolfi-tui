@@ -7,7 +7,7 @@ import {
 	EmailInput,
 	Newline,
 	useInput,
-} from '@wolfie/react'
+} from '@wolf-tui/react'
 import type { Screen } from '../hooks/useInvaders'
 import { BRAND } from '../theme'
 

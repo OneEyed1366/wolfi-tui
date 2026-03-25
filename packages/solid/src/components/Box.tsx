@@ -1,5 +1,5 @@
 import { useContext, type JSX } from 'solid-js'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import { AccessibilityCtx, BackgroundCtx } from '../context/symbols'
 import { resolveClassName, type ClassNameValue } from '../styles'
 

@@ -38,7 +38,7 @@ async function getBundleEsbuild(code: string) {
 		external: [
 			'react',
 			'react-reconciler',
-			'@wolfie/core',
+			'@wolf-tui/core',
 			'react/jsx-runtime',
 			'react/compiler-runtime',
 			'es-toolkit/compat',
@@ -80,7 +80,7 @@ async function getBundleVite(code: string) {
 				external: [
 					'react',
 					'react-reconciler',
-					'@wolfie/core',
+					'@wolf-tui/core',
 					'react/jsx-runtime',
 					'react/compiler-runtime',
 					'es-toolkit/compat',
@@ -114,7 +114,7 @@ async function getBundleVite(code: string) {
 				name: 'virtual-entry',
 				resolveId(id) {
 					if (id === 'entry.js') return id
-					if (id === '@wolfie/react') return REACT_ENTRY
+					if (id === '@wolf-tui/react') return REACT_ENTRY
 				},
 				load(id) {
 					if (id === 'entry.js') return code
@@ -158,7 +158,7 @@ async function getBundleWebpack(code: string) {
 			},
 			resolve: {
 				alias: {
-					'@wolfie/react': REACT_ENTRY,
+					'@wolf-tui/react': REACT_ENTRY,
 				},
 				extensions: ['.js', '.mjs'],
 			},
@@ -167,7 +167,7 @@ async function getBundleWebpack(code: string) {
 					const externals = [
 						'react',
 						'react-reconciler',
-						'@wolfie/core',
+						'@wolf-tui/core',
 						'react/jsx-runtime',
 						'react/compiler-runtime',
 						'es-toolkit/compat',
@@ -180,7 +180,7 @@ async function getBundleWebpack(code: string) {
 						'cli-cursor',
 						'stack-utils',
 						'chalk',
-						'@wolfie/shared',
+						'@wolf-tui/shared',
 					]
 					if (
 						externals.some((e) => request?.startsWith(e)) ||
@@ -223,7 +223,7 @@ bundlers.forEach(({ name, fn }) => {
 		`[${name}] should tree-shake unused components (Box)`,
 		async () => {
 			const code = `
-      import { Box } from '@wolfie/react';
+      import { Box } from '@wolf-tui/react';
       console.log(Box);
     `
 			const bundle = await fn(code)
@@ -238,7 +238,7 @@ bundlers.forEach(({ name, fn }) => {
 		`[${name}] should tree-shake unused components (Text)`,
 		async () => {
 			const code = `
-      import { Text } from '@wolfie/react';
+      import { Text } from '@wolf-tui/react';
       console.log(Text);
     `
 			const bundle = await fn(code)

@@ -1,6 +1,6 @@
 import { createContext } from 'solid-js'
 import type { Accessor } from 'solid-js'
-import type { ITheme } from '@wolfie/shared'
+import type { ITheme } from '@wolf-tui/shared'
 import type {
 	StdinContextValue,
 	StdoutContextValue,

@@ -3,7 +3,7 @@
 		renderStatusMessage,
 		defaultStatusMessageTheme,
 		type StatusMessageRenderTheme,
-	} from '@wolfie/shared'
+	} from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import type { Styles } from '@wolfie/core'
-import type { ClassNameValue } from '@wolfie/shared'
+import type { Styles } from '@wolf-tui/core'
+import type { ClassNameValue } from '@wolf-tui/shared'
 
 /**
  * What a Box test renderer must return.
@@ -33,7 +33,7 @@ export type BoxTestRenderer = (
  * Usage in each framework's test directory:
  *
  * ```typescript
- * import { describeBoxContract } from '@wolfie/spec'
+ * import { describeBoxContract } from '@wolf-tui/spec'
  * describeBoxContract(myFrameworkBoxRenderer)
  * ```
  *

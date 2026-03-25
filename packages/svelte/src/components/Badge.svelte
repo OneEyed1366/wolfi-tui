@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Styles } from '@wolfie/core'
+	import type { Styles } from '@wolf-tui/core'
 	import {
 		renderBadge,
 		defaultBadgeTheme,
 		type BadgeRenderTheme,
-	} from '@wolfie/shared'
+	} from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
 

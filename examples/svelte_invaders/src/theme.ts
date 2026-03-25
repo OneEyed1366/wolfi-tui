@@ -1,4 +1,4 @@
-import { extendTheme, defaultTheme, type ITheme } from '@wolfie/svelte'
+import { extendTheme, defaultTheme, type ITheme } from '@wolf-tui/svelte'
 
 //#region Brand Colors - Svelte
 export const BRAND = {

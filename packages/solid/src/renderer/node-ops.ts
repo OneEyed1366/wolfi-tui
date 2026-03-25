@@ -18,7 +18,7 @@ import {
 	type LayoutTree,
 	type Styles,
 	type OutputTransformer,
-} from '@wolfie/core'
+} from '@wolf-tui/core'
 import type { RendererOptions } from 'solid-js/universal'
 
 //#region Types

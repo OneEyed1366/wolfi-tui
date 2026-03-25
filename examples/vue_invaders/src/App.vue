@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Box, provideTheme, ErrorOverview, useStderr } from '@wolfie/vue'
+import { Box, provideTheme, ErrorOverview, useStderr } from '@wolf-tui/vue'
 import { invadersTheme } from './theme'
 import { useInvaders } from './composables/useInvaders'
 import { useTerminalSize } from './composables/useTerminalSize'

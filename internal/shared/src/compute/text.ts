@@ -1,6 +1,6 @@
 import chalk from 'chalk'
-import type { Styles } from '@wolfie/core'
-import { colorize } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
+import { colorize } from '@wolf-tui/core'
 import type { ClassNameValue } from '../styles/registry'
 import { resolveClassName } from '../styles/registry'
 

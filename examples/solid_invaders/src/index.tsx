@@ -1,4 +1,4 @@
-import { render } from '@wolfie/solid'
+import { render } from '@wolf-tui/solid'
 import App from './App'
 import './styles/tailwind.css'
 

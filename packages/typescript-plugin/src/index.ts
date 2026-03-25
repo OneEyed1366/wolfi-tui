@@ -1,5 +1,5 @@
 /**
- * @wolfie/typescript-plugin
+ * @wolf-tui/typescript-plugin
  *
  * TypeScript language service plugin for CSS module type safety.
  * Provides autocomplete and type checking for CSS module imports.
@@ -15,7 +15,7 @@ function isCSSModule(fileName: string): boolean {
 
 function generateDts(classNames: string[]): string {
 	if (classNames.length === 0) {
-		return `import type { Styles } from '@wolfie/core';
+		return `import type { Styles } from '@wolf-tui/core';
 declare const styles: Record<string, Styles>;
 export default styles;`
 	}
@@ -29,7 +29,7 @@ export default styles;`
 		})
 		.join('\n')
 
-	return `import type { Styles } from '@wolfie/core';
+	return `import type { Styles } from '@wolf-tui/core';
 declare const styles: {
 ${props}
 };
@@ -80,7 +80,7 @@ function init(modules: { typescript: typeof ts }) {
 		const logger = info.project.projectService.logger
 		const host = info.languageServiceHost
 
-		logger.info('[@wolfie/typescript-plugin] Initializing...')
+		logger.info('[@wolf-tui/typescript-plugin] Initializing...')
 
 		const dtsCache = new Map<string, string>()
 
@@ -95,12 +95,12 @@ function init(modules: { typescript: typeof ts }) {
 					const dts = generateDts(classNames)
 					dtsCache.set(cssPath, dts)
 					logger.info(
-						`[@wolfie/typescript-plugin] Generated DTS: ${cssPath} (${classNames.length} classes)`
+						`[@wolf-tui/typescript-plugin] Generated DTS: ${cssPath} (${classNames.length} classes)`
 					)
 					return dts
 				}
 			} catch (e) {
-				logger.info(`[@wolfie/typescript-plugin] Error reading CSS: ${e}`)
+				logger.info(`[@wolf-tui/typescript-plugin] Error reading CSS: ${e}`)
 			}
 
 			return generateDts([])
@@ -160,7 +160,7 @@ function init(modules: { typescript: typeof ts }) {
 							const resolved = resolveRelativePath(moduleName, containingFile)
 							if (host.fileExists?.(resolved)) {
 								logger.info(
-									`[@wolfie/typescript-plugin] Resolved: ${moduleName} -> ${resolved}`
+									`[@wolf-tui/typescript-plugin] Resolved: ${moduleName} -> ${resolved}`
 								)
 								return {
 									resolvedModule: {
@@ -171,7 +171,9 @@ function init(modules: { typescript: typeof ts }) {
 								}
 							}
 						} catch (e) {
-							logger.info(`[@wolfie/typescript-plugin] Resolution error: ${e}`)
+							logger.info(
+								`[@wolf-tui/typescript-plugin] Resolution error: ${e}`
+							)
 						}
 					}
 
@@ -180,7 +182,7 @@ function init(modules: { typescript: typeof ts }) {
 			}
 		}
 
-		logger.info('[@wolfie/typescript-plugin] Plugin ready!')
+		logger.info('[@wolf-tui/typescript-plugin] Plugin ready!')
 		return info.languageService
 	}
 

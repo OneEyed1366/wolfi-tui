@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text, useInput, useApp } from '@wolfie/svelte'
+	import { Box, Text, useInput, useApp } from '@wolf-tui/svelte'
 	import StyleDemo from './screens/StyleDemo.svelte'
 	import InputDemo from './screens/InputDemo.svelte'
 	import SelectDemo from './screens/SelectDemo.svelte'

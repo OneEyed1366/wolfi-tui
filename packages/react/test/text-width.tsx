@@ -1,6 +1,6 @@
 import React from 'react'
 import { test, expect } from 'vitest'
-import { Box, Text } from '@wolfie/react'
+import { Box, Text } from '@wolf-tui/react'
 import { renderToString } from './helpers/render-to-string'
 
 test('wide characters do not add extra space inside fixed-width Box', () => {

@@ -1,6 +1,6 @@
 import 'zone.js'
 import '@angular/compiler'
-import { renderWolfie, type WolfieInstance } from '@wolfie/angular'
+import { renderWolfie, type WolfieInstance } from '@wolf-tui/angular'
 import { AppComponent } from './app.component'
 import './styles/tailwind.css'
 

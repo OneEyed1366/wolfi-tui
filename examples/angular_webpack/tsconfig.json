@@ -9,7 +9,7 @@
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"useDefineForClassFields": false,
-		"plugins": [{ "name": "@wolfie/typescript-plugin" }]
+		"plugins": [{ "name": "@wolf-tui/typescript-plugin" }]
 	},
 	"include": ["src/**/*.ts"]
 }

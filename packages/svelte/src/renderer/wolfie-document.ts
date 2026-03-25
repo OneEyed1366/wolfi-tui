@@ -6,7 +6,7 @@ import {
 	WolfieDocumentFragment,
 	setNodeOpsConfig,
 } from './wolfie-element.js'
-import { type LayoutTree } from '@wolfie/core'
+import { type LayoutTree } from '@wolf-tui/core'
 
 //#region Types
 

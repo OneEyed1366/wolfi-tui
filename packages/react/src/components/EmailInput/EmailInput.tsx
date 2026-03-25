@@ -2,7 +2,7 @@ import {
 	renderTextInput,
 	defaultTextInputTheme,
 	type TextInputRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../../theme/theme'
 import { useEmailInputState } from './use-email-input-state'
 import { useEmailInput } from './use-email-input'

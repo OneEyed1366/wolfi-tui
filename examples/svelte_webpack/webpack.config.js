@@ -1,6 +1,6 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { wolfie } from '@wolfie/plugin/webpack'
+import { wolfie } from '@wolf-tui/plugin/webpack'
 import { sveltePreprocess } from 'svelte-preprocess'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -69,7 +69,7 @@ export default {
 		],
 	},
 	plugins: [wolfie('svelte')],
-	// WHY: Externalize ALL bare specifiers (svelte, @wolfie/*, etc.) so both
+	// WHY: Externalize ALL bare specifiers (svelte, @wolf-tui/*, etc.) so both
 	// the app and adapter share ONE svelte runtime from node_modules.
 	// Local files (./...) are bundled normally.
 	externals: [

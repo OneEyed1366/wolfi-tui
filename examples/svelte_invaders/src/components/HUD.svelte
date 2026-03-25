@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Box, Text, Spacer, Badge } from '@wolfie/svelte'
+	import { Box, Text, Spacer, Badge } from '@wolf-tui/svelte'
 	import { BRAND } from '../theme'
 
 	//#region Props

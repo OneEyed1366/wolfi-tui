@@ -5,7 +5,7 @@ import {
 	ErrorOverview,
 	useStderr,
 	useIsScreenReaderEnabled,
-} from '@wolfie/react'
+} from '@wolf-tui/react'
 import { invadersTheme } from './theme'
 import { useInvaders } from './hooks/useInvaders'
 import { useTerminalSize } from './hooks/useTerminalSize'

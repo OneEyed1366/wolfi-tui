@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import {
 	renderTextInputValue,
 	renderTextInputPlaceholder,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useInput } from '../../hooks/use-input'
 import type { TextInputState } from './use-text-input-state'
 

@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { test, expect } from 'vitest'
 import chalk from 'chalk'
-import { Box, Text, render } from '@wolfie/react'
+import { Box, Text, render } from '@wolf-tui/react'
 import createStdout from './helpers/create-stdout'
 
 test('update child', () => {

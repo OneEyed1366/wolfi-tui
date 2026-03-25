@@ -1,4 +1,4 @@
-import { Box, Text, useInput } from '@wolfie/react'
+import { Box, Text, useInput } from '@wolf-tui/react'
 import type { Screen } from '../hooks/useInvaders'
 import { BRAND } from '../theme'
 

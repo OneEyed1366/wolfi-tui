@@ -6,7 +6,10 @@ import {
 	signal,
 	computed,
 } from '@angular/core'
-import { renderStatusMessage, defaultStatusMessageTheme } from '@wolfie/shared'
+import {
+	renderStatusMessage,
+	defaultStatusMessageTheme,
+} from '@wolf-tui/shared'
 import { WNodeOutletComponent } from '../wnode-outlet/wnode-outlet.component'
 
 //#region Types

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Box, Text, Spinner, Alert, useInput, useStdin } from '@wolfie/react'
+import { Box, Text, Spinner, Alert, useInput, useStdin } from '@wolf-tui/react'
 import { GameCanvas } from '../components/GameCanvas'
 import { HUD } from '../components/HUD'
 import { KillLog } from '../components/KillLog'

@@ -11,7 +11,7 @@ import {
 	SelectComponent,
 	MultiSelectComponent,
 	injectInput,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 import { InvadersService } from '../services/invaders.service'
 import { BRAND } from '../theme'
 import type { Difficulty } from '../game/types'

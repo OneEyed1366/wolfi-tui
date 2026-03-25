@@ -1,4 +1,4 @@
-import { Box, Text } from '@wolfie/solid'
+import { Box, Text } from '@wolf-tui/solid'
 import { BRAND } from '../theme'
 
 //#region Constants

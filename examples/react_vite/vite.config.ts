@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -18,7 +18,7 @@ export default defineConfig({
 			fileName: 'index',
 		},
 		rollupOptions: {
-			external: [/^react(\/|$)/, /^@wolfie\//],
+			external: [/^react(\/|$)/, /^@wolf-tui\//],
 		},
 	},
 })

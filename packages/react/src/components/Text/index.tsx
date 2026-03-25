@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
-import { type Styles } from '@wolfie/core'
-import { computeTextTransform, resolveClassName } from '@wolfie/shared'
+import { type Styles } from '@wolf-tui/core'
+import { computeTextTransform, resolveClassName } from '@wolf-tui/shared'
 import { accessibilityContext } from '../../context/AccessibilityContext'
 import { backgroundContext } from '../../context/BackgroundContext'
 import type { IProps } from './types'

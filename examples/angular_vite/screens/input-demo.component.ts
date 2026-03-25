@@ -15,7 +15,7 @@ import {
 	FocusService,
 	injectInput,
 	type Key,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 
 //#region InputDemoComponent
 @Component({

@@ -1,6 +1,6 @@
-import type { Styles } from '@wolfie/core'
-import { computeTextTransform, type ClassNameValue } from '@wolfie/shared'
-import { describeTextContract, type TextRenderResult } from '@wolfie/spec'
+import type { Styles } from '@wolf-tui/core'
+import { computeTextTransform, type ClassNameValue } from '@wolf-tui/shared'
+import { describeTextContract, type TextRenderResult } from '@wolf-tui/spec'
 
 /**
  * Angular Text contract adapter.

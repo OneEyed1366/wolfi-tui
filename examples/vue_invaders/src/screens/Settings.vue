@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Box, Text, Select, MultiSelect, Newline, useInput } from '@wolfie/vue'
+import {
+	Box,
+	Text,
+	Select,
+	MultiSelect,
+	Newline,
+	useInput,
+} from '@wolf-tui/vue'
 import type {
 	Screen,
 	Settings as SettingsType,

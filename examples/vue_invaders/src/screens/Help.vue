@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Box, Text, UnorderedList, Newline, useInput } from '@wolfie/vue'
+import { Box, Text, UnorderedList, Newline, useInput } from '@wolf-tui/vue'
 import type { Screen } from '../composables/useInvaders'
 import { BRAND } from '../theme'
 

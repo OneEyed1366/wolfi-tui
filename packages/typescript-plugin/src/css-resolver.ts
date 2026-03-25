@@ -21,7 +21,7 @@ interface ParsedCSSModule {
 
 /**
  * Simple CSS class name extraction using regex.
- * For production use, consider using @wolfie/css-parser directly.
+ * For production use, consider using @wolf-tui/css-parser directly.
  */
 function extractClassNames(css: string): {
 	classNames: string[]

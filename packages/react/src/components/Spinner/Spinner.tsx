@@ -2,7 +2,7 @@ import {
 	renderSpinner,
 	defaultSpinnerTheme,
 	type SpinnerRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../../theme/theme'
 import { useSpinner, type UseSpinnerProps } from '../use-spinner'
 import { wNodeToReact } from '../../wnode/wnode-to-react'

@@ -1,6 +1,6 @@
 import React from 'react'
 import type { ReactElement } from 'react'
-import type { WNode } from '@wolfie/shared'
+import type { WNode } from '@wolf-tui/shared'
 
 //#region wNodeToReact
 /**

@@ -1,5 +1,5 @@
 import esbuild from 'esbuild'
-import { wolfie, generateNativeBanner } from '@wolfie/plugin/esbuild'
+import { wolfie, generateNativeBanner } from '@wolf-tui/plugin/esbuild'
 
 await esbuild.build({
 	entryPoints: ['index.tsx'],
@@ -7,7 +7,7 @@ await esbuild.build({
 	outfile: 'dist/index.cjs',
 	format: 'cjs',
 	platform: 'node',
-	external: ['react', '@wolfie/react'],
+	external: ['react', '@wolf-tui/react'],
 	banner: { js: generateNativeBanner('cjs') },
 	plugins: [wolfie('react')],
 	logLevel: 'info',

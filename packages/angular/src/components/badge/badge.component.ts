@@ -6,8 +6,8 @@ import {
 	signal,
 	computed,
 } from '@angular/core'
-import type { Styles } from '@wolfie/core'
-import { renderBadge, defaultBadgeTheme } from '@wolfie/shared'
+import type { Styles } from '@wolf-tui/core'
+import { renderBadge, defaultBadgeTheme } from '@wolf-tui/shared'
 import { WNodeOutletComponent } from '../wnode-outlet/wnode-outlet.component'
 
 //#region Types

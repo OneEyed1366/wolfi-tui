@@ -1,5 +1,5 @@
 /**
- * Shared types for @wolfie/typescript-plugin
+ * Shared types for @wolf-tui/typescript-plugin
  */
 
 /**
@@ -11,7 +11,7 @@
  *   "compilerOptions": {
  *     "plugins": [
  *       {
- *         "name": "@wolfie/typescript-plugin",
+ *         "name": "@wolf-tui/typescript-plugin",
  *         "customMatcher": "\\.module\\.css$",
  *         "classnameTransform": "camelCase"
  *       }

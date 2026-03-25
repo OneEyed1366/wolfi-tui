@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, Static, Text } from '@wolfie/react'
+import { render, Static, Text } from '@wolf-tui/react'
 
 type TestState = {
 	counter: number

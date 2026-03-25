@@ -2,7 +2,7 @@
  * Type definitions for the CSS parser
  */
 
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 
 //#region Core Types
 

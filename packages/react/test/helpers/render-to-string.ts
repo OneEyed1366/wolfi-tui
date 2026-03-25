@@ -1,4 +1,4 @@
-import { render } from '@wolfie/react'
+import { render } from '@wolf-tui/react'
 import createStdout from './create-stdout'
 
 export const renderToString: (

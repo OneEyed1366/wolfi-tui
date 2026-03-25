@@ -1,4 +1,4 @@
-import { extendTheme, defaultTheme, type ITheme } from '@wolfie/solid'
+import { extendTheme, defaultTheme, type ITheme } from '@wolf-tui/solid'
 
 //#region Brand Colors - Solid
 export const BRAND = {

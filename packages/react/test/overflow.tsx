@@ -2,7 +2,7 @@ import React from 'react'
 import { test, expect } from 'vitest'
 import boxen, { type Options } from 'boxen'
 import sliceAnsi from 'slice-ansi'
-import { Box, Text } from '@wolfie/react'
+import { Box, Text } from '@wolf-tui/react'
 import { renderToString } from './helpers/render-to-string'
 
 const box = (text: string, options?: Options): string => {

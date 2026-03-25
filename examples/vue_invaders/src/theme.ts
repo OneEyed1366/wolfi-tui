@@ -3,7 +3,7 @@ import {
 	defaultTheme,
 	type ITheme,
 	type IComponentTheme,
-} from '@wolfie/vue'
+} from '@wolf-tui/vue'
 
 //#region Brand Colors - Vue
 // Swap this block for other packages (React: #61DAFB, Angular: #dd0031, Svelte: #ff3e00)

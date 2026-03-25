@@ -3,12 +3,12 @@ import {
 	renderMultiSelect,
 	defaultMultiSelectTheme,
 	type MultiSelectRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../theme'
 import { useMultiSelectState } from '../composables/use-multi-select-state'
 import { useMultiSelect } from '../composables/use-multi-select'
 import { wNodeToSolid } from '../wnode/wnode-to-solid'
-import type { Option } from '@wolfie/shared'
+import type { Option } from '@wolf-tui/shared'
 
 //#region Types
 export interface IMultiSelectProps {

@@ -22,7 +22,7 @@ pnpm typecheck        # TypeScript compilation
 pnpm test:related
 
 # Filter by package
-pnpm --filter @wolfie/react test
+pnpm --filter @wolf-tui/react test
 
 # Vitest directly with pattern
 vitest run --grep "pattern"
@@ -154,13 +154,13 @@ function validateInput(input: unknown): asserts input is string {
 ```
 wolf-tui/
 ├── internal/
-│   ├── core/           # @wolfie/core - Framework-agnostic engine
+│   ├── core/           # @wolf-tui/core - Framework-agnostic engine
 │   ├── css-parser/     # CSS preprocessing
 │   └── shared/         # Shared utilities
 ├── packages/
-│   ├── react/          # @wolfie/react
-│   ├── vue/            # @wolfie/vue
-│   ├── angular/        # @wolfie/angular
+│   ├── react/          # @wolf-tui/react
+│   ├── vue/            # @wolf-tui/vue
+│   ├── angular/        # @wolf-tui/angular
 │   ├── plugin/         # Build plugin
 │   └── typescript-plugin/
 └── examples/           # Framework examples

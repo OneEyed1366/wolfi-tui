@@ -53,7 +53,7 @@ const generateId = () => Math.random().toString(36).slice(2, 11)
  * @example
  * ```vue
  * <script setup>
- * import { useFocus } from '@wolfie/vue'
+ * import { useFocus } from '@wolf-tui/vue'
  *
  * const { isFocused, focus } = useFocus({ autoFocus: true })
  * </script>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { render, useStdout, Text } from '@wolfie/react'
+import { render, useStdout, Text } from '@wolf-tui/react'
 
 function WriteToStdout() {
 	const { write } = useStdout()

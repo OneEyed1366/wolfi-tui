@@ -1,4 +1,4 @@
-# @wolfie/css-parser
+# @wolf-tui/css-parser
 
 CSS/SCSS/LESS/Stylus parser and code generator for wolf-tui.
 
@@ -11,7 +11,7 @@ This package transforms CSS files into JavaScript objects compatible with wolf-t
 - **Tailwind CSS** — JIT compilation with OKLCH shim
 - **Code generation** — JavaScript/TypeScript output
 
-> **Note:** This is an internal package. Most users should use `@wolfie/plugin` which wraps this functionality.
+> **Note:** This is an internal package. Most users should use `@wolf-tui/plugin` which wraps this functionality.
 
 ## CLI Usage
 
@@ -46,7 +46,7 @@ wolf-css input.css -o output.js --mode module --camelCase
 Parse CSS string to style objects.
 
 ```typescript
-import { parseCSS } from '@wolfie/css-parser'
+import { parseCSS } from '@wolf-tui/css-parser'
 
 const styles = parseCSS(`
   .container {
@@ -82,7 +82,7 @@ interface CSSParserOptions {
 Low-level CSS parser. Returns AST.
 
 ```typescript
-import { parse } from '@wolfie/css-parser'
+import { parse } from '@wolf-tui/css-parser'
 
 const ast = parse('.box { color: red; }')
 ```
@@ -92,7 +92,7 @@ const ast = parse('.box { color: red; }')
 Parse a single CSS rule.
 
 ```typescript
-import { parseRule } from '@wolfie/css-parser'
+import { parseRule } from '@wolf-tui/css-parser'
 
 const style = parseRule('flex-direction: column; padding: 1rem;')
 // { flexDirection: 'column', padding: 4 }
@@ -107,7 +107,7 @@ const style = parseRule('flex-direction: column; padding: 1rem;')
 Compile CSS/SCSS/LESS/Stylus to plain CSS.
 
 ```typescript
-import { compile } from '@wolfie/css-parser'
+import { compile } from '@wolf-tui/css-parser'
 
 const result = await compile(scssCode, 'scss', 'styles.scss')
 console.log(result.css)
@@ -118,7 +118,7 @@ console.log(result.css)
 Detect preprocessor from file extension.
 
 ```typescript
-import { detectLanguage } from '@wolfie/css-parser'
+import { detectLanguage } from '@wolf-tui/css-parser'
 
 detectLanguage('styles.scss') // 'scss'
 detectLanguage('styles.less') // 'less'
@@ -131,7 +131,7 @@ detectLanguage('styles.css') // 'css'
 Compile SCSS specifically.
 
 ```typescript
-import { compileScss } from '@wolfie/css-parser'
+import { compileScss } from '@wolf-tui/css-parser'
 
 const result = await compileScss(`
   $primary: green;
@@ -156,7 +156,7 @@ Compile Stylus specifically.
 Compile Tailwind utilities.
 
 ```typescript
-import { tailwind } from '@wolfie/css-parser'
+import { tailwind } from '@wolf-tui/css-parser'
 
 const css = await tailwind.compile(['flex-col', 'p-4', 'text-green-500'])
 ```
@@ -172,7 +172,7 @@ The Tailwind integration includes a **custom OKLCH shim** that enables native OK
 Generate JavaScript code from parsed styles.
 
 ```typescript
-import { parseCSS, generateJavaScript } from '@wolfie/css-parser'
+import { parseCSS, generateJavaScript } from '@wolf-tui/css-parser'
 
 const styles = parseCSS('.box { padding: 1rem; }')
 const js = generateJavaScript(styles, {
@@ -214,7 +214,7 @@ Generate TypeScript with type declarations.
 Map CSS property to wolf-tui property.
 
 ```typescript
-import { mapPropertyName } from '@wolfie/css-parser'
+import { mapPropertyName } from '@wolf-tui/css-parser'
 
 mapPropertyName('flex-direction') // 'flexDirection'
 mapPropertyName('padding-left') // 'paddingLeft'
@@ -225,7 +225,7 @@ mapPropertyName('padding-left') // 'paddingLeft'
 Check if property is supported.
 
 ```typescript
-import { isValidProperty } from '@wolfie/css-parser'
+import { isValidProperty } from '@wolf-tui/css-parser'
 
 isValidProperty('flex-direction') // true
 isValidProperty('box-shadow') // false
@@ -240,7 +240,7 @@ isValidProperty('box-shadow') // false
 Parse numeric CSS value to terminal cells.
 
 ```typescript
-import { parseNumeric } from '@wolfie/css-parser'
+import { parseNumeric } from '@wolf-tui/css-parser'
 
 parseNumeric('1rem') // 4
 parseNumeric('8px') // 2
@@ -273,7 +273,7 @@ parseNumeric('50vw') // '50vw' (preserved)
 Parse CSS color to terminal-compatible format.
 
 ```typescript
-import { parseColor } from '@wolfie/css-parser'
+import { parseColor } from '@wolf-tui/css-parser'
 
 parseColor('red') // 'red'
 parseColor('#ff0000') // '#ff0000'
@@ -296,7 +296,7 @@ Supported formats:
 Parse border-style to cli-boxes style.
 
 ```typescript
-import { parseBorderStyle } from '@wolfie/css-parser'
+import { parseBorderStyle } from '@wolf-tui/css-parser'
 
 parseBorderStyle('solid') // 'single'
 parseBorderStyle('double') // 'double'
@@ -313,7 +313,7 @@ parseBorderStyle('dotted') // 'classic'
 Scan code for Tailwind class candidates.
 
 ```typescript
-import { scanCandidates } from '@wolfie/css-parser'
+import { scanCandidates } from '@wolf-tui/css-parser'
 
 const candidates = scanCandidates(`
   <div class="flex-col p-4 text-green-500">
@@ -326,7 +326,7 @@ const candidates = scanCandidates(`
 Inline styles directly into JSX props.
 
 ```typescript
-import { inlineStyles } from '@wolfie/css-parser'
+import { inlineStyles } from '@wolf-tui/css-parser'
 
 const inlined = inlineStyles(parsedStyles, 'container')
 // { flexDirection: 'column', padding: 4 }
@@ -362,18 +362,18 @@ interface PreprocessorResult {
 
 ---
 
-## Integration with @wolfie/plugin
+## Integration with @wolf-tui/plugin
 
 The plugin uses this package internally:
 
 ```typescript
-// @wolfie/plugin internals
+// @wolf-tui/plugin internals
 import {
 	compile,
 	detectLanguage,
 	parseCSS,
 	generateJavaScript,
-} from '@wolfie/css-parser'
+} from '@wolf-tui/css-parser'
 
 async function transform(code, id) {
 	const lang = detectLanguage(id)
@@ -387,7 +387,7 @@ async function transform(code, id) {
 
 ## Supported Properties
 
-See [@wolfie/plugin README](../../packages/plugin/README.md#css-property-support) for the full list of supported CSS properties.
+See [@wolf-tui/plugin README](../../packages/plugin/README.md#css-property-support) for the full list of supported CSS properties.
 
 ## License
 

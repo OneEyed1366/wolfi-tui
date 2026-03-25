@@ -1,4 +1,4 @@
-# @wolfie/solid
+# @wolf-tui/solid
 
 ### Build terminal UIs with SolidJS — fine-grained reactivity, no Virtual DOM
 
@@ -24,12 +24,12 @@ If you've used [Ink](https://github.com/vadimdemedes/ink) for React terminal UIs
 
 ```bash
 # Runtime dependencies
-pnpm add @wolfie/solid chalk solid-js
+pnpm add @wolf-tui/solid chalk solid-js
 
 # Build tooling (pick one)
-pnpm add -D @wolfie/plugin vite vite-plugin-solid
+pnpm add -D @wolf-tui/plugin vite vite-plugin-solid
 # or
-pnpm add -D @wolfie/plugin esbuild esbuild-plugin-solid
+pnpm add -D @wolf-tui/plugin esbuild esbuild-plugin-solid
 ```
 
 | Peer dependency | Version |
@@ -42,7 +42,7 @@ pnpm add -D @wolfie/plugin esbuild esbuild-plugin-solid
 ## Quick Start
 
 ```tsx
-import { render, Box, Text, useInput, useApp } from '@wolfie/solid'
+import { render, Box, Text, useInput, useApp } from '@wolf-tui/solid'
 import { createSignal } from 'solid-js'
 
 function App() {
@@ -89,7 +89,7 @@ render(App)
 // vite.config.ts
 import { defineConfig } from 'vite'
 import solidPlugin from 'vite-plugin-solid'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 import { builtinModules } from 'node:module'
 
 const nodeBuiltins = [
@@ -102,7 +102,7 @@ export default defineConfig({
 		solidPlugin({
 			solid: {
 				// Use wolf-tui's universal renderer instead of browser DOM
-				moduleName: '@wolfie/solid/renderer',
+				moduleName: '@wolf-tui/solid/renderer',
 				generate: 'universal',
 			},
 		}),
@@ -110,7 +110,7 @@ export default defineConfig({
 	],
 	resolve: {
 		// Prevent Node from resolving solid-js to its server build
-		alias: { 'solid-js': '@wolfie/solid' },
+		alias: { 'solid-js': '@wolf-tui/solid' },
 	},
 	build: {
 		target: 'node18',
@@ -121,8 +121,8 @@ export default defineConfig({
 		},
 		rollupOptions: {
 			external: (id) =>
-				id === '@wolfie/solid' ||
-				id.startsWith('@wolfie/solid/') ||
+				id === '@wolf-tui/solid' ||
+				id.startsWith('@wolf-tui/solid/') ||
 				nodeBuiltins.includes(id),
 		},
 	},
@@ -137,7 +137,7 @@ export default defineConfig({
 ```ts
 // build.mjs
 import * as esbuild from 'esbuild'
-import { wolfie, generateNativeBanner } from '@wolfie/plugin/esbuild'
+import { wolfie, generateNativeBanner } from '@wolf-tui/plugin/esbuild'
 import { solidPlugin } from 'esbuild-plugin-solid'
 
 await esbuild.build({
@@ -146,13 +146,13 @@ await esbuild.build({
 	outfile: 'dist/index.cjs',
 	platform: 'node',
 	format: 'cjs',
-	external: ['solid-js', '@wolfie/solid'],
+	external: ['solid-js', '@wolf-tui/solid'],
 	banner: { js: generateNativeBanner('cjs') },
 	plugins: [
 		solidPlugin({
 			solid: {
 				generate: 'universal',
-				moduleName: '@wolfie/solid/renderer',
+				moduleName: '@wolf-tui/solid/renderer',
 			},
 		}),
 		wolfie('solid'),
@@ -164,7 +164,7 @@ await esbuild.build({
 
 ```js
 // webpack.config.js
-import { wolfie } from '@wolfie/plugin/webpack'
+import { wolfie } from '@wolf-tui/plugin/webpack'
 
 export default {
 	target: 'node',
@@ -181,7 +181,7 @@ export default {
 								'babel-preset-solid',
 								{
 									generate: 'universal',
-									moduleName: '@wolfie/solid/renderer',
+									moduleName: '@wolf-tui/solid/renderer',
 								},
 							],
 							'@babel/preset-typescript',
@@ -244,7 +244,7 @@ instance.unmount()
 <details>
 <summary><b>Box & Text props</b></summary>
 
-Both accept `style` (inline object) and `className` (CSS classes via `@wolfie/plugin`).
+Both accept `style` (inline object) and `className` (CSS classes via `@wolf-tui/plugin`).
 
 **Box style properties** (passed via `style`):
 
@@ -363,7 +363,7 @@ Both accept `style` (inline object) and `className` (CSS classes via `@wolfie/pl
 Handle keyboard input. Registers immediately (no `onMount` needed).
 
 ```tsx
-import { useInput } from '@wolfie/solid'
+import { useInput } from '@wolf-tui/solid'
 
 function App() {
 	useInput((input, key) => {
@@ -464,7 +464,7 @@ return <Text>{frame()} Loading...</Text>
 Customize component appearance via the `theme` option in `render()`:
 
 ```tsx
-import { render, extendTheme, defaultTheme } from '@wolfie/solid'
+import { render, extendTheme, defaultTheme } from '@wolf-tui/solid'
 
 const theme = extendTheme(defaultTheme, {
 	components: {
@@ -486,7 +486,7 @@ render(App, { theme })
 
 ## CSS Styling
 
-Three approaches, all via `@wolfie/plugin`:
+Three approaches, all via `@wolf-tui/plugin`:
 
 | Method        | Usage                                  |
 | ------------- | -------------------------------------- |
@@ -503,7 +503,6 @@ All CSS approaches resolve to terminal styles at build time — no runtime CSS e
 
 ```tsx
 import './styles.css'
-
 ;<Box className="flex-col p-4 gap-2">
 	<Text className="text-green-500 font-bold">Tailwind styled</Text>
 </Box>
@@ -513,7 +512,6 @@ import './styles.css'
 
 ```tsx
 import styles from './App.module.css'
-
 ;<Box className={styles.container}>
 	<Text className={styles.title}>CSS Modules</Text>
 </Box>

@@ -8,7 +8,7 @@ import {
 import figures from 'figures'
 import { BoxComponent } from '../box/box.component'
 import { TextComponent } from '../text/text.component'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 
 //#region Types
 export interface SelectOptionProps {

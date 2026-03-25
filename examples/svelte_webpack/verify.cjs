@@ -50,7 +50,7 @@ function createFakeStdin() {
 
 async function verify() {
 	const { App } = await import('./dist/index.js')
-	const { render } = await import('@wolfie/svelte')
+	const { render } = await import('@wolf-tui/svelte')
 
 	const stdout = createFakeStream(120, 40)
 	const stdin = createFakeStdin()

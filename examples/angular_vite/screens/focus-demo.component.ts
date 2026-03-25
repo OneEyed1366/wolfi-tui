@@ -13,7 +13,7 @@ import {
 	FocusService,
 	injectInput,
 	type Key,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 
 //#region Types
 interface FocusItem {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useStdout } from '@wolfie/react'
+import { useStdout } from '@wolf-tui/react'
 
 export type TerminalSize = {
 	width: number

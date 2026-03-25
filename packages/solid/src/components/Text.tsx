@@ -1,6 +1,6 @@
 import { useContext, type JSX } from 'solid-js'
 import chalk from 'chalk'
-import { colorize, type Styles } from '@wolfie/core'
+import { colorize, type Styles } from '@wolf-tui/core'
 import { AccessibilityCtx, BackgroundCtx } from '../context/symbols'
 import { resolveClassName, type ClassNameValue } from '../styles'
 

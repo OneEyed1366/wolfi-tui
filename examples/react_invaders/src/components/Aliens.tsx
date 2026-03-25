@@ -1,4 +1,4 @@
-import { Box, Text, Transform } from '@wolfie/react'
+import { Box, Text, Transform } from '@wolf-tui/react'
 import { ALIEN_SPRITE_FRAMES } from '../constants'
 import type { Alien } from '../hooks/useInvaders'
 

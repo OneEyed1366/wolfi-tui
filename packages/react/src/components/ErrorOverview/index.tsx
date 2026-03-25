@@ -6,7 +6,7 @@ import {
 	renderErrorOverview,
 	type ErrorOverviewData,
 	type ErrorOverviewStackFrame,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { wNodeToReact } from '../../wnode/wnode-to-react'
 import type { IProps } from './types'
 

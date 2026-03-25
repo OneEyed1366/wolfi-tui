@@ -17,7 +17,7 @@ import {
 	inlineStyles,
 	tailwind,
 	type ParsedStyles,
-} from '@wolfie/css-parser'
+} from '@wolf-tui/css-parser'
 import type { Framework, WolfieOptions } from './index'
 
 const CSS_EXTENSIONS_RE = /\.(css|scss|sass|less|styl|stylus)(\?.*)?$/
@@ -64,7 +64,7 @@ else { console.error("Native binding not found for ${platform} ${arch}"); proces
 }
 
 /**
- * Find the @wolfie/core package and return the path to its .node files
+ * Find the @wolf-tui/core package and return the path to its .node files
  */
 function findCoreNativeDir(root: string): string | null {
 	// Try monorepo paths first (relative to project root)
@@ -74,7 +74,7 @@ function findCoreNativeDir(root: string): string | null {
 	}
 
 	// Try node_modules
-	const nodeModulesCandidate = resolve(root, 'node_modules/@wolfie/core')
+	const nodeModulesCandidate = resolve(root, 'node_modules/@wolf-tui/core')
 	if (existsSync(join(nodeModulesCandidate, 'package.json'))) {
 		return nodeModulesCandidate
 	}
@@ -265,12 +265,12 @@ export function wolfie(
 			// In esbuild, we return the JS directly.
 			// We must include the registerStyles call in the JS code.
 			const pkg = isVue
-				? '@wolfie/vue'
+				? '@wolf-tui/vue'
 				: isAngular
-					? '@wolfie/angular'
+					? '@wolf-tui/angular'
 					: isSolid
-						? '@wolfie/solid'
-						: '@wolfie/react'
+						? '@wolf-tui/solid'
+						: '@wolf-tui/react'
 			const code = `import { registerStyles } from '${pkg}'
 registerStyles(${JSON.stringify(scopedStyles)})
 export default ${JSON.stringify(classNameMap)}`
@@ -447,7 +447,7 @@ export default ${JSON.stringify(classNameMap)}`
 						Object.assign(globalStylesMap, styles)
 
 						// Generate JS that registers styles in wolfie runtime
-						const code = `import { registerStyles } from '@wolfie/svelte'
+						const code = `import { registerStyles } from '@wolf-tui/svelte'
 const styles = ${JSON.stringify(styles)}
 registerStyles(styles)
 export default styles`

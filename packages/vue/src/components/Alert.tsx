@@ -4,7 +4,7 @@ import {
 	defaultAlertTheme,
 	type AlertRenderTheme,
 	type AlertVariant,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { wNodeToVue } from '../wnode/wnode-to-vue'
 
 //#region Types

@@ -1,5 +1,5 @@
 {
-	"name": "@wolfie/shared",
+	"name": "@wolf-tui/shared",
 	"version": "1.2.1",
 	"description": "Shared framework-agnostic logic for wolfie adapters",
 	"license": "MIT",
@@ -28,12 +28,25 @@
 		"figures": "^6.1.0"
 	},
 	"peerDependencies": {
-		"@wolfie/core": "workspace:*",
+		"@wolf-tui/core": "workspace:*",
 		"chalk": "^5.0.0"
 	},
 	"peerDependenciesMeta": {
-		"@wolfie/core": {
+		"@wolf-tui/core": {
 			"optional": false
 		}
-	}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/OneEyed1366/wolfi-tui.git",
+		"directory": "internal/shared"
+	},
+	"homepage": "https://github.com/OneEyed1366/wolfi-tui/tree/master/internal/shared#readme",
+	"bugs": {
+		"url": "https://github.com/OneEyed1366/wolfi-tui/issues"
+	},
+	"author": "A.Prokopenko <psevdoproger@gmail.com>"
 }

@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import { Box, Text } from '@wolfie/react'
+import { Box, Text } from '@wolf-tui/react'
 import {
 	ALIEN_SPRITE_FRAMES,
 	PLAYER_SPRITE,

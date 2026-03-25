@@ -9,15 +9,15 @@
 		"example": "webpack && node dist/index.cjs"
 	},
 	"dependencies": {
-		"@wolfie/solid": "workspace:*",
+		"@wolf-tui/solid": "workspace:*",
 		"solid-js": "^1.9.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.0",
 		"@babel/preset-typescript": "^7.24.0",
 		"@tailwindcss/postcss": "^4.0.0",
-		"@wolfie/plugin": "workspace:*",
-		"@wolfie/typescript-plugin": "workspace:*",
+		"@wolf-tui/plugin": "workspace:*",
+		"@wolf-tui/typescript-plugin": "workspace:*",
 		"autoprefixer": "^10.4.19",
 		"babel-loader": "^9.1.3",
 		"babel-preset-solid": "^1.9.0",

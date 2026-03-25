@@ -17,7 +17,7 @@ export interface FocusManagerContext {
  * @example
  * ```vue
  * <script setup>
- * import { useFocusManager } from '@wolfie/vue'
+ * import { useFocusManager } from '@wolf-tui/vue'
  *
  * const { focusNext, focusPrevious, focus } = useFocusManager()
  *

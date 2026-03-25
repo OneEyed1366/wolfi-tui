@@ -1,5 +1,5 @@
 {
-	"name": "@wolfie/spec",
+	"name": "@wolf-tui/spec",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
@@ -7,8 +7,8 @@
 		".": "./src/index.ts"
 	},
 	"dependencies": {
-		"@wolfie/core": "workspace:*",
-		"@wolfie/shared": "workspace:*",
+		"@wolf-tui/core": "workspace:*",
+		"@wolf-tui/shared": "workspace:*",
 		"chalk": "^5.0.0",
 		"sinon": "^21.0.1"
 	},

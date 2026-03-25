@@ -7,12 +7,12 @@ import type {
 import { Injectable } from '@angular/core'
 import { WolfieRenderer } from './wolfie-renderer'
 import type { WolfieAngular } from '../wolfie-angular'
-import type { DOMElement } from '@wolfie/core'
+import type { DOMElement } from '@wolf-tui/core'
 
 //#region WolfieRendererFactory
 /**
  * Custom RendererFactory2 implementation for Wolfie TUI
- * Creates WolfieRenderer instances that use @wolfie/core for rendering
+ * Creates WolfieRenderer instances that use @wolf-tui/core for rendering
  */
 @Injectable()
 export class WolfieRendererFactory implements RendererFactory2 {

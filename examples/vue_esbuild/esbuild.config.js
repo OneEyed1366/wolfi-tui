@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import { wolfie } from '@wolfie/plugin/esbuild'
+import { wolfie } from '@wolf-tui/plugin/esbuild'
 import Vue from 'unplugin-vue/esbuild'
 
 await esbuild.build({
@@ -19,8 +19,8 @@ await esbuild.build({
 	},
 	external: [
 		'vue',
-		'@wolfie/core',
-		'@wolfie/css-parser',
+		'@wolf-tui/core',
+		'@wolf-tui/css-parser',
 		'ansi-escapes',
 		'ansi-styles',
 		'auto-bind',

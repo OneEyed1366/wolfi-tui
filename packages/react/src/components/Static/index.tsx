@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useLayoutEffect } from 'react'
-import { type Styles } from '@wolfie/core'
+import { type Styles } from '@wolf-tui/core'
 import type { IProps } from './types'
 import styles from './Static.module.css'
 /**

@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import { wolfie } from '@wolfie/plugin/esbuild'
+import { wolfie } from '@wolf-tui/plugin/esbuild'
 import sveltePlugin from 'esbuild-svelte'
 import { sveltePreprocess } from 'svelte-preprocess'
 
@@ -10,7 +10,7 @@ await esbuild.build({
 	format: 'esm',
 	platform: 'node',
 	target: 'node20',
-	// WHY: externalizes ALL bare specifiers (svelte, @wolfie/svelte, etc.)
+	// WHY: externalizes ALL bare specifiers (svelte, @wolf-tui/svelte, etc.)
 	// so both the app and the adapter share ONE svelte runtime from node_modules.
 	packages: 'external',
 	conditions: ['svelte', 'browser'],

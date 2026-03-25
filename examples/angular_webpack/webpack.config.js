@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { wolfie } from '@wolfie/plugin/webpack'
+import { wolfie } from '@wolf-tui/plugin/webpack'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -37,13 +37,13 @@ export default {
 	},
 	optimization: { minimize: false },
 	plugins: [wolfie('angular')],
-	// WHY: @wolfie/angular carries native .node bindings that can't be bundled;
+	// WHY: @wolf-tui/angular carries native .node bindings that can't be bundled;
 	// Angular packages and zone.js are runtime deps loaded from node_modules
 	externals: {
 		'@angular/core': 'commonjs @angular/core',
 		'@angular/common': 'commonjs @angular/common',
 		'@angular/compiler': 'commonjs @angular/compiler',
 		'zone.js': 'commonjs zone.js',
-		'@wolfie/angular': 'commonjs @wolfie/angular',
+		'@wolf-tui/angular': 'commonjs @wolf-tui/angular',
 	},
 }

@@ -1,5 +1,5 @@
 {
-	"name": "@wolfie/typescript-plugin",
+	"name": "@wolf-tui/typescript-plugin",
 	"version": "1.0.3",
 	"description": "TypeScript language service plugin for CSS module types in Wolfie",
 	"license": "MIT",
@@ -17,7 +17,7 @@
 		"types.d.ts"
 	],
 	"dependencies": {
-		"@wolfie/css-parser": "workspace:*"
+		"@wolf-tui/css-parser": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/node": "^24.10.9",
@@ -27,5 +27,18 @@
 	},
 	"peerDependencies": {
 		"typescript": ">=5.0"
-	}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/OneEyed1366/wolfi-tui.git",
+		"directory": "packages/typescript-plugin"
+	},
+	"homepage": "https://github.com/OneEyed1366/wolfi-tui/tree/master/packages/typescript-plugin#readme",
+	"bugs": {
+		"url": "https://github.com/OneEyed1366/wolfi-tui/issues"
+	},
+	"author": "A.Prokopenko <psevdoproger@gmail.com>"
 }

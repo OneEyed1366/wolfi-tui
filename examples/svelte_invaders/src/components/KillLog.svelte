@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Box, Text } from '@wolfie/svelte'
+	import { Box, Text } from '@wolf-tui/svelte'
 	import type { Kill } from '../composables/useInvaders.svelte'
 	import { BRAND } from '../theme'
 

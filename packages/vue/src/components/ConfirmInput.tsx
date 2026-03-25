@@ -10,7 +10,7 @@ import {
 	renderConfirmInput,
 	defaultConfirmInputTheme,
 	type ConfirmInputRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { wNodeToVue } from '../wnode/wnode-to-vue'
 
 //#region Types

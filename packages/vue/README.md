@@ -1,4 +1,4 @@
-# @wolfie/vue
+# @wolf-tui/vue
 
 ### Build terminal UIs with Vue 3 — flexbox layouts, styled components, keyboard input
 
@@ -24,10 +24,10 @@ If you've used [Ink](https://github.com/vadimdemedes/ink) for React terminal UIs
 
 ```bash
 # Runtime dependencies
-pnpm add @wolfie/vue chalk vue
+pnpm add @wolf-tui/vue chalk vue
 
 # Build tooling
-pnpm add -D @wolfie/plugin @vitejs/plugin-vue vite
+pnpm add -D @wolf-tui/plugin @vitejs/plugin-vue vite
 ```
 
 | Peer dependency | Version |
@@ -44,7 +44,7 @@ pnpm add -D @wolfie/plugin @vitejs/plugin-vue vite
 ```vue
 <!-- App.vue -->
 <script setup>
-import { Box, Text, useInput, useApp } from '@wolfie/vue'
+import { Box, Text, useInput, useApp } from '@wolf-tui/vue'
 import { ref } from 'vue'
 
 const count = ref(0)
@@ -69,7 +69,7 @@ useInput((input, key) => {
 
 ```ts
 // index.ts
-import { render } from '@wolfie/vue'
+import { render } from '@wolf-tui/vue'
 import App from './App.vue'
 
 render(App)
@@ -83,7 +83,7 @@ render(App)
 // vite.config.ts
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 
 export default defineConfig({
 	plugins: [
@@ -119,8 +119,8 @@ vite build && node dist/index.cjs
 <summary><b>JSX/TSX alternative</b></summary>
 
 ```tsx
-import { defineComponent, ref } from '@wolfie/vue'
-import { Box, Text, render, useInput, useApp } from '@wolfie/vue'
+import { defineComponent, ref } from '@wolf-tui/vue'
+import { Box, Text, render, useInput, useApp } from '@wolf-tui/vue'
 
 const App = defineComponent({
 	setup() {
@@ -189,7 +189,7 @@ const instance = render(App, {
 <details>
 <summary><b>Box & Text props</b></summary>
 
-Both accept `style` (inline object) and `class`/`className` (CSS classes via `@wolfie/plugin`).
+Both accept `style` (inline object) and `class`/`className` (CSS classes via `@wolf-tui/plugin`).
 
 **Box style properties** (passed via `:style`):
 
@@ -309,7 +309,7 @@ Handle keyboard input. Available inside any component rendered by `render()`.
 
 ```vue
 <script setup>
-import { useInput } from '@wolfie/vue'
+import { useInput } from '@wolf-tui/vue'
 
 useInput((input, key) => {
 	if (key.upArrow) {
@@ -353,7 +353,7 @@ Access the app context — primarily for `exit()`.
 
 ```vue
 <script setup>
-import { useApp } from '@wolfie/vue'
+import { useApp } from '@wolf-tui/vue'
 const { exit } = useApp()
 </script>
 ```
@@ -364,7 +364,7 @@ Make components focusable and control focus programmatically.
 
 ```vue
 <script setup>
-import { useFocus, useFocusManager } from '@wolfie/vue'
+import { useFocus, useFocusManager } from '@wolf-tui/vue'
 
 const { isFocused } = useFocus({ autoFocus: true })
 const { focusNext, focusPrevious } = useFocusManager()
@@ -386,7 +386,7 @@ const { focusNext, focusPrevious } = useFocusManager()
 Customize component appearance via the `theme` option in `render()`:
 
 ```ts
-import { render, extendTheme, defaultTheme } from '@wolfie/vue'
+import { render, extendTheme, defaultTheme } from '@wolf-tui/vue'
 
 const theme = extendTheme(defaultTheme, {
 	components: {
@@ -402,7 +402,7 @@ Or provide theme via Vue's injection system:
 
 ```vue
 <script setup>
-import { provideTheme, extendTheme, defaultTheme } from '@wolfie/vue'
+import { provideTheme, extendTheme, defaultTheme } from '@wolf-tui/vue'
 
 provideTheme(
 	extendTheme(defaultTheme, {
@@ -423,7 +423,7 @@ provideTheme(
 
 ## CSS Styling
 
-Three approaches, all via `@wolfie/plugin`:
+Three approaches, all via `@wolf-tui/plugin`:
 
 | Method       | Usage                                       |
 | ------------ | ------------------------------------------- |
@@ -484,7 +484,7 @@ For full IntelliSense in Vue templates (Volar/vue-tsc), add global component typ
 
 ```ts
 // env.d.ts
-/// <reference types="@wolfie/vue/global" />
+/// <reference types="@wolf-tui/vue/global" />
 
 declare module '*.vue' {
 	import type { DefineComponent } from 'vue'
@@ -496,14 +496,14 @@ declare module '*.vue' {
 For CSS module autocomplete with actual class names, install the TypeScript plugin:
 
 ```bash
-pnpm add -D @wolfie/typescript-plugin
+pnpm add -D @wolf-tui/typescript-plugin
 ```
 
 ```json
 // tsconfig.json
 {
 	"compilerOptions": {
-		"plugins": [{ "name": "@wolfie/typescript-plugin" }]
+		"plugins": [{ "name": "@wolf-tui/typescript-plugin" }]
 	}
 }
 ```
@@ -513,7 +513,7 @@ For wolfie-specific CSS property suggestions in VS Code:
 ```json
 // .vscode/settings.json
 {
-	"css.customData": ["./node_modules/@wolfie/plugin/wolfie.css-data.json"]
+	"css.customData": ["./node_modules/@wolf-tui/plugin/wolfie.css-data.json"]
 }
 ```
 
@@ -538,7 +538,7 @@ import {
 	inject,
 	defineComponent,
 	h,
-} from '@wolfie/vue'
+} from '@wolf-tui/vue'
 ```
 
 ---

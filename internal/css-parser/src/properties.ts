@@ -4,7 +4,7 @@
  * Maps CSS properties to wolfie/core style properties
  */
 
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import {
 	parseNumeric,
 	parseNumericOrPercent,

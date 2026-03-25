@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { renderNewline } from '@wolfie/shared'
+	import { renderNewline } from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 
 	let { count = 1 }: {

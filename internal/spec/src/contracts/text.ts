@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import chalk, { supportsColor } from 'chalk'
-import type { Styles } from '@wolfie/core'
-import type { ClassNameValue } from '@wolfie/shared'
+import type { Styles } from '@wolf-tui/core'
+import type { ClassNameValue } from '@wolf-tui/shared'
 
 export type TextRenderResult = {
 	/** The raw terminal output string (may contain ANSI codes) */

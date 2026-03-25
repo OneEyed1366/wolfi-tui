@@ -1,4 +1,4 @@
-# @wolfie/plugin
+# @wolf-tui/plugin
 
 Build plugin for wolf-tui. Enables CSS/SCSS/LESS/Stylus and Tailwind CSS support.
 
@@ -7,14 +7,14 @@ Build plugin for wolf-tui. Enables CSS/SCSS/LESS/Stylus and Tailwind CSS support
 - Transforms CSS/SCSS/LESS/Stylus imports into wolf-tui compatible styles
 - Supports Tailwind CSS v3 and v4 with JIT compilation
 - Handles CSS Modules (`.module.css`) and global styles
-- Provides native binding setup for `@wolfie/core`
+- Provides native binding setup for `@wolf-tui/core`
 
 ## Installation
 
 ```bash
-npm install @wolfie/plugin
+npm install @wolf-tui/plugin
 # or
-pnpm add @wolfie/plugin
+pnpm add @wolf-tui/plugin
 ```
 
 ## Bundler Setup
@@ -24,7 +24,7 @@ pnpm add @wolfie/plugin
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite'
-import wolfie from '@wolfie/plugin/vite'
+import wolfie from '@wolf-tui/plugin/vite'
 
 export default defineConfig({
 	plugins: [
@@ -38,7 +38,7 @@ export default defineConfig({
 ```typescript
 // esbuild.config.js
 import * as esbuild from 'esbuild'
-import wolfie, { generateNativeBanner } from '@wolfie/plugin/esbuild'
+import wolfie, { generateNativeBanner } from '@wolf-tui/plugin/esbuild'
 
 await esbuild.build({
 	entryPoints: ['src/index.tsx'],
@@ -60,7 +60,7 @@ await esbuild.build({
 
 ```javascript
 // webpack.config.js
-const wolfie = require('@wolfie/plugin/webpack').default
+const wolfie = require('@wolf-tui/plugin/webpack').default
 
 module.exports = {
 	plugins: [
@@ -73,7 +73,7 @@ module.exports = {
 
 ```javascript
 // rollup.config.js
-import wolfie from '@wolfie/plugin/rollup'
+import wolfie from '@wolf-tui/plugin/rollup'
 
 export default {
 	plugins: [
@@ -348,7 +348,7 @@ All extensions support the `.module.` prefix for CSS Modules.
 Ensure `nativeBindings: true` (default) and rebuild:
 
 ```bash
-cd node_modules/@wolfie/core
+cd node_modules/@wolf-tui/core
 npm run build:rust
 ```
 
@@ -377,7 +377,7 @@ Add to your `.vscode/settings.json`:
 
 ```json
 {
-	"css.customData": ["./node_modules/@wolfie/plugin/wolfie.css-data.json"]
+	"css.customData": ["./node_modules/@wolf-tui/plugin/wolfie.css-data.json"]
 }
 ```
 

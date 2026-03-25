@@ -4,7 +4,7 @@ import boxen from 'boxen'
 import indentString from 'indent-string'
 import cliBoxes from 'cli-boxes'
 import chalk from 'chalk'
-import { render, Box, Text } from '@wolfie/react'
+import { render, Box, Text } from '@wolf-tui/react'
 import { renderToString } from './helpers/render-to-string'
 import createStdout from './helpers/create-stdout'
 

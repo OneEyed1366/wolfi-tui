@@ -6,7 +6,7 @@ import {
 	signal,
 	computed,
 } from '@angular/core'
-import { renderAlert, defaultAlertTheme } from '@wolfie/shared'
+import { renderAlert, defaultAlertTheme } from '@wolf-tui/shared'
 import { WNodeOutletComponent } from '../wnode-outlet/wnode-outlet.component'
 
 //#region Types

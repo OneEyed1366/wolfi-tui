@@ -13,7 +13,7 @@ import {
 	Text,
 	Transform,
 	useStdin,
-} from '@wolfie/react'
+} from '@wolf-tui/react'
 import createStdout from './helpers/create-stdout'
 import { renderToString } from './helpers/render-to-string'
 import { run } from './helpers/run'

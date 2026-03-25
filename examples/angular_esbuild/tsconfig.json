@@ -10,7 +10,7 @@
 		"emitDecoratorMetadata": true,
 		"useDefineForClassFields": false,
 		"noEmit": true,
-		"plugins": [{ "name": "@wolfie/typescript-plugin" }]
+		"plugins": [{ "name": "@wolf-tui/typescript-plugin" }]
 	},
 	"include": ["src/**/*.ts"]
 }

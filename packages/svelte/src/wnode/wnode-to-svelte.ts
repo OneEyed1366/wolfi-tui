@@ -1,5 +1,5 @@
-import type { WNode } from '@wolfie/shared'
-import { setStyle, applyLayoutStyle, logger, type Styles } from '@wolfie/core'
+import type { WNode } from '@wolf-tui/shared'
+import { setStyle, applyLayoutStyle, logger, type Styles } from '@wolf-tui/core'
 import { WolfieElement, WolfieText } from '../renderer/wolfie-element.js'
 
 //#region wNodeToSvelte

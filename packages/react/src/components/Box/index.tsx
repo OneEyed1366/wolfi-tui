@@ -1,6 +1,6 @@
 import React, { forwardRef, useContext, type PropsWithChildren } from 'react'
-import { type DOMElement } from '@wolfie/core'
-import { computeBoxStyle, computeBoxBackground } from '@wolfie/shared'
+import { type DOMElement } from '@wolf-tui/core'
+import { computeBoxStyle, computeBoxBackground } from '@wolf-tui/shared'
 import { accessibilityContext } from '../../context/AccessibilityContext'
 import { backgroundContext } from '../../context/BackgroundContext'
 import type { IProps } from './types'

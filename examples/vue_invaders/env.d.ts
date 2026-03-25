@@ -1,2 +1,2 @@
 /// <reference types="vite/client" />
-/// <reference types="@wolfie/vue/client" />
+/// <reference types="@wolf-tui/vue/client" />

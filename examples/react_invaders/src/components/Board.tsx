@@ -1,5 +1,10 @@
 import { useState, type ReactNode } from 'react'
-import { Box, useStdout, measureElement, type DOMElement } from '@wolfie/react'
+import {
+	Box,
+	useStdout,
+	measureElement,
+	type DOMElement,
+} from '@wolf-tui/react'
 import { BOARD_WIDTH, BOARD_HEIGHT } from '../constants'
 import styles from '../styles/game.module.css'
 

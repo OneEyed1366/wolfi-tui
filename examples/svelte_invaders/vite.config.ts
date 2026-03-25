@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { builtinModules } from 'node:module'
@@ -30,7 +30,7 @@ export default defineConfig({
 	// Prevent vite from pre-bundling svelte — avoids dual-runtime where
 	// pre-bundled active_effect diverges from SSR-transformed module state.
 	optimizeDeps: {
-		exclude: ['svelte', '@wolfie/svelte'],
+		exclude: ['svelte', '@wolf-tui/svelte'],
 	},
 	// vite-node runs in SSR mode — needs separate resolve config for SSR.
 	// Without this, svelte resolves to index-server.js ("mount() not available").
@@ -38,7 +38,7 @@ export default defineConfig({
 		resolve: {
 			conditions: ['browser', 'development', 'import', 'module'],
 		},
-		noExternal: ['@wolfie/svelte', 'svelte'],
+		noExternal: ['@wolf-tui/svelte', 'svelte'],
 	},
 	build: {
 		target: 'node18',
@@ -49,12 +49,12 @@ export default defineConfig({
 		},
 		rollupOptions: {
 			preserveEntrySignatures: 'exports-only',
-			// Externalize both @wolfie/svelte AND svelte.
+			// Externalize both @wolf-tui/svelte AND svelte.
 			// All three (adapter, app, svelte) share ONE svelte runtime from node_modules.
 			// Consumers must use --conditions=browser (verify.cjs self-respawns, e2e uses execArgv).
 			external: (id) =>
-				id === '@wolfie/svelte' ||
-				id.startsWith('@wolfie/svelte/') ||
+				id === '@wolf-tui/svelte' ||
+				id.startsWith('@wolf-tui/svelte/') ||
 				id === 'svelte' ||
 				id.startsWith('svelte/') ||
 				nodeBuiltins.includes(id),

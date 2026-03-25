@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, Text, useApp } from '@wolfie/react'
+import { render, Text, useApp } from '@wolf-tui/react'
 
 class Exit extends React.Component<
 	{ onExit: (error: Error) => void },

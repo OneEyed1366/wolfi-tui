@@ -1,6 +1,6 @@
 import process from 'node:process'
 import React from 'react'
-import { render, useInput, useApp } from '@wolfie/react'
+import { render, useInput, useApp } from '@wolf-tui/react'
 
 function UserInput({ test }: { test: string | undefined }) {
 	const { exit } = useApp()

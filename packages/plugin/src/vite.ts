@@ -17,7 +17,7 @@ import {
 	inlineStyles,
 	tailwind,
 	type ParsedStyles,
-} from '@wolfie/css-parser'
+} from '@wolf-tui/css-parser'
 import type { Framework, WolfieOptions } from './index'
 import { createVueSfcPlugin, createVueImportPlugin } from './vue-sfc'
 
@@ -26,7 +26,7 @@ const CSS_EXTENSIONS_RE = /\.(css|scss|sass|less|styl|stylus)$/
 //#region Native Bindings
 
 /**
- * Find the @wolfie/core package and return the path to its .node files
+ * Find the @wolf-tui/core package and return the path to its .node files
  */
 function findCoreNativeDir(root: string): string | null {
 	// Try monorepo paths first (relative to project root)
@@ -36,7 +36,7 @@ function findCoreNativeDir(root: string): string | null {
 	}
 
 	// Try node_modules
-	const nodeModulesCandidate = resolve(root, 'node_modules/@wolfie/core')
+	const nodeModulesCandidate = resolve(root, 'node_modules/@wolf-tui/core')
 	if (existsSync(join(nodeModulesCandidate, 'package.json'))) {
 		return nodeModulesCandidate
 	}
@@ -81,7 +81,7 @@ function createNativeBindingsPlugin(): Plugin {
 
 			if (!coreDir) {
 				console.warn(
-					'[wolfie] Could not find @wolfie/core package for native bindings'
+					'[wolfie] Could not find @wolf-tui/core package for native bindings'
 				)
 				return
 			}

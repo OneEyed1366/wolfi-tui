@@ -1,5 +1,5 @@
 {
-	"name": "@wolfie/css-parser",
+	"name": "@wolf-tui/css-parser",
 	"version": "1.2.1",
 	"description": "CSS/SCSS/Less/Stylus parser and code generator for wolfie",
 	"license": "MIT",
@@ -52,12 +52,12 @@
 		"vite": "^6.4.1"
 	},
 	"peerDependencies": {
-		"@wolfie/core": "workspace:*",
+		"@wolf-tui/core": "workspace:*",
 		"esbuild": ">=0.17",
 		"vite": ">=5.0"
 	},
 	"peerDependenciesMeta": {
-		"@wolfie/core": {
+		"@wolf-tui/core": {
 			"optional": false
 		},
 		"esbuild": {
@@ -66,5 +66,18 @@
 		"vite": {
 			"optional": true
 		}
-	}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/OneEyed1366/wolfi-tui.git",
+		"directory": "internal/css-parser"
+	},
+	"homepage": "https://github.com/OneEyed1366/wolfi-tui/tree/master/internal/css-parser#readme",
+	"bugs": {
+		"url": "https://github.com/OneEyed1366/wolfi-tui/issues"
+	},
+	"author": "A.Prokopenko <psevdoproger@gmail.com>"
 }

@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import { wolfie, generateNativeBanner } from '@wolfie/plugin/esbuild'
+import { wolfie, generateNativeBanner } from '@wolf-tui/plugin/esbuild'
 import { solidPlugin } from 'esbuild-plugin-solid'
 
 await esbuild.build({
@@ -8,13 +8,13 @@ await esbuild.build({
 	outfile: 'dist/index.cjs',
 	format: 'cjs',
 	platform: 'node',
-	external: ['solid-js', '@wolfie/solid'],
+	external: ['solid-js', '@wolf-tui/solid'],
 	banner: { js: generateNativeBanner('cjs') },
 	plugins: [
 		solidPlugin({
 			solid: {
 				generate: 'universal',
-				moduleName: '@wolfie/solid/renderer',
+				moduleName: '@wolf-tui/solid/renderer',
 			},
 		}),
 		wolfie('solid'),

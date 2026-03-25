@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@wolfie/react'
+import { render } from '@wolf-tui/react'
 
 const Test = () => {
 	throw new Error('errored')

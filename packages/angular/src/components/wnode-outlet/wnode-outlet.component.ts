@@ -7,8 +7,8 @@ import {
 	ChangeDetectionStrategy,
 	inject,
 } from '@angular/core'
-import type { DOMElement } from '@wolfie/core'
-import type { WNode } from '@wolfie/shared'
+import type { DOMElement } from '@wolf-tui/core'
+import type { WNode } from '@wolf-tui/shared'
 
 //#region WNodeOutletComponent
 /**

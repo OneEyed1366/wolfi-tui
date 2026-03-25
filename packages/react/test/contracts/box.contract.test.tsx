@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
-import type { Styles } from '@wolfie/core'
-import { computeBoxStyle, type ClassNameValue } from '@wolfie/shared'
-import { describeBoxContract, type BoxRenderResult } from '@wolfie/spec'
-import { Box, backgroundContext } from '@wolfie/react'
+import type { Styles } from '@wolf-tui/core'
+import { computeBoxStyle, type ClassNameValue } from '@wolf-tui/shared'
+import { describeBoxContract, type BoxRenderResult } from '@wolf-tui/spec'
+import { Box, backgroundContext } from '@wolf-tui/react'
 import { renderToString } from '../helpers/render-to-string'
 
 function reactBoxRenderer(

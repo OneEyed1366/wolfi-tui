@@ -15,7 +15,7 @@ export type IProps = {
 	/**
 	CSS-like inline styles.
 	*/
-	style?: import('@wolfie/core').Styles
+	style?: import('@wolf-tui/core').Styles
 
 	/**
 	A label for the element for screen readers.

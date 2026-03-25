@@ -5,7 +5,7 @@ import {
 	renderTextInput,
 	defaultTextInputTheme,
 	type TextInputRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../theme'
 import { wNodeToSolid } from '../wnode/wnode-to-solid'
 

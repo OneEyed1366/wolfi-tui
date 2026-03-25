@@ -5,7 +5,7 @@ import {
 	toValue,
 	type MaybeRefOrGetter,
 } from 'vue'
-import { parseInputData, type IKey } from '@wolfie/shared'
+import { parseInputData, type IKey } from '@wolf-tui/shared'
 import { useStdin } from './use-stdin'
 
 export type Key = IKey

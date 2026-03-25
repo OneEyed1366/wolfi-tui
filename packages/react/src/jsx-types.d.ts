@@ -1,6 +1,6 @@
 import { type ReactNode, type Key, type LegacyRef } from 'react'
 import { type Except } from 'type-fest'
-import { type DOMElement, type Styles } from '@wolfie/core'
+import { type DOMElement, type Styles } from '@wolf-tui/core'
 
 /// <reference types="vite/client" />
 

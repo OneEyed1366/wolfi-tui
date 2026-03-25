@@ -1,8 +1,8 @@
 import { Stream } from 'node:stream'
 import process from 'node:process'
 import type { ReactNode } from 'react'
-import { LayoutTree } from '@wolfie/core/layout'
-import { LoggedLayoutTree, logger } from '@wolfie/core'
+import { LayoutTree } from '@wolf-tui/core/layout'
+import { LoggedLayoutTree, logger } from '@wolf-tui/core'
 import WolfieReact, {
 	type IOptions as WolfieOptions,
 	type IRenderMetrics,

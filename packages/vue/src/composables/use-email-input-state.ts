@@ -1,5 +1,5 @@
 import { ref, computed, watch, type Ref, type ComputedRef } from 'vue'
-import { DEFAULT_DOMAINS } from '@wolfie/shared'
+import { DEFAULT_DOMAINS } from '@wolf-tui/shared'
 
 //#region Hook Types
 export type UseEmailInputStateProps = {

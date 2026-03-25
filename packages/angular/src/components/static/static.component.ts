@@ -10,7 +10,7 @@ import {
 	TemplateRef,
 	ContentChild,
 } from '@angular/core'
-import type { Styles, DOMElement } from '@wolfie/core'
+import type { Styles, DOMElement } from '@wolf-tui/core'
 import { NgForOf, NgTemplateOutlet } from '@angular/common'
 
 //#region Default Styles

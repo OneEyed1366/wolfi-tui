@@ -1,4 +1,4 @@
-import { Box, Text, Newline, useInput } from '@wolfie/solid'
+import { Box, Text, Newline, useInput } from '@wolf-tui/solid'
 import type { Screen } from '../composables/useInvaders'
 import { BRAND } from '../theme'
 

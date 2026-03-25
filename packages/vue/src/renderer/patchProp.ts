@@ -13,7 +13,7 @@ import {
 	type DOMNode,
 	type TextNode,
 	type OutputTransformer,
-} from '@wolfie/core'
+} from '@wolf-tui/core'
 import { layoutTreeRegistry, type WolfieVueInstance } from '../index'
 
 const getInstance = (node: DOMNode): WolfieVueInstance | undefined => {

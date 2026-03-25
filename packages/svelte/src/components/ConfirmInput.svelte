@@ -3,7 +3,7 @@
 		renderConfirmInput,
 		defaultConfirmInputTheme,
 		type ConfirmInputRenderTheme,
-	} from '@wolfie/shared'
+	} from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
 	import { useInput } from '../composables/use-input.js'

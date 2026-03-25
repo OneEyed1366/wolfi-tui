@@ -13,7 +13,7 @@
  * @example
  * generateDtsContent(['container', 'button', 'active'])
  * // Returns:
- * // import type { Styles } from '@wolfie/core';
+ * // import type { Styles } from '@wolf-tui/core';
  * // declare const styles: {
  * //   readonly container: Styles;
  * //   readonly button: Styles;
@@ -24,7 +24,7 @@
  */
 export function generateDtsContent(classNames: string[]): string {
 	if (classNames.length === 0) {
-		return `import type { Styles } from '@wolfie/core';
+		return `import type { Styles } from '@wolf-tui/core';
 declare const styles: Record<string, Styles>;
 export default styles;
 export { styles };`
@@ -34,7 +34,7 @@ export { styles };`
 		.map((name) => `  readonly ${escapePropertyName(name)}: Styles;`)
 		.join('\n')
 
-	return `import type { Styles } from '@wolfie/core';
+	return `import type { Styles } from '@wolf-tui/core';
 declare const styles: {
 ${properties}
 };
@@ -59,7 +59,7 @@ export { styles };`
 export function generateTypeDeclaration(classNames: string[]): string {
 	if (classNames.length === 0) {
 		return `
-import type { Styles } from '@wolfie/core';
+import type { Styles } from '@wolf-tui/core';
 declare const styles: Record<string, Styles>;
 export default styles;
 `.trim()
@@ -70,7 +70,7 @@ export default styles;
 		.join('\n')
 
 	return `
-import type { Styles } from '@wolfie/core';
+import type { Styles } from '@wolf-tui/core';
 declare const styles: {
 ${properties}
 };
@@ -89,7 +89,7 @@ export function generateTypeInterface(
 
 	if (classNames.length === 0) {
 		return `
-import type { Styles } from '@wolfie/core';
+import type { Styles } from '@wolf-tui/core';
 export interface ${interfaceName} extends Record<string, Styles> {}
 `.trim()
 	}
@@ -99,7 +99,7 @@ export interface ${interfaceName} extends Record<string, Styles> {}
 		.join('\n')
 
 	return `
-import type { Styles } from '@wolfie/core';
+import type { Styles } from '@wolf-tui/core';
 export interface ${interfaceName} {
 ${properties}
 }

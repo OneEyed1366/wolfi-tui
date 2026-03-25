@@ -1,4 +1,4 @@
-import { type Styles } from '@wolfie/core'
+import { type Styles } from '@wolf-tui/core'
 import { type ReactNode } from 'react'
 
 //#region Types

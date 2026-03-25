@@ -10,12 +10,12 @@
 		"example": "vite build && node dist/index.cjs"
 	},
 	"devDependencies": {
-		"@wolfie/typescript-plugin": "workspace:*",
+		"@wolf-tui/typescript-plugin": "workspace:*",
 		"@angular/common": "^19.0.0",
 		"@angular/compiler": "^19.0.0",
 		"@angular/core": "^19.0.0",
-		"@wolfie/angular": "workspace:*",
-		"@wolfie/plugin": "workspace:*",
+		"@wolf-tui/angular": "workspace:*",
+		"@wolf-tui/plugin": "workspace:*",
 		"chalk": "^5.0.0",
 		"less": "^4.2.0",
 		"postcss": "^8.4.0",

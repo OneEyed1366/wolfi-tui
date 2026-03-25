@@ -12,7 +12,7 @@ import {
 	SpinnerComponent,
 	StdinService,
 	injectInput,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 import { InvadersService } from '../services/invaders.service'
 import { GameCanvasComponent } from '../components/game-canvas.component'
 import { HudComponent } from '../components/hud.component'

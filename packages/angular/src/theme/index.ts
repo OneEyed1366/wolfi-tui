@@ -1,8 +1,12 @@
 import { InjectionToken } from '@angular/core'
-import type { ITheme, IComponentTheme } from '@wolfie/shared'
+import type { ITheme, IComponentTheme } from '@wolf-tui/shared'
 
-export type { ITheme, IComponentTheme, IComponentStyles } from '@wolfie/shared'
-export { extendTheme } from '@wolfie/shared'
+export type {
+	ITheme,
+	IComponentTheme,
+	IComponentStyles,
+} from '@wolf-tui/shared'
+export { extendTheme } from '@wolf-tui/shared'
 
 //#region Default Theme
 export const defaultTheme: ITheme = {

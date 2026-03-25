@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Box, Text, Select, useFocusManager, useInput } from '@wolfie/vue'
+import { Box, Text, Select, useFocusManager, useInput } from '@wolf-tui/vue'
 import type { Screen } from '../composables/useInvaders'
 import { useQuit } from '../composables/useQuit'
 import { BRAND } from '../theme'

@@ -1,4 +1,4 @@
-// Helper script to load @wolfie/svelte app in a subprocess with --conditions=browser.
+// Helper script to load @wolf-tui/svelte app in a subprocess with --conditions=browser.
 // Vitest's forks pool doesn't propagate export conditions to Node's ESM loader,
 // so we spawn a separate Node process that creates the app and communicates via IPC.
 //
@@ -55,7 +55,7 @@ const stderr = createFakeStdout(cols, rows)
 
 const bundlePath = resolve(ROOT, 'examples/svelte_invaders/dist/index.js')
 const { App } = await import(bundlePath)
-const { render } = await import('@wolfie/svelte')
+const { render } = await import('@wolf-tui/svelte')
 
 const instance = render(App, {
 	stdout,

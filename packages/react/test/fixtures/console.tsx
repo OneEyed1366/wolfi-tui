@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Text, render } from '@wolfie/react'
+import { Text, render } from '@wolf-tui/react'
 
 function App() {
 	useEffect(() => {

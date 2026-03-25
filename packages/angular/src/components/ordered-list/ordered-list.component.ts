@@ -1,6 +1,6 @@
 import type { OnInit, OnDestroy } from '@angular/core'
 import { Component, ChangeDetectionStrategy } from '@angular/core'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import { BoxComponent } from '../box/box.component'
 
 //#region Types

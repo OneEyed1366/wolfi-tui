@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte'
-	import { Box, Text, useInput, useStdin } from '@wolfie/svelte'
+	import { Box, Text, useInput, useStdin } from '@wolf-tui/svelte'
 	import GameCanvas from '../components/GameCanvas.svelte'
 	import HUD from '../components/HUD.svelte'
 	import KillLog from '../components/KillLog.svelte'

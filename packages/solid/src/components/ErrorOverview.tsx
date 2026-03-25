@@ -7,7 +7,7 @@ import {
 	renderErrorOverview,
 	type ErrorOverviewData,
 	type ErrorOverviewStackFrame,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { wNodeToSolid } from '../wnode/wnode-to-solid'
 
 //#region Types
