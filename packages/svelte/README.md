@@ -1,56 +1,83 @@
 # @wolfie/svelte
 
-Svelte 5 adapter for wolf-tui. Build terminal user interfaces with Svelte.
+### Build terminal UIs with Svelte 5 — flexbox layouts, styled components, keyboard input
 
-## About
+[![Svelte 5](https://img.shields.io/badge/svelte-%5E5.0.0-FF3E00)](https://svelte.dev)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-339933)](https://nodejs.org)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](../../LICENSE)
 
-This package provides Svelte 5 components ported from the React ecosystem — originally [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes and the ink-\* component libraries. All components have been reimplemented using Svelte 5 runes (`$state`, `$derived`, `$effect`, `$props`) and a complete DOM shim that satisfies Svelte's 26 internal DOM API calls.
+[Install](#install) · [Quick Start](#quick-start) · [Components](#components) · [Composables](#composables) · [Theming](#theming) · [CSS Styling](#css-styling) · [Architecture](#architecture)
 
-## Features
+---
 
-- **Svelte 5 runes** — Uses `$state`, `$derived`, `$effect`, `$props` for reactive state
-- **Complete DOM shim** — Real class hierarchy (`WolfieNode`, `WolfieElement`, etc.) assigned to `globalThis.Node/Element/Text` — Svelte's `init_operations()` finds proper prototype getters
-- **`.svelte` SFC** — Write components using Svelte's single-file component syntax
-- **Tree-shakeable** — Only imports what you use; tested with Vite
-- **Full component library** — 20 components: inputs, alerts, spinners, progress bars, lists, selects
-- **Composables API** — `useInput`, `useFocus`, `useFocusManager`, and more
-- **CSS styling** — Tailwind CSS, CSS Modules, SCSS/LESS/Stylus via `@wolfie/plugin`
+> [!IMPORTANT]
+> **What this package touches:**
+>
+> - Patches `globalThis.Node`, `globalThis.Element`, `globalThis.Text`, `globalThis.Comment`, and `globalThis.document` with a virtual DOM shim (Svelte 5 has no custom renderer API — this is the only way to intercept its DOM calls)
+> - Restores all globals on `unmount()`
+> - No network calls, no telemetry, no file writes outside your project
+>
+> **Disable instantly:** call `instance.unmount()` or remove the `render()` call.
+> **Uninstall:** `pnpm remove @wolfie/svelte @wolfie/plugin`
 
-## Installation
+## The Problem
+
+Svelte 5 compiles components to direct `document.createElement()` / `.appendChild()` calls. There's no `createRenderer()` hook like Vue or Solid offer. If you want Svelte components to render into a terminal instead of a browser, you need a complete DOM shim that Svelte's compiled output can call transparently.
+
+This package provides that shim, plus 20+ components (inputs, selects, alerts, spinners, progress bars, lists) and composables (`useInput`, `useFocus`, etc.) — all using Svelte 5 runes (`$state`, `$derived`, `$effect`).
+
+If you've used [Ink](https://github.com/vadimdemedes/ink) for React terminal UIs, this is the Svelte equivalent. What's new is the DOM shim approach — a class hierarchy (`WolfieNode` → `WolfieElement` → `WolfieText`) that satisfies Svelte's `init_operations()` prototype introspection, so compiled Svelte code runs unmodified.
+
+---
+
+## Install
 
 ```bash
-npm install @wolfie/svelte @wolfie/plugin chalk
-# or
-pnpm add @wolfie/svelte @wolfie/plugin chalk
+# Runtime dependencies
+pnpm add @wolfie/svelte chalk svelte
+
+# Build tooling
+pnpm add -D @wolfie/plugin @sveltejs/vite-plugin-svelte vite
 ```
 
-**Peer dependencies:**
+| Peer dependency | Version |
+| --------------- | ------- |
+| `svelte`        | ^5.0.0  |
+| `chalk`         | ^5.0.0  |
 
-- `svelte` ^5.0.0
-- `chalk` ^5.0.0
+---
 
 ## Quick Start
 
 ```svelte
 <!-- App.svelte -->
 <script lang="ts">
-  import { Box, Text } from '@wolfie/svelte'
+  import { Box, Text, useInput, useApp } from '@wolfie/svelte'
+
+  let count = $state(0)
+  const { exit } = useApp()
+
+  useInput((input, key) => {
+    if (key.upArrow) count++
+    if (key.downArrow) count = Math.max(0, count - 1)
+    if (input === 'q') exit()
+  })
 </script>
 
 <Box style={{ flexDirection: 'column', padding: 1 }}>
-  <Text style={{ color: 'green', fontWeight: 'bold' }}>
-    Hello, Terminal!
-  </Text>
-  <Text>Built with wolf-tui</Text>
+  <Text style={{ color: 'green', fontWeight: 'bold' }}>Counter: {count}</Text>
+  <Text style={{ color: 'gray' }}>↑/↓ to change, q to quit</Text>
 </Box>
 ```
+
+> For CSS class-based styling (`className="text-green p-1"`), see [CSS Styling](#css-styling).
 
 ```ts
 // index.ts
 import { render } from '@wolfie/svelte'
 import App from './App.svelte'
 
-render(App)
+render(App, { maxFps: 30 })
 ```
 
 ### Vite Configuration
@@ -58,30 +85,65 @@ render(App)
 ```ts
 // vite.config.ts
 import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import { wolfie } from '@wolfie/plugin/vite'
+import { wolfiePreprocess } from '@wolfie/plugin/svelte'
+import { builtinModules } from 'node:module'
+
+const nodeBuiltins = [
+	...builtinModules,
+	...builtinModules.map((m) => `node:${m}`),
+]
 
 export default defineConfig({
-	plugins: [svelte(), wolfie('svelte')],
+	plugins: [
+		svelte({
+			compilerOptions: { css: 'external' },
+			preprocess: [vitePreprocess(), wolfiePreprocess()],
+			dynamicCompileOptions() {
+				return { generate: 'client' }
+			},
+		}),
+		wolfie('svelte'),
+	],
+	resolve: { conditions: ['browser', 'development'] },
+	build: {
+		target: 'node18',
+		lib: {
+			entry: 'src/index.ts',
+			formats: ['es'],
+			fileName: 'index',
+		},
+		rollupOptions: {
+			external: (id) =>
+				nodeBuiltins.includes(id) ||
+				id === '@wolfie/svelte' ||
+				id.startsWith('@wolfie/svelte/') ||
+				id === 'svelte' ||
+				id.startsWith('svelte/'),
+		},
+	},
 })
 ```
 
-**Important:** Consumers must use `--conditions=browser` when running the built output so Node resolves Svelte to its client build (`mount()`), not the server SSR build.
+### Running
+
+Build, then run with `--conditions=browser` so Node resolves Svelte to its client build:
 
 ```bash
-node --conditions=browser dist/index.js
+vite build && node --conditions=browser dist/index.js
 ```
 
-## Render Function
+> [!NOTE]
+> **Why not `vite-node`?** It creates separate instances of `svelte/internal/client` for `.svelte` vs `.svelte.ts` files, breaking `$state` reactivity across modules. The build-then-run approach produces a single bundle with one Svelte runtime instance.
 
-### `render(component, options?)`
+---
 
-Renders a Svelte component to the terminal. The first argument is a **component class** (the default export from a `.svelte` file).
+## `render(component, options?)`
+
+Mounts a Svelte component to the terminal.
 
 ```ts
-import { render } from '@wolfie/svelte'
-import App from './App.svelte'
-
 const instance = render(App, {
 	stdout: process.stdout,
 	stdin: process.stdin,
@@ -89,237 +151,117 @@ const instance = render(App, {
 })
 ```
 
-#### Options
-
-| Option                  | Type                 | Default          | Description        |
-| ----------------------- | -------------------- | ---------------- | ------------------ |
-| `stdout`                | `NodeJS.WriteStream` | `process.stdout` | Output stream      |
-| `stdin`                 | `NodeJS.ReadStream`  | `process.stdin`  | Input stream       |
-| `stderr`                | `NodeJS.WriteStream` | `process.stderr` | Error stream       |
-| `maxFps`                | `number`             | `30`             | Maximum render FPS |
-| `debug`                 | `boolean`            | `false`          | Disable throttling |
-| `isScreenReaderEnabled` | `boolean`            | env-based        | Screen reader mode |
-| `theme`                 | `ITheme`             | `{}`             | Component theming  |
+| Option                  | Type                 | Default          | Description              |
+| ----------------------- | -------------------- | ---------------- | ------------------------ |
+| `stdout`                | `NodeJS.WriteStream` | `process.stdout` | Output stream            |
+| `stdin`                 | `NodeJS.ReadStream`  | `process.stdin`  | Input stream             |
+| `stderr`                | `NodeJS.WriteStream` | `process.stderr` | Error stream             |
+| `maxFps`                | `number`             | `30`             | Maximum render frequency |
+| `debug`                 | `boolean`            | `false`          | Disable frame throttling |
+| `isScreenReaderEnabled` | `boolean`            | env-based        | Screen reader mode       |
+| `theme`                 | `ITheme`             | `{}`             | Component theming        |
 
 ---
 
 ## Components
 
-### Layout Components
+### Layout
 
-#### `<Box>`
+| Component     | Description                                           |
+| ------------- | ----------------------------------------------------- |
+| `<Box>`       | Flexbox container — `style` or `className` for layout |
+| `<Text>`      | Styled text — color, bold, underline, etc             |
+| `<Newline>`   | Empty lines (`count` prop)                            |
+| `<Spacer>`    | Fills available flex space                            |
+| `<Static>`    | Renders items once (no re-renders)                    |
+| `<Transform>` | Applies string transform to children                  |
 
-Flexbox container for layout. Uses `style` prop for layout properties and `className` for CSS classes. Styles are applied via the `use:wolfieProps` action internally.
+<details>
+<summary><b>Box & Text props</b></summary>
 
-```svelte
-<Box style={{ flexDirection: 'column', padding: 1, gap: 1 }}>
-  <Text>Item 1</Text>
-  <Text>Item 2</Text>
-</Box>
-```
+Both accept `style` (inline object) and `className` (CSS classes via `@wolfie/plugin`).
 
-| Prop          | Type             | Description                                         |
-| ------------- | ---------------- | --------------------------------------------------- |
-| `style`       | `Styles`         | Layout and visual styles (flexbox, padding, border) |
-| `className`   | `ClassNameValue` | CSS class name(s) for style resolution              |
-| `aria-label`  | `string`         | Accessible label                                    |
-| `aria-hidden` | `boolean`        | Hide from screen readers                            |
+**Box style properties:**
 
-**Style properties** (passed via `style`):
+| Property         | Type                                                                          | Description         |
+| ---------------- | ----------------------------------------------------------------------------- | ------------------- |
+| `flexDirection`  | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'`                      | Flex direction      |
+| `flexWrap`       | `'wrap' \| 'nowrap' \| 'wrap-reverse'`                                        | Flex wrap           |
+| `flexGrow`       | `number`                                                                      | Grow factor         |
+| `flexShrink`     | `number`                                                                      | Shrink factor       |
+| `alignItems`     | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch'`                         | Cross-axis          |
+| `justifyContent` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around'` | Main-axis           |
+| `gap`            | `number`                                                                      | Gap between items   |
+| `width`          | `number \| string`                                                            | Width               |
+| `height`         | `number \| string`                                                            | Height              |
+| `padding`        | `number`                                                                      | Padding (all sides) |
+| `margin`         | `number`                                                                      | Margin (all sides)  |
+| `borderStyle`    | `'single' \| 'double' \| 'round' \| 'classic'`                                | Border style        |
+| `borderColor`    | `string`                                                                      | Border color        |
+| `overflow`       | `'visible' \| 'hidden'`                                                       | Overflow behavior   |
 
-| Property         | Type                                                                          | Description          |
-| ---------------- | ----------------------------------------------------------------------------- | -------------------- |
-| `flexDirection`  | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'`                      | Flex direction       |
-| `flexWrap`       | `'wrap' \| 'nowrap' \| 'wrap-reverse'`                                        | Flex wrap            |
-| `flexGrow`       | `number`                                                                      | Flex grow factor     |
-| `flexShrink`     | `number`                                                                      | Flex shrink factor   |
-| `alignItems`     | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch'`                         | Cross-axis alignment |
-| `justifyContent` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around'` | Main-axis alignment  |
-| `gap`            | `number`                                                                      | Gap between items    |
-| `width`          | `number \| string`                                                            | Width                |
-| `height`         | `number \| string`                                                            | Height               |
-| `padding`        | `number`                                                                      | Padding (all sides)  |
-| `margin`         | `number`                                                                      | Margin (all sides)   |
-| `borderStyle`    | `'single' \| 'double' \| 'round' \| 'classic'`                                | Border style         |
-| `borderColor`    | `string`                                                                      | Border color         |
-| `overflow`       | `'visible' \| 'hidden'`                                                       | Overflow behavior    |
+</details>
 
-#### `<Text>`
+### Display
 
-Text rendering with styling.
+| Component         | Description                                                         |
+| ----------------- | ------------------------------------------------------------------- |
+| `<Alert>`         | Styled alert box — `variant`: `success`, `error`, `warning`, `info` |
+| `<Badge>`         | Inline colored badge                                                |
+| `<Spinner>`       | Animated spinner with `label`                                       |
+| `<ProgressBar>`   | Progress bar (value 0–100)                                          |
+| `<StatusMessage>` | Status with icon — `variant`: `success`, `error`, `warning`, `info` |
+| `<ErrorOverview>` | Formatted error display with stack trace                            |
 
-```svelte
-<Text style={{ color: 'green', fontWeight: 'bold', textDecoration: 'underline' }}>
-  Styled text
-</Text>
-```
+### Input
 
-| Prop          | Type             | Description                             |
-| ------------- | ---------------- | --------------------------------------- |
-| `style`       | `Styles`         | Text styles (color, weight, decoration) |
-| `className`   | `ClassNameValue` | CSS class name(s) for style resolution  |
-| `aria-label`  | `string`         | Accessible label                        |
-| `aria-hidden` | `boolean`        | Hide from screen readers                |
+| Component         | Description                             |
+| ----------------- | --------------------------------------- |
+| `<TextInput>`     | Text field with `onChange` / `onSubmit` |
+| `<PasswordInput>` | Masked text input                       |
+| `<EmailInput>`    | Email input with domain suggestions     |
+| `<ConfirmInput>`  | Yes/No prompt                           |
+| `<Select>`        | Single selection from `options` array   |
+| `<MultiSelect>`   | Multiple selection from `options` array |
 
-#### `<Newline>`
+### Lists
 
-Adds empty lines.
+| Component         | Description   |
+| ----------------- | ------------- |
+| `<OrderedList>`   | Numbered list |
+| `<UnorderedList>` | Bulleted list |
 
-```svelte
-<Newline count={2} />
-```
-
-#### `<Spacer>`
-
-Flexible space that fills available area.
-
-```svelte
-<Box>
-  <Text>Left</Text>
-  <Spacer />
-  <Text>Right</Text>
-</Box>
-```
-
-#### `<Static>`
-
-Renders static content that won't re-render.
+<details>
+<summary><b>Component examples</b></summary>
 
 ```svelte
-<Static items={logs}>{(item, index) => <Text>{item.message}</Text>}</Static>
-```
+<!-- Alert -->
+<Alert variant="success" title="Deployed" message="All services are running." />
 
-#### `<Transform>`
-
-Transforms child text via a string transform function.
-
-```svelte
-<Transform transform={(text) => text.toUpperCase()}>
-  <Text>will be uppercase</Text>
-</Transform>
-```
-
----
-
-### Display Components
-
-#### `<Alert>`
-
-```svelte
-<Alert variant="success" title="Done!">
-  Operation completed successfully.
-</Alert>
-```
-
-| Prop       | Type                                          | Description   |
-| ---------- | --------------------------------------------- | ------------- |
-| `variant`  | `'success' \| 'error' \| 'warning' \| 'info'` | Alert variant |
-| `title`    | `string`                                      | Alert title   |
-| `children` | snippet                                       | Alert content |
-
-#### `<Badge>`
-
-```svelte
-<Badge color="green">NEW</Badge>
-```
-
-#### `<Spinner>`
-
-```svelte
-<Spinner label="Loading..." />
-```
-
-#### `<ProgressBar>`
-
-Value range is **0-100** (not 0-1).
-
-```svelte
-<ProgressBar value={75} />
-```
-
-#### `<StatusMessage>`
-
-```svelte
-<StatusMessage variant="success">Saved!</StatusMessage>
-```
-
-#### `<ErrorOverview>`
-
-```svelte
-<ErrorOverview error={error} />
-```
-
----
-
-### Input Components
-
-#### `<TextInput>`
-
-```svelte
+<!-- TextInput -->
 <TextInput
-  placeholder="Enter text..."
-  defaultValue=""
+  placeholder="Your name..."
   onChange={(value) => console.log(value)}
   onSubmit={(value) => console.log('Submitted:', value)}
 />
-```
 
-| Prop           | Type                      | Description              |
-| -------------- | ------------------------- | ------------------------ |
-| `isDisabled`   | `boolean`                 | Disable input            |
-| `placeholder`  | `string`                  | Placeholder text         |
-| `defaultValue` | `string`                  | Initial value            |
-| `suggestions`  | `string[]`                | Autocomplete suggestions |
-| `onChange`     | `(value: string) => void` | Value change callback    |
-| `onSubmit`     | `(value: string) => void` | Enter key callback       |
-
-#### `<PasswordInput>`
-
-Masked password input. Same API as `<TextInput>`.
-
-#### `<EmailInput>`
-
-Email input with domain suggestions. Same API as `<TextInput>` plus `domains` prop.
-
-#### `<ConfirmInput>`
-
-Yes/No confirmation prompt.
-
-```svelte
-<ConfirmInput
-  onConfirm={() => console.log('Yes')}
-  onCancel={() => console.log('No')}
-/>
-```
-
-#### `<Select>`
-
-Single selection from an `options` array.
-
-```svelte
+<!-- Select -->
 <Select
   options={[
-    { label: 'Option A', value: 'a' },
-    { label: 'Option B', value: 'b' },
+    { label: 'TypeScript', value: 'ts' },
+    { label: 'JavaScript', value: 'js' },
   ]}
-  onChange={(value) => console.log('Selected:', value)}
+  onChange={(value) => console.log('Picked:', value)}
 />
+
+<!-- ProgressBar -->
+<ProgressBar value={75} />
+
+<!-- Spinner -->
+<Spinner label="Deploying..." />
 ```
 
-#### `<MultiSelect>`
-
-Multiple selection from an `options` array.
-
-```svelte
-<MultiSelect
-  options={[
-    { label: 'Option A', value: 'a' },
-    { label: 'Option B', value: 'b' },
-  ]}
-  onChange={(values) => console.log('Selected:', values)}
-  onSubmit={(values) => console.log('Submitted:', values)}
-/>
-```
+</details>
 
 ---
 
@@ -327,24 +269,22 @@ Multiple selection from an `options` array.
 
 ### `useInput(handler, options?)`
 
-Handle keyboard input.
+Handle keyboard input. Available inside any component rendered by `render()`.
 
 ```svelte
 <script lang="ts">
   import { useInput } from '@wolfie/svelte'
 
   useInput((input, key) => {
-    if (input === 'q') {
-      // Exit
-    }
-    if (key.upArrow) {
-      // Move up
-    }
+    if (key.upArrow) { /* move up */ }
+    if (key.return) { /* confirm */ }
+    if (input === 'q') { /* quit */ }
   })
 </script>
 ```
 
-#### Key Object
+<details>
+<summary><b>Key object properties</b></summary>
 
 | Property     | Type      | Description         |
 | ------------ | --------- | ------------------- |
@@ -361,76 +301,167 @@ Handle keyboard input.
 | `backspace`  | `boolean` | Backspace pressed   |
 | `delete`     | `boolean` | Delete pressed      |
 
-#### Options
+The `isActive` option accepts an accessor `() => boolean` to conditionally enable/disable input.
 
-| Option     | Type            | Default | Description                      |
-| ---------- | --------------- | ------- | -------------------------------- |
-| `isActive` | `() => boolean` | `true`  | Accessor to enable/disable input |
+</details>
 
 ### `useApp()`
 
-Access app context.
+Access the app context — primarily for `exit()`.
 
 ```svelte
-<script lang="ts">
+<script>
   import { useApp } from '@wolfie/svelte'
   const { exit } = useApp()
 </script>
 ```
 
-### `useFocus(options?)`
+### `useFocus(options?)` / `useFocusManager()`
 
-Make component focusable.
+Make components focusable and control focus programmatically.
 
 ```svelte
-<script lang="ts">
-  import { useFocus } from '@wolfie/svelte'
+<script>
+  import { useFocus, useFocusManager } from '@wolfie/svelte'
+
   const { isFocused } = useFocus()
-</script>
-```
-
-### `useFocusManager()`
-
-Control focus programmatically.
-
-```svelte
-<script lang="ts">
-  import { useFocusManager } from '@wolfie/svelte'
   const { focusNext, focusPrevious } = useFocusManager()
 </script>
 ```
 
-### `useStdin()` / `useStdout()` / `useStderr()`
+### Stream access
 
-Access terminal streams.
+| Composable                   | Returns                                     |
+| ---------------------------- | ------------------------------------------- |
+| `useStdin()`                 | `{ stdin, setRawMode, isRawModeSupported }` |
+| `useStdout()`                | `{ stdout, write }`                         |
+| `useStderr()`                | `{ stderr, write }`                         |
+| `useIsScreenReaderEnabled()` | `boolean`                                   |
 
-### `useIsScreenReaderEnabled()`
+<details>
+<summary><b>Headless composables</b> — build custom input UIs</summary>
 
-Check if screen reader mode is active.
+Each input component is backed by a headless composable that manages state and keyboard handling. Use these to build custom input UIs with your own rendering:
+
+| Composable                 | Description                               |
+| -------------------------- | ----------------------------------------- |
+| `useTextInput(props)`      | Cursor, value, onChange/onSubmit handling |
+| `useTextInputState(props)` | Reactive text input state ($state-based)  |
+| `usePasswordInput(props)`  | Masked input with show/hide toggle        |
+| `usePasswordInputState()`  | Reactive password state                   |
+| `useEmailInput(props)`     | Email with domain autocomplete            |
+| `useEmailInputState()`     | Reactive email state                      |
+| `useSelect(props)`         | Single-selection keyboard navigation      |
+| `useSelectState(props)`    | Reactive select state                     |
+| `useMultiSelect(props)`    | Multi-selection with toggle               |
+| `useMultiSelectState()`    | Reactive multi-select state               |
+| `useSpinner(props)`        | Spinner frame animation                   |
+
+```svelte
+<script lang="ts">
+  import { useTextInputState, useTextInput, Box, Text } from '@wolfie/svelte'
+
+  // Step 1: create reactive state (holds value, cursor, callbacks)
+  const state = useTextInputState({
+    onChange: (val) => console.log(val),
+    onSubmit: (val) => console.log('done:', val),
+  })
+
+  // Step 2: wire keyboard handling + rendered value
+  const { inputValue } = useTextInput({ state, placeholder: 'Type here...' })
+</script>
+
+<Box>
+  <Text>Custom input: {inputValue()}</Text>
+</Box>
+```
+
+</details>
 
 ---
 
-## Architecture: DOM Shim
+## Theming
 
-Unlike Solid (`createRenderer`) and Vue (`createRenderer()`), **Svelte 5 has no custom renderer API**. Compiled Svelte output calls `document.createElement()`, `.appendChild()`, `.insertBefore()`, `.removeChild()` directly.
+Customize component appearance via the `theme` option in `render()`:
 
-The wolfie adapter intercepts these by **patching `globalThis`** with a complete DOM class hierarchy:
+```ts
+import { render, extendTheme, defaultTheme } from '@wolfie/svelte'
+
+const theme = extendTheme(defaultTheme, {
+	components: {
+		Spinner: { styles: { spinner: { color: 'cyan' } } },
+		Alert: { styles: { container: { borderColor: 'blue' } } },
+	},
+})
+
+render(App, { theme })
+```
+
+| Export                         | Description                                    |
+| ------------------------------ | ---------------------------------------------- |
+| `extendTheme(base, overrides)` | Deep-merge overrides into base theme           |
+| `defaultTheme`                 | Base theme object                              |
+| `useComponentTheme(name)`      | Read theme for a component (inside components) |
+
+---
+
+## CSS Styling
+
+Three approaches, all via `@wolfie/plugin`:
+
+| Method       | Setup                             | Usage                        |
+| ------------ | --------------------------------- | ---------------------------- |
+| Tailwind CSS | PostCSS + `wolfiePreprocess()`    | `className="text-green p-1"` |
+| CSS Modules  | `*.module.css` imports            | `className={styles.box}`     |
+| SCSS/LESS    | Preprocessor + `wolfie('svelte')` | `className="my-class"`       |
+
+All resolve to inline terminal styles at build time — no runtime CSS engine.
+
+---
+
+## Architecture
+
+Svelte 5 compiles to direct DOM API calls (`document.createElement()`, `.appendChild()`, etc.). Unlike Vue/Solid, there's no `createRenderer()` hook. This adapter intercepts those calls by patching `globalThis` with a virtual DOM hierarchy:
 
 ```
-globalThis.Node      = WolfieNode       (firstChild, nextSibling, remove, before, after)
-globalThis.Element   = WolfieElement    (appendChild, insertBefore, removeChild, append)
-globalThis.Text      = WolfieText       (nodeValue getter/setter)
-globalThis.Comment   = WolfieComment    (anchor nodes for {#if}/{#each})
-globalThis.document  = WolfieDocument   (createElement, createTextNode, etc.)
+globalThis.Node      → WolfieNode       (firstChild, nextSibling, remove, before, after)
+globalThis.Element   → WolfieElement    (appendChild, insertBefore, removeChild, append)
+globalThis.Text      → WolfieText       (nodeValue getter/setter)
+globalThis.Comment   → WolfieComment    (anchor nodes for {#if}/{#each})
+globalThis.document  → WolfieDocument   (createElement, createTextNode, etc.)
 ```
 
-Svelte's `init_operations()` caches getters via `Object.getOwnPropertyDescriptor(Node.prototype, 'firstChild')`. Because `WolfieNode` is assigned directly to `globalThis.Node`, the prototype getters are found correctly.
+<details>
+<summary><b>Why globalThis patching?</b></summary>
+
+Svelte's `init_operations()` caches property getters via `Object.getOwnPropertyDescriptor(Node.prototype, 'firstChild')`. By assigning `WolfieNode` directly to `globalThis.Node`, the prototype getters are found correctly — Svelte's compiled code runs without modification.
 
 The `wolfieProps` Svelte action handles style objects and function props that Svelte's `set_custom_element_data()` would otherwise stringify.
 
-## Known Limitation: vite-node Dev Mode
+All patches are reversed when `unmount()` is called via `restoreGlobals()`.
 
-`vite-node` creates separate instances of `svelte/internal/client` for `.svelte` vs `.svelte.ts` files, breaking `$state` reactivity across module boundaries. The `dev` script uses `vite build && node --conditions=browser dist/index.js` as a workaround. See CLAUDE.md "Known Quirks (Svelte)" for details.
+</details>
+
+<details>
+<summary><b>Bundler examples (esbuild, webpack)</b></summary>
+
+The `examples/` directory has working setups for each bundler:
+
+| Bundler | Example                    |
+| ------- | -------------------------- |
+| Vite    | `examples/svelte_vite/`    |
+| esbuild | `examples/svelte_esbuild/` |
+| webpack | `examples/svelte_webpack/` |
+
+All follow the same pattern: compile `.svelte` → extract CSS → bundle for Node → run with `--conditions=browser`.
+
+</details>
+
+---
+
+## Part of wolf-tui
+
+This is the Svelte adapter for [wolf-tui](../../README.md) — a framework-agnostic terminal UI library. The same layout engine (Taffy/flexbox) and component render functions power adapters for React, Vue, Angular, and Solid.
 
 ## License
 

@@ -1,44 +1,34 @@
 # wolf-tui
 
-<!-- TODO: Add logo -->
-
-**Build beautiful TUI apps with React, Vue, Angular, SolidJS, or Svelte**
+### Write CLI apps with your web framework — React, Vue, Angular, Solid, or Svelte
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-green)](https://nodejs.org/)
 
-<!-- TODO: Add terminal screenshot demo -->
+[Quick Start](#quick-start) · [Packages](#packages) · [Components](#components) · [Styling](#styling) · [Architecture](#architecture) · [Development](#development)
 
-## What is wolf-tui?
+---
 
-wolf-tui is a framework-agnostic Terminal User Interface (TUI) library that lets you build interactive command-line applications using familiar web component syntax. Write your CLI apps with React, Vue, Angular, SolidJS, or Svelte using JSX/template syntax, Flexbox/Grid layouts, and CSS-like styling.
+> [!IMPORTANT]
+> **What this installs:**
+>
+> - Native `.node` bindings for the [Taffy](https://github.com/DioxusLabs/taffy) layout engine (Rust → Node via napi-rs, not WASM)
+> - Prebuilt for Linux (x64/arm64), macOS (Intel/Apple Silicon), Windows
+> - No network calls, no telemetry, no files written outside your project
+>
+> **Uninstall:** `npm remove @wolfie/react @wolfie/plugin` (substitute your adapter)
 
-## Credits
+## The Problem
 
-This project started as a fork of [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes. The React package (`@wolfie/react`) builds upon Ink's foundation and includes components from the ink-\* ecosystem. wolf-tui extends this to support Vue and Angular, and introduces the Taffy layout engine.
+Building terminal UIs means choosing between raw ANSI escape codes or framework-specific tools locked to one ecosystem. If you know React, you can use [Ink](https://github.com/vadimdemedes/ink) — but there's nothing for Vue, Angular, Solid, or Svelte. And Ink's layout engine (Yoga) only supports Flexbox.
 
-## Features
+wolf-tui started as a fork of Ink, then expanded: five framework adapters sharing one layout engine ([Taffy](https://github.com/DioxusLabs/taffy) — Flexbox + CSS Grid), one component library, and one styling pipeline (Tailwind, SCSS, CSS Modules). Write a component once, render it in any adapter.
 
-- **Multi-framework** — React 19+, Vue 3.5+, Angular 17+, SolidJS 1.9+, Svelte 5+
-- **Modern layout** — Flexbox & CSS Grid via Taffy engine
-- **Rich styling** — Tailwind CSS (v3 & v4), SCSS, LESS, Stylus, CSS Modules
-- **Tree-shakeable** — Only bundle what you use; tested with esbuild, Vite, webpack
-- **Build tools** — Vite, esbuild, webpack, Rollup (via unplugin)
-- **Component library** — Inputs, alerts, spinners, progress bars, lists
-- **Keyboard handling** — Focus management, Tab navigation
-- **Accessibility** — Screen reader support
-
-### Framework-Specific Features
-
-| Framework   | Key Features                                                             |
-| ----------- | ------------------------------------------------------------------------ |
-| **React**   | React Compiler for automatic memoization, React 19+ features             |
-| **Vue**     | SFC (`.vue`) and JSX/TSX support, Composition API                        |
-| **Angular** | Signals (`signal`, `computed`, `effect`), OnPush change detection        |
-| **Solid**   | Fine-grained reactivity, `createSignal`/`createMemo`, universal renderer |
-| **Svelte**  | Svelte 5 runes (`$state`, `$derived`, `$effect`), SFC `.svelte` syntax   |
+---
 
 ## Quick Start
+
+Pick your framework:
 
 ### React
 
@@ -51,8 +41,8 @@ import { render, Box, Text } from '@wolfie/react'
 
 function App() {
 	return (
-		<Box flexDirection="column" padding={1}>
-			<Text color="green">Hello from wolf-tui!</Text>
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
+			<Text style={{ color: 'green' }}>Hello from wolf-tui!</Text>
 		</Box>
 	)
 }
@@ -60,7 +50,8 @@ function App() {
 render(<App />)
 ```
 
-### Vue
+<details>
+<summary><b>Vue</b></summary>
 
 ```bash
 npm install @wolfie/vue @wolfie/plugin chalk
@@ -72,13 +63,23 @@ import { Box, Text } from '@wolfie/vue'
 </script>
 
 <template>
-	<Box flexDirection="column" :padding="1">
-		<Text color="green">Hello from wolf-tui!</Text>
+	<Box :style="{ flexDirection: 'column', padding: 1 }">
+		<Text :style="{ color: 'green' }">Hello from wolf-tui!</Text>
 	</Box>
 </template>
 ```
 
-### Angular
+```ts
+import { render } from '@wolfie/vue'
+import App from './App.vue'
+
+render(App)
+```
+
+</details>
+
+<details>
+<summary><b>Angular</b></summary>
 
 ```bash
 npm install @wolfie/angular @wolfie/plugin chalk
@@ -92,15 +93,25 @@ import { BoxComponent, TextComponent } from '@wolfie/angular'
 	standalone: true,
 	imports: [BoxComponent, TextComponent],
 	template: `
-		<w-box flexDirection="column" [padding]="1">
-			<w-text color="green">Hello from wolf-tui!</w-text>
+		<w-box [style]="{ flexDirection: 'column', padding: 1 }">
+			<w-text [style]="{ color: 'green' }">Hello from wolf-tui!</w-text>
 		</w-box>
 	`,
 })
 export class AppComponent {}
 ```
 
-### SolidJS
+```ts
+import { renderWolfie } from '@wolfie/angular'
+import { AppComponent } from './app.component'
+
+renderWolfie(AppComponent)
+```
+
+</details>
+
+<details>
+<summary><b>SolidJS</b></summary>
 
 ```bash
 npm install @wolfie/solid @wolfie/plugin chalk solid-js
@@ -112,7 +123,7 @@ import { render, Box, Text } from '@wolfie/solid'
 function App() {
 	return (
 		<Box style={{ flexDirection: 'column' }}>
-			<Text style={{ color: 'green' }}>Hello from Solid TUI!</Text>
+			<Text style={{ color: 'green' }}>Hello from wolf-tui!</Text>
 		</Box>
 	)
 }
@@ -120,10 +131,13 @@ function App() {
 render(App, { stdout: process.stdout, stdin: process.stdin })
 ```
 
-### Svelte
+</details>
+
+<details>
+<summary><b>Svelte</b></summary>
 
 ```bash
-npm install @wolfie/svelte @wolfie/plugin chalk
+npm install @wolfie/svelte @wolfie/plugin chalk svelte
 ```
 
 ```svelte
@@ -144,124 +158,138 @@ import App from './App.svelte'
 render(App)
 ```
 
+Svelte requires `--conditions=browser` at runtime and a build step. See the [Svelte adapter README](packages/svelte/README.md) for full setup.
+
+</details>
+
+Each adapter has a detailed README with full API docs, Vite/esbuild/webpack configuration, and component reference.
+
+---
+
 ## Packages
 
-| Package                                                           | Description                                | Version |
-| ----------------------------------------------------------------- | ------------------------------------------ | ------- |
-| [@wolfie/core](internal/core/README.md)                           | Framework-agnostic TUI core engine         | 2.0.0   |
-| [@wolfie/react](packages/react/README.md)                         | React adapter (fork of Ink)                | 1.1.0   |
-| [@wolfie/vue](packages/vue/README.md)                             | Vue 3 adapter                              | 1.1.0   |
-| [@wolfie/angular](packages/angular/README.md)                     | Angular adapter                            | 1.1.0   |
-| [@wolfie/solid](packages/solid/README.md)                         | SolidJS adapter                            | 1.1.0   |
-| [@wolfie/svelte](packages/svelte/README.md)                       | Svelte 5 adapter                           | 1.0.0   |
-| [@wolfie/plugin](packages/plugin/README.md)                       | Build plugin (Vite/esbuild/webpack/Rollup) | 1.1.0   |
-| [@wolfie/typescript-plugin](packages/typescript-plugin/README.md) | TypeScript plugin for CSS module types     | 1.0.1   |
-| [@wolfie/css-parser](internal/css-parser/README.md)               | CSS/SCSS/LESS/Stylus parser                | 0.1.0   |
+| Package                                                           | Description                                | Docs                                           |
+| ----------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------- |
+| [@wolfie/core](internal/core/README.md)                           | Layout engine, DOM, renderer               | Core                                           |
+| [@wolfie/react](packages/react/README.md)                         | React 19+ adapter                          | [README](packages/react/README.md)             |
+| [@wolfie/vue](packages/vue/README.md)                             | Vue 3.5+ adapter                           | [README](packages/vue/README.md)               |
+| [@wolfie/angular](packages/angular/README.md)                     | Angular 17+ adapter                        | [README](packages/angular/README.md)           |
+| [@wolfie/solid](packages/solid/README.md)                         | SolidJS 1.9+ adapter                       | [README](packages/solid/README.md)             |
+| [@wolfie/svelte](packages/svelte/README.md)                       | Svelte 5+ adapter                          | [README](packages/svelte/README.md)            |
+| [@wolfie/plugin](packages/plugin/README.md)                       | Build plugin (Vite/esbuild/webpack/Rollup) | [README](packages/plugin/README.md)            |
+| [@wolfie/typescript-plugin](packages/typescript-plugin/README.md) | TypeScript plugin for CSS module types     | [README](packages/typescript-plugin/README.md) |
+| [@wolfie/css-parser](internal/css-parser/README.md)               | CSS/SCSS/LESS/Stylus parser                | Internal                                       |
 
-## Layout Engine (Taffy)
+---
 
-wolf-tui v2.0 uses [Taffy](https://github.com/DioxusLabs/taffy), a high-performance Rust-based layout engine.
+## Components
 
-**Why Taffy?**
+All adapters share the same component set:
 
-- **Flexbox + CSS Grid** — Yoga only supports Flexbox
-- **Framework-agnostic** — Works with any rendering system
-- **Better performance** — Optimized Rust implementation
-- **Active development** — Maintained by DioxusLabs community
+| Category    | Components                                                                          |
+| ----------- | ----------------------------------------------------------------------------------- |
+| **Layout**  | `Box`, `Text`, `Spacer`, `Newline`, `Static`, `Transform`                           |
+| **Display** | `Alert`, `Badge`, `Spinner`, `ProgressBar`, `StatusMessage`, `ErrorOverview`        |
+| **Input**   | `TextInput`, `PasswordInput`, `EmailInput`, `ConfirmInput`, `Select`, `MultiSelect` |
+| **Lists**   | `OrderedList`, `UnorderedList`                                                      |
 
-**Integration:**
+Plus composables/hooks: `useInput`, `useFocus`, `useFocusManager`, stream access, screen reader detection.
 
-- Native Node.js bindings via napi-rs (not WASM)
-- Supports `calc()` values
-- Cross-platform: Linux (x64/arm64), macOS (Intel/Apple Silicon), Windows
+See individual adapter READMEs for API details and prop reference.
+
+---
 
 ## Styling
 
-### Relative Units
-
-| Unit  | Description     | Terminal Conversion                     |
-| ----- | --------------- | --------------------------------------- |
-| `px`  | Pixels          | value / 4 cells                         |
-| `rem` | Root em         | value × 4 cells (1rem = 16px = 4 cells) |
-| `%`   | Percentage      | Dynamic (parent-based)                  |
-| `vw`  | Viewport width  | Terminal columns                        |
-| `vh`  | Viewport height | Terminal rows                           |
-| `ch`  | Character width | 1 cell per ch                           |
-
-### Tailwind CSS
-
-Full Tailwind v3.4 and v4.1 support with JIT compilation:
-
 ```tsx
+// Inline styles
+<Box style={{ flexDirection: 'column', padding: 1, gap: 1 }}>
+	<Text style={{ color: 'green', fontWeight: 'bold' }}>Styled text</Text>
+</Box>
+
+// Tailwind CSS (v3.4 / v4.1)
 <Box className="flex-col p-4 gap-2">
 	<Text className="text-green-500 font-bold">Styled with Tailwind</Text>
 </Box>
 ```
 
-Features:
+| Method           | Setup                           |
+| ---------------- | ------------------------------- |
+| Inline styles    | Works out of the box            |
+| Tailwind CSS     | PostCSS + `@wolfie/plugin`      |
+| CSS Modules      | `*.module.css` imports          |
+| SCSS/LESS/Stylus | Preprocessor + `@wolfie/plugin` |
 
-- Arbitrary values: `w-[80]`, `text-[cyan]`
-- **Custom OKLCH shim** — Native OKLCH color support in Tailwind
-- Modern color functions: `oklch()`, `hsl()`, `lab()`, `lch()`
+All CSS approaches resolve to terminal styles at build time — no runtime CSS engine.
 
-### Colors
+<details>
+<summary><b>Units and colors</b></summary>
+
+**Relative units:**
+
+| Unit        | Terminal conversion                     |
+| ----------- | --------------------------------------- |
+| `px`        | value / 4 cells                         |
+| `rem`       | value × 4 cells (1rem = 16px = 4 cells) |
+| `%`         | Dynamic (parent-based)                  |
+| `vw` / `vh` | Terminal columns / rows                 |
+| `ch`        | 1 cell per ch                           |
+
+**Color support:**
 
 - 140+ named CSS colors mapped to ANSI
 - Hex: `#fff`, `#ffffff`
 - RGB/RGBA: `rgb(255 0 0)`, `rgba(255, 0, 0, 0.5)`
 - OKLCH, HSL, LAB, LCH via colorjs.io
+- Tailwind arbitrary values: `text-[cyan]`, `bg-[#ff0]`
 
-### Preprocessors
+</details>
 
-- **SCSS/Sass** — Full nesting and imports
-- **LESS** — Variables and nesting
-- **Stylus** — Indentation-based syntax
-- **PostCSS** — Plugin pipeline
+---
 
-## Components
+## Architecture
 
-### Layout
-
-`Box`, `Text`, `Spacer`, `Newline`, `Static`, `Transform`
-
-### Display
-
-`Alert`, `Badge`, `Spinner`, `ProgressBar`, `StatusMessage`, `ErrorOverview`
-
-### Lists
-
-`OrderedList`, `UnorderedList`
-
-### Inputs
-
-`TextInput`, `PasswordInput`, `EmailInput`, `ConfirmInput`, `Select`, `MultiSelect`
-
-See package READMEs for full API documentation.
-
-## Performance
-
-### Incremental Rendering
-
-All adapters use incremental ANSI rendering by default — only changed terminal lines
-are rewritten per frame instead of erasing and redrawing the full screen. For headless
-testing you can disable it:
-
-```ts
-// React
-render(<App />, { incrementalRendering: false })
-
-// Vue / Angular / Solid
-render(App, { incrementalRendering: false })
+```
+┌──────────────────┐
+│  @wolfie/core    │  Taffy layout, virtual DOM, ANSI renderer
+│  (napi-rs)       │  native .node bindings
+└────────┬─────────┘
+         │
+┌────────┴─────────┐
+│  @wolfie/shared  │  render scheduler, shared render functions,
+│                  │  input parsing, theme system
+└────────┬─────────┘
+         │
+   ┌─────┼─────┬─────────┬──────────┐
+   │     │     │         │          │
+ React  Vue  Angular  SolidJS   Svelte
 ```
 
-### React Compiler (automatic memoization)
+Each adapter maps its framework's component model to the shared virtual DOM. Taffy computes layout, the core renderer produces ANSI output. A visual bug either affects all adapters (render function issue) or one adapter (integration issue) — two-step debug path.
 
-`@wolfie/react` ships pre-compiled with the [React Compiler](https://react.dev/learn/react-compiler).
-All library components (`Select`, `MultiSelect`, `TextInput`, etc.) are automatically
-memoized — they skip re-renders when props haven't changed.
+<details>
+<summary><b>Layout engine: Taffy</b></summary>
 
-To apply the same optimization to **your own app components**, add the compiler to
-your Vite config:
+wolf-tui uses [Taffy](https://github.com/DioxusLabs/taffy) for layout computation. Taffy supports both Flexbox and CSS Grid — Yoga (used by Ink and React Native) only supports Flexbox.
+
+Integration details:
+
+- Native Node.js bindings via napi-rs (not WASM — no startup penalty)
+- Supports `calc()` values
+- Prebuilt for Linux (x64/arm64), macOS (Intel/Apple Silicon), Windows
+
+</details>
+
+<details>
+<summary><b>Performance</b></summary>
+
+**Incremental rendering:** All adapters render only changed terminal lines per frame, not the full screen. Disable for headless testing:
+
+```ts
+render(<App />, { incrementalRendering: false })
+```
+
+**React Compiler:** `@wolfie/react` ships pre-compiled with the [React Compiler](https://react.dev/learn/react-compiler) — all library components skip re-renders when props haven't changed. To apply to your own components:
 
 ```bash
 npm install -D babel-plugin-react-compiler
@@ -269,7 +297,9 @@ npm install -D babel-plugin-react-compiler
 
 ```ts
 // vite.config.ts
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { wolfie } from '@wolfie/plugin/vite'
 
 export default defineConfig({
 	plugins: [
@@ -283,42 +313,37 @@ export default defineConfig({
 })
 ```
 
-> **Requires React 19+.** The compiler statically analyzes component code and inserts
-> fine-grained memo caches — no `React.memo`, `useMemo`, or `useCallback` needed.
+Requires React 19+.
+
+</details>
+
+---
 
 ## Development
 
 ```bash
-git clone https://github.com/user/wolf-tui.git
+git clone <repo-url>
 cd wolf-tui
 pnpm install
 pnpm dev
 ```
 
-### Commands
+| Command          | Description                           |
+| ---------------- | ------------------------------------- |
+| `pnpm dev`       | Watch mode for all packages           |
+| `pnpm build`     | Build all packages                    |
+| `pnpm test`      | Run all unit tests                    |
+| `pnpm test:e2e`  | E2E screenshot tests (20 tests, ~38s) |
+| `pnpm lint`      | ESLint check                          |
+| `pnpm typecheck` | TypeScript type checking              |
 
-| Command          | Description                 |
-| ---------------- | --------------------------- |
-| `pnpm dev`       | Watch mode for all packages |
-| `pnpm build`     | Build all packages          |
-| `pnpm test`      | Run all tests               |
-| `pnpm lint`      | Check code style            |
-| `pnpm typecheck` | TypeScript type checking    |
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
-## Status
+---
 
-| Package         | Status         |
-| --------------- | -------------- |
-| @wolfie/react   | Stable (1.1.0) |
-| @wolfie/vue     | Stable (1.1.0) |
-| @wolfie/angular | Stable (1.1.0) |
-| @wolfie/solid   | Stable (1.1.0) |
-| @wolfie/svelte  | Stable (1.0.0) |
-| Taffy migration | Complete       |
+## Acknowledgments
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+This project started as a fork of [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes. The React package (`@wolfie/react`) builds upon Ink's foundation and includes components from the ink-\* ecosystem.
 
 ## License
 

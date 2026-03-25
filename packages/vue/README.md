@@ -1,136 +1,142 @@
 # @wolfie/vue
 
-Vue 3 adapter for wolf-tui. Build terminal user interfaces with Vue.
+### Build terminal UIs with Vue 3 — flexbox layouts, styled components, keyboard input
 
-## About
+[![Vue 3.5+](https://img.shields.io/badge/vue-%5E3.5.0-42b883)](https://vuejs.org)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-339933)](https://nodejs.org)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](../../LICENSE)
 
-This package provides Vue 3 components ported from the React ecosystem — originally [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes and the ink-\* component libraries. All components have been reimplemented using Vue's Composition API and `defineComponent`.
+[Install](#install) · [Quick Start](#quick-start) · [Components](#components) · [Composables](#composables) · [Theming](#theming) · [CSS Styling](#css-styling)
 
-## Features
+---
 
-- **SFC & JSX support** — Write components using Single File Components (`.vue`) or JSX/TSX
-- **Vue 3.5+** — Built for modern Vue with Composition API
-- **Tree-shakeable** — Only imports what you use; tested with esbuild, Vite, and webpack
-- **Full component library** — Inputs, alerts, spinners, progress bars, lists
-- **Composables API** — `useInput`, `useFocus`, `useFocusManager`, and more
-- **CSS styling** — Tailwind CSS, CSS Modules, SCSS/LESS/Stylus via `@wolfie/plugin`
+## The Problem
 
-## Installation
+Vue has no terminal rendering target. If you want to build CLI apps with Vue's Composition API and SFC syntax, you need a custom renderer that maps Vue's virtual DOM to terminal output.
 
-```bash
-npm install @wolfie/vue @wolfie/plugin chalk
-# or
-pnpm add @wolfie/vue @wolfie/plugin chalk
-```
+This package provides that renderer, plus 20+ components (inputs, selects, alerts, spinners, progress bars, lists) and composables (`useInput`, `useFocus`, etc.) — all using Vue 3's Composition API.
 
-**Peer dependencies:**
+If you've used [Ink](https://github.com/vadimdemedes/ink) for React terminal UIs, this is the Vue equivalent. It uses the same layout engine (Taffy) and shared render functions as wolf-tui's React, Angular, Solid, and Svelte adapters.
 
-- `vue` ^3.5.0
-- `chalk` ^5.0.0
+---
 
-## TypeScript Setup
-
-For full IntelliSense in Vue templates (Volar/vue-tsc), add the global component types to your project:
-
-```ts
-// env.d.ts or shims-vue.d.ts
-/// <reference types="@wolfie/vue/global" />
-
-declare module '*.vue' {
-	import type { DefineComponent } from 'vue'
-	const component: DefineComponent<object, object, any>
-	export default component
-}
-
-// CSS Modules return Styles objects (terminal styles, not class strings)
-declare module '*.module.css' {
-	const styles: Record<string, import('@wolfie/vue').BoxProps['style']>
-	export default styles
-}
-```
-
-This enables autocomplete for `<Box>`, `<Text>`, `<Alert>`, and all other components in your `.vue` templates.
-
-### CSS Module Types with TypeScript Plugin
-
-For enhanced CSS module autocomplete with actual class names (instead of generic `Record<string, Styles>`), install the TypeScript plugin:
+## Install
 
 ```bash
-npm install @wolfie/typescript-plugin -D
+# Runtime dependencies
+pnpm add @wolfie/vue chalk vue
+
+# Build tooling
+pnpm add -D @wolfie/plugin @vitejs/plugin-vue vite
 ```
 
-Add to your `tsconfig.json`:
+| Peer dependency | Version |
+| --------------- | ------- |
+| `vue`           | ^3.5.0  |
+| `chalk`         | ^5.0.0  |
 
-```json
-{
-	"compilerOptions": {
-		"plugins": [
-			{
-				"name": "@wolfie/typescript-plugin"
-			}
-		]
-	}
-}
-```
-
-This provides:
-
-- Class name autocomplete when typing `styles.`
-- Type-safe access to CSS module exports
-- Go-to-definition from class usage to CSS file
-
-### CSS IntelliSense in VS Code
-
-For Wolfie-specific CSS property suggestions (e.g., `border-style: single`), add the CSS Custom Data file to your VS Code settings:
-
-```json
-// .vscode/settings.json
-{
-	"css.customData": ["./node_modules/@wolfie/plugin/wolfie.css-data.json"]
-}
-```
-
-This provides autocomplete and validation for terminal-specific CSS values.
+---
 
 ## Quick Start
 
-### With SFC (Single File Components)
+### SFC (Single File Components)
 
 ```vue
+<!-- App.vue -->
 <script setup>
-import { Box, Text } from '@wolfie/vue'
+import { Box, Text, useInput, useApp } from '@wolfie/vue'
+import { ref } from 'vue'
+
+const count = ref(0)
+const { exit } = useApp()
+
+useInput((input, key) => {
+	if (key.upArrow) count.value++
+	if (key.downArrow) count.value = Math.max(0, count.value - 1)
+	if (input === 'q') exit()
+})
 </script>
 
 <template>
-	<Box flexDirection="column" :padding="1">
-		<Text color="green" bold>Hello, Terminal!</Text>
-		<Text>Built with wolf-tui</Text>
+	<Box :style="{ flexDirection: 'column', padding: 1 }">
+		<Text :style="{ color: 'green', fontWeight: 'bold' }"
+			>Counter: {{ count }}</Text
+		>
+		<Text :style="{ color: 'gray' }">↑/↓ to change, q to quit</Text>
 	</Box>
 </template>
 ```
 
 ```ts
+// index.ts
 import { render } from '@wolfie/vue'
 import App from './App.vue'
 
 render(App)
 ```
 
-### With JSX/TSX
+> For CSS class-based styling (`class="text-green p-1"`), see [CSS Styling](#css-styling).
+
+### Vite Configuration
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { wolfie } from '@wolfie/plugin/vite'
+
+export default defineConfig({
+	plugins: [
+		vue({
+			template: {
+				compilerOptions: {
+					// wolf-tui uses custom elements internally — tell Vue not to resolve them
+					isCustomElement: (tag) => tag.startsWith('wolfie-'),
+					hoistStatic: false,
+				},
+			},
+		}),
+		wolfie('vue'),
+	],
+	build: {
+		lib: {
+			entry: 'src/index.ts',
+			formats: ['cjs'],
+			fileName: 'index',
+		},
+		rollupOptions: {
+			external: [/^vue(\/|$)/, /^@wolfie\//],
+		},
+	},
+})
+```
+
+```bash
+vite build && node dist/index.cjs
+```
+
+<details>
+<summary><b>JSX/TSX alternative</b></summary>
 
 ```tsx
 import { defineComponent, ref } from '@wolfie/vue'
-import { Box, Text, render } from '@wolfie/vue'
+import { Box, Text, render, useInput, useApp } from '@wolfie/vue'
 
 const App = defineComponent({
 	setup() {
 		const count = ref(0)
+		const { exit } = useApp()
+
+		useInput((input, key) => {
+			if (key.upArrow) count.value++
+			if (input === 'q') exit()
+		})
+
 		return () => (
-			<Box flexDirection="column" padding={1}>
-				<Text color="green" bold>
-					Hello, Terminal!
+			<Box style={{ flexDirection: 'column', padding: 1 }}>
+				<Text style={{ color: 'green', fontWeight: 'bold' }}>
+					Counter: {count.value}
 				</Text>
-				<Text>Count: {count.value}</Text>
 			</Box>
 		)
 	},
@@ -139,316 +145,159 @@ const App = defineComponent({
 render(App)
 ```
 
-## Render Function
+</details>
 
-### `render(component, options?)`
+---
 
-Renders a Vue component to the terminal.
+## `render(component, options?)`
+
+Mounts a Vue component to the terminal.
 
 ```ts
-import { render } from '@wolfie/vue'
-import App from './App.vue'
-
 const instance = render(App, {
 	stdout: process.stdout,
 	stdin: process.stdin,
 	maxFps: 30,
-	debug: false,
 })
-
-// Unmount when done
-instance.unmount()
 ```
 
-#### Options
-
-| Option                  | Type                 | Default          | Description        |
-| ----------------------- | -------------------- | ---------------- | ------------------ |
-| `stdout`                | `NodeJS.WriteStream` | `process.stdout` | Output stream      |
-| `stdin`                 | `NodeJS.ReadStream`  | `process.stdin`  | Input stream       |
-| `stderr`                | `NodeJS.WriteStream` | `process.stderr` | Error stream       |
-| `maxFps`                | `number`             | `30`             | Maximum render FPS |
-| `debug`                 | `boolean`            | `false`          | Disable throttling |
-| `isScreenReaderEnabled` | `boolean`            | env-based        | Screen reader mode |
+| Option                  | Type                 | Default          | Description              |
+| ----------------------- | -------------------- | ---------------- | ------------------------ |
+| `stdout`                | `NodeJS.WriteStream` | `process.stdout` | Output stream            |
+| `stdin`                 | `NodeJS.ReadStream`  | `process.stdin`  | Input stream             |
+| `stderr`                | `NodeJS.WriteStream` | `process.stderr` | Error stream             |
+| `maxFps`                | `number`             | `30`             | Maximum render frequency |
+| `debug`                 | `boolean`            | `false`          | Disable frame throttling |
+| `isScreenReaderEnabled` | `boolean`            | env-based        | Screen reader mode       |
+| `theme`                 | `ITheme`             | `{}`             | Component theming        |
 
 ---
 
 ## Components
 
-### Layout Components
+### Layout
 
-#### `<Box>`
+| Component     | Description                                       |
+| ------------- | ------------------------------------------------- |
+| `<Box>`       | Flexbox container — `style` or `class` for layout |
+| `<Text>`      | Styled text — color, bold, underline, etc         |
+| `<Newline>`   | Empty lines (`:count` prop)                       |
+| `<Spacer>`    | Fills available flex space                        |
+| `<Static>`    | Renders items once (no re-renders)                |
+| `<Transform>` | Applies string transform to children              |
 
-Flexbox container for layout.
+<details>
+<summary><b>Box & Text props</b></summary>
 
-```vue
-<Box flexDirection="column" :padding="1" :gap="1">
-  <Text>Item 1</Text>
-  <Text>Item 2</Text>
-</Box>
-```
+Both accept `style` (inline object) and `class`/`className` (CSS classes via `@wolfie/plugin`).
 
-| Prop             | Type                                                                          | Description          |
-| ---------------- | ----------------------------------------------------------------------------- | -------------------- |
-| `flexDirection`  | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'`                      | Flex direction       |
-| `flexWrap`       | `'wrap' \| 'nowrap' \| 'wrap-reverse'`                                        | Flex wrap            |
-| `flexGrow`       | `number`                                                                      | Flex grow factor     |
-| `flexShrink`     | `number`                                                                      | Flex shrink factor   |
-| `alignItems`     | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch'`                         | Cross-axis alignment |
-| `justifyContent` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around'` | Main-axis alignment  |
-| `gap`            | `number`                                                                      | Gap between items    |
-| `width`          | `number \| string`                                                            | Width                |
-| `height`         | `number \| string`                                                            | Height               |
-| `padding`        | `number`                                                                      | Padding (all sides)  |
-| `margin`         | `number`                                                                      | Margin (all sides)   |
-| `borderStyle`    | `'single' \| 'double' \| 'round' \| 'classic'`                                | Border style         |
-| `borderColor`    | `string`                                                                      | Border color         |
-| `overflow`       | `'visible' \| 'hidden'`                                                       | Overflow behavior    |
+**Box style properties** (passed via `:style`):
 
-#### `<Text>`
+| Property         | Type                                                                          | Description         |
+| ---------------- | ----------------------------------------------------------------------------- | ------------------- |
+| `flexDirection`  | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'`                      | Flex direction      |
+| `flexWrap`       | `'wrap' \| 'nowrap' \| 'wrap-reverse'`                                        | Flex wrap           |
+| `flexGrow`       | `number`                                                                      | Grow factor         |
+| `flexShrink`     | `number`                                                                      | Shrink factor       |
+| `alignItems`     | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch'`                         | Cross-axis          |
+| `justifyContent` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around'` | Main-axis           |
+| `gap`            | `number`                                                                      | Gap between items   |
+| `width`          | `number \| string`                                                            | Width               |
+| `height`         | `number \| string`                                                            | Height              |
+| `padding`        | `number`                                                                      | Padding (all sides) |
+| `margin`         | `number`                                                                      | Margin (all sides)  |
+| `borderStyle`    | `'single' \| 'double' \| 'round' \| 'classic'`                                | Border style        |
+| `borderColor`    | `string`                                                                      | Border color        |
+| `overflow`       | `'visible' \| 'hidden'`                                                       | Overflow behavior   |
 
-Text rendering with styling.
+**Text style properties** (passed via `:style`):
 
-```vue
-<Text color="green" bold underline>Styled text</Text>
-```
+| Property          | Type                                     | Description      |
+| ----------------- | ---------------------------------------- | ---------------- |
+| `color`           | `string`                                 | Text color       |
+| `backgroundColor` | `string`                                 | Background color |
+| `fontWeight`      | `'bold'`                                 | Bold text        |
+| `fontStyle`       | `'italic'`                               | Italic text      |
+| `textDecoration`  | `'underline' \| 'line-through'`          | Decoration       |
+| `inverse`         | `boolean`                                | Inverse colors   |
+| `textWrap`        | `'wrap' \| 'truncate' \| 'truncate-end'` | Wrap mode        |
 
-| Prop              | Type                                     | Description                   |
-| ----------------- | ---------------------------------------- | ----------------------------- |
-| `color`           | `string`                                 | Text color (ANSI name or hex) |
-| `backgroundColor` | `string`                                 | Background color              |
-| `bold`            | `boolean`                                | Bold text                     |
-| `italic`          | `boolean`                                | Italic text                   |
-| `underline`       | `boolean`                                | Underlined text               |
-| `strikethrough`   | `boolean`                                | Strikethrough text            |
-| `dimColor`        | `boolean`                                | Dim color                     |
-| `inverse`         | `boolean`                                | Inverse colors                |
-| `wrap`            | `'wrap' \| 'truncate' \| 'truncate-end'` | Text wrap mode                |
+</details>
 
-#### `<Newline>`
+### Display
 
-Adds empty lines.
+| Component         | Description                                                         |
+| ----------------- | ------------------------------------------------------------------- |
+| `<Alert>`         | Styled alert box — `variant`: `success`, `error`, `warning`, `info` |
+| `<Badge>`         | Inline colored badge                                                |
+| `<Spinner>`       | Animated spinner with `label` and `type`                            |
+| `<ProgressBar>`   | Progress bar (value 0–100)                                          |
+| `<StatusMessage>` | Status with icon — `variant`: `success`, `error`, `warning`, `info` |
+| `<ErrorOverview>` | Formatted error display with stack trace                            |
 
-```vue
-<Newline :count="2" />
-```
+### Input
 
-#### `<Spacer>`
+| Component         | Description                             |
+| ----------------- | --------------------------------------- |
+| `<TextInput>`     | Text field with `onChange` / `onSubmit` |
+| `<PasswordInput>` | Masked text input                       |
+| `<EmailInput>`    | Email input with domain suggestions     |
+| `<ConfirmInput>`  | Yes/No prompt                           |
+| `<Select>`        | Single selection from `options` array   |
+| `<MultiSelect>`   | Multiple selection from `options` array |
 
-Flexible space that fills available area.
+### Lists
 
-```vue
-<Box>
-  <Text>Left</Text>
-  <Spacer />
-  <Text>Right</Text>
-</Box>
-```
+| Component         | Description   |
+| ----------------- | ------------- |
+| `<OrderedList>`   | Numbered list |
+| `<UnorderedList>` | Bulleted list |
 
-#### `<Static>`
-
-Renders static content that won't re-render.
-
-```vue
-<Static :items="logs">
-  <template #default="{ item }">
-    <Text>{{ item.message }}</Text>
-  </template>
-</Static>
-```
-
-#### `<Transform>`
-
-Transforms child text.
+<details>
+<summary><b>Component examples</b></summary>
 
 ```vue
-<Transform :transform="(text) => text.toUpperCase()">
-  <Text>will be uppercase</Text>
-</Transform>
-```
-
----
-
-### Display Components
-
-#### `<Alert>`
-
-```vue
-<Alert variant="success" title="Done!">
-  Operation completed successfully.
-</Alert>
-```
-
-| Prop      | Type                                          | Description   |
-| --------- | --------------------------------------------- | ------------- |
-| `variant` | `'success' \| 'error' \| 'warning' \| 'info'` | Alert variant |
-| `title`   | `string`                                      | Alert title   |
-
-#### `<Badge>`
-
-```vue
-<Badge color="green">NEW</Badge>
-```
-
-#### `<Spinner>`
-
-```vue
-<Spinner type="dots" />
-```
-
-#### `<ProgressBar>`
-
-```vue
-<ProgressBar :value="50" />
-```
-
-| Prop    | Type     | Description      |
-| ------- | -------- | ---------------- |
-| `value` | `number` | Progress (0-100) |
-
-#### `<StatusMessage>`
-
-```vue
-<StatusMessage variant="success">Saved!</StatusMessage>
-```
-
----
-
-### List Components
-
-#### `<OrderedList>` / `<OrderedListItem>`
-
-Numbered lists.
-
-```vue
-<OrderedList>
-  <OrderedListItem>First item</OrderedListItem>
-  <OrderedListItem>Second item</OrderedListItem>
-</OrderedList>
-```
-
-#### `<UnorderedList>` / `<UnorderedListItem>`
-
-Bullet lists.
-
-```vue
-<UnorderedList>
-  <UnorderedListItem>Item one</UnorderedListItem>
-  <UnorderedListItem>Item two</UnorderedListItem>
-</UnorderedList>
-```
-
----
-
-### Input Components
-
-#### `<TextInput>`
-
-```vue
-<script setup>
-import { ref } from 'vue'
-const value = ref('')
-</script>
-
 <template>
-	<TextInput v-model="value" placeholder="Enter text..." />
-</template>
-```
+	<!-- Alert (uses slot for message) -->
+	<Alert variant="success" title="Deployed"> All services are running. </Alert>
 
-| Prop          | Type      | Description             |
-| ------------- | --------- | ----------------------- |
-| `modelValue`  | `string`  | Current value (v-model) |
-| `placeholder` | `string`  | Placeholder text        |
-| `focus`       | `boolean` | Focus state             |
-| `mask`        | `string`  | Mask character          |
+	<!-- Badge (uses slot for label) -->
+	<Badge color="green">NEW</Badge>
 
-| Event               | Description   |
-| ------------------- | ------------- |
-| `update:modelValue` | Value changed |
-| `submit`            | Enter pressed |
+	<!-- StatusMessage (uses slot for message) -->
+	<StatusMessage variant="success">Saved!</StatusMessage>
 
-#### `<PasswordInput>`
-
-```vue
-<PasswordInput v-model="password" mask="*" />
-```
-
-#### `<EmailInput>`
-
-```vue
-<EmailInput v-model="email" @submit="handleSubmit" />
-```
-
-#### `<ConfirmInput>`
-
-```vue
-<ConfirmInput @confirm="handleYes" @cancel="handleNo" />
-```
-
-#### `<Select>`
-
-Single selection from a list of options.
-
-```vue
-<script setup>
-const options = [
-	{ label: 'Option A', value: 'a' },
-	{ label: 'Option B', value: 'b' },
-]
-</script>
-
-<template>
-	<Select :options="options" :onChange="handleChange" />
-</template>
-```
-
-| Prop                 | Type                      | Default | Description                  |
-| -------------------- | ------------------------- | ------- | ---------------------------- |
-| `options`            | `Option[]`                |         | Array of `{ label, value }`  |
-| `onChange`           | `(value: string) => void` |         | Selection change handler     |
-| `value`              | `string`                  |         | Controlled value             |
-| `defaultValue`       | `string`                  |         | Default value (uncontrolled) |
-| `visibleOptionCount` | `number`                  | `5`     | Number of visible options    |
-| `highlightText`      | `string`                  |         | Highlight text in labels     |
-| `isDisabled`         | `boolean`                 | `false` | Disable user input           |
-
-#### `<MultiSelect>`
-
-Multiple selection from a list of options.
-
-```vue
-<script setup>
-const options = [
-	{ label: 'Option A', value: 'a' },
-	{ label: 'Option B', value: 'b' },
-]
-</script>
-
-<template>
-	<MultiSelect
-		:options="options"
-		:onChange="handleChange"
-		:onSubmit="handleSubmit"
+	<!-- TextInput -->
+	<TextInput
+		placeholder="Your name..."
+		:onChange="(v) => console.log(v)"
+		:onSubmit="(v) => console.log('done:', v)"
 	/>
+
+	<!-- Select -->
+	<Select
+		:options="[
+			{ label: 'TypeScript', value: 'ts' },
+			{ label: 'JavaScript', value: 'js' },
+		]"
+		:onChange="(v) => console.log('Picked:', v)"
+	/>
+
+	<!-- ProgressBar -->
+	<ProgressBar :value="75" />
+
+	<!-- Spinner -->
+	<Spinner type="dots" label="Loading..." />
+
+	<!-- Lists -->
+	<OrderedList>
+		<OrderedListItem>First</OrderedListItem>
+		<OrderedListItem>Second</OrderedListItem>
+	</OrderedList>
 </template>
 ```
 
-| Prop                 | Type                        | Default | Description                  |
-| -------------------- | --------------------------- | ------- | ---------------------------- |
-| `options`            | `Option[]`                  |         | Array of `{ label, value }`  |
-| `onChange`           | `(value: string[]) => void` |         | Selection change handler     |
-| `onSubmit`           | `(value: string[]) => void` |         | Submit handler (Enter)       |
-| `value`              | `string[]`                  |         | Controlled value             |
-| `defaultValue`       | `string[]`                  |         | Default value (uncontrolled) |
-| `visibleOptionCount` | `number`                    | `5`     | Number of visible options    |
-| `highlightText`      | `string`                    |         | Highlight text in labels     |
-| `isDisabled`         | `boolean`                   | `false` | Disable user input           |
-
-#### `<ErrorOverview>`
-
-```vue
-<ErrorOverview :error="error" />
-```
+</details>
 
 ---
 
@@ -456,155 +305,138 @@ const options = [
 
 ### `useInput(handler, options?)`
 
-Handle keyboard input.
+Handle keyboard input. Available inside any component rendered by `render()`.
 
 ```vue
 <script setup>
 import { useInput } from '@wolfie/vue'
 
 useInput((input, key) => {
-	if (input === 'q') {
-		// Exit
-	}
 	if (key.upArrow) {
-		// Move up
+		/* move up */
+	}
+	if (key.return) {
+		/* confirm */
+	}
+	if (input === 'q') {
+		/* quit */
 	}
 })
 </script>
 ```
 
-#### Options
+<details>
+<summary><b>Key object properties</b></summary>
 
-| Option     | Type      | Default | Description                   |
-| ---------- | --------- | ------- | ----------------------------- |
-| `isActive` | `boolean` | `true`  | Enable/disable input handling |
+| Property     | Type      | Description         |
+| ------------ | --------- | ------------------- |
+| `upArrow`    | `boolean` | Up arrow pressed    |
+| `downArrow`  | `boolean` | Down arrow pressed  |
+| `leftArrow`  | `boolean` | Left arrow pressed  |
+| `rightArrow` | `boolean` | Right arrow pressed |
+| `return`     | `boolean` | Enter pressed       |
+| `escape`     | `boolean` | Escape pressed      |
+| `ctrl`       | `boolean` | Ctrl held           |
+| `shift`      | `boolean` | Shift held          |
+| `meta`       | `boolean` | Meta key held       |
+| `tab`        | `boolean` | Tab pressed         |
+| `backspace`  | `boolean` | Backspace pressed   |
+| `delete`     | `boolean` | Delete pressed      |
+
+The `isActive` option accepts a ref, getter, or plain boolean (`MaybeRefOrGetter<boolean>`).
+
+</details>
 
 ### `useApp()`
 
-Access app context.
+Access the app context — primarily for `exit()`.
 
 ```vue
 <script setup>
 import { useApp } from '@wolfie/vue'
-
 const { exit } = useApp()
 </script>
 ```
 
-Returns:
+### `useFocus(options?)` / `useFocusManager()`
 
-- `exit(error?)` — Exit the app
-
-### `useFocus(options?)`
-
-Make component focusable.
+Make components focusable and control focus programmatically.
 
 ```vue
 <script setup>
-import { useFocus } from '@wolfie/vue'
+import { useFocus, useFocusManager } from '@wolfie/vue'
 
-const { isFocused, focus } = useFocus({ autoFocus: true })
-</script>
-
-<template>
-	<Box :borderColor="isFocused ? 'green' : 'gray'">
-		<Text>{{ isFocused ? 'Focused!' : 'Not focused' }}</Text>
-	</Box>
-</template>
-```
-
-#### Options
-
-| Option      | Type      | Default | Description                       |
-| ----------- | --------- | ------- | --------------------------------- |
-| `isActive`  | `boolean` | `true`  | Enable focus for this component   |
-| `autoFocus` | `boolean` | `false` | Auto-focus if no active component |
-| `id`        | `string`  | random  | Unique ID for programmatic focus  |
-
-### `useFocusManager()`
-
-Manage focus programmatically.
-
-```vue
-<script setup>
-import { useFocusManager, useInput } from '@wolfie/vue'
-
+const { isFocused } = useFocus({ autoFocus: true })
 const { focusNext, focusPrevious } = useFocusManager()
-
-useInput((input, key) => {
-	if (key.tab) {
-		key.shift ? focusPrevious() : focusNext()
-	}
-})
 </script>
 ```
 
-Returns:
+### Stream access
 
-- `focusNext()` — Focus next component
-- `focusPrevious()` — Focus previous component
-- `focus(id)` — Focus component by ID
-- `enableFocus()` — Enable focus system
-- `disableFocus()` — Disable focus system
-
-### `useStdin()`
-
-Access stdin stream.
-
-```vue
-<script setup>
-import { useStdin } from '@wolfie/vue'
-
-const { stdin, isRawModeSupported, setRawMode } = useStdin()
-</script>
-```
-
-### `useStdout()`
-
-Access stdout stream.
-
-```vue
-<script setup>
-import { useStdout } from '@wolfie/vue'
-
-const { stdout, write } = useStdout()
-
-write('Direct output\n')
-</script>
-```
-
-### `useStderr()`
-
-Access stderr stream.
+| Composable    | Returns                                     |
+| ------------- | ------------------------------------------- |
+| `useStdin()`  | `{ stdin, setRawMode, isRawModeSupported }` |
+| `useStdout()` | `{ stdout, write }`                         |
+| `useStderr()` | `{ stderr, write }`                         |
 
 ---
 
-## Vue API Re-exports
+## Theming
 
-For convenience, commonly used Vue APIs are re-exported:
+Customize component appearance via the `theme` option in `render()`:
 
 ```ts
-import {
-	ref,
-	reactive,
-	computed,
-	watch,
-	watchEffect,
-	onMounted,
-	onUnmounted,
-	provide,
-	inject,
-	defineComponent,
-	h,
-	// ... and more
-} from '@wolfie/vue'
+import { render, extendTheme, defaultTheme } from '@wolfie/vue'
+
+const theme = extendTheme(defaultTheme, {
+	components: {
+		Spinner: { styles: { spinner: { color: 'cyan' } } },
+		Alert: { styles: { container: { borderColor: 'blue' } } },
+	},
+})
+
+render(App, { theme })
 ```
+
+Or provide theme via Vue's injection system:
+
+```vue
+<script setup>
+import { provideTheme, extendTheme, defaultTheme } from '@wolfie/vue'
+
+provideTheme(
+	extendTheme(defaultTheme, {
+		/* overrides */
+	})
+)
+</script>
+```
+
+| Export                         | Description                                    |
+| ------------------------------ | ---------------------------------------------- |
+| `extendTheme(base, overrides)` | Deep-merge overrides into base theme           |
+| `defaultTheme`                 | Base theme object                              |
+| `provideTheme(theme)`          | Provide theme via Vue injection                |
+| `useComponentTheme(name)`      | Read theme for a component (inside components) |
 
 ---
 
-## Styling
+## CSS Styling
 
-### With Tailwind CSS
+Three approaches, all via `@wolfie/plugin`:
+
+| Method       | Usage                                       |
+| ------------ | ------------------------------------------- |
+| Tailwind CSS | `class="text-green p-1"` + PostCSS setup    |
+| CSS Modules  | `:class="$style.box"` with `<style module>` |
+| SCSS/LESS    | `class="my-class"` + preprocessor           |
+
+All resolve to inline terminal styles at build time — no runtime CSS engine.
+
+<details>
+<summary><b>Styling examples</b></summary>
+
+**Tailwind CSS:**
 
 ```vue
 <template>
@@ -618,7 +450,7 @@ import {
 </style>
 ```
 
-### With CSS Modules
+**CSS Modules:**
 
 ```vue
 <template>
@@ -639,42 +471,94 @@ import {
 </style>
 ```
 
-### Style Registry
-
-```ts
-import { registerStyles, resolveClassName } from '@wolfie/vue'
-
-// Register styles from CSS parser
-registerStyles(parsedStyles)
-```
+</details>
 
 ---
 
-## Theming
+## TypeScript Setup
 
-Components export theme objects for customization:
+<details>
+<summary><b>Template IntelliSense and CSS module types</b></summary>
+
+For full IntelliSense in Vue templates (Volar/vue-tsc), add global component types:
+
+```ts
+// env.d.ts
+/// <reference types="@wolfie/vue/global" />
+
+declare module '*.vue' {
+	import type { DefineComponent } from 'vue'
+	const component: DefineComponent<object, object, unknown>
+	export default component
+}
+```
+
+For CSS module autocomplete with actual class names, install the TypeScript plugin:
+
+```bash
+pnpm add -D @wolfie/typescript-plugin
+```
+
+```json
+// tsconfig.json
+{
+	"compilerOptions": {
+		"plugins": [{ "name": "@wolfie/typescript-plugin" }]
+	}
+}
+```
+
+For wolfie-specific CSS property suggestions in VS Code:
+
+```json
+// .vscode/settings.json
+{
+	"css.customData": ["./node_modules/@wolfie/plugin/wolfie.css-data.json"]
+}
+```
+
+</details>
+
+---
+
+## Vue API Re-exports
+
+Commonly used Vue APIs are re-exported for convenience:
 
 ```ts
 import {
-	alertTheme,
-	badgeTheme,
-	spinnerTheme,
-	statusMessageTheme,
-	progressBarTheme,
-	orderedListTheme,
-	unorderedListTheme,
+	ref,
+	reactive,
+	computed,
+	watch,
+	watchEffect,
+	onMounted,
+	onUnmounted,
+	provide,
+	inject,
+	defineComponent,
+	h,
 } from '@wolfie/vue'
 ```
 
 ---
 
-## Examples
+## Part of wolf-tui
 
-See [`examples/vue/`](../../examples/vue/) directory:
+This is the Vue adapter for [wolf-tui](../../README.md) — a framework-agnostic terminal UI library. The same layout engine (Taffy/flexbox) and component render functions power adapters for React, Angular, Solid, and Svelte.
 
-- [`vite/`](../../examples/vue/vite/) — Vite setup with Vue SFC
-- [`esbuild/`](../../examples/vue/esbuild/) — esbuild setup
-- [`webpack/`](../../examples/vue/webpack/) — webpack setup
+<details>
+<summary><b>Bundler examples</b></summary>
+
+The `examples/` directory has working setups for each bundler:
+
+| Bundler | Example                 |
+| ------- | ----------------------- |
+| Vite    | `examples/vue_vite/`    |
+| esbuild | `examples/vue_esbuild/` |
+| webpack | `examples/vue_webpack/` |
+
+</details>
 
 ## License
 

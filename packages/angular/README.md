@@ -1,49 +1,64 @@
 # @wolfie/angular
 
-Angular adapter for wolf-tui. Build terminal user interfaces with Angular.
+### Build terminal UIs with Angular — flexbox layouts, styled components, signals
 
-## About
+[![Angular 17+](https://img.shields.io/badge/angular-%3E%3D17.0.0-dd0031)](https://angular.dev)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-339933)](https://nodejs.org)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](../../LICENSE)
 
-This package provides Angular components ported from the React ecosystem — originally [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes and the ink-\* component libraries. All components have been reimplemented as standalone Angular components with signals support.
+[Install](#install) · [Quick Start](#quick-start) · [Components](#components) · [Services](#services) · [Styling](#styling)
 
-## Features
+---
 
-- **Angular 17+** — Built for modern Angular with standalone components
-- **Signals support** — First-class support for Angular signals (`signal`, `computed`, `effect`)
-- **OnPush ready** — All components work with `ChangeDetectionStrategy.OnPush`
-- **Tree-shakeable** — Only imports what you use; `sideEffects: false` for optimal bundling
-- **Full component library** — Inputs, alerts, spinners, progress bars, lists
-- **Dependency injection** — Services and injection functions for keyboard input, focus, stdio
-- **CSS styling** — Tailwind CSS, CSS Modules, SCSS/LESS/Stylus via `@wolfie/plugin`
+## The Problem
 
-## Installation
+Angular has no terminal rendering target. If you want to build CLI apps with Angular's signals, dependency injection, and standalone components, you need a custom renderer that maps Angular's view to terminal output.
+
+This package provides that renderer, plus 20+ components (inputs, selects, alerts, spinners, progress bars, lists) and injectable services (`injectInput`, `FocusService`, etc.) — all built for Angular 17+ with standalone components and OnPush change detection.
+
+If you've used [Ink](https://github.com/vadimdemedes/ink) for React terminal UIs, this is the Angular equivalent. It uses the same layout engine (Taffy) and shared render functions as wolf-tui's React, Vue, Solid, and Svelte adapters.
+
+---
+
+## Install
 
 ```bash
-npm install @wolfie/angular @wolfie/plugin chalk
-# or
-pnpm add @wolfie/angular @wolfie/plugin chalk
+# Runtime dependencies
+pnpm add @wolfie/angular chalk @angular/core @angular/common
+
+# Build tooling
+pnpm add -D @wolfie/plugin vite
 ```
 
-**Peer dependencies:**
+| Peer dependency   | Version   |
+| ----------------- | --------- |
+| `@angular/core`   | >= 17.0.0 |
+| `@angular/common` | >= 17.0.0 |
+| `chalk`           | ^5.0.0    |
 
-- `@angular/core` >= 17.0.0
-- `@angular/common` >= 17.0.0
-- `chalk` ^5.0.0
+---
 
 ## Quick Start
 
 ```typescript
 import { Component, signal } from '@angular/core'
-import { BoxComponent, TextComponent, injectInput, Key } from '@wolfie/angular'
+import {
+	BoxComponent,
+	TextComponent,
+	injectInput,
+	type Key,
+} from '@wolfie/angular'
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
 	imports: [BoxComponent, TextComponent],
 	template: `
-		<w-box flexDirection="column" [padding]="1">
-			<w-text color="green" [bold]="true">Hello, Terminal!</w-text>
-			<w-text>Count: {{ count() }}</w-text>
+		<w-box [style]="{ flexDirection: 'column', padding: 1 }">
+			<w-text [style]="{ color: 'green', fontWeight: 'bold' }"
+				>Counter: {{ count() }}</w-text
+			>
+			<w-text [style]="{ color: 'gray' }">↑/↓ to change, q to quit</w-text>
 		</w-box>
 	`,
 })
@@ -53,292 +68,205 @@ export class AppComponent {
 	constructor() {
 		injectInput((input: string, key: Key) => {
 			if (key.upArrow) this.count.update((c) => c + 1)
-			if (key.downArrow) this.count.update((c) => c - 1)
+			if (key.downArrow) this.count.update((c) => Math.max(0, c - 1))
 		})
 	}
 }
 ```
 
 ```typescript
-import { render } from '@wolfie/angular'
+import { renderWolfie } from '@wolfie/angular'
 import { AppComponent } from './app.component'
 
-render(AppComponent)
+renderWolfie(AppComponent)
 ```
 
-## Bootstrap
+> For CSS class-based styling (`class="text-green p-1"`), see [Styling](#styling).
 
-### `render(component, options?)`
+---
 
-Renders an Angular component to the terminal.
+## `renderWolfie(component, options?)`
+
+Mounts an Angular component to the terminal. Also exported as `render`.
 
 ```typescript
-import { render } from '@wolfie/angular'
-import { AppComponent } from './app.component'
-
-const instance = render(AppComponent, {
+const instance = await renderWolfie(AppComponent, {
 	stdout: process.stdout,
 	stdin: process.stdin,
 	maxFps: 30,
 })
 
-// Unmount when done
 instance.unmount()
+await instance.waitUntilExit()
 ```
 
-#### Options
-
-| Option                  | Type                 | Default          | Description               |
-| ----------------------- | -------------------- | ---------------- | ------------------------- |
-| `stdout`                | `NodeJS.WriteStream` | `process.stdout` | Output stream             |
-| `stdin`                 | `NodeJS.ReadStream`  | `process.stdin`  | Input stream              |
-| `stderr`                | `NodeJS.WriteStream` | `process.stderr` | Error stream              |
-| `maxFps`                | `number`             | `30`             | Maximum render FPS        |
-| `debug`                 | `boolean`            | `false`          | Disable throttling        |
-| `exitOnCtrlC`           | `boolean`            | `true`           | Exit app on Ctrl+C        |
-| `isScreenReaderEnabled` | `boolean`            | `false`          | Enable screen reader mode |
-| `providers`             | `Provider[]`         | `[]`             | Additional DI providers   |
+| Option                  | Type                 | Default          | Description              |
+| ----------------------- | -------------------- | ---------------- | ------------------------ |
+| `stdout`                | `NodeJS.WriteStream` | `process.stdout` | Output stream            |
+| `stdin`                 | `NodeJS.ReadStream`  | `process.stdin`  | Input stream             |
+| `stderr`                | `NodeJS.WriteStream` | `process.stderr` | Error stream             |
+| `maxFps`                | `number`             | `30`             | Maximum render frequency |
+| `debug`                 | `boolean`            | `false`          | Disable frame throttling |
+| `exitOnCtrlC`           | `boolean`            | `true`           | Exit on Ctrl+C           |
+| `isScreenReaderEnabled` | `boolean`            | `false`          | Screen reader mode       |
+| `providers`             | `Provider[]`         | `[]`             | Additional DI providers  |
 
 ---
 
 ## Components
 
-All components use custom element selectors prefixed with `w-`.
+All components use custom element selectors prefixed with `w-`. All are standalone.
 
-### Layout Components
+### Layout
 
-#### `<w-box>` (BoxComponent)
+| Component            | Selector        | Description                              |
+| -------------------- | --------------- | ---------------------------------------- |
+| `BoxComponent`       | `<w-box>`       | Flexbox container — `[style]` or `class` |
+| `TextComponent`      | `<w-text>`      | Styled text — color, bold, etc           |
+| `NewlineComponent`   | `<w-newline>`   | Empty lines (`[count]`)                  |
+| `SpacerComponent`    | `<w-spacer>`    | Fills available flex space               |
+| `StaticComponent`    | `<w-static>`    | Renders items once (no re-renders)       |
+| `TransformComponent` | `<w-transform>` | Applies string transform to children     |
 
-Flexbox container for layout.
+<details>
+<summary><b>Box & Text inputs</b></summary>
 
-```html
-<w-box flexDirection="column" [padding]="1" [gap]="1">
-	<w-text>Item 1</w-text>
-	<w-text>Item 2</w-text>
-</w-box>
-```
+Both accept `[style]` (inline object) and `class`/`[className]` (CSS classes via `@wolfie/plugin`).
 
-| Input            | Type                                                        | Description          |
-| ---------------- | ----------------------------------------------------------- | -------------------- |
-| `flexDirection`  | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'`    | Flex direction       |
-| `flexWrap`       | `'wrap' \| 'nowrap' \| 'wrap-reverse'`                      | Flex wrap            |
-| `flexGrow`       | `number`                                                    | Flex grow factor     |
-| `flexShrink`     | `number`                                                    | Flex shrink factor   |
-| `alignItems`     | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch'`       | Cross-axis alignment |
-| `justifyContent` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between'` | Main-axis alignment  |
-| `gap`            | `number`                                                    | Gap between items    |
-| `width`          | `number \| string`                                          | Width                |
-| `height`         | `number \| string`                                          | Height               |
-| `padding`        | `number`                                                    | Padding (all sides)  |
-| `margin`         | `number`                                                    | Margin (all sides)   |
-| `borderStyle`    | `'single' \| 'double' \| 'round' \| 'classic'`              | Border style         |
-| `borderColor`    | `string`                                                    | Border color         |
+**Box style properties** (passed via `[style]`):
 
-#### `<w-text>` (TextComponent)
+| Property         | Type                                                                          | Description         |
+| ---------------- | ----------------------------------------------------------------------------- | ------------------- |
+| `flexDirection`  | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'`                      | Flex direction      |
+| `flexWrap`       | `'wrap' \| 'nowrap' \| 'wrap-reverse'`                                        | Flex wrap           |
+| `flexGrow`       | `number`                                                                      | Grow factor         |
+| `flexShrink`     | `number`                                                                      | Shrink factor       |
+| `alignItems`     | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch'`                         | Cross-axis          |
+| `justifyContent` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around'` | Main-axis           |
+| `gap`            | `number`                                                                      | Gap between items   |
+| `width`          | `number \| string`                                                            | Width               |
+| `height`         | `number \| string`                                                            | Height              |
+| `padding`        | `number`                                                                      | Padding (all sides) |
+| `margin`         | `number`                                                                      | Margin (all sides)  |
+| `borderStyle`    | `'single' \| 'double' \| 'round' \| 'classic'`                                | Border style        |
+| `borderColor`    | `string`                                                                      | Border color        |
+| `overflow`       | `'visible' \| 'hidden'`                                                       | Overflow behavior   |
 
-Text rendering with styling.
+**Text style properties** (passed via `[style]`):
 
-```html
-<w-text color="green" [bold]="true" [underline]="true">Styled text</w-text>
-```
+| Property          | Type                                     | Description      |
+| ----------------- | ---------------------------------------- | ---------------- |
+| `color`           | `string`                                 | Text color       |
+| `backgroundColor` | `string`                                 | Background color |
+| `fontWeight`      | `'bold'`                                 | Bold text        |
+| `fontStyle`       | `'italic'`                               | Italic text      |
+| `textDecoration`  | `'underline' \| 'line-through'`          | Decoration       |
+| `inverse`         | `boolean`                                | Inverse colors   |
+| `textWrap`        | `'wrap' \| 'truncate' \| 'truncate-end'` | Wrap mode        |
 
-| Input             | Type                   | Description                   |
-| ----------------- | ---------------------- | ----------------------------- |
-| `color`           | `string`               | Text color (ANSI name or hex) |
-| `backgroundColor` | `string`               | Background color              |
-| `bold`            | `boolean`              | Bold text                     |
-| `italic`          | `boolean`              | Italic text                   |
-| `underline`       | `boolean`              | Underlined text               |
-| `strikethrough`   | `boolean`              | Strikethrough text            |
-| `dimColor`        | `boolean`              | Dim color                     |
-| `inverse`         | `boolean`              | Inverse colors                |
-| `wrap`            | `'wrap' \| 'truncate'` | Text wrap mode                |
+</details>
 
-#### `<w-newline>` (NewlineComponent)
+### Display
 
-```html
-<w-newline [count]="2"></w-newline>
-```
+| Component                | Selector             | Description                            |
+| ------------------------ | -------------------- | -------------------------------------- |
+| `AlertComponent`         | `<w-alert>`          | `variant` + `title` + `message` inputs |
+| `BadgeComponent`         | `<w-badge>`          | `color` + `label` inputs               |
+| `SpinnerComponent`       | `<w-spinner>`        | `type` + `label` inputs                |
+| `ProgressBarComponent`   | `<w-progress-bar>`   | `value` input (0–100)                  |
+| `StatusMessageComponent` | `<w-status-message>` | `variant` + `message` inputs           |
+| `ErrorOverviewComponent` | `<w-error-overview>` | `[error]` input                        |
 
-#### `<w-spacer>` (SpacerComponent)
+### Input
 
-```html
-<w-box>
-	<w-text>Left</w-text>
-	<w-spacer></w-spacer>
-	<w-text>Right</w-text>
-</w-box>
-```
+| Component                | Selector             | Description                                      |
+| ------------------------ | -------------------- | ------------------------------------------------ |
+| `TextInputComponent`     | `<w-text-input>`     | Uncontrolled — `(valueChange)` / `(submitValue)` |
+| `PasswordInputComponent` | `<w-password-input>` | Masked text input                                |
+| `EmailInputComponent`    | `<w-email-input>`    | Email with domain suggestions                    |
+| `ConfirmInputComponent`  | `<w-confirm-input>`  | `(confirm)` / `(cancel)` outputs                 |
+| `SelectComponent`        | `<w-select>`         | `[options]` input, `(selectChange)` output       |
+| `MultiSelectComponent`   | `<w-multi-select>`   | `[options]` input, `(selectionChange)` output    |
 
-#### `<w-static>` (StaticComponent)
+### Lists
 
-Renders static content that won't re-render.
+| Component                    | Selector                  |
+| ---------------------------- | ------------------------- |
+| `OrderedListComponent`       | `<w-ordered-list>`        |
+| `OrderedListItemComponent`   | `<w-ordered-list-item>`   |
+| `UnorderedListComponent`     | `<w-unordered-list>`      |
+| `UnorderedListItemComponent` | `<w-unordered-list-item>` |
 
-#### `<w-transform>` (TransformComponent)
-
-Transforms child text.
-
----
-
-### Display Components
-
-#### `<w-alert>` (AlertComponent)
-
-```html
-<w-alert variant="success" title="Done!">
-	Operation completed successfully.
-</w-alert>
-```
-
-| Input     | Type                                          | Description   |
-| --------- | --------------------------------------------- | ------------- |
-| `variant` | `'success' \| 'error' \| 'warning' \| 'info'` | Alert variant |
-| `title`   | `string`                                      | Alert title   |
-
-#### `<w-badge>` (BadgeComponent)
+<details>
+<summary><b>Component examples</b></summary>
 
 ```html
-<w-badge color="green">NEW</w-badge>
-```
+<!-- Alert (uses message input, not ng-content) -->
+<w-alert
+	variant="success"
+	title="Deployed"
+	message="All services running."
+></w-alert>
 
-#### `<w-spinner>` (SpinnerComponent)
+<!-- Badge (uses label input, not ng-content) -->
+<w-badge color="green" label="NEW"></w-badge>
 
-```html
-<w-spinner type="dots"></w-spinner>
-```
+<!-- StatusMessage (uses message input) -->
+<w-status-message variant="success" message="Saved!"></w-status-message>
 
-#### `<w-progress-bar>` (ProgressBarComponent)
+<!-- TextInput (uncontrolled — no [value] input) -->
+<w-text-input
+	placeholder="Your name..."
+	(valueChange)="onNameChange($event)"
+	(submitValue)="onNameSubmit($event)"
+></w-text-input>
 
-```html
-<w-progress-bar [value]="0.5"></w-progress-bar>
-```
+<!-- Select (uses [options] input, not child elements) -->
+<w-select
+	[options]="[
+    { label: 'TypeScript', value: 'ts' },
+    { label: 'JavaScript', value: 'js' }
+  ]"
+	(selectChange)="onPick($event)"
+></w-select>
 
-#### `<w-status-message>` (StatusMessageComponent)
+<!-- MultiSelect -->
+<w-multi-select
+	[options]="options"
+	(selectionChange)="onChange($event)"
+	(submitSelection)="onSubmit($event)"
+></w-multi-select>
 
-```html
-<w-status-message variant="success">Saved!</w-status-message>
-```
+<!-- ConfirmInput -->
+<w-confirm-input (confirm)="onYes()" (cancel)="onNo()"></w-confirm-input>
 
----
+<!-- ProgressBar -->
+<w-progress-bar [value]="75"></w-progress-bar>
 
-### List Components
+<!-- Spinner -->
+<w-spinner type="dots" label="Loading..."></w-spinner>
 
-#### `<w-ordered-list>` / `<w-ordered-list-item>`
-
-```html
+<!-- Lists -->
 <w-ordered-list>
-	<w-ordered-list-item>First item</w-ordered-list-item>
-	<w-ordered-list-item>Second item</w-ordered-list-item>
+	<w-ordered-list-item>First</w-ordered-list-item>
+	<w-ordered-list-item>Second</w-ordered-list-item>
 </w-ordered-list>
 ```
 
-#### `<w-unordered-list>` / `<w-unordered-list-item>`
-
-```html
-<w-unordered-list>
-	<w-unordered-list-item>Item one</w-unordered-list-item>
-	<w-unordered-list-item>Item two</w-unordered-list-item>
-</w-unordered-list>
-```
-
----
-
-### Input Components
-
-#### `<w-text-input>` (TextInputComponent)
-
-```typescript
-@Component({
-	template: `
-		<w-text-input
-			[value]="value()"
-			(valueChange)="value.set($event)"
-			placeholder="Enter text..."
-		></w-text-input>
-	`,
-})
-export class MyComponent {
-	value = signal('')
-}
-```
-
-| Input         | Type      | Description      |
-| ------------- | --------- | ---------------- |
-| `value`       | `string`  | Current value    |
-| `placeholder` | `string`  | Placeholder text |
-| `focus`       | `boolean` | Focus state      |
-| `mask`        | `string`  | Mask character   |
-| `isDisabled`  | `boolean` | Disabled state   |
-
-| Output        | Type     | Description   |
-| ------------- | -------- | ------------- |
-| `valueChange` | `string` | Value changed |
-| `submit`      | `string` | Enter pressed |
-
-#### `<w-password-input>` (PasswordInputComponent)
-
-```html
-<w-password-input
-	[value]="password()"
-	(valueChange)="password.set($event)"
-	mask="*"
-></w-password-input>
-```
-
-#### `<w-email-input>` (EmailInputComponent)
-
-```html
-<w-email-input
-	[value]="email()"
-	(valueChange)="email.set($event)"
-	(submit)="handleSubmit($event)"
-></w-email-input>
-```
-
-#### `<w-confirm-input>` (ConfirmInputComponent)
-
-```html
-<w-confirm-input
-	(confirm)="handleYes()"
-	(cancel)="handleNo()"
-></w-confirm-input>
-```
-
-#### `<w-select>` / `<w-select-option>`
-
-```html
-<w-select (selectChange)="handleChange($event)">
-	<w-select-option value="a" label="Option A"></w-select-option>
-	<w-select-option value="b" label="Option B"></w-select-option>
-</w-select>
-```
-
-#### `<w-multi-select>` / `<w-multi-select-option>`
-
-```html
-<w-multi-select (selectionChange)="handleChange($event)">
-	<w-multi-select-option value="a" label="Option A"></w-multi-select-option>
-	<w-multi-select-option value="b" label="Option B"></w-multi-select-option>
-</w-multi-select>
-```
-
-#### `<w-error-overview>` (ErrorOverviewComponent)
-
-```html
-<w-error-overview [error]="error"></w-error-overview>
-```
+</details>
 
 ---
 
 ## Services
+
+Angular uses dependency injection instead of hooks/composables.
 
 ### `injectInput(handler, options?)`
 
 Inject keyboard input handler. Must be called in injection context (constructor or field initializer).
 
 ```typescript
-import { Component } from '@angular/core'
-import { injectInput, Key } from '@wolfie/angular'
+import { injectInput, type Key } from '@wolfie/angular'
 
 @Component({
 	/* ... */
@@ -346,18 +274,22 @@ import { injectInput, Key } from '@wolfie/angular'
 export class MyComponent {
 	constructor() {
 		injectInput((input: string, key: Key) => {
-			if (input === 'q') {
-				// Exit
-			}
 			if (key.upArrow) {
-				// Move up
+				/* move up */
+			}
+			if (key.return) {
+				/* confirm */
+			}
+			if (input === 'q') {
+				/* quit */
 			}
 		})
 	}
 }
 ```
 
-#### Key Object
+<details>
+<summary><b>Key object properties</b></summary>
 
 | Property     | Type      | Description         |
 | ------------ | --------- | ------------------- |
@@ -365,10 +297,6 @@ export class MyComponent {
 | `downArrow`  | `boolean` | Down arrow pressed  |
 | `leftArrow`  | `boolean` | Left arrow pressed  |
 | `rightArrow` | `boolean` | Right arrow pressed |
-| `pageUp`     | `boolean` | Page Up pressed     |
-| `pageDown`   | `boolean` | Page Down pressed   |
-| `home`       | `boolean` | Home pressed        |
-| `end`        | `boolean` | End pressed         |
 | `return`     | `boolean` | Enter pressed       |
 | `escape`     | `boolean` | Escape pressed      |
 | `ctrl`       | `boolean` | Ctrl held           |
@@ -377,145 +305,43 @@ export class MyComponent {
 | `tab`        | `boolean` | Tab pressed         |
 | `backspace`  | `boolean` | Backspace pressed   |
 | `delete`     | `boolean` | Delete pressed      |
+| `pageUp`     | `boolean` | Page Up pressed     |
+| `pageDown`   | `boolean` | Page Down pressed   |
 
-#### Options
+The `isActive` option accepts `() => boolean` to conditionally enable/disable input.
 
-| Option     | Type            | Default      | Description                   |
-| ---------- | --------------- | ------------ | ----------------------------- |
-| `isActive` | `() => boolean` | `() => true` | Enable/disable input handling |
+</details>
 
 ### `AppService`
 
-App lifecycle management.
-
-```typescript
-import { Component, inject } from '@angular/core'
-import { AppService } from '@wolfie/angular'
-
-@Component({
-	/* ... */
-})
-export class MyComponent {
-	private app = inject(AppService)
-
-	quit() {
-		this.app.exit()
-	}
-}
-```
-
-Methods:
-
-- `exit(error?)` — Exit the app
-
-### `FocusService`
-
-Focus management.
-
-```typescript
-import { Component, inject, signal } from '@angular/core'
-import { FocusService } from '@wolfie/angular'
-
-@Component({
-	/* ... */
-})
-export class MyComponent {
-	private focusService = inject(FocusService)
-
-	id = signal(`input-${Math.random().toString(36).slice(2)}`)
-
-	constructor() {
-		// Register as focusable
-		this.focusService.add(this.id(), { autoFocus: true })
-	}
-
-	get isFocused() {
-		return this.focusService.activeFocusId() === this.id()
-	}
-
-	ngOnDestroy() {
-		this.focusService.remove(this.id())
-	}
-}
-```
-
-Methods:
-
-- `add(id, options)` — Register focusable component
-- `remove(id)` — Unregister component
-- `activate(id)` — Enable focus for component
-- `deactivate(id)` — Disable focus for component
-- `focusNext()` — Focus next component
-- `focusPrevious()` — Focus previous component
-- `focus(id)` — Focus specific component
-- `enableFocus()` — Enable focus system
-- `disableFocus()` — Disable focus system
-
-Properties:
-
-- `activeFocusId` — Signal with current focused ID
-
-### `StdinService`
-
-Access stdin stream.
-
-```typescript
-import { Component, inject } from '@angular/core'
-import { StdinService } from '@wolfie/angular'
-
-@Component({
-	/* ... */
-})
-export class MyComponent {
-	private stdin = inject(StdinService)
-}
-```
-
-Properties:
-
-- `stdin` — Raw stdin stream
-- `isRawModeSupported` — TTY support check
-
-Methods:
-
-- `setRawMode(value)` — Enable/disable raw mode
-
-### `StdoutService`
-
-Access stdout stream.
-
-```typescript
-import { Component, inject } from '@angular/core'
-import { StdoutService } from '@wolfie/angular'
-
-@Component({
-	/* ... */
-})
-export class MyComponent {
-	private stdout = inject(StdoutService)
-
-	log(message: string) {
-		this.stdout.write(message + '\n')
-	}
-}
-```
-
-Methods:
-
-- `write(data)` — Write to stdout
-
-### `StderrService`
-
-Access stderr stream.
-
----
-
-## Dependency Injection Tokens
-
-For advanced use cases, raw context tokens are available:
+App lifecycle — inject for `exit()`.
 
 ```typescript
 import { inject } from '@angular/core'
+import { AppService } from '@wolfie/angular'
+
+private app = inject(AppService)
+this.app.exit()
+```
+
+### `FocusService`
+
+Focus management — `focusNext()`, `focusPrevious()`, `focus(id)`, `activeFocusId` signal.
+
+### Stream services
+
+| Service         | Properties / Methods                          |
+| --------------- | --------------------------------------------- |
+| `StdinService`  | `stdin`, `isRawModeSupported`, `setRawMode()` |
+| `StdoutService` | `stdout`, `write()`                           |
+| `StderrService` | `stderr`, `write()`                           |
+
+<details>
+<summary><b>DI tokens for advanced use</b></summary>
+
+Raw context tokens for direct injection:
+
+```typescript
 import {
 	STDIN_CONTEXT,
 	STDOUT_CONTEXT,
@@ -524,27 +350,46 @@ import {
 	FOCUS_CONTEXT,
 	ACCESSIBILITY_CONTEXT,
 } from '@wolfie/angular'
-
-const stdin = inject(STDIN_CONTEXT)
-const stdout = inject(STDOUT_CONTEXT)
-const app = inject(APP_CONTEXT)
 ```
+
+</details>
+
+---
+
+## Styling
+
+```html
+<!-- Inline styles -->
+<w-box [style]="{ flexDirection: 'column', padding: 1, gap: 1 }">
+	<w-text [style]="{ color: 'green', fontWeight: 'bold' }">Styled text</w-text>
+</w-box>
+
+<!-- Tailwind CSS -->
+<w-box class="flex-col p-4 gap-2">
+	<w-text class="text-green-500 font-bold">Tailwind styled</w-text>
+</w-box>
+```
+
+| Method        | Usage                              |
+| ------------- | ---------------------------------- |
+| Inline styles | `[style]="{ color: 'green' }"`     |
+| Tailwind CSS  | `class="text-green p-1"` + PostCSS |
+| CSS Modules   | `[className]="styles.box"`         |
+
+All CSS approaches resolve to terminal styles at build time — no runtime CSS engine.
 
 ---
 
 ## Angular Patterns
 
-### Signals
+<details>
+<summary><b>Signals, OnPush, and effects</b></summary>
 
-Works seamlessly with Angular signals:
+**Signals** work seamlessly:
 
 ```typescript
 @Component({
-	template: `
-		<w-box>
-			<w-text>Count: {{ count() }}</w-text>
-		</w-box>
-	`,
+	template: `<w-text>Count: {{ count() }}</w-text>`,
 })
 export class CounterComponent {
 	count = signal(0)
@@ -557,77 +402,34 @@ export class CounterComponent {
 }
 ```
 
-### OnPush Change Detection
+**OnPush** change detection is fully supported — the renderer triggers `detectChanges()` after input handlers.
 
-Components work with OnPush strategy. The renderer triggers `detectChanges()` after input handlers.
-
-```typescript
-@Component({
-	changeDetection: ChangeDetectionStrategy.OnPush,
-	// ...
-})
-export class MyComponent {}
-```
-
-### Effects
-
-Angular `effect()` works with wolf-tui:
+**Effects** work with wolf-tui:
 
 ```typescript
-@Component({
-	/* ... */
+effect(() => {
+	console.log('Count changed:', this.count())
 })
-export class MyComponent {
-	count = signal(0)
-
-	constructor() {
-		effect(() => {
-			console.log('Count changed:', this.count())
-		})
-	}
-}
 ```
+
+</details>
 
 ---
 
-## Styling
+## Part of wolf-tui
 
-### With Tailwind CSS
+This is the Angular adapter for [wolf-tui](../../README.md) — a framework-agnostic terminal UI library. The same layout engine (Taffy/flexbox) and component render functions power adapters for React, Vue, Solid, and Svelte.
 
-```typescript
-@Component({
-	template: `
-		<w-box class="flex-col p-4 gap-2">
-			<w-text class="text-green-500 font-bold">Tailwind styled</w-text>
-		</w-box>
-	`,
-	styles: [
-		`
-			@import 'tailwindcss';
-		`,
-	],
-})
-export class StyledComponent {}
-```
+<details>
+<summary><b>Bundler examples</b></summary>
 
-### Style Registry
+| Bundler | Example                     |
+| ------- | --------------------------- |
+| Vite    | `examples/angular_vite/`    |
+| esbuild | `examples/angular_esbuild/` |
+| webpack | `examples/angular_webpack/` |
 
-```typescript
-import { registerStyles, resolveClassName } from '@wolfie/angular'
-
-// Register styles from CSS parser
-registerStyles(parsedStyles)
-```
-
----
-
-## Examples
-
-See [`examples/angular/`](../../examples/angular/) directory:
-
-- [`vite/`](../../examples/angular/vite/) — Vite setup with Angular
-- [`esbuild/`](../../examples/angular/esbuild/) — esbuild setup
-- [`webpack/`](../../examples/angular/webpack/) — webpack setup
+</details>
 
 ## License
 
