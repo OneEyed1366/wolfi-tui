@@ -73,12 +73,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/OneEyed1366/wolfi-tui.git",
+		"url": "git+https://github.com/OneEyed1366/wolf-tui.git",
 		"directory": "packages/vue"
 	},
-	"homepage": "https://github.com/OneEyed1366/wolfi-tui/tree/master/packages/vue#readme",
+	"homepage": "https://github.com/OneEyed1366/wolf-tui/tree/master/packages/vue#readme",
 	"bugs": {
-		"url": "https://github.com/OneEyed1366/wolfi-tui/issues"
+		"url": "https://github.com/OneEyed1366/wolf-tui/issues"
 	},
 	"author": "A.Prokopenko <psevdoproger@gmail.com>"
 }
