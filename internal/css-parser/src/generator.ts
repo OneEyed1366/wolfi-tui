@@ -262,7 +262,9 @@ function generateCode(
 					? '@wolfie/angular'
 					: options.framework === 'solid'
 						? '@wolfie/solid'
-						: '@wolfie/react/styles'
+						: options.framework === 'svelte'
+							? '@wolfie/svelte'
+							: '@wolfie/react/styles'
 		lines.push(
 			`import { registerStyles, registerTailwindMetadata } from '${pkg}'`
 		)
@@ -275,13 +277,10 @@ function generateCode(
 			lines.push(`registerTailwindMetadata(${metadataStr})`)
 		}
 
-		const stylesMap = generateStylesMap(
-			styles,
-			'',
-			isMinified,
-			false,
-			camelCase
-		)
+		// Global registration uses original CSS class names (not sanitized identifiers).
+		// Runtime resolveClassName("flex-col") must find "flex-col", not "flexCol".
+		// Sanitized keys are only needed for CSS Module exports (import styles from '...').
+		const stylesMap = generateStylesMap(styles, '', isMinified, false, false)
 		lines.push(`registerStyles(${stylesMap})`)
 	}
 

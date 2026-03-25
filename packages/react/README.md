@@ -1,46 +1,63 @@
 # @wolfie/react
 
-React adapter for wolf-tui. Build terminal user interfaces with React.
+### Build terminal UIs with React — flexbox layouts, styled components, keyboard input
 
-## About
+[![React 19+](https://img.shields.io/badge/react-%3E%3D19.0.0-61dafb)](https://react.dev)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-339933)](https://nodejs.org)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](../../LICENSE)
 
-This package is a fork of [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes, extended with additional components from the ink-\* ecosystem. It provides React components and hooks for building interactive CLI applications.
+[Install](#install) · [Quick Start](#quick-start) · [Components](#components) · [Hooks](#hooks) · [Theming](#theming) · [CSS Styling](#css-styling)
 
-## Features
+---
 
-- **React Compiler** — Built with [React Compiler](https://react.dev/learn/react-compiler) for automatic memoization and optimal performance
-- **React 19+** — Leverages latest React features
-- **Tree-shakeable** — Only imports what you use; tested with esbuild, Vite, and webpack
-- **Full component library** — Inputs, alerts, spinners, progress bars, lists
-- **Hooks API** — `useInput`, `useFocus`, `useFocusManager`, and more
-- **CSS styling** — Tailwind CSS, CSS Modules, SCSS/LESS/Stylus via `@wolfie/plugin`
+## The Problem
 
-## Installation
+React terminal UI libraries exist ([Ink](https://github.com/vadimdemedes/ink)), but wolf-tui's React adapter shares a layout engine and component library with Vue, Angular, Solid, and Svelte adapters. Same components, same Taffy-powered Flexbox + CSS Grid, same styling pipeline — across all five frameworks.
+
+This package started as a fork of Ink, extended with the wolf-tui shared architecture, React Compiler integration, and the full `@wolfie/plugin` styling pipeline (Tailwind, SCSS, CSS Modules).
+
+---
+
+## Install
 
 ```bash
-npm install @wolfie/react @wolfie/plugin chalk
-# or
-pnpm add @wolfie/react @wolfie/plugin chalk
+# Runtime dependencies
+pnpm add @wolfie/react chalk react react-reconciler
+
+# Build tooling
+pnpm add -D @wolfie/plugin @vitejs/plugin-react vite
 ```
 
-**Peer dependencies:**
+| Peer dependency    | Version   |
+| ------------------ | --------- |
+| `react`            | >= 19.0.0 |
+| `react-reconciler` | ^0.33.0   |
+| `chalk`            | ^5.0.0    |
 
-- `react` >= 19.0.0
-- `react-reconciler` ^0.33.0
-- `chalk` ^5.0.0
+---
 
 ## Quick Start
 
 ```tsx
-import { render, Box, Text } from '@wolfie/react'
+import { render, Box, Text, useInput, useApp } from '@wolfie/react'
+import { useState } from 'react'
 
 function App() {
+	const [count, setCount] = useState(0)
+	const { exit } = useApp()
+
+	useInput((input, key) => {
+		if (key.upArrow) setCount((c) => c + 1)
+		if (key.downArrow) setCount((c) => Math.max(0, c - 1))
+		if (input === 'q') exit()
+	})
+
 	return (
-		<Box flexDirection="column" padding={1}>
-			<Text color="green" bold>
-				Hello, Terminal!
+		<Box style={{ flexDirection: 'column', padding: 1 }}>
+			<Text style={{ color: 'green', fontWeight: 'bold' }}>
+				Counter: {count}
 			</Text>
-			<Text>Built with wolf-tui</Text>
+			<Text style={{ color: 'gray' }}>↑/↓ to change, q to quit</Text>
 		</Box>
 	)
 }
@@ -48,349 +65,168 @@ function App() {
 render(<App />)
 ```
 
-## Render Function
+> For CSS class-based styling (`className="text-green p-1"`), see [CSS Styling](#css-styling).
 
-### `render(element, options?)`
+---
 
-Renders a React element to the terminal.
+## `render(element, options?)`
+
+Mounts a React element to the terminal.
 
 ```tsx
-import { render } from '@wolfie/react'
-
 const { rerender, unmount, waitUntilExit, clear } = render(<App />)
 
-// Re-render with new props
-rerender(<App count={1} />)
-
-// Unmount and exit
-unmount()
-
-// Wait for app to exit
-await waitUntilExit()
-
-// Clear terminal output
-clear()
+rerender(<App count={1} />) // Re-render with new props
+unmount() // Unmount and exit
+await waitUntilExit() // Wait for app to exit
+clear() // Clear terminal output
 ```
 
-#### Options
-
-| Option         | Type                 | Default          | Description           |
-| -------------- | -------------------- | ---------------- | --------------------- |
-| `stdout`       | `NodeJS.WriteStream` | `process.stdout` | Output stream         |
-| `stdin`        | `NodeJS.ReadStream`  | `process.stdin`  | Input stream          |
-| `stderr`       | `NodeJS.WriteStream` | `process.stderr` | Error stream          |
-| `debug`        | `boolean`            | `false`          | Enable debug mode     |
-| `exitOnCtrlC`  | `boolean`            | `true`           | Exit on Ctrl+C        |
-| `patchConsole` | `boolean`            | `true`           | Patch console methods |
+| Option                  | Type                 | Default          | Description               |
+| ----------------------- | -------------------- | ---------------- | ------------------------- |
+| `stdout`                | `NodeJS.WriteStream` | `process.stdout` | Output stream             |
+| `stdin`                 | `NodeJS.ReadStream`  | `process.stdin`  | Input stream              |
+| `stderr`                | `NodeJS.WriteStream` | `process.stderr` | Error stream              |
+| `debug`                 | `boolean`            | `false`          | Disable frame throttling  |
+| `exitOnCtrlC`           | `boolean`            | `true`           | Exit on Ctrl+C            |
+| `patchConsole`          | `boolean`            | `true`           | Patch console methods     |
+| `maxFps`                | `number`             | `30`             | Maximum render frequency  |
+| `isScreenReaderEnabled` | `boolean`            | env-based        | Screen reader mode        |
+| `incrementalRendering`  | `boolean`            | `false`          | Only update changed lines |
 
 ---
 
 ## Components
 
-### Layout Components
+### Layout
 
-#### `<Box>`
+| Component     | Description                                           |
+| ------------- | ----------------------------------------------------- |
+| `<Box>`       | Flexbox container — `style` or `className` for layout |
+| `<Text>`      | Styled text — color, bold, underline, etc             |
+| `<Newline>`   | Empty lines (`count` prop)                            |
+| `<Spacer>`    | Fills available flex space                            |
+| `<Static>`    | Renders items once (no re-renders)                    |
+| `<Transform>` | Applies string transform to children                  |
 
-Flexbox container for layout.
+<details>
+<summary><b>Box & Text props</b></summary>
 
-```tsx
-<Box flexDirection="column" padding={1} gap={1}>
-	<Text>Item 1</Text>
-	<Text>Item 2</Text>
-</Box>
-```
+Both accept `style` (inline object) and `className` (CSS classes via `@wolfie/plugin`).
 
-| Prop             | Type                                                                                            | Description          |
-| ---------------- | ----------------------------------------------------------------------------------------------- | -------------------- |
-| `flexDirection`  | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'`                                        | Flex direction       |
-| `flexWrap`       | `'wrap' \| 'nowrap' \| 'wrap-reverse'`                                                          | Flex wrap            |
-| `flexGrow`       | `number`                                                                                        | Flex grow factor     |
-| `flexShrink`     | `number`                                                                                        | Flex shrink factor   |
-| `flexBasis`      | `number \| string`                                                                              | Flex basis           |
-| `alignItems`     | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch'`                                           | Cross-axis alignment |
-| `alignSelf`      | `'flex-start' \| 'center' \| 'flex-end' \| 'auto'`                                              | Self alignment       |
-| `justifyContent` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | Main-axis alignment  |
-| `gap`            | `number`                                                                                        | Gap between items    |
-| `width`          | `number \| string`                                                                              | Width                |
-| `height`         | `number \| string`                                                                              | Height               |
-| `minWidth`       | `number`                                                                                        | Minimum width        |
-| `minHeight`      | `number`                                                                                        | Minimum height       |
-| `padding`        | `number`                                                                                        | Padding (all sides)  |
-| `paddingX`       | `number`                                                                                        | Horizontal padding   |
-| `paddingY`       | `number`                                                                                        | Vertical padding     |
-| `margin`         | `number`                                                                                        | Margin (all sides)   |
-| `marginX`        | `number`                                                                                        | Horizontal margin    |
-| `marginY`        | `number`                                                                                        | Vertical margin      |
-| `borderStyle`    | `'single' \| 'double' \| 'round' \| 'classic'`                                                  | Border style         |
-| `borderColor`    | `string`                                                                                        | Border color         |
-| `overflow`       | `'visible' \| 'hidden'`                                                                         | Overflow behavior    |
+**Box style properties** (passed via `style`):
 
-#### `<Text>`
+| Property         | Type                                                                          | Description         |
+| ---------------- | ----------------------------------------------------------------------------- | ------------------- |
+| `flexDirection`  | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'`                      | Flex direction      |
+| `flexWrap`       | `'wrap' \| 'nowrap' \| 'wrap-reverse'`                                        | Flex wrap           |
+| `flexGrow`       | `number`                                                                      | Grow factor         |
+| `flexShrink`     | `number`                                                                      | Shrink factor       |
+| `flexBasis`      | `number \| string`                                                            | Flex basis          |
+| `alignItems`     | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch'`                         | Cross-axis          |
+| `alignSelf`      | `'flex-start' \| 'center' \| 'flex-end' \| 'auto'`                            | Self alignment      |
+| `justifyContent` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around'` | Main-axis           |
+| `gap`            | `number`                                                                      | Gap between items   |
+| `width`          | `number \| string`                                                            | Width               |
+| `height`         | `number \| string`                                                            | Height              |
+| `padding`        | `number`                                                                      | Padding (all sides) |
+| `paddingX`       | `number`                                                                      | Horizontal padding  |
+| `paddingY`       | `number`                                                                      | Vertical padding    |
+| `margin`         | `number`                                                                      | Margin (all sides)  |
+| `marginX`        | `number`                                                                      | Horizontal margin   |
+| `marginY`        | `number`                                                                      | Vertical margin     |
+| `borderStyle`    | `'single' \| 'double' \| 'round' \| 'classic'`                                | Border style        |
+| `borderColor`    | `string`                                                                      | Border color        |
+| `overflow`       | `'visible' \| 'hidden'`                                                       | Overflow behavior   |
 
-Text rendering with styling.
+**Text style properties** (passed via `style`):
 
-```tsx
-<Text color="green" bold underline>
-	Styled text
-</Text>
-```
+| Property          | Type                                     | Description      |
+| ----------------- | ---------------------------------------- | ---------------- |
+| `color`           | `string`                                 | Text color       |
+| `backgroundColor` | `string`                                 | Background color |
+| `fontWeight`      | `'bold'`                                 | Bold text        |
+| `fontStyle`       | `'italic'`                               | Italic text      |
+| `textDecoration`  | `'underline' \| 'line-through'`          | Decoration       |
+| `inverse`         | `boolean`                                | Inverse colors   |
+| `textWrap`        | `'wrap' \| 'truncate' \| 'truncate-end'` | Wrap mode        |
 
-| Prop              | Type                                                                              | Description                   |
-| ----------------- | --------------------------------------------------------------------------------- | ----------------------------- |
-| `color`           | `string`                                                                          | Text color (ANSI name or hex) |
-| `backgroundColor` | `string`                                                                          | Background color              |
-| `bold`            | `boolean`                                                                         | Bold text                     |
-| `italic`          | `boolean`                                                                         | Italic text                   |
-| `underline`       | `boolean`                                                                         | Underlined text               |
-| `strikethrough`   | `boolean`                                                                         | Strikethrough text            |
-| `dimColor`        | `boolean`                                                                         | Dim color                     |
-| `inverse`         | `boolean`                                                                         | Inverse colors                |
-| `wrap`            | `'wrap' \| 'truncate' \| 'truncate-end' \| 'truncate-middle' \| 'truncate-start'` | Text wrap mode                |
+</details>
 
-#### `<Newline>`
+### Display
 
-Adds empty lines.
+| Component         | Description                                                         |
+| ----------------- | ------------------------------------------------------------------- |
+| `<Alert>`         | Styled alert box — `variant`: `success`, `error`, `warning`, `info` |
+| `<Badge>`         | Inline colored badge                                                |
+| `<Spinner>`       | Animated spinner with `type`                                        |
+| `<ProgressBar>`   | Progress bar (value 0–100)                                          |
+| `<StatusMessage>` | Status with icon — `variant`: `success`, `error`, `warning`, `info` |
+| `<ErrorOverview>` | Formatted error display with stack trace                            |
 
-```tsx
-<Newline count={2} />
-```
+### Input
 
-#### `<Spacer>`
+| Component         | Description                             |
+| ----------------- | --------------------------------------- |
+| `<TextInput>`     | Text field with `onChange` / `onSubmit` |
+| `<PasswordInput>` | Masked text input                       |
+| `<EmailInput>`    | Email input with domain suggestions     |
+| `<ConfirmInput>`  | Yes/No prompt                           |
+| `<Select>`        | Single selection from `options` array   |
+| `<MultiSelect>`   | Multiple selection from `options` array |
 
-Flexible space that fills available area.
+### Lists
 
-```tsx
-<Box>
-	<Text>Left</Text>
-	<Spacer />
-	<Text>Right</Text>
-</Box>
-```
+| Component         | Description   |
+| ----------------- | ------------- |
+| `<OrderedList>`   | Numbered list |
+| `<UnorderedList>` | Bulleted list |
 
-#### `<Static>`
-
-Renders static content that won't re-render.
-
-```tsx
-<Static items={logs}>{(log) => <Text key={log.id}>{log.message}</Text>}</Static>
-```
-
-#### `<Transform>`
-
-Transforms child text.
+<details>
+<summary><b>Component examples</b></summary>
 
 ```tsx
-<Transform transform={(text) => text.toUpperCase()}>
-	<Text>will be uppercase</Text>
-</Transform>
-```
-
----
-
-### Display Components
-
-#### `<Alert>`
-
-Alert messages with variants.
-
-```tsx
-<Alert variant="success" title="Done!">
-	Operation completed successfully.
+// Alert (children as message)
+<Alert variant="success" title="Deployed">
+  All services are running.
 </Alert>
-```
 
-| Prop       | Type                                          | Description   |
-| ---------- | --------------------------------------------- | ------------- |
-| `variant`  | `'success' \| 'error' \| 'warning' \| 'info'` | Alert variant |
-| `title`    | `string`                                      | Alert title   |
-| `children` | `ReactNode`                                   | Alert content |
-
-#### `<Badge>`
-
-Small label badges.
-
-```tsx
+// Badge (children as label)
 <Badge color="green">NEW</Badge>
-```
 
-| Prop       | Type        | Description |
-| ---------- | ----------- | ----------- |
-| `color`    | `string`    | Badge color |
-| `children` | `ReactNode` | Badge text  |
-
-#### `<Spinner>`
-
-Loading spinner.
-
-```tsx
-<Spinner type="dots" />
-```
-
-| Prop   | Type     | Description                      |
-| ------ | -------- | -------------------------------- |
-| `type` | `string` | Spinner type (from cli-spinners) |
-
-#### `<ProgressBar>`
-
-Progress indicator.
-
-```tsx
-<ProgressBar value={50} />
-```
-
-| Prop    | Type     | Description      |
-| ------- | -------- | ---------------- |
-| `value` | `number` | Progress (0-100) |
-
-#### `<StatusMessage>`
-
-Status indicator with variants.
-
-```tsx
+// StatusMessage (children as message)
 <StatusMessage variant="success">Saved!</StatusMessage>
-```
 
-| Prop       | Type                                          | Description     |
-| ---------- | --------------------------------------------- | --------------- |
-| `variant`  | `'success' \| 'error' \| 'warning' \| 'info'` | Status variant  |
-| `children` | `ReactNode`                                   | Message content |
+// TextInput
+<TextInput
+  placeholder="Your name..."
+  onChange={(value) => console.log(value)}
+  onSubmit={(value) => console.log('done:', value)}
+/>
 
-#### `<ErrorOverview>`
+// Select
+<Select
+  options={[
+    { label: 'TypeScript', value: 'ts' },
+    { label: 'JavaScript', value: 'js' },
+  ]}
+  onChange={(value) => console.log('Picked:', value)}
+/>
 
-Error display with stack trace.
+// ProgressBar
+<ProgressBar value={75} />
 
-```tsx
-<ErrorOverview error={error} />
-```
+// Spinner
+<Spinner type="dots" label="Loading..." />
 
----
-
-### List Components
-
-#### `<OrderedList>` / `<OrderedListItem>`
-
-Numbered lists.
-
-```tsx
+// Lists
 <OrderedList>
-	<OrderedListItem>First item</OrderedListItem>
-	<OrderedListItem>Second item</OrderedListItem>
+  <OrderedListItem>First</OrderedListItem>
+  <OrderedListItem>Second</OrderedListItem>
 </OrderedList>
 ```
 
-#### `<UnorderedList>` / `<UnorderedListItem>`
-
-Bullet lists.
-
-```tsx
-<UnorderedList>
-	<UnorderedListItem>Item one</UnorderedListItem>
-	<UnorderedListItem>Item two</UnorderedListItem>
-</UnorderedList>
-```
-
----
-
-### Input Components
-
-#### `<TextInput>`
-
-Text input field.
-
-```tsx
-const [value, setValue] = useState('')
-
-<TextInput
-  value={value}
-  onChange={setValue}
-  placeholder="Enter text..."
-/>
-```
-
-| Prop          | Type                      | Description            |
-| ------------- | ------------------------- | ---------------------- |
-| `value`       | `string`                  | Current value          |
-| `onChange`    | `(value: string) => void` | Change handler         |
-| `onSubmit`    | `(value: string) => void` | Submit handler (Enter) |
-| `placeholder` | `string`                  | Placeholder text       |
-| `focus`       | `boolean`                 | Focus state            |
-| `mask`        | `string`                  | Mask character         |
-
-#### `<PasswordInput>`
-
-Masked password input.
-
-```tsx
-<PasswordInput value={password} onChange={setPassword} mask="*" />
-```
-
-#### `<EmailInput>`
-
-Email input with validation.
-
-```tsx
-<EmailInput value={email} onChange={setEmail} onSubmit={handleSubmit} />
-```
-
-#### `<ConfirmInput>`
-
-Yes/No confirmation.
-
-```tsx
-<ConfirmInput
-	onConfirm={() => console.log('Yes')}
-	onCancel={() => console.log('No')}
-/>
-```
-
-#### `<Select>`
-
-Single selection from a list of options.
-
-```tsx
-const options = [
-	{ label: 'Option A', value: 'a' },
-	{ label: 'Option B', value: 'b' },
-	{ label: 'Option C', value: 'c' },
-]
-
-<Select options={options} onChange={handleChange} />
-```
-
-| Prop                 | Type                      | Default | Description                  |
-| -------------------- | ------------------------- | ------- | ---------------------------- |
-| `options`            | `Option[]`                |         | Array of `{ label, value }`  |
-| `onChange`           | `(value: string) => void` |         | Selection change handler     |
-| `value`              | `string`                  |         | Controlled value             |
-| `defaultValue`       | `string`                  |         | Default value (uncontrolled) |
-| `visibleOptionCount` | `number`                  | `5`     | Number of visible options    |
-| `highlightText`      | `string`                  |         | Highlight text in labels     |
-| `isDisabled`         | `boolean`                 | `false` | Disable user input           |
-
-#### `<MultiSelect>`
-
-Multiple selection from a list of options.
-
-```tsx
-const options = [
-	{ label: 'Option A', value: 'a' },
-	{ label: 'Option B', value: 'b' },
-	{ label: 'Option C', value: 'c' },
-]
-
-<MultiSelect options={options} onChange={handleChange} onSubmit={handleSubmit} />
-```
-
-| Prop                 | Type                        | Default | Description                  |
-| -------------------- | --------------------------- | ------- | ---------------------------- |
-| `options`            | `Option[]`                  |         | Array of `{ label, value }`  |
-| `onChange`           | `(value: string[]) => void` |         | Selection change handler     |
-| `onSubmit`           | `(value: string[]) => void` |         | Submit handler (Enter)       |
-| `value`              | `string[]`                  |         | Controlled value             |
-| `defaultValue`       | `string[]`                  |         | Default value (uncontrolled) |
-| `visibleOptionCount` | `number`                    | `5`     | Number of visible options    |
-| `highlightText`      | `string`                    |         | Highlight text in labels     |
-| `isDisabled`         | `boolean`                   | `false` | Disable user input           |
+</details>
 
 ---
 
@@ -401,15 +237,18 @@ const options = [
 Handle keyboard input.
 
 ```tsx
-import { useInput, Key } from '@wolfie/react'
+import { useInput } from '@wolfie/react'
 
 function App() {
-	useInput((input: string, key: Key) => {
-		if (input === 'q') {
-			// Exit
-		}
+	useInput((input, key) => {
 		if (key.upArrow) {
-			// Move up
+			/* move up */
+		}
+		if (key.return) {
+			/* confirm */
+		}
+		if (input === 'q') {
+			/* quit */
 		}
 	})
 
@@ -417,7 +256,8 @@ function App() {
 }
 ```
 
-#### Key Object
+<details>
+<summary><b>Key object properties</b></summary>
 
 | Property     | Type      | Description         |
 | ------------ | --------- | ------------------- |
@@ -435,211 +275,170 @@ function App() {
 | `delete`     | `boolean` | Delete pressed      |
 | `pageUp`     | `boolean` | Page Up pressed     |
 | `pageDown`   | `boolean` | Page Down pressed   |
-| `home`       | `boolean` | Home pressed        |
-| `end`        | `boolean` | End pressed         |
 
-#### Options
+The `isActive` option (`boolean`) enables/disables input handling.
 
-| Option     | Type      | Default | Description                   |
-| ---------- | --------- | ------- | ----------------------------- |
-| `isActive` | `boolean` | `true`  | Enable/disable input handling |
+</details>
 
 ### `useApp()`
 
-Access app context.
+Access the app context — primarily for `exit()`.
 
 ```tsx
-import { useApp } from '@wolfie/react'
-
-function App() {
-	const { exit } = useApp()
-
-	return <Text onPress={() => exit()}>Click to exit</Text>
-}
+const { exit } = useApp()
 ```
 
-Returns:
+### `useFocus(options?)` / `useFocusManager()`
 
-- `exit(error?)` — Exit the app
-
-### `useFocus(options?)`
-
-Make component focusable.
+Make components focusable and control focus programmatically.
 
 ```tsx
-import { useFocus } from '@wolfie/react'
-
-function Input() {
-	const { isFocused, focus } = useFocus({ autoFocus: true })
-
-	return (
-		<Box borderColor={isFocused ? 'green' : 'gray'}>
-			<Text>{isFocused ? 'Focused!' : 'Not focused'}</Text>
-		</Box>
-	)
-}
+const { isFocused } = useFocus({ autoFocus: true })
+const { focusNext, focusPrevious } = useFocusManager()
 ```
 
-#### Options
+### Stream access
 
-| Option      | Type      | Default | Description                       |
-| ----------- | --------- | ------- | --------------------------------- |
-| `isActive`  | `boolean` | `true`  | Enable focus for this component   |
-| `autoFocus` | `boolean` | `false` | Auto-focus if no active component |
-| `id`        | `string`  | random  | Unique ID for programmatic focus  |
+| Hook                         | Returns                                     |
+| ---------------------------- | ------------------------------------------- |
+| `useStdin()`                 | `{ stdin, setRawMode, isRawModeSupported }` |
+| `useStdout()`                | `{ stdout, write }`                         |
+| `useStderr()`                | `{ stderr, write }`                         |
+| `useIsScreenReaderEnabled()` | `boolean`                                   |
 
-#### Returns
+<details>
+<summary><b>useSpinner</b></summary>
 
-| Property    | Type                   | Description                  |
-| ----------- | ---------------------- | ---------------------------- |
-| `isFocused` | `boolean`              | Whether component is focused |
-| `focus`     | `(id: string) => void` | Focus component by ID        |
-
-### `useFocusManager()`
-
-Manage focus programmatically.
-
-```tsx
-import { useFocusManager } from '@wolfie/react'
-
-function App() {
-	const { focusNext, focusPrevious, focus } = useFocusManager()
-
-	useInput((input, key) => {
-		if (key.tab) {
-			key.shift ? focusPrevious() : focusNext()
-		}
-	})
-}
-```
-
-Returns:
-
-- `focusNext()` — Focus next component
-- `focusPrevious()` — Focus previous component
-- `focus(id)` — Focus component by ID
-
-### `useStdin()`
-
-Access stdin stream.
-
-```tsx
-import { useStdin } from '@wolfie/react'
-
-function App() {
-	const { stdin, isRawModeSupported, setRawMode } = useStdin()
-}
-```
-
-### `useStdout()`
-
-Access stdout stream.
-
-```tsx
-import { useStdout } from '@wolfie/react'
-
-function App() {
-	const { stdout, write } = useStdout()
-
-	write('Direct output\n')
-}
-```
-
-### `useStderr()`
-
-Access stderr stream.
-
-### `useSpinner()`
-
-Spinner animation hook.
+Spinner animation hook for building custom spinners:
 
 ```tsx
 import { useSpinner } from '@wolfie/react'
 
 function Loading() {
 	const { frame } = useSpinner({ type: 'dots' })
-
 	return <Text>{frame} Loading...</Text>
 }
 ```
 
-### `useIsScreenReaderEnabled()`
-
-Check if screen reader is active.
-
----
-
-## Styling
-
-### With Tailwind CSS
-
-```tsx
-import './styles.css' // Import Tailwind
-;<Box className="flex-col p-4 gap-2 border-round">
-	<Text className="text-green-500 font-bold">Tailwind styled</Text>
-</Box>
-```
-
-### With CSS Modules
-
-```tsx
-import styles from './App.module.css'
-;<Box className={styles.container}>
-	<Text className={styles.title}>CSS Modules</Text>
-</Box>
-```
-
-### Style Registry
-
-```tsx
-import { registerStyles, resolveClassName } from '@wolfie/react'
-
-// Register styles from CSS parser
-registerStyles(parsedStyles)
-
-// Resolve class names to style objects
-const style = resolveClassName('my-class')
-```
+</details>
 
 ---
 
 ## Theming
 
-Components export theme objects for customization:
+Customize component appearance via `ThemeProvider`:
 
 ```tsx
-import {
-	alertTheme,
-	badgeTheme,
-	spinnerTheme,
-	statusMessageTheme,
-	progressBarTheme,
-	textInputTheme,
-	passwordInputTheme,
-	emailInputTheme,
-	confirmInputTheme,
-	selectTheme,
-	multiSelectTheme,
-	orderedListTheme,
-	unorderedListTheme,
-} from '@wolfie/react'
+import { render, ThemeProvider, extendTheme, defaultTheme } from '@wolfie/react'
 
-// Override theme values
-const customAlertTheme = {
-	...alertTheme,
-	success: { color: 'cyan' },
-}
+const theme = extendTheme(defaultTheme, {
+	components: {
+		Spinner: { styles: { spinner: { color: 'cyan' } } },
+		Alert: { styles: { container: { borderColor: 'blue' } } },
+	},
+})
+
+render(
+	<ThemeProvider theme={theme}>
+		<App />
+	</ThemeProvider>
+)
 ```
+
+| Export                         | Description                                    |
+| ------------------------------ | ---------------------------------------------- |
+| `ThemeProvider`                | React context provider for theme               |
+| `extendTheme(base, overrides)` | Deep-merge overrides into base theme           |
+| `defaultTheme`                 | Base theme object                              |
+| `useComponentTheme(name)`      | Read theme for a component (inside components) |
 
 ---
 
-## Examples
+## CSS Styling
 
-See [`examples/react/`](../../examples/react/) directory for complete examples:
+Three approaches, all via `@wolfie/plugin`:
 
-- [`vite/`](../../examples/react/vite/) — Vite setup
-- [`esbuild/`](../../examples/react/esbuild/) — esbuild setup
-- [`webpack/`](../../examples/react/webpack/) — webpack setup
+| Method        | Usage                                  |
+| ------------- | -------------------------------------- |
+| Inline styles | `style={{ color: 'green' }}`           |
+| Tailwind CSS  | `className="text-green p-1"` + PostCSS |
+| CSS Modules   | `className={styles.box}`               |
+
+All CSS approaches resolve to terminal styles at build time — no runtime CSS engine.
+
+<details>
+<summary><b>Styling examples</b></summary>
+
+**Tailwind CSS:**
+
+```tsx
+import './styles.css'
+
+;<Box className="flex-col p-4 gap-2">
+	<Text className="text-green-500 font-bold">Tailwind styled</Text>
+</Box>
+```
+
+**CSS Modules:**
+
+```tsx
+import styles from './App.module.css'
+
+;<Box className={styles.container}>
+	<Text className={styles.title}>CSS Modules</Text>
+</Box>
+```
+
+</details>
+
+---
+
+## React Compiler
+
+`@wolfie/react` ships pre-compiled with the [React Compiler](https://react.dev/learn/react-compiler) — all library components skip re-renders when props haven't changed. To apply the same optimization to your own components:
+
+```bash
+pnpm add -D babel-plugin-react-compiler
+```
+
+```tsx
+// vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { wolfie } from '@wolfie/plugin/vite'
+
+export default defineConfig({
+	plugins: [
+		react({
+			babel: {
+				plugins: [['babel-plugin-react-compiler', {}]],
+			},
+		}),
+		wolfie('react'),
+	],
+})
+```
+
+Requires React 19+.
+
+---
+
+## Part of wolf-tui
+
+This is the React adapter for [wolf-tui](../../README.md) — a framework-agnostic terminal UI library. The same layout engine (Taffy/flexbox) and component render functions power adapters for Vue, Angular, Solid, and Svelte.
+
+<details>
+<summary><b>Bundler examples</b></summary>
+
+The `examples/` directory has working setups for each bundler:
+
+| Bundler | Example                   |
+| ------- | ------------------------- |
+| Vite    | `examples/react_vite/`    |
+| esbuild | `examples/react_esbuild/` |
+| webpack | `examples/react_webpack/` |
+
+</details>
 
 ## License
 

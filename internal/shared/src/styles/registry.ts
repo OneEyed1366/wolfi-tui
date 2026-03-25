@@ -210,12 +210,32 @@ function resolveOne(name: string): Partial<Styles> {
 	const registered = globalStyles.get(trimmed)
 	if (registered) return registered
 
+	// Fallback: try camelCase conversion (kebab-case → camelCase).
+	// The wolfie plugin registers styles with camelCase keys (e.g., "flexCol")
+	// but className strings use kebab-case (e.g., "flex-col").
+	const camelName = trimmed.replace(/-([a-z])/g, (_, c: string) =>
+		c.toUpperCase()
+	)
+	if (camelName !== trimmed) {
+		const camelRegistered = globalStyles.get(camelName)
+		if (camelRegistered) return camelRegistered
+	}
+
 	// Handle variants by stripping them and looking up the base utility
 	const lastColonIndex = trimmed.lastIndexOf(':')
 	if (lastColonIndex !== -1) {
 		const baseName = trimmed.slice(lastColonIndex + 1)
 		const baseStyle = globalStyles.get(baseName)
 		if (baseStyle) return baseStyle
+
+		// Also try camelCase for the base name
+		const camelBase = baseName.replace(/-([a-z])/g, (_, c: string) =>
+			c.toUpperCase()
+		)
+		if (camelBase !== baseName) {
+			const camelBaseStyle = globalStyles.get(camelBase)
+			if (camelBaseStyle) return camelBaseStyle
+		}
 	}
 
 	return {}
