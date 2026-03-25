@@ -6,7 +6,7 @@
 	} from '@wolfie/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
-	import { useTextInputState } from '../composables/use-text-input-state.js'
+	import { useTextInputState } from '../composables/use-text-input-state.svelte.js'
 	import { useTextInput } from '../composables/use-text-input.js'
 
 	let {

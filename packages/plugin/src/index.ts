@@ -202,13 +202,15 @@ export const unpluginFactory: UnpluginFactory<[Framework, WolfieOptions?]> = (
 			const isModule = cleanId.includes('.module.')
 			const styles = parseCSS(compileResult.css, {
 				filename: cleanId,
-				camelCaseClasses: camelCase,
+				camelCaseClasses: isModule ? camelCase : false,
 			})
 
-			// Generate JavaScript
+			// Generate JavaScript — global registerStyles uses original CSS class
+			// names so runtime resolveClassName("flex-col") finds "flex-col".
+			// CSS Module exports use camelCase for valid JS property names.
 			const jsCode = generateJavaScript(styles, {
 				mode: isModule ? 'module' : 'global',
-				camelCaseClasses: camelCase,
+				camelCaseClasses: isModule ? camelCase : false,
 				metadata: compileResult.metadata,
 				framework,
 			})

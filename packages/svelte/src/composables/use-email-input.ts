@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import { useInput } from './use-input.js'
-import type { EmailInputState } from './use-email-input-state.js'
+import type { EmailInputState } from './use-email-input-state.svelte.js'
 
 //#region Types
 export type UseEmailInputProps = {

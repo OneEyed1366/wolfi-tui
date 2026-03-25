@@ -164,8 +164,8 @@ export async function wolfie(
 				if (entry === 'node_modules' || entry.startsWith('.')) continue
 				scanDirectoryForCandidates(fullPath)
 			} else if (stat.isFile()) {
-				// Include .html for Angular template files
-				if (/\.(tsx|jsx|ts|js|vue|html)$/.test(entry)) {
+				// Include .html for Angular, .svelte for Svelte template files
+				if (/\.(tsx|jsx|ts|js|vue|svelte|html)$/.test(entry)) {
 					try {
 						const content = readFileSync(fullPath, 'utf-8')
 						const candidates = scanCandidates(content)
@@ -190,6 +190,7 @@ export async function wolfie(
 		const source = readFileSync(absolutePath, 'utf-8')
 		const compileResult = await compile(source, lang, absolutePath)
 
+		// For inlining: camelCase keys (the inliner's getStyle handles both formats)
 		const styles = parseCSS(compileResult.css, {
 			filename: absolutePath,
 			camelCaseClasses: camelCase,
@@ -198,9 +199,19 @@ export async function wolfie(
 		// Populate global map for inlining
 		Object.assign(globalStylesMap, styles)
 
-		const code = generateJavaScript(styles, {
+		// For global registerStyles: use original CSS class names so runtime
+		// resolveClassName("flex-col") finds "flex-col", not "flexCol".
+		// CSS Module exports still use camelCase for valid JS property names.
+		const codeStyles = isModule
+			? styles
+			: parseCSS(compileResult.css, {
+					filename: absolutePath,
+					camelCaseClasses: false,
+				})
+
+		const code = generateJavaScript(codeStyles, {
 			mode: isModule ? 'module' : 'global',
-			camelCaseClasses: camelCase,
+			camelCaseClasses: isModule ? camelCase : false,
 			metadata: compileResult.metadata,
 			framework,
 		})
@@ -234,7 +245,7 @@ export async function wolfie(
 
 			// If it's a source file, collect candidates for Tailwind
 			// Include .html for Angular templates
-			if (id.match(/\.(tsx|jsx|ts|js|vue|html)$/)) {
+			if (id.match(/\.(tsx|jsx|ts|js|vue|svelte|html)$/)) {
 				const candidates = scanCandidates(code)
 				if (candidates.size > 0) {
 					tailwind.addCandidates(candidates)

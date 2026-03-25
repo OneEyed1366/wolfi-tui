@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import { useInput } from './use-input.js'
-import type { PasswordInputState } from './use-password-input-state.js'
+import type { PasswordInputState } from './use-password-input-state.svelte.js'
 
 //#region Types
 export type UsePasswordInputProps = {

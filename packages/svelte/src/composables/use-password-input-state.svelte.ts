@@ -21,9 +21,9 @@ export const usePasswordInputState = ({
 	onChange,
 	onSubmit,
 }: UsePasswordInputStateProps = {}): PasswordInputState => {
-	let _previousValue = ''
-	let _value = ''
-	let _cursorOffset = 0
+	let _previousValue = $state('')
+	let _value = $state('')
+	let _cursorOffset = $state(0)
 
 	const previousValue = () => _previousValue
 	const value = () => _value

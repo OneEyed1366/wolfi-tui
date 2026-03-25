@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import { useInput } from './use-input.js'
-import type { TextInputState } from './use-text-input-state.js'
+import type { TextInputState } from './use-text-input-state.svelte.js'
 
 //#region Types
 export type UseTextInputProps = {

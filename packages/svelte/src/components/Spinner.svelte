@@ -6,7 +6,7 @@
 	} from '@wolfie/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
-	import { useSpinner } from '../composables/use-spinner.js'
+	import { useSpinner } from '../composables/use-spinner.svelte.js'
 
 	let { label }: {
 		label?: string

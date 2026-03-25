@@ -1,12 +1,14 @@
+import { DEFAULT_DOMAINS } from '@wolfie/shared'
+
 //#region Types
-export type UseTextInputStateProps = {
+export type UseEmailInputStateProps = {
 	defaultValue?: string
-	suggestions?: string[]
+	domains?: string[]
 	onChange?: (value: string) => void
 	onSubmit?: (value: string) => void
 }
 
-export type TextInputState = {
+export type EmailInputState = {
 	previousValue: () => string
 	value: () => string
 	cursorOffset: () => number
@@ -20,23 +22,27 @@ export type TextInputState = {
 //#endregion Types
 
 //#region Composable
-export const useTextInputState = ({
+export const useEmailInputState = ({
 	defaultValue = '',
-	suggestions,
+	domains = DEFAULT_DOMAINS,
 	onChange,
 	onSubmit,
-}: UseTextInputStateProps = {}): TextInputState => {
-	let _previousValue = defaultValue
-	let _value = defaultValue
-	let _cursorOffset = defaultValue.length
+}: UseEmailInputStateProps = {}): EmailInputState => {
+	let _previousValue = $state(defaultValue)
+	let _value = $state(defaultValue)
+	let _cursorOffset = $state(defaultValue.length)
 
 	const previousValue = () => _previousValue
 	const value = () => _value
 	const cursorOffset = () => _cursorOffset
 
 	const suggestion = () => {
-		if (_value.length === 0) return undefined
-		return suggestions?.find((s) => s.startsWith(_value))?.replace(_value, '')
+		if (_value.length === 0 || !_value.includes('@')) return undefined
+		const atIndex = _value.indexOf('@')
+		const enteredDomain = _value.slice(atIndex + 1)
+		return domains
+			?.find((d) => d.startsWith(enteredDomain))
+			?.replace(enteredDomain, '')
 	}
 
 	const moveCursorLeft = () => {
@@ -48,6 +54,9 @@ export const useTextInputState = ({
 	}
 
 	const insert = (text: string) => {
+		// Prevent multiple @ symbols
+		if (_value.includes('@') && text.includes('@')) return
+
 		_previousValue = _value
 		_value = _value.slice(0, _cursorOffset) + text + _value.slice(_cursorOffset)
 		_cursorOffset += text.length

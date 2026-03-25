@@ -6,7 +6,7 @@
 	} from '@wolfie/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
-	import { useEmailInputState } from '../composables/use-email-input-state.js'
+	import { useEmailInputState } from '../composables/use-email-input-state.svelte.js'
 	import { useEmailInput } from '../composables/use-email-input.js'
 
 	let {

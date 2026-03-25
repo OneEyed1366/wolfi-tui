@@ -6,7 +6,7 @@
 	} from '@wolfie/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
-	import { usePasswordInputState } from '../composables/use-password-input-state.js'
+	import { usePasswordInputState } from '../composables/use-password-input-state.svelte.js'
 	import { usePasswordInput } from '../composables/use-password-input.js'
 
 	let {

@@ -73,7 +73,16 @@ function getLayoutTree(): LayoutTree {
 
 function scheduleRender(): void {
 	const fn = config?.getScheduleRender()
-	if (fn) fn()
+	if (fn) {
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'svelte',
+				op: 'scheduleRender',
+			})
+		}
+		fn()
+	}
 }
 
 //#endregion Config
@@ -745,7 +754,17 @@ export class WolfieText extends WolfieNode {
 	}
 
 	set data(value: string) {
+		const old = this.textNode.nodeValue
 		setTextNodeValue(this.textNode, value, this.textNode.layoutTree)
+		if (logger.enabled && value !== old) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'svelte',
+				op: 'textData:set',
+				old: old.slice(0, 40),
+				new: value.slice(0, 40),
+			})
+		}
 		scheduleRender()
 	}
 

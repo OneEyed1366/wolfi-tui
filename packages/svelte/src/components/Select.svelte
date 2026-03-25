@@ -7,7 +7,7 @@
 	} from '@wolfie/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
-	import { useSelectState } from '../composables/use-select-state.js'
+	import { useSelectState } from '../composables/use-select-state.svelte.js'
 	import { useSelect } from '../composables/use-select.js'
 
 	let {

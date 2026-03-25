@@ -1,5 +1,5 @@
 import { useInput } from './use-input.js'
-import type { SelectState } from './use-select-state.js'
+import type { SelectState } from './use-select-state.svelte.js'
 
 //#region Types
 export type UseSelectProps = {

@@ -1,5 +1,5 @@
 import { useInput } from './use-input.js'
-import type { MultiSelectState } from './use-multi-select-state.js'
+import type { MultiSelectState } from './use-multi-select-state.svelte.js'
 
 //#region Types
 export type UseMultiSelectProps = {

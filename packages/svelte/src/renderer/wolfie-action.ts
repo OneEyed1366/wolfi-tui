@@ -1,4 +1,4 @@
-import { setStyle, applyLayoutStyle, type Styles } from '@wolfie/core'
+import { setStyle, applyLayoutStyle, logger, type Styles } from '@wolfie/core'
 import type { WolfieElement } from './wolfie-element.js'
 
 //#region Types
@@ -19,7 +19,20 @@ interface WolfiePropsPayload {
  * so Svelte would stringify them via setAttribute. This action bypasses both.
  */
 export function wolfieProps(node: WolfieElement, props: WolfiePropsPayload) {
-	function apply(p: WolfiePropsPayload) {
+	function apply(p: WolfiePropsPayload, phase: string) {
+		if (logger.enabled) {
+			logger.log({
+				ts: performance.now(),
+				cat: 'svelte',
+				op: 'wolfieProps:' + phase,
+				name: node.nodeName,
+				nodeId: node.domElement.layoutNodeId,
+				hasStyle: !!p.style,
+				hasTransform: p.internal_transform !== undefined,
+				flexDir: p.style?.flexDirection,
+				color: p.style?.color,
+			})
+		}
 		if (p.style) {
 			setStyle(node.domElement, p.style)
 			if (
@@ -43,11 +56,11 @@ export function wolfieProps(node: WolfieElement, props: WolfiePropsPayload) {
 		}
 	}
 
-	apply(props)
+	apply(props, 'init')
 
 	return {
 		update(newProps: WolfiePropsPayload) {
-			apply(newProps)
+			apply(newProps, 'update')
 		},
 		destroy() {
 			// Mark as dead — purgeDeadWrapperNodes filters these during reconciliation.

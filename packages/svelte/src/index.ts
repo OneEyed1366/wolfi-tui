@@ -25,6 +25,7 @@ import { createRenderScheduler } from '@wolfie/shared'
 import signalExit from 'signal-exit'
 import { patchGlobals, restoreGlobals } from './renderer/wolfie-document.js'
 import { WolfieElement, setNodeOpsConfig } from './renderer/wolfie-element.js'
+import { createFocusState } from './focus-state.svelte.js'
 import type { ITheme } from '@wolfie/shared'
 import {
 	STDIN_CTX,
@@ -172,6 +173,15 @@ class WolfieSvelte {
 
 		this.stdin.on('data', (data: Buffer) => {
 			const input = data.toString()
+			logger.log({
+				ts: performance.now(),
+				cat: 'input',
+				op: 'stdin:data',
+				key:
+					input.length === 1
+						? input
+						: `[${Buffer.from(input).toString('hex')}]`,
+			})
 			this.handleFocusInput(input)
 			this.eventEmitter.emit('input', input)
 		})
@@ -312,12 +322,27 @@ class WolfieSvelte {
 	private onRender() {
 		if (this.isUnmounted) return
 
+		logger.log({
+			ts: performance.now(),
+			cat: 'svelte',
+			op: 'onRender:start',
+		})
+
 		this.calculateLayout()
 		const { output, outputHeight } = coreRenderer(
 			this.rootNode,
 			this.isScreenReaderEnabled,
 			this.layoutTree
 		)
+
+		logger.log({
+			ts: performance.now(),
+			cat: 'svelte',
+			op: 'onRender:done',
+			outputLen: output.length,
+			outputHeight,
+			changed: output !== this.lastOutput,
+		})
 
 		if (
 			this.stdout.isTTY &&
@@ -467,11 +492,12 @@ class WolfieSvelte {
 
 	//#region Mount / Unmount
 	render(UserComponent: Component) {
-		// Plain getter/setter for focus state (no Solid signals needed)
-		let activeFocusId: string | undefined
-		this.getActiveFocusId = () => activeFocusId
+		// Reactive focus state — uses $state so Svelte components
+		// reading activeFocusId() in $derived/$effect get tracked.
+		const focusState = createFocusState()
+		this.getActiveFocusId = focusState.get
 		this.setActiveFocusId = (id) => {
-			activeFocusId = id
+			focusState.set(id)
 			this.scheduleRender()
 		}
 
@@ -646,53 +672,53 @@ export { useStdin } from './composables/use-stdin.js'
 export { useStdout } from './composables/use-stdout.js'
 export { useStderr } from './composables/use-stderr.js'
 export { useIsScreenReaderEnabled } from './composables/use-is-screen-reader-enabled.js'
-export { useSpinner } from './composables/use-spinner.js'
+export { useSpinner } from './composables/use-spinner.svelte.js'
 export type {
 	UseSpinnerProps,
 	UseSpinnerResult,
-} from './composables/use-spinner.js'
-export { useTextInputState } from './composables/use-text-input-state.js'
+} from './composables/use-spinner.svelte.js'
+export { useTextInputState } from './composables/use-text-input-state.svelte.js'
 export type {
 	UseTextInputStateProps,
 	TextInputState,
-} from './composables/use-text-input-state.js'
+} from './composables/use-text-input-state.svelte.js'
 export { useTextInput } from './composables/use-text-input.js'
 export type {
 	UseTextInputProps,
 	UseTextInputResult,
 } from './composables/use-text-input.js'
-export { usePasswordInputState } from './composables/use-password-input-state.js'
+export { usePasswordInputState } from './composables/use-password-input-state.svelte.js'
 export type {
 	UsePasswordInputStateProps,
 	PasswordInputState,
-} from './composables/use-password-input-state.js'
+} from './composables/use-password-input-state.svelte.js'
 export { usePasswordInput } from './composables/use-password-input.js'
 export type {
 	UsePasswordInputProps,
 	UsePasswordInputResult,
 } from './composables/use-password-input.js'
-export { useEmailInputState } from './composables/use-email-input-state.js'
+export { useEmailInputState } from './composables/use-email-input-state.svelte.js'
 export type {
 	UseEmailInputStateProps,
 	EmailInputState,
-} from './composables/use-email-input-state.js'
+} from './composables/use-email-input-state.svelte.js'
 export { useEmailInput } from './composables/use-email-input.js'
 export type {
 	UseEmailInputProps,
 	UseEmailInputResult,
 } from './composables/use-email-input.js'
-export { useSelectState } from './composables/use-select-state.js'
+export { useSelectState } from './composables/use-select-state.svelte.js'
 export type {
 	UseSelectStateProps,
 	SelectState,
-} from './composables/use-select-state.js'
+} from './composables/use-select-state.svelte.js'
 export { useSelect } from './composables/use-select.js'
 export type { UseSelectProps } from './composables/use-select.js'
-export { useMultiSelectState } from './composables/use-multi-select-state.js'
+export { useMultiSelectState } from './composables/use-multi-select-state.svelte.js'
 export type {
 	UseMultiSelectStateProps,
 	MultiSelectState,
-} from './composables/use-multi-select-state.js'
+} from './composables/use-multi-select-state.svelte.js'
 export { useMultiSelect } from './composables/use-multi-select.js'
 export type { UseMultiSelectProps } from './composables/use-multi-select.js'
 //#endregion Composable Exports

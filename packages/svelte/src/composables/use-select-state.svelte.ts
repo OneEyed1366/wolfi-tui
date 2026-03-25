@@ -76,11 +76,11 @@ export const useSelectState = ({
 
 	const _optionMap = initialState.optionMap
 	const _visibleCount = initialState.visibleOptionCount
-	let _focusedValue = initialState.focusedValue
-	let _visibleFromIndex = initialState.visibleFromIndex
-	let _visibleToIndex = initialState.visibleToIndex
-	let _previousValue = initialState.previousValue
-	let _internalValue = initialState.value
+	let _focusedValue = $state(initialState.focusedValue)
+	let _visibleFromIndex = $state(initialState.visibleFromIndex)
+	let _visibleToIndex = $state(initialState.visibleToIndex)
+	let _previousValue = $state(initialState.previousValue)
+	let _internalValue = $state(initialState.value)
 
 	const value = () => controlledValue?.() ?? _internalValue
 

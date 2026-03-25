@@ -11,7 +11,7 @@ export const useSpinner = ({
 	type = 'dots',
 }: UseSpinnerProps = {}): UseSpinnerResult => {
 	const spinner = spinners[type]
-	let frameIndex = 0
+	let frameIndex = $state(0)
 
 	const timer = setInterval(() => {
 		frameIndex = (frameIndex + 1) % spinner.frames.length

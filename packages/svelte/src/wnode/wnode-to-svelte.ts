@@ -1,5 +1,5 @@
 import type { WNode } from '@wolfie/shared'
-import { setStyle, applyLayoutStyle, type Styles } from '@wolfie/core'
+import { setStyle, applyLayoutStyle, logger, type Styles } from '@wolfie/core'
 import { WolfieElement, WolfieText } from '../renderer/wolfie-element.js'
 
 //#region wNodeToSvelte
@@ -80,10 +80,44 @@ export function mountWNode(container: WolfieElement, wnode: WNode) {
 		// Build full WNode tree
 		const tree = wNodeToSvelte(node)
 
-		// Move children from tree root into container
-		const kids = [...tree._wchildren]
-		for (const kid of kids) {
-			container.appendChild(kid)
+		if (logger.enabled) {
+			let textContent = ''
+			function walkDbg(n: WolfieElement | WolfieText) {
+				if (n instanceof WolfieText) {
+					textContent += n.textContent
+				}
+				if ('_wchildren' in n) {
+					for (const c of (n as WolfieElement)._wchildren) {
+						walkDbg(c as WolfieElement | WolfieText)
+					}
+				}
+			}
+			walkDbg(tree)
+			logger.log({
+				ts: performance.now(),
+				cat: 'svelte',
+				op: 'mountWNode:apply',
+				containerNodeId: container.domElement.layoutNodeId,
+				containerName: container.nodeName,
+				treeType: tree.nodeName,
+				textContent: textContent.slice(0, 60),
+				nodeType: node.type,
+			})
+		}
+
+		// If the WNode root is a wolfie-text or the same type as the container,
+		// we must keep the tree element intact (it carries layoutNodeId, style,
+		// internal_transform). Only flatten wolfie-box roots whose children are
+		// the real content — text elements are leaves that must not be unwrapped.
+		if (tree.nodeName === 'wolfie-text') {
+			// Append the whole wolfie-text element into the container
+			container.appendChild(tree)
+		} else {
+			// Move children from tree root into container (original behavior)
+			const kids = [...tree._wchildren]
+			for (const kid of kids) {
+				container.appendChild(kid)
+			}
 		}
 
 		// Copy root-level style to container so outer layout is correct
@@ -107,6 +141,15 @@ export function mountWNode(container: WolfieElement, wnode: WNode) {
 
 	return {
 		update(newWnode: WNode) {
+			if (logger.enabled) {
+				logger.log({
+					ts: performance.now(),
+					cat: 'svelte',
+					op: 'mountWNode:update',
+					type: newWnode.type,
+					childCount: newWnode.children.length,
+				})
+			}
 			apply(newWnode)
 		},
 		destroy() {
