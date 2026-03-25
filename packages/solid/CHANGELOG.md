@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.1](https://github.com/OneEyed1366/wolfi-tui/compare/solid@v1.2.0...solid@v1.2.1) (2026-03-25)
+
+
+### Features
+
+* add Svelte 5 adapter with complete DOM shim ([#4](https://github.com/OneEyed1366/wolfi-tui/issues/4)) ([f34c6c3](https://github.com/OneEyed1366/wolfi-tui/commit/f34c6c3c758cfb6c9ac1fb0ecd94ace4d4929b03))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @wolfie/core bumped to 1.2.1
+    * @wolfie/shared bumped to 1.2.1
+  * devDependencies
+    * @wolfie/css-parser bumped to 1.2.1
+    * @wolfie/plugin bumped to 1.2.1
+
 ## [1.2.0](https://github.com/OneEyed1366/wolfi-tui/compare/solid@v1.1.0...solid@v1.2.0) (2026-03-15)
 
 

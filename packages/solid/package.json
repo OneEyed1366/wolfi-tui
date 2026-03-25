@@ -1,6 +1,6 @@
 {
 	"name": "@wolfie/solid",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "SolidJS adapter for Wolfie",
 	"license": "MIT",
 	"type": "module",

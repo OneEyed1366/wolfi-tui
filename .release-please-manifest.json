@@ -1,11 +1,11 @@
 {
-	"packages/react": "1.2.0",
-	"packages/vue": "1.2.0",
-	"packages/angular": "1.2.0",
-	"packages/solid": "1.2.0",
-	"packages/plugin": "1.2.0",
-	"packages/typescript-plugin": "1.0.2",
-	"internal/core": "1.2.0",
-	"internal/css-parser": "1.2.0",
-	"internal/shared": "1.2.0"
+	"packages/react": "1.2.1",
+	"packages/vue": "1.2.1",
+	"packages/angular": "1.2.1",
+	"packages/solid": "1.2.1",
+	"packages/plugin": "1.2.1",
+	"packages/typescript-plugin": "1.0.3",
+	"internal/core": "1.2.1",
+	"internal/css-parser": "1.2.1",
+	"internal/shared": "1.2.1"
 }

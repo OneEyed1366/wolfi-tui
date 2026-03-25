@@ -1,6 +1,6 @@
 {
 	"name": "@wolfie/shared",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "Shared framework-agnostic logic for wolfie adapters",
 	"license": "MIT",
 	"type": "module",

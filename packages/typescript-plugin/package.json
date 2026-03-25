@@ -1,6 +1,6 @@
 {
 	"name": "@wolfie/typescript-plugin",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "TypeScript language service plugin for CSS module types in Wolfie",
 	"license": "MIT",
 	"main": "./build/index.js",

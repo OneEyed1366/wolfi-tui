@@ -1,6 +1,6 @@
 {
 	"name": "@wolfie/plugin",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "Unplugin for wolfie - supports Vite, esbuild, webpack, and Rollup",
 	"license": "MIT",
 	"type": "module",
