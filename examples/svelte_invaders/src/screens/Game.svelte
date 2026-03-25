@@ -126,41 +126,21 @@
 
 {#if gameState.waveTransition}
 	<!-- Wave transition screen -->
-	<Box
-		style={{
-			width: '100vw',
-			height: '100vh',
-			flexDirection: 'column',
-			alignItems: 'center',
-			justifyContent: 'center',
-			backgroundColor: BRAND.bgAccent,
-		}}
-	>
-		<Box
-			style={{
-				flexDirection: 'column',
-				alignItems: 'center',
-				borderStyle: 'round',
-				borderColor: BRAND.success,
-				paddingLeft: 2,
-				paddingRight: 2,
-				paddingTop: 1,
-				paddingBottom: 1,
-			}}
-		>
-			<Text style={{ color: BRAND.success }} className="font-bold">
+	<Box className={[{ width: '100vw', height: '100vh', backgroundColor: BRAND.bgAccent }, 'flex-col items-center justify-center']}>
+		<Box className={[{ borderColor: BRAND.success }, 'flex-col items-center border-round pl-2 pr-2 pt-1 pb-1']}>
+			<Text className={[{ color: BRAND.success }, 'font-bold']}>
 				✓ Wave Complete!
 			</Text>
 			<Text>Excellent work, Commander! Preparing next wave…</Text>
 		</Box>
 
-		<Box style={{ marginTop: 2 }}>
+		<Box className="mt-2">
 			<Text className="text-cyan">
 				Loading Wave {gameState.wave + 1}…
 			</Text>
 		</Box>
 
-		<Box style={{ marginTop: 2 }}>
+		<Box className="mt-2">
 			<Text className="text-yellow font-bold">
 				Score: {gameState.score}
 			</Text>
@@ -168,23 +148,9 @@
 	</Box>
 {:else}
 	<!-- Main game screen -->
-	<Box
-		style={{
-			width: '100vw',
-			height: '100vh',
-			flexDirection: 'column',
-			backgroundColor: BRAND.bgDark,
-		}}
-	>
+	<Box className={[{ width: '100vw', height: '100vh', backgroundColor: BRAND.bgDark }, 'flex-col']}>
 		<!-- Header -->
-		<Box
-			style={{
-				flexShrink: 0,
-				paddingLeft: 1,
-				paddingRight: 1,
-				backgroundColor: BRAND.bgDark,
-			}}
-		>
+		<Box className={[{ backgroundColor: BRAND.bgDark }, 'shrink-0 pl-1 pr-1']}>
 			<HUD
 				score={gameState.score}
 				lives={gameState.lives}
@@ -195,14 +161,7 @@
 		</Box>
 
 		<!-- Main game area -->
-		<Box
-			style={{
-				flexGrow: 1,
-				flexDirection: 'column',
-				minHeight: 0,
-				overflow: 'hidden',
-			}}
-		>
+		<Box className="grow flex-col min-h-0 overflow-hidden">
 			<GameCanvas
 				aliens={gameState.aliens}
 				bullets={gameState.bullets}
@@ -216,14 +175,7 @@
 
 		<!-- Pause indicator -->
 		{#if gameState.paused}
-			<Box
-				style={{
-					position: 'absolute',
-					width: '100vw',
-					justifyContent: 'center',
-					marginTop: pauseMarginTop,
-				}}
-			>
+			<Box className={['absolute justify-center', { width: '100vw', marginTop: pauseMarginTop }]}>
 				<Text className="text-yellow font-bold bg-red">
 					{'  '}══ PAUSED ══ (P to resume){'  '}
 				</Text>
@@ -231,31 +183,14 @@
 		{/if}
 
 		<!-- Footer -->
-		<Box
-			style={{
-				flexShrink: 0,
-				flexDirection: 'row',
-				justifyContent: 'space-between',
-				paddingLeft: 2,
-				paddingRight: 2,
-				backgroundColor: BRAND.bgAccent,
-				paddingTop: 1,
-			}}
-		>
+		<Box className={[{ backgroundColor: BRAND.bgAccent }, 'shrink-0 flex-row justify-between pl-2 pr-2 pt-1']}>
 			<KillLog kills={gameState.kills.slice(-3)} />
 			<Controls />
 		</Box>
 
 		{#if !isRawModeSupported}
-			<Box
-				style={{
-					borderStyle: 'round',
-					borderColor: BRAND.warning,
-					paddingLeft: 1,
-					paddingRight: 1,
-				}}
-			>
-				<Text style={{ color: BRAND.warning }}>
+			<Box className={[{ borderColor: BRAND.warning }, 'border-round pl-1 pr-1']}>
+				<Text className={{ color: BRAND.warning }}>
 					⚠ Raw mode not supported — input may be limited
 				</Text>
 			</Box>

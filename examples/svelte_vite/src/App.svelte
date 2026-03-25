@@ -59,7 +59,7 @@
 	<ActiveScreen />
 
 	<!-- Footer -->
-	<Box className="mt-1 border-t-single border-gray p-t-1">
+	<Box className="mt-1 border-t border-single border-gray pt-1">
 		<Text className="text-gray">
 			{screens[activeScreen].name === 'Focus' ? 'tab focus' : 'tab navigate'}
 			| 1-7 jump | q quit

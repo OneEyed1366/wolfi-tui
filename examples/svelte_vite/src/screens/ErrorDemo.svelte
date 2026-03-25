@@ -11,14 +11,14 @@
 </script>
 
 <Box className="flex-col gap-1 w-full">
-	<Text className="font-bold text-white">Error Overview</Text>
-	<Text className="text-gray mb-1">
+	<Text className="font-bold text-[#ffffff]">Error Overview</Text>
+	<Text className="mb-1 text-gray">
 		Displays errors with stack traces for debugging
 	</Text>
 
 	<ErrorOverview error={sampleError} />
 
-	<Text className="text-gray mt-1">
+	<Text className="mt-1 text-gray">
 		ErrorOverview automatically formats stack traces and highlights relevant
 		information for easier debugging.
 	</Text>

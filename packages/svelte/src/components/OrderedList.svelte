@@ -2,6 +2,8 @@
 	import { setContext, type Snippet } from 'svelte'
 	import Box from './Box.svelte'
 	import { OL_COUNTER_CTX } from '../context/symbols.js'
+	import { useComponentTheme } from '../theme/index.js'
+	import { orderedListTheme, type OrderedListTheme } from './list-theme.js'
 
 	let { children }: {
 		children: Snippet
@@ -12,8 +14,11 @@
 	const getNextIndex = () => ++counter
 
 	setContext(OL_COUNTER_CTX, { getNextIndex })
+
+	const theme = useComponentTheme<OrderedListTheme>('OrderedList')
+	const { styles } = theme ?? orderedListTheme
 </script>
 
-<Box style={{ flexDirection: 'column' }}>
+<Box {...styles.list()}>
 	{@render children()}
 </Box>

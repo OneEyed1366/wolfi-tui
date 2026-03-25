@@ -16,25 +16,15 @@
 	})
 </script>
 
-<Box
-	style={{
-		width: '100vw',
-		height: '100vh',
-		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: BRAND.bgDark,
-		padding: 2,
-	}}
->
-	<Text style={{ color: BRAND.primary }} className="font-bold text-lg">
+<Box className={[{ width: '100vw', height: '100vh', backgroundColor: BRAND.bgDark }, 'flex-col items-center justify-center p-2']}>
+	<Text className={[{ color: BRAND.primary }, 'font-bold text-lg']}>
 		📖 HELP
 	</Text>
 	<Newline />
 
-	<Box style={{ flexDirection: 'row', gap: 4 }}>
+	<Box className="flex-row gap-4">
 		<!-- Controls Column -->
-		<Box style={{ flexDirection: 'column' }}>
+		<Box className="flex-col">
 			<Text className="text-yellow font-bold">Controls</Text>
 			<Text>
 				<Text className="text-cyan">• ←/→</Text> Move ship
@@ -51,7 +41,7 @@
 		</Box>
 
 		<!-- Scoring Column -->
-		<Box style={{ flexDirection: 'column' }}>
+		<Box className="flex-col">
 			<Text className="text-yellow font-bold">Scoring</Text>
 			<Text>
 				<Text className="text-red">• ^</Text> Top alien = 30 pts
@@ -67,7 +57,7 @@
 	</Box>
 
 	<Newline />
-	<Box style={{ flexDirection: 'column', alignItems: 'center' }}>
+	<Box className="flex-col items-center">
 		<Text className="text-yellow font-bold">Tips</Text>
 		<Text className="text-gray">
 			• Destroy aliens before they reach bottom

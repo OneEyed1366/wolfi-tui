@@ -18,15 +18,12 @@
 	)
 </script>
 
-<Box style={{ flexDirection: 'row', width: '100%' }}>
+<Box className="flex-row w-full">
 	<Box>
-		<Text style={{ color: BRAND.primary }} className="font-bold">
+		<Text className={[{ color: BRAND.primary }, 'font-bold']}>
 			SCORE{' '}
 		</Text>
-		<Text
-			style={{ color: BRAND.bgDark, backgroundColor: BRAND.primary }}
-			className="font-bold"
-		>
+		<Text className={[{ color: BRAND.bgDark, backgroundColor: BRAND.primary }, 'font-bold']}>
 			{' ' + formattedScore + ' '}
 		</Text>
 	</Box>
@@ -34,16 +31,16 @@
 	<Spacer />
 
 	<Box>
-		<Text style={{ color: BRAND.error }} className="font-bold">
+		<Text className={[{ color: BRAND.error }, 'font-bold']}>
 			LIVES{' '}
 		</Text>
-		<Text style={{ color: BRAND.error }}>{livesHearts}</Text>
+		<Text className={{ color: BRAND.error }}>{livesHearts}</Text>
 	</Box>
 
 	<Spacer />
 
 	<Box>
-		<Text style={{ color: BRAND.primary }} className="font-bold">
+		<Text className={[{ color: BRAND.primary }, 'font-bold']}>
 			WAVE{' '}
 		</Text>
 		<Badge color={BRAND.primaryDark} label={wave.toString()} />
@@ -52,8 +49,8 @@
 	{#if showFps}
 		<Spacer />
 		<Box>
-			<Text style={{ color: BRAND.textMuted }}>FPS </Text>
-			<Text style={{ color: BRAND.success }}>{fps ?? 0}</Text>
+			<Text className={{ color: BRAND.textMuted }}>FPS </Text>
+			<Text className={{ color: BRAND.success }}>{fps ?? 0}</Text>
 		</Box>
 	{/if}
 </Box>

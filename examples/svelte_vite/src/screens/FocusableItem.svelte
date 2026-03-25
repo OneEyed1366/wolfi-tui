@@ -10,17 +10,13 @@
 	})
 </script>
 
-<Box className={[
-	'p-1',
-	isFocused() ? 'border-double' : 'border-single',
-	isFocused() ? `border-${color}` : 'border-gray',
-].join(' ')}>
-	<Text className={
-		isFocused()
-			? `text-${color} font-bold`
-			: isActive
-				? 'text-white'
-				: 'text-gray'
+<Box className={isFocused()
+	? ['p-1 border-double', { borderColor: color }]
+	: 'p-1 border-single border-gray'
+}>
+	<Text className={isFocused()
+		? [{ color }, 'font-bold']
+		: isActive ? 'text-[#ffffff]' : 'text-gray'
 	}>
 		{isFocused() ? '> ' : '  '}{label}{isFocused() ? ' (focused)' : ''}{!isActive ? ' (disabled)' : ''}
 	</Text>

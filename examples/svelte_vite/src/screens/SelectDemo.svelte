@@ -29,7 +29,7 @@
 
 <Box className="flex-col gap-1 w-full">
 	<!-- Single Select -->
-	<Text className={focusedList === 'color' ? 'font-bold text-cyan' : 'font-bold text-white'}>
+	<Text className={focusedList === 'color' ? 'font-bold text-cyan' : 'font-bold text-[#ffffff]'}>
 		Single Select {focusedList === 'color' ? '(active)' : ''}
 	</Text>
 	<Text className="text-gray">Arrows navigate, Enter selects (auto-advances to next)</Text>
@@ -41,8 +41,7 @@
 	/>
 
 	<!-- Multi Select -->
-	<Text className={focusedList === 'features' ? 'font-bold text-cyan' : 'font-bold text-white'}
-		class="mt-1">
+	<Text className={focusedList === 'features' ? 'font-bold text-cyan mt-1' : 'font-bold text-[#ffffff] mt-1'}>
 		Multi Select {focusedList === 'features' ? '(active)' : ''}
 	</Text>
 	<Text className="text-gray">Space toggles, Enter confirms</Text>
@@ -54,7 +53,7 @@
 	/>
 
 	<!-- Selected Values -->
-	<Box className="border-single border-gray p-1 mt-1 flex-col">
+	<Box className="p-1 mt-1 flex-col border-single border-gray">
 		<Text className="font-bold text-cyan">Selected Values:</Text>
 		<Text>Color: {selectedColor || '(none)'}</Text>
 		<Text>Features: {selectedFeatures.length > 0 ? selectedFeatures.join(', ') : '(none)'}</Text>

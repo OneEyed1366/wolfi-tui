@@ -83,18 +83,8 @@
 	})
 </script>
 
-<Box
-	style={{
-		width: '100vw',
-		height: '100vh',
-		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: BRAND.bgDark,
-		padding: 2,
-	}}
->
-	<Text style={{ color: BRAND.primary }} className="font-bold text-lg">
+<Box className={[{ width: '100vw', height: '100vh', backgroundColor: BRAND.bgDark }, 'flex-col items-center justify-center p-2']}>
+	<Text className={[{ color: BRAND.primary }, 'font-bold text-lg']}>
 		⚙ SETTINGS
 	</Text>
 	<Newline />
@@ -104,17 +94,16 @@
 	>
 		Difficulty:{section !== 'difficulty' ? ' (Tab to switch)' : ''}
 	</Text>
-	<Box style={{ flexDirection: 'column' }}>
+	<Box className="flex-col">
 		{#each DIFFICULTY_OPTIONS as opt, index}
 			<Text
-				style={{
-					color:
-						section === 'difficulty' && index === diffIndex
-							? BRAND.primary
-							: opt.value === settings.difficulty
-								? BRAND.success
-								: BRAND.textMuted,
-				}}
+				className={
+					section === 'difficulty' && index === diffIndex
+						? { color: BRAND.primary }
+						: opt.value === settings.difficulty
+							? { color: BRAND.success }
+							: { color: BRAND.textMuted }
+				}
 			>
 				{section === 'difficulty' && index === diffIndex ? '❯ ' : '  '}{opt.value === settings.difficulty ? '● ' : '○ '}{opt.label}
 			</Text>
@@ -127,15 +116,14 @@
 	>
 		Options:{section !== 'options' ? ' (Tab to switch)' : ''}
 	</Text>
-	<Box style={{ flexDirection: 'column' }}>
+	<Box className="flex-col">
 		{#each TOGGLE_OPTIONS as opt, index}
 			<Text
-				style={{
-					color:
-						section === 'options' && index === optionIndex
-							? BRAND.primary
-							: BRAND.textMuted,
-				}}
+				className={
+					section === 'options' && index === optionIndex
+						? { color: BRAND.primary }
+						: { color: BRAND.textMuted }
+				}
 			>
 				{section === 'options' && index === optionIndex ? '❯ ' : '  '}{currentToggles[opt.key] ? '☑ ' : '☐ '}{opt.label}
 			</Text>

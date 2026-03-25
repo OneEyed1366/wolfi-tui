@@ -10,7 +10,7 @@
 </script>
 
 <Box className="flex-col gap-1 w-full">
-	<Text className="font-bold text-white">Text Inputs</Text>
+	<Text className="font-bold text-[#ffffff]">Text Inputs</Text>
 
 	<!-- Text Input -->
 	<Box className="flex-row">
@@ -45,7 +45,7 @@
 	</Box>
 
 	<!-- Current Values -->
-	<Box className="border-single border-gray p-1 mt-1 flex-col">
+	<Box className="p-1 mt-1 flex-col border-single border-gray">
 		<Text className="font-bold text-cyan">Current Values:</Text>
 		<Text>Name: {name || '(empty)'}</Text>
 		<Text>Password: {password ? '*'.repeat(password.length) : '(empty)'}</Text>

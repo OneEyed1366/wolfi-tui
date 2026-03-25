@@ -40,10 +40,10 @@
 	</Box>
 
 	<!-- Focus Controls -->
-	<Box className="border-single border-gray p-1 mt-1 flex-col">
+	<Box className="p-1 mt-1 flex-col border-single border-gray">
 		<Text className="font-bold text-cyan">Focus Controls:</Text>
 		<Text className="text-gray">Press 1-4 to focus item directly</Text>
 		<Text className="text-gray">Press 'd' to disable/enable item 2</Text>
-		<Text className="text-gray mt-1">Item 2 active: {item2Active ? 'Yes' : 'No'}</Text>
+		<Text className="mt-1 text-gray">Item 2 active: {item2Active ? 'Yes' : 'No'}</Text>
 	</Box>
 </Box>

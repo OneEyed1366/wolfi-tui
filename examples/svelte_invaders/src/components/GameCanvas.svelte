@@ -208,13 +208,7 @@
 	//#endregion Computed
 </script>
 
-<Box
-	style={{
-		flexDirection: 'column',
-		width: boardWidth,
-		height: boardHeight,
-	}}
->
+<Box className={['flex-col', { width: boardWidth, height: boardHeight }]}>
 	{#each renderedRows as row (row.rowIndex)}
 		<Box>
 			{#each row.segments as seg (seg.key)}

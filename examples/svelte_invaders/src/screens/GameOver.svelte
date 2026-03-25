@@ -35,33 +35,22 @@
 	})
 </script>
 
-<Box
-	style={{
-		width: '100vw',
-		height: '100vh',
-		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: BRAND.bgDark,
-	}}
->
-	<Text style={{ color: BRAND.error }} className="font-bold">
+<Box className={[{ width: '100vw', height: '100vh', backgroundColor: BRAND.bgDark }, 'flex-col items-center justify-center']}>
+	<Text className={[{ color: BRAND.error }, 'font-bold']}>
 		{GAME_OVER_ASCII}
 	</Text>
 
-	<Box style={{ marginTop: 2, width: '60%' }}>
+	<Box className="mt-2 w-[60%]">
 		<Alert variant="success" title="Game Over">
 			Final score: {formattedScore} — Wave {wave}
 		</Alert>
 	</Box>
 
-	<Box
-		style={{ marginTop: 3, flexDirection: 'column', alignItems: 'center' }}
-	>
-		<Text style={{ color: BRAND.primary }} className="font-bold">
+	<Box className="mt-3 flex-col items-center">
+		<Text className={[{ color: BRAND.primary }, 'font-bold']}>
 			[R] Retry
 		</Text>
-		<Text style={{ color: BRAND.textMuted }}>
+		<Text className={{ color: BRAND.textMuted }}>
 			[H] High Scores • [Q] Menu
 		</Text>
 	</Box>

@@ -3,24 +3,29 @@
 	import figures from 'figures'
 	import Box from './Box.svelte'
 	import Text from './Text.svelte'
+	import { useComponentTheme } from '../theme/index.js'
+	import { defaultOptionTheme, type OptionTheme } from './option-theme.js'
 
 	let { isFocused, isSelected, children }: {
 		isFocused: boolean
 		isSelected: boolean
 		children?: Snippet
 	} = $props()
+
+	const theme = useComponentTheme<OptionTheme>('SelectOption')
+	const { styles } = theme ?? defaultOptionTheme
 </script>
 
-<Box style={{ gap: 1, paddingLeft: isFocused ? 0 : 2 }}>
+<Box {...styles.option({ isFocused })}>
 	{#if isFocused}
-		<Text style={{ color: 'blue' }}>{figures.pointer}</Text>
+		<Text {...styles.focusIndicator()}>{figures.pointer}</Text>
 	{/if}
-	<Text style={{ color: isSelected ? 'green' : isFocused ? 'blue' : undefined }}>
+	<Text {...styles.label({ isFocused, isSelected })}>
 		{#if children}
 			{@render children()}
 		{/if}
 	</Text>
 	{#if isSelected}
-		<Text style={{ color: 'green' }}>{figures.tick}</Text>
+		<Text {...styles.selectedIndicator()}>{figures.tick}</Text>
 	{/if}
 </Box>

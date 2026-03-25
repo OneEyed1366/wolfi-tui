@@ -38,7 +38,7 @@
 			<Text className={buttonStyles.text}>Module Btn</Text>
 		</Box>
 		<Box className="bg-blue-600 p-x-2">
-			<Text className="text-white">Tailwind Btn</Text>
+			<Text className="text-[#ffffff]">Tailwind Btn</Text>
 		</Box>
 	</Box>
 </Box>

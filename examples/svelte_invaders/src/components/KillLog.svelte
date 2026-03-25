@@ -33,8 +33,8 @@
 	let emptySlots = $derived(MAX_VISIBLE_KILLS - visibleKills.length)
 </script>
 
-<Box style={{ flexDirection: 'column', minWidth: 20 }}>
-	<Text style={{ color: BRAND.primary }} className="font-bold">
+<Box className={['flex-col', { minWidth: 20 }]}>
+	<Text className={[{ color: BRAND.primary }, 'font-bold']}>
 		⚔ Recent Kills
 	</Text>
 	{#if visibleKills.length > 0}
@@ -49,7 +49,7 @@
 			{/each}
 		{/if}
 	{:else}
-		<Text style={{ color: BRAND.textMuted }} className="italic">
+		<Text className={[{ color: BRAND.textMuted }, 'italic']}>
 			Start shooting!
 		</Text>
 	{/if}

@@ -68,46 +68,27 @@
 	})
 </script>
 
-<Box
-	style={{
-		width: '100vw',
-		height: '100vh',
-		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: BRAND.bgDark,
-	}}
->
-	<Text style={{ color: BRAND.primary }} className="font-bold">
+<Box className={[{ width: '100vw', height: '100vh', backgroundColor: BRAND.bgDark }, 'flex-col items-center justify-center']}>
+	<Text className={[{ color: BRAND.primary }, 'font-bold']}>
 		{LOGO}
 	</Text>
 
-	<Box style={{ marginTop: 2, marginBottom: 1 }}>
+	<Box className="mt-2 mb-1">
 		<Text className="text-gray">↑/↓ Navigate • Enter Select</Text>
 	</Box>
 
-	<Box style={{ flexDirection: 'column' }}>
+	<Box className="flex-col">
 		{#each MENU_OPTIONS as option, index}
 			<Text
-				style={{
-					color: index === selectedIndex ? BRAND.primary : BRAND.textMuted,
-				}}
-				className={index === selectedIndex ? 'font-bold' : undefined}
+				className={index === selectedIndex ? [{ color: BRAND.primary }, 'font-bold'] : { color: BRAND.textMuted }}
 			>
 				{index === selectedIndex ? '❯ ' : '  '}{option.label}
 			</Text>
 		{/each}
 	</Box>
 
-	<Box
-		style={{
-			position: 'absolute',
-			bottom: 1,
-			width: '100vw',
-			justifyContent: 'center',
-		}}
-	>
-		<Text style={{ color: BRAND.textMuted }}>
+	<Box className={['absolute justify-center', { bottom: 1, width: '100vw' }]}>
+		<Text className={{ color: BRAND.textMuted }}>
 			v1.0 • {BRAND.name} Space Invaders
 		</Text>
 	</Box>

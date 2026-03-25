@@ -38,23 +38,13 @@
 	// score prop reserved for future "your score" display
 </script>
 
-<Box
-	style={{
-		width: '100vw',
-		height: '100vh',
-		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: BRAND.bgDark,
-		padding: 2,
-	}}
->
-	<Text style={{ color: BRAND.primary }} className="font-bold text-lg">
+<Box className={[{ width: '100vw', height: '100vh', backgroundColor: BRAND.bgDark }, 'flex-col items-center justify-center p-2']}>
+	<Text className={[{ color: BRAND.primary }, 'font-bold text-lg']}>
 		🏆 HIGH SCORES
 	</Text>
 	<Newline />
 
-	<Box style={{ flexDirection: 'column' }}>
+	<Box className="flex-col">
 		<Box>
 			<Text className="text-yellow">{'RANK'.padEnd(6)}</Text>
 			<Text className="text-yellow">{'NAME'.padEnd(12)}</Text>
