@@ -1,6 +1,6 @@
 import { isDeepStrictEqual } from 'node:util'
 import { createSignal, createMemo, createEffect, on } from 'solid-js'
-import { OptionMap, type Option } from '@wolfie/shared'
+import { OptionMap, type Option } from '@wolf-tui/shared'
 
 //#region Types
 type State = {

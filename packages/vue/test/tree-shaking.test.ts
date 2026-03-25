@@ -28,7 +28,7 @@ async function getBundleEsbuild(code: string) {
 			{
 				name: 'resolve-wolfie-vue',
 				setup(build) {
-					build.onResolve({ filter: /^@wolfie\/vue$/ }, () => {
+					build.onResolve({ filter: /^@wolf-tui\/vue$/ }, () => {
 						return { path: VUE_ENTRY }
 					})
 				},
@@ -36,8 +36,8 @@ async function getBundleEsbuild(code: string) {
 		],
 		external: [
 			'vue',
-			'@wolfie/core',
-			'@wolfie/css-parser',
+			'@wolf-tui/core',
+			'@wolf-tui/css-parser',
 			'yoga-wasm-web',
 			'ws',
 			'node-pty',
@@ -85,8 +85,8 @@ async function getBundleVite(code: string) {
 			rollupOptions: {
 				external: [
 					'vue',
-					'@wolfie/core',
-					'@wolfie/css-parser',
+					'@wolf-tui/core',
+					'@wolf-tui/css-parser',
 					'yoga-wasm-web',
 					'ws',
 					'node-pty',
@@ -127,7 +127,7 @@ async function getBundleVite(code: string) {
 				name: 'virtual-entry',
 				resolveId(id) {
 					if (id === 'entry.js') return id
-					if (id === '@wolfie/vue') return VUE_ENTRY
+					if (id === '@wolf-tui/vue') return VUE_ENTRY
 				},
 				load(id) {
 					if (id === 'entry.js') return code
@@ -171,7 +171,7 @@ async function getBundleWebpack(code: string) {
 			},
 			resolve: {
 				alias: {
-					'@wolfie/vue': VUE_ENTRY,
+					'@wolf-tui/vue': VUE_ENTRY,
 				},
 				extensions: ['.js', '.mjs'],
 			},
@@ -179,8 +179,8 @@ async function getBundleWebpack(code: string) {
 				({ request }, callback) => {
 					const externals = [
 						'vue',
-						'@wolfie/core',
-						'@wolfie/css-parser',
+						'@wolf-tui/core',
+						'@wolf-tui/css-parser',
 						'yoga-wasm-web',
 						'ws',
 						'node-pty',
@@ -200,7 +200,7 @@ async function getBundleWebpack(code: string) {
 						'type-fest',
 						'wrap-ansi',
 						'chalk',
-						'@wolfie/shared',
+						'@wolf-tui/shared',
 					]
 					if (
 						externals.some((e) => request?.startsWith(e)) ||
@@ -243,7 +243,7 @@ bundlers.forEach(({ name, fn }) => {
 		`[${name}] should tree-shake unused components (Box)`,
 		async () => {
 			const code = `
-      import { Box } from '@wolfie/vue';
+      import { Box } from '@wolf-tui/vue';
       console.log(Box);
     `
 			const bundle = await fn(code)
@@ -258,7 +258,7 @@ bundlers.forEach(({ name, fn }) => {
 		`[${name}] should tree-shake unused components (Text)`,
 		async () => {
 			const code = `
-      import { Text } from '@wolfie/vue';
+      import { Text } from '@wolf-tui/vue';
       console.log(Text);
     `
 			const bundle = await fn(code)

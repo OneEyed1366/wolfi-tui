@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core'
-import { BoxComponent, TextComponent } from '@wolfie/angular'
+import { BoxComponent, TextComponent } from '@wolf-tui/angular'
 import { BRAND } from '../theme'
 
 //#region Constants

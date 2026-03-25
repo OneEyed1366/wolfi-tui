@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text, useInput, useFocusManager } from '@wolfie/svelte'
+	import { Box, Text, useInput, useFocusManager } from '@wolf-tui/svelte'
 	import FocusableItem from './FocusableItem.svelte'
 
 	const items = [

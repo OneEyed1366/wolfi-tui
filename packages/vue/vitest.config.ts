@@ -21,7 +21,7 @@ export default defineConfig({
 		setupFiles: ['./test/setup.ts'],
 		server: {
 			deps: {
-				inline: [/@wolfie/],
+				inline: [/@wolf-tui/],
 			},
 		},
 	},

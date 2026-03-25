@@ -6,7 +6,7 @@ import {
 	MultiSelect,
 	Newline,
 	useInput,
-} from '@wolfie/react'
+} from '@wolf-tui/react'
 import type {
 	Screen,
 	Settings as SettingsType,

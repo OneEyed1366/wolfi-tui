@@ -1,5 +1,5 @@
 import { createMemo, Show, For } from 'solid-js'
-import { Box, Text } from '@wolfie/solid'
+import { Box, Text } from '@wolf-tui/solid'
 import type { Kill } from '../composables/useInvaders'
 import { BRAND } from '../theme'
 

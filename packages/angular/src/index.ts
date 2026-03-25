@@ -120,7 +120,7 @@ export {
 } from './styles'
 
 // Types
-export { type Option } from '@wolfie/shared'
+export { type Option } from '@wolf-tui/shared'
 
 // Theme
 export {

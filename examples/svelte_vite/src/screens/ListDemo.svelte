@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text, OrderedList, OrderedListItem, UnorderedList, UnorderedListItem } from '@wolfie/svelte'
+	import { Box, Text, OrderedList, OrderedListItem, UnorderedList, UnorderedListItem } from '@wolf-tui/svelte'
 </script>
 
 <Box className="flex-col gap-1 w-full">

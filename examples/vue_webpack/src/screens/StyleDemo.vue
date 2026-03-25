@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { Box, Text } from '@wolfie/vue'
+import { Box, Text } from '@wolf-tui/vue'
 import buttonStyles from '../styles/Button.module.css'
 import cardStyles from '../styles/Card.module.css'
 

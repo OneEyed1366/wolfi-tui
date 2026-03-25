@@ -8,14 +8,14 @@ import {
 	computed,
 	ElementRef,
 } from '@angular/core'
-import type { Styles, DOMElement } from '@wolfie/core'
+import type { Styles, DOMElement } from '@wolf-tui/core'
 import {
 	computeBoxStyle,
 	computeBoxBackground,
 	type ClassNameValue,
 	type AriaRole,
 	type AriaState,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { BACKGROUND_CONTEXT } from '../../tokens'
 
 //#region BoxComponent

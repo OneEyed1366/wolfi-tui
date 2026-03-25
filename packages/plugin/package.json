@@ -1,5 +1,5 @@
 {
-	"name": "@wolfie/plugin",
+	"name": "@wolf-tui/plugin",
 	"version": "1.2.1",
 	"description": "Unplugin for wolfie - supports Vite, esbuild, webpack, and Rollup",
 	"license": "MIT",
@@ -42,7 +42,7 @@
 		"wolfie.css-data.json"
 	],
 	"dependencies": {
-		"@wolfie/css-parser": "workspace:*",
+		"@wolf-tui/css-parser": "workspace:*",
 		"fast-glob": "^3.3.2",
 		"unplugin": "^2.0.0"
 	},
@@ -70,5 +70,18 @@
 		"rollup": {
 			"optional": true
 		}
-	}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/OneEyed1366/wolfi-tui.git",
+		"directory": "packages/plugin"
+	},
+	"homepage": "https://github.com/OneEyed1366/wolfi-tui/tree/master/packages/plugin#readme",
+	"bugs": {
+		"url": "https://github.com/OneEyed1366/wolfi-tui/issues"
+	},
+	"author": "A.Prokopenko <psevdoproger@gmail.com>"
 }

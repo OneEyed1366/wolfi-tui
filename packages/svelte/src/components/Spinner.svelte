@@ -3,7 +3,7 @@
 		renderSpinner,
 		defaultSpinnerTheme,
 		type SpinnerRenderTheme,
-	} from '@wolfie/shared'
+	} from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
 	import { useSpinner } from '../composables/use-spinner.svelte.js'

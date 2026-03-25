@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { render, Box, Text, useApp, useInput, Spinner } from '@wolfie/react'
+import { render, Box, Text, useApp, useInput, Spinner } from '@wolf-tui/react'
 import './styles.css'
 
 const App = () => {

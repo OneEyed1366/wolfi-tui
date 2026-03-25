@@ -1,6 +1,6 @@
 import process from 'node:process'
 import React, { useEffect } from 'react'
-import { Box, Text, render, useApp } from '@wolfie/react'
+import { Box, Text, render, useApp } from '@wolf-tui/react'
 
 function Fullscreen() {
 	const { exit } = useApp()

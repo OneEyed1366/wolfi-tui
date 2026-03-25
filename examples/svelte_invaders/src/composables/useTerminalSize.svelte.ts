@@ -1,5 +1,5 @@
 import { onDestroy } from 'svelte'
-import { useStdout } from '@wolfie/svelte'
+import { useStdout } from '@wolf-tui/svelte'
 
 //#region Types
 export type TerminalSize = {

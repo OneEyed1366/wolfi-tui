@@ -1,5 +1,5 @@
 import { type ReactNode, createContext, useContext } from 'react'
-import { type ITheme, type IComponentTheme } from '@wolfie/shared'
+import { type ITheme, type IComponentTheme } from '@wolf-tui/shared'
 import { badgeTheme } from '../components/Badge'
 import { spinnerTheme } from '../components/Spinner'
 import { progressBarTheme } from '../components/ProgressBar'
@@ -14,8 +14,12 @@ import { emailInputTheme } from '../components/EmailInput/index'
 import { selectTheme } from '../components/Select/index'
 import { multiSelectTheme } from '../components/MultiSelect/index'
 
-export type { ITheme, IComponentTheme, IComponentStyles } from '@wolfie/shared'
-export { extendTheme } from '@wolfie/shared'
+export type {
+	ITheme,
+	IComponentTheme,
+	IComponentStyles,
+} from '@wolf-tui/shared'
+export { extendTheme } from '@wolf-tui/shared'
 
 export const defaultTheme: ITheme = {
 	components: {

@@ -1,4 +1,4 @@
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import { wtext } from './types'
 import type { WNode, WNodeProps } from './types'
 import type { BadgeViewState } from './view-states'

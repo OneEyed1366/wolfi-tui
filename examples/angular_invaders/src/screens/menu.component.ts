@@ -6,7 +6,7 @@ import {
 	FocusService,
 	AppService,
 	injectInput,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 import { InvadersService } from '../services/invaders.service'
 import { BRAND } from '../theme'
 

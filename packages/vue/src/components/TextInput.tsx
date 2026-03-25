@@ -6,7 +6,7 @@ import {
 	renderTextInput,
 	defaultTextInputTheme,
 	type TextInputRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { wNodeToVue } from '../wnode/wnode-to-vue'
 
 //#region Types

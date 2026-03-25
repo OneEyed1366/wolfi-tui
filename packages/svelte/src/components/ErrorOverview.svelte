@@ -7,7 +7,7 @@
 		renderErrorOverview,
 		type ErrorOverviewData,
 		type ErrorOverviewStackFrame,
-	} from '@wolfie/shared'
+	} from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 
 	let { error }: {

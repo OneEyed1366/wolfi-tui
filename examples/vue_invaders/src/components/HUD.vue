@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Box, Text, Spacer } from '@wolfie/vue'
+import { Box, Text, Spacer } from '@wolf-tui/vue'
 import { BRAND } from '../theme'
 
 //#region Props

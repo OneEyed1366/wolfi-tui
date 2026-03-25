@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Box, Text, Select, MultiSelect } from '@wolfie/vue'
+import { Box, Text, Select, MultiSelect } from '@wolf-tui/vue'
 
 const colorOptions = [
 	{ label: 'Red', value: 'red' },

@@ -6,16 +6,16 @@ import {
 	unref,
 	type PropType,
 } from 'vue'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import {
 	computeBoxStyle,
 	computeBoxBackground,
 	type ClassNameValue,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { AccessibilitySymbol, BackgroundSymbol } from '../context/symbols'
 
 //#region Types
-import type { AriaRole, AriaState } from '@wolfie/shared'
+import type { AriaRole, AriaState } from '@wolf-tui/shared'
 
 export interface BoxProps {
 	className?: ClassNameValue

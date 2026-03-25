@@ -17,10 +17,10 @@ import {
 	type DOMNode,
 	type LayoutTree,
 	type ElementNames,
-} from '@wolfie/core'
-import { LayoutTree as TaffyLayoutTree } from '@wolfie/core/layout'
+} from '@wolf-tui/core'
+import { LayoutTree as TaffyLayoutTree } from '@wolf-tui/core/layout'
 import { throttle } from 'es-toolkit/compat'
-import { createRenderScheduler } from '@wolfie/shared'
+import { createRenderScheduler } from '@wolf-tui/shared'
 import signalExit from 'signal-exit'
 import {
 	StdinCtx,
@@ -31,7 +31,7 @@ import {
 	AccessibilityCtx,
 	ThemeCtx,
 } from './context/symbols'
-import type { ITheme } from '@wolfie/shared'
+import type { ITheme } from '@wolf-tui/shared'
 
 //#region Types
 export interface RenderOptions {

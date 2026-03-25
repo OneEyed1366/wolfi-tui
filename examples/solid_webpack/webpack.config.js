@@ -2,7 +2,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import webpack from 'webpack'
 import fs from 'node:fs'
-import { wolfie } from '@wolfie/plugin/webpack'
+import { wolfie } from '@wolf-tui/plugin/webpack'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -50,23 +50,23 @@ export default {
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js', '.node'],
 		alias: {
-			'@wolfie/core/layout': path.resolve(
+			'@wolf-tui/core/layout': path.resolve(
 				__dirname,
 				'../../internal/core/layout.js'
 			),
-			'@wolfie/core': path.resolve(
+			'@wolf-tui/core': path.resolve(
 				__dirname,
 				'../../internal/core/src/index.ts'
 			),
-			'@wolfie/solid/styles': path.resolve(
+			'@wolf-tui/solid/styles': path.resolve(
 				__dirname,
 				'../../packages/solid/src/styles/index.ts'
 			),
-			'@wolfie/solid/renderer': path.resolve(
+			'@wolf-tui/solid/renderer': path.resolve(
 				__dirname,
 				'../../packages/solid/src/renderer/index.ts'
 			),
-			'@wolfie/solid': path.resolve(
+			'@wolf-tui/solid': path.resolve(
 				__dirname,
 				'../../packages/solid/src/index.tsx'
 			),
@@ -85,7 +85,7 @@ export default {
 								'babel-preset-solid',
 								{
 									generate: 'universal',
-									moduleName: '@wolfie/solid/renderer',
+									moduleName: '@wolf-tui/solid/renderer',
 								},
 							],
 							'@babel/preset-typescript',

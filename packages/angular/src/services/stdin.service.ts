@@ -1,5 +1,5 @@
 import { Injectable, inject, DestroyRef, NgZone } from '@angular/core'
-import { parseKeypress, nonAlphanumericKeys } from '@wolfie/core'
+import { parseKeypress, nonAlphanumericKeys } from '@wolf-tui/core'
 import { STDIN_CONTEXT } from '../tokens'
 
 //#region Types

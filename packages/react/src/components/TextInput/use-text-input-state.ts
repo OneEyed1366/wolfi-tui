@@ -4,7 +4,7 @@ import {
 	createInitialTextInputState,
 	findSuggestion,
 	type TextInputState as SharedTextInputState,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 
 //#region Hook Types
 export type UseTextInputStateProps = {

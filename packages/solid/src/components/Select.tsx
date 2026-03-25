@@ -3,12 +3,12 @@ import {
 	renderSelect,
 	defaultSelectTheme,
 	type SelectRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../theme'
 import { useSelectState } from '../composables/use-select-state'
 import { useSelect } from '../composables/use-select'
 import { wNodeToSolid } from '../wnode/wnode-to-solid'
-import type { Option } from '@wolfie/shared'
+import type { Option } from '@wolf-tui/shared'
 
 //#region Types
 export interface ISelectProps {

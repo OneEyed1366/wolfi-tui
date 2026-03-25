@@ -1,5 +1,5 @@
 import { createSignal, For } from 'solid-js'
-import { Box, Text, useInput } from '@wolfie/solid'
+import { Box, Text, useInput } from '@wolf-tui/solid'
 import type { Screen } from '../composables/useInvaders'
 import { useQuit } from '../composables/useQuit'
 import { BRAND } from '../theme'

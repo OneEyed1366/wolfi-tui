@@ -12,7 +12,7 @@ import type {
 	CodeGeneratorOptions,
 } from './types'
 import { mapCSSProperty } from './properties'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 
 //#region Utilities
 
@@ -167,14 +167,14 @@ function generateStylesMap(
  * @example
  * // CSS Modules mode (default export)
  * generateTypeScript(styles, { mode: 'module' })
- * // → import type { Styles } from '@wolfie/core'
+ * // → import type { Styles } from '@wolf-tui/core'
  * // → const styles = { ... } as const
  * // → export default styles
  *
  * @example
  * // Global mode (registerStyles)
  * generateTypeScript(styles, { mode: 'global' })
- * // → import { registerStyles } from '@wolfie/react'
+ * // → import { registerStyles } from '@wolf-tui/react'
  * // → registerStyles({ ... })
  */
 export function generateTypeScript(
@@ -232,7 +232,7 @@ function generateCode(
 	if (mode === 'module') {
 		// CSS Modules pattern: default export object
 		if (isTypeScript) {
-			lines.push(`import type { Styles } from '@wolfie/core'`)
+			lines.push(`import type { Styles } from '@wolf-tui/core'`)
 			if (!isMinified) {
 				lines.push('')
 			}
@@ -257,14 +257,14 @@ function generateCode(
 		// Global pattern: registerStyles call
 		const pkg =
 			options.framework === 'vue'
-				? '@wolfie/vue'
+				? '@wolf-tui/vue'
 				: options.framework === 'angular'
-					? '@wolfie/angular'
+					? '@wolf-tui/angular'
 					: options.framework === 'solid'
-						? '@wolfie/solid'
+						? '@wolf-tui/solid'
 						: options.framework === 'svelte'
-							? '@wolfie/svelte'
-							: '@wolfie/react/styles'
+							? '@wolf-tui/svelte'
+							: '@wolf-tui/react/styles'
 		lines.push(
 			`import { registerStyles, registerTailwindMetadata } from '${pkg}'`
 		)
@@ -350,7 +350,7 @@ export function generate(
 function generateDeclarations(styles: ParsedStyles): string {
 	const lines: string[] = []
 
-	lines.push("import type { Styles } from '@wolfie/core'")
+	lines.push("import type { Styles } from '@wolf-tui/core'")
 	lines.push('')
 
 	// Generate specific type with all class names

@@ -1,4 +1,4 @@
-# @wolfie/svelte
+# @wolf-tui/svelte
 
 ### Build terminal UIs with Svelte 5 — flexbox layouts, styled components, keyboard input
 
@@ -18,7 +18,7 @@
 > - No network calls, no telemetry, no file writes outside your project
 >
 > **Disable instantly:** call `instance.unmount()` or remove the `render()` call.
-> **Uninstall:** `pnpm remove @wolfie/svelte @wolfie/plugin`
+> **Uninstall:** `pnpm remove @wolf-tui/svelte @wolf-tui/plugin`
 
 ## The Problem
 
@@ -34,10 +34,10 @@ If you've used [Ink](https://github.com/vadimdemedes/ink) for React terminal UIs
 
 ```bash
 # Runtime dependencies
-pnpm add @wolfie/svelte chalk svelte
+pnpm add @wolf-tui/svelte chalk svelte
 
 # Build tooling
-pnpm add -D @wolfie/plugin @sveltejs/vite-plugin-svelte vite
+pnpm add -D @wolf-tui/plugin @sveltejs/vite-plugin-svelte vite
 ```
 
 | Peer dependency | Version |
@@ -52,7 +52,7 @@ pnpm add -D @wolfie/plugin @sveltejs/vite-plugin-svelte vite
 ```svelte
 <!-- App.svelte -->
 <script lang="ts">
-  import { Box, Text, useInput, useApp } from '@wolfie/svelte'
+  import { Box, Text, useInput, useApp } from '@wolf-tui/svelte'
 
   let count = $state(0)
   const { exit } = useApp()
@@ -74,7 +74,7 @@ pnpm add -D @wolfie/plugin @sveltejs/vite-plugin-svelte vite
 
 ```ts
 // index.ts
-import { render } from '@wolfie/svelte'
+import { render } from '@wolf-tui/svelte'
 import App from './App.svelte'
 
 render(App, { maxFps: 30 })
@@ -86,8 +86,8 @@ render(App, { maxFps: 30 })
 // vite.config.ts
 import { defineConfig } from 'vite'
 import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte'
-import { wolfie } from '@wolfie/plugin/vite'
-import { wolfiePreprocess } from '@wolfie/plugin/svelte'
+import { wolfie } from '@wolf-tui/plugin/vite'
+import { wolfiePreprocess } from '@wolf-tui/plugin/svelte'
 import { builtinModules } from 'node:module'
 
 const nodeBuiltins = [
@@ -117,8 +117,8 @@ export default defineConfig({
 		rollupOptions: {
 			external: (id) =>
 				nodeBuiltins.includes(id) ||
-				id === '@wolfie/svelte' ||
-				id.startsWith('@wolfie/svelte/') ||
+				id === '@wolf-tui/svelte' ||
+				id.startsWith('@wolf-tui/svelte/') ||
 				id === 'svelte' ||
 				id.startsWith('svelte/'),
 		},
@@ -179,7 +179,7 @@ const instance = render(App, {
 <details>
 <summary><b>Box & Text props</b></summary>
 
-Both accept `style` (inline object) and `className` (CSS classes via `@wolfie/plugin`).
+Both accept `style` (inline object) and `className` (CSS classes via `@wolf-tui/plugin`).
 
 **Box style properties:**
 
@@ -273,7 +273,7 @@ Handle keyboard input. Available inside any component rendered by `render()`.
 
 ```svelte
 <script lang="ts">
-  import { useInput } from '@wolfie/svelte'
+  import { useInput } from '@wolf-tui/svelte'
 
   useInput((input, key) => {
     if (key.upArrow) { /* move up */ }
@@ -311,7 +311,7 @@ Access the app context — primarily for `exit()`.
 
 ```svelte
 <script>
-  import { useApp } from '@wolfie/svelte'
+  import { useApp } from '@wolf-tui/svelte'
   const { exit } = useApp()
 </script>
 ```
@@ -322,7 +322,7 @@ Make components focusable and control focus programmatically.
 
 ```svelte
 <script>
-  import { useFocus, useFocusManager } from '@wolfie/svelte'
+  import { useFocus, useFocusManager } from '@wolf-tui/svelte'
 
   const { isFocused } = useFocus()
   const { focusNext, focusPrevious } = useFocusManager()
@@ -359,7 +359,7 @@ Each input component is backed by a headless composable that manages state and k
 
 ```svelte
 <script lang="ts">
-  import { useTextInputState, useTextInput, Box, Text } from '@wolfie/svelte'
+  import { useTextInputState, useTextInput, Box, Text } from '@wolf-tui/svelte'
 
   // Step 1: create reactive state (holds value, cursor, callbacks)
   const state = useTextInputState({
@@ -385,7 +385,7 @@ Each input component is backed by a headless composable that manages state and k
 Customize component appearance via the `theme` option in `render()`:
 
 ```ts
-import { render, extendTheme, defaultTheme } from '@wolfie/svelte'
+import { render, extendTheme, defaultTheme } from '@wolf-tui/svelte'
 
 const theme = extendTheme(defaultTheme, {
 	components: {
@@ -407,7 +407,7 @@ render(App, { theme })
 
 ## CSS Styling
 
-Three approaches, all via `@wolfie/plugin`:
+Three approaches, all via `@wolf-tui/plugin`:
 
 | Method       | Setup                             | Usage                        |
 | ------------ | --------------------------------- | ---------------------------- |

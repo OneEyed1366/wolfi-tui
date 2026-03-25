@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Box, Text, useInput } from '@wolfie/vue'
+import { Box, Text, useInput } from '@wolf-tui/vue'
 import type { Screen } from '../composables/useInvaders'
 import { BRAND } from '../theme'
 

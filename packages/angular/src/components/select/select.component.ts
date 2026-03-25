@@ -14,7 +14,7 @@ import {
 	type Option,
 	renderSelect,
 	defaultSelectTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { WNodeOutletComponent } from '../wnode-outlet/wnode-outlet.component'
 
 //#region Types

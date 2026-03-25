@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text, Alert, Badge, StatusMessage, Spinner, ProgressBar } from '@wolfie/svelte'
+	import { Box, Text, Alert, Badge, StatusMessage, Spinner, ProgressBar } from '@wolf-tui/svelte'
 </script>
 
 <Box className="flex-col gap-1 w-full">

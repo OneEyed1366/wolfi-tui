@@ -5,7 +5,7 @@ import {
 	type Reducer,
 	useMemo,
 } from 'react'
-import { DEFAULT_DOMAINS } from '@wolfie/shared'
+import { DEFAULT_DOMAINS } from '@wolf-tui/shared'
 
 //#region State Types
 type State = {

@@ -1,5 +1,5 @@
 import { createSignal, createComputed, For, type JSX } from 'solid-js'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 
 //#region Types
 export interface StaticProps<T> {

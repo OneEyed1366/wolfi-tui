@@ -1,5 +1,5 @@
 import { createSignal, createMemo, For } from 'solid-js'
-import { Box, Text, Newline, useInput } from '@wolfie/solid'
+import { Box, Text, Newline, useInput } from '@wolf-tui/solid'
 import type {
 	Screen,
 	Settings as SettingsType,

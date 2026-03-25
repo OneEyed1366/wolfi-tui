@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { builtinModules } from 'node:module'
@@ -29,7 +29,7 @@ export default defineConfig({
 				'react',
 				'react/jsx-runtime',
 				'react/jsx-dev-runtime',
-				'@wolfie/react',
+				'@wolf-tui/react',
 				...nodeBuiltins,
 			],
 		},

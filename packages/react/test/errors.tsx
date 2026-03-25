@@ -2,7 +2,7 @@ import React from 'react'
 import { test, expect, beforeAll, afterAll } from 'vitest'
 import patchConsole from 'patch-console'
 import stripAnsi from 'strip-ansi'
-import { render } from '@wolfie/react'
+import { render } from '@wolf-tui/react'
 import createStdout from './helpers/create-stdout'
 
 let restore = () => {}

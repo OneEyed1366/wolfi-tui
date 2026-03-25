@@ -4,7 +4,7 @@ import {
 	inject,
 	computed,
 } from '@angular/core'
-import { BoxComponent, TextComponent, injectInput } from '@wolfie/angular'
+import { BoxComponent, TextComponent, injectInput } from '@wolf-tui/angular'
 import { InvadersService } from '../services/invaders.service'
 import { BRAND } from '../theme'
 

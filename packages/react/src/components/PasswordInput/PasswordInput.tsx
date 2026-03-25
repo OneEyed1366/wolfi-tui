@@ -2,7 +2,7 @@ import {
 	renderTextInput,
 	defaultTextInputTheme,
 	type TextInputRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../../theme/theme'
 import { usePasswordInputState } from './use-password-input-state'
 import { usePasswordInput } from './use-password-input'

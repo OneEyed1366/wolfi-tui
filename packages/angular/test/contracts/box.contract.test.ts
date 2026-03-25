@@ -4,9 +4,9 @@ import {
 	ElementRef,
 	type EnvironmentInjector,
 } from '@angular/core'
-import type { Styles } from '@wolfie/core'
-import { computeBoxStyle, type ClassNameValue } from '@wolfie/shared'
-import { describeBoxContract, type BoxRenderResult } from '@wolfie/spec'
+import type { Styles } from '@wolf-tui/core'
+import { computeBoxStyle, type ClassNameValue } from '@wolf-tui/shared'
+import { describeBoxContract, type BoxRenderResult } from '@wolf-tui/spec'
 import { BoxComponent } from '../../src/components/box/box.component'
 import { BACKGROUND_CONTEXT, type BackgroundContext } from '../../src/tokens'
 

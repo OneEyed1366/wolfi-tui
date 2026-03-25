@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text } from '@wolfie/svelte'
+	import { Box, Text } from '@wolf-tui/svelte'
 	import buttonStyles from '../styles/Button.module.css'
 	import cardStyles from '../styles/Card.module.css'
 	import ScssSection from './ScssSection.svelte'

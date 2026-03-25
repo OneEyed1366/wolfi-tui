@@ -4,7 +4,7 @@ import {
 	defaultStatusMessageTheme,
 	type StatusMessageRenderTheme,
 	type StatusMessageVariant,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../../theme/theme'
 import { wNodeToReact } from '../../wnode/wnode-to-react'
 

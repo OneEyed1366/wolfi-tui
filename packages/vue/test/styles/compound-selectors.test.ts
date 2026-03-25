@@ -3,7 +3,7 @@ import {
 	registerStyles,
 	clearGlobalStyles,
 	resolveClassName,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 
 describe('Compound Selectors', () => {
 	beforeEach(() => {

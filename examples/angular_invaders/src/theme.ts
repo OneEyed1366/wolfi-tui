@@ -3,7 +3,7 @@ import {
 	defaultTheme,
 	type ITheme,
 	type IComponentTheme,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 
 //#region Brand Colors - Angular
 export const BRAND = {

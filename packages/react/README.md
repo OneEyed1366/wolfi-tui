@@ -1,4 +1,4 @@
-# @wolfie/react
+# @wolf-tui/react
 
 ### Build terminal UIs with React — flexbox layouts, styled components, keyboard input
 
@@ -14,7 +14,7 @@
 
 React terminal UI libraries exist ([Ink](https://github.com/vadimdemedes/ink)), but wolf-tui's React adapter shares a layout engine and component library with Vue, Angular, Solid, and Svelte adapters. Same components, same Taffy-powered Flexbox + CSS Grid, same styling pipeline — across all five frameworks.
 
-This package started as a fork of Ink, extended with the wolf-tui shared architecture, React Compiler integration, and the full `@wolfie/plugin` styling pipeline (Tailwind, SCSS, CSS Modules).
+This package started as a fork of Ink, extended with the wolf-tui shared architecture, React Compiler integration, and the full `@wolf-tui/plugin` styling pipeline (Tailwind, SCSS, CSS Modules).
 
 ---
 
@@ -22,10 +22,10 @@ This package started as a fork of Ink, extended with the wolf-tui shared archite
 
 ```bash
 # Runtime dependencies
-pnpm add @wolfie/react chalk react react-reconciler
+pnpm add @wolf-tui/react chalk react react-reconciler
 
 # Build tooling
-pnpm add -D @wolfie/plugin @vitejs/plugin-react vite
+pnpm add -D @wolf-tui/plugin @vitejs/plugin-react vite
 ```
 
 | Peer dependency    | Version   |
@@ -39,7 +39,7 @@ pnpm add -D @wolfie/plugin @vitejs/plugin-react vite
 ## Quick Start
 
 ```tsx
-import { render, Box, Text, useInput, useApp } from '@wolfie/react'
+import { render, Box, Text, useInput, useApp } from '@wolf-tui/react'
 import { useState } from 'react'
 
 function App() {
@@ -112,7 +112,7 @@ clear() // Clear terminal output
 <details>
 <summary><b>Box & Text props</b></summary>
 
-Both accept `style` (inline object) and `className` (CSS classes via `@wolfie/plugin`).
+Both accept `style` (inline object) and `className` (CSS classes via `@wolf-tui/plugin`).
 
 **Box style properties** (passed via `style`):
 
@@ -237,7 +237,7 @@ Both accept `style` (inline object) and `className` (CSS classes via `@wolfie/pl
 Handle keyboard input.
 
 ```tsx
-import { useInput } from '@wolfie/react'
+import { useInput } from '@wolf-tui/react'
 
 function App() {
 	useInput((input, key) => {
@@ -312,7 +312,7 @@ const { focusNext, focusPrevious } = useFocusManager()
 Spinner animation hook for building custom spinners:
 
 ```tsx
-import { useSpinner } from '@wolfie/react'
+import { useSpinner } from '@wolf-tui/react'
 
 function Loading() {
 	const { frame } = useSpinner({ type: 'dots' })
@@ -329,7 +329,12 @@ function Loading() {
 Customize component appearance via `ThemeProvider`:
 
 ```tsx
-import { render, ThemeProvider, extendTheme, defaultTheme } from '@wolfie/react'
+import {
+	render,
+	ThemeProvider,
+	extendTheme,
+	defaultTheme,
+} from '@wolf-tui/react'
 
 const theme = extendTheme(defaultTheme, {
 	components: {
@@ -356,7 +361,7 @@ render(
 
 ## CSS Styling
 
-Three approaches, all via `@wolfie/plugin`:
+Three approaches, all via `@wolf-tui/plugin`:
 
 | Method        | Usage                                  |
 | ------------- | -------------------------------------- |
@@ -373,7 +378,6 @@ All CSS approaches resolve to terminal styles at build time — no runtime CSS e
 
 ```tsx
 import './styles.css'
-
 ;<Box className="flex-col p-4 gap-2">
 	<Text className="text-green-500 font-bold">Tailwind styled</Text>
 </Box>
@@ -383,7 +387,6 @@ import './styles.css'
 
 ```tsx
 import styles from './App.module.css'
-
 ;<Box className={styles.container}>
 	<Text className={styles.title}>CSS Modules</Text>
 </Box>
@@ -395,7 +398,7 @@ import styles from './App.module.css'
 
 ## React Compiler
 
-`@wolfie/react` ships pre-compiled with the [React Compiler](https://react.dev/learn/react-compiler) — all library components skip re-renders when props haven't changed. To apply the same optimization to your own components:
+`@wolf-tui/react` ships pre-compiled with the [React Compiler](https://react.dev/learn/react-compiler) — all library components skip re-renders when props haven't changed. To apply the same optimization to your own components:
 
 ```bash
 pnpm add -D babel-plugin-react-compiler
@@ -405,7 +408,7 @@ pnpm add -D babel-plugin-react-compiler
 // vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 
 export default defineConfig({
 	plugins: [

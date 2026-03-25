@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import React from 'react'
-import { Box, Text } from '@wolfie/react'
+import { Box, Text } from '@wolf-tui/react'
 import { renderToString } from './helpers/render-to-string'
 
 test('render text for screen readers', () => {

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { BoxComponent, TextComponent } from '@wolfie/angular'
+import { BoxComponent, TextComponent } from '@wolf-tui/angular'
 
 @Component({
 	selector: 'app-error-demo',

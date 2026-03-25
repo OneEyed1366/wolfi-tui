@@ -11,7 +11,7 @@ import type {
 	CSSParserOptions,
 } from './types'
 import { mapCSSProperty } from './properties'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 
 //#region Selector Utilities
 

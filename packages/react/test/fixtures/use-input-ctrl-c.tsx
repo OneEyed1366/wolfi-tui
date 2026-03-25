@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, useInput, useApp } from '@wolfie/react'
+import { render, useInput, useApp } from '@wolf-tui/react'
 
 function UserInput() {
 	const { exit } = useApp()

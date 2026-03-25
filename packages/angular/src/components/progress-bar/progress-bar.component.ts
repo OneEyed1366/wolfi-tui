@@ -8,9 +8,9 @@ import {
 	ElementRef,
 	inject,
 } from '@angular/core'
-import type { DOMElement } from '@wolfie/core'
-import { measureElement } from '@wolfie/core'
-import { renderProgressBar, defaultProgressBarTheme } from '@wolfie/shared'
+import type { DOMElement } from '@wolf-tui/core'
+import { measureElement } from '@wolf-tui/core'
+import { renderProgressBar, defaultProgressBarTheme } from '@wolf-tui/shared'
 import { WNodeOutletComponent } from '../wnode-outlet/wnode-outlet.component'
 
 //#region Types

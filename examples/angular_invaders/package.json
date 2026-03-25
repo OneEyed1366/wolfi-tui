@@ -1,5 +1,5 @@
 {
-	"name": "@wolfie/angular-game-invaders",
+	"name": "@wolf-tui/angular-game-invaders",
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
@@ -11,15 +11,15 @@
 		"verify": "WOLFIE_VERIFY=1 node verify.cjs"
 	},
 	"dependencies": {
-		"@wolfie/angular": "workspace:*",
+		"@wolf-tui/angular": "workspace:*",
 		"zone.js": "^0.16.0"
 	},
 	"devDependencies": {
 		"@angular/common": "^19.0.0",
 		"@angular/compiler": "^19.0.0",
 		"@angular/core": "^19.0.0",
-		"@wolfie/plugin": "workspace:*",
-		"@wolfie/typescript-plugin": "workspace:*",
+		"@wolf-tui/plugin": "workspace:*",
+		"@wolf-tui/typescript-plugin": "workspace:*",
 		"@tailwindcss/postcss": "^4.1.18",
 		"postcss": "^8.4.0",
 		"tailwindcss": "^4.0.0",

@@ -1,4 +1,4 @@
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 
 //#region WNode
 export type WNodeType = 'wolfie-box' | 'wolfie-text'

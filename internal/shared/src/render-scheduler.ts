@@ -1,4 +1,4 @@
-import { logger } from '@wolfie/core'
+import { logger } from '@wolf-tui/core'
 
 type SchedulerOptions = {
 	/** Bypass async batching — call renderFn synchronously on every scheduleRender() */

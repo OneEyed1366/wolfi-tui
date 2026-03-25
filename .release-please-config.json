@@ -11,7 +11,8 @@
 		"packages/typescript-plugin": { "component": "typescript-plugin" },
 		"internal/core": { "component": "core" },
 		"internal/css-parser": { "component": "css-parser" },
-		"internal/shared": { "component": "shared" }
+		"internal/shared": { "component": "shared" },
+		"packages/svelte": { "component": "svelte" }
 	},
 	"tag-separator": "@",
 	"include-v-in-tag": true

@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { Box, Text, ErrorOverview } from '@wolfie/vue'
+import { Box, Text, ErrorOverview } from '@wolf-tui/vue'
 
 const sampleError = new Error('Failed to fetch user data from API')
 sampleError.stack = `Error: Failed to fetch user data from API

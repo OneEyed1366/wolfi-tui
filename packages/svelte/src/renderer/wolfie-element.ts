@@ -13,8 +13,8 @@ import {
 	type TextNode,
 	type LayoutTree,
 	type ElementNames,
-} from '@wolfie/core'
-import type { Styles } from '@wolfie/core'
+} from '@wolf-tui/core'
+import type { Styles } from '@wolf-tui/core'
 
 //#region Type guards
 
@@ -360,7 +360,7 @@ export abstract class WolfieNode {
 //#region WolfieElement
 
 /**
- * Wraps a core DOMElement. Each WolfieElement owns one DOMElement from @wolfie/core.
+ * Wraps a core DOMElement. Each WolfieElement owns one DOMElement from @wolf-tui/core.
  * All attribute/style/child operations delegate to the core DOM API.
  * Assigned to globalThis.Element and globalThis.HTMLElement.
  */

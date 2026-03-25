@@ -15,4 +15,4 @@ export {
 export {
 	defaultTextInputTheme as passwordInputTheme,
 	type TextInputRenderTheme as PasswordInputTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'

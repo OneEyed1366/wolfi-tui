@@ -1,4 +1,4 @@
-import { Box, Text } from '@wolfie/react'
+import { Box, Text } from '@wolf-tui/react'
 import type { Kill } from '../hooks/useInvaders'
 import { BRAND } from '../theme'
 

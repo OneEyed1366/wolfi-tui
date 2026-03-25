@@ -1,6 +1,6 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { wolfie } from '@wolfie/plugin/webpack'
+import { wolfie } from '@wolf-tui/plugin/webpack'
 import { VueLoaderPlugin } from 'vue-loader'
 import webpack from 'webpack'
 
@@ -59,8 +59,8 @@ export default {
 		({ request }, callback) => {
 			const externals = [
 				'vue',
-				'@wolfie/core',
-				'@wolfie/css-parser',
+				'@wolf-tui/core',
+				'@wolf-tui/css-parser',
 				'ansi-escapes',
 				'ansi-styles',
 				'auto-bind',

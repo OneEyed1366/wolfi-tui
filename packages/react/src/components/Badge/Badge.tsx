@@ -1,10 +1,10 @@
-import { type Styles } from '@wolfie/core'
+import { type Styles } from '@wolf-tui/core'
 import { type ReactNode } from 'react'
 import {
 	renderBadge,
 	defaultBadgeTheme,
 	type BadgeRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../../theme/theme'
 import { wNodeToReact } from '../../wnode/wnode-to-react'
 

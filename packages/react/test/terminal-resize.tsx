@@ -2,7 +2,7 @@ import { test, expect } from 'vitest'
 import delay from 'delay'
 import stripAnsi from 'strip-ansi'
 import React from 'react'
-import { render, Box, Text } from '@wolfie/react'
+import { render, Box, Text } from '@wolf-tui/react'
 import createStdout from './helpers/create-stdout'
 
 test('clear screen when terminal width decreases', async () => {

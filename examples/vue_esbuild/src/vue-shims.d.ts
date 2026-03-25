@@ -1,4 +1,4 @@
-/// <reference types="@wolfie/vue/global" />
+/// <reference types="@wolf-tui/vue/global" />
 
 declare module '*.vue' {
 	import type { DefineComponent } from 'vue'
@@ -8,28 +8,28 @@ declare module '*.vue' {
 
 /**
  * CSS Module type declarations for tsc compatibility.
- * The @wolfie/typescript-plugin provides enhanced IntelliSense in editors.
+ * The @wolf-tui/typescript-plugin provides enhanced IntelliSense in editors.
  */
 declare module '*.module.css' {
-	import type { Styles } from '@wolfie/core'
+	import type { Styles } from '@wolf-tui/core'
 	const styles: Record<string, Styles>
 	export default styles
 }
 
 declare module '*.module.scss' {
-	import type { Styles } from '@wolfie/core'
+	import type { Styles } from '@wolf-tui/core'
 	const styles: Record<string, Styles>
 	export default styles
 }
 
 declare module '*.module.less' {
-	import type { Styles } from '@wolfie/core'
+	import type { Styles } from '@wolf-tui/core'
 	const styles: Record<string, Styles>
 	export default styles
 }
 
 declare module '*.module.styl' {
-	import type { Styles } from '@wolfie/core'
+	import type { Styles } from '@wolf-tui/core'
 	const styles: Record<string, Styles>
 	export default styles
 }

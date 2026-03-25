@@ -3,7 +3,7 @@ import {
 	defaultTheme,
 	type ITheme,
 	type IComponentTheme,
-} from '@wolfie/react'
+} from '@wolf-tui/react'
 
 //#region Brand Colors - React
 // Swap this block for other packages (Vue: #42b883, Angular: #dd0031, Svelte: #ff3e00)

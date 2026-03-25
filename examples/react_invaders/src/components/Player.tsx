@@ -1,4 +1,4 @@
-import { Box, Text } from '@wolfie/react'
+import { Box, Text } from '@wolf-tui/react'
 import { PLAYER_SPRITE, BOARD_HEIGHT, BOARD_PADDING } from '../constants'
 
 //#region Types

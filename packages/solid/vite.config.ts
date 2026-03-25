@@ -2,7 +2,7 @@ import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import solidPlugin from 'vite-plugin-solid'
 import dts from 'vite-plugin-dts'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 
 export default defineConfig({
 	resolve: {
@@ -42,7 +42,7 @@ export default defineConfig({
 		wolfie('solid'),
 		solidPlugin({
 			solid: {
-				moduleName: '@wolfie/solid/renderer',
+				moduleName: '@wolf-tui/solid/renderer',
 				generate: 'universal',
 			},
 		}),

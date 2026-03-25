@@ -1,7 +1,7 @@
 import React from 'react'
 import { test, expect } from 'vitest'
 import chalk from 'chalk'
-import { Box, Text } from '@wolfie/react'
+import { Box, Text } from '@wolf-tui/react'
 import { renderToString } from './helpers/render-to-string'
 
 test('row - align text to center', () => {

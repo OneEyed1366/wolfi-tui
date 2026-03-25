@@ -1,4 +1,4 @@
-import { render } from '@wolfie/svelte'
+import { render } from '@wolf-tui/svelte'
 import App from './App.svelte'
 import './styles/tailwind.css'
 

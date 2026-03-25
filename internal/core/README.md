@@ -1,4 +1,4 @@
-# @wolfie/core
+# @wolf-tui/core
 
 Framework-agnostic TUI core engine for wolf-tui. Provides DOM abstraction, layout engine, and rendering primitives.
 
@@ -11,7 +11,7 @@ This package is the foundation of wolf-tui. It provides:
 - **Renderer** — Converts DOM tree to ANSI terminal output
 - **Utilities** — Text measurement, keypress parsing, color handling
 
-> **Note:** This is an internal package. Most users should use `@wolfie/react`, `@wolfie/vue`, or `@wolfie/angular` instead.
+> **Note:** This is an internal package. Most users should use `@wolf-tui/react`, `@wolf-tui/vue`, or `@wolf-tui/angular` instead.
 
 ## Taffy Layout Engine
 
@@ -73,8 +73,8 @@ Requires Rust toolchain installed.
 Create a new DOM element.
 
 ```typescript
-import { createNode, LayoutTree } from '@wolfie/core'
-import { LayoutTree as TaffyLayoutTree } from '@wolfie/core/layout'
+import { createNode, LayoutTree } from '@wolf-tui/core'
+import { LayoutTree as TaffyLayoutTree } from '@wolf-tui/core/layout'
 
 const layoutTree = new TaffyLayoutTree()
 const node = createNode('wolfie-box', layoutTree)
@@ -149,7 +149,7 @@ setTextNodeValue(textNode, 'Updated text')
 Render DOM tree to terminal output.
 
 ```typescript
-import { renderer } from '@wolfie/core'
+import { renderer } from '@wolf-tui/core'
 
 const { output } = renderer(rootNode, false, layoutTree)
 process.stdout.write(output)
@@ -169,7 +169,7 @@ Returns:
 Get computed layout for a node.
 
 ```typescript
-import { getComputedLayout } from '@wolfie/core'
+import { getComputedLayout } from '@wolf-tui/core'
 
 const layout = getComputedLayout(node, layoutTree)
 // { left: 0, top: 0, width: 80, height: 24 }
@@ -201,7 +201,7 @@ if (isDisplayNone(node, layoutTree)) {
 Apply style to layout node.
 
 ```typescript
-import { applyLayoutStyle } from '@wolfie/core'
+import { applyLayoutStyle } from '@wolf-tui/core'
 
 applyLayoutStyle(layoutTree, node.layoutNodeId, {
 	flexDirection: 'column',
@@ -214,7 +214,7 @@ applyLayoutStyle(layoutTree, node.layoutNodeId, {
 Resolve vw/vh units to absolute values.
 
 ```typescript
-import { resolveViewportUnits } from '@wolfie/core'
+import { resolveViewportUnits } from '@wolf-tui/core'
 
 const resolved = resolveViewportUnits(
 	{ width: '50vw', height: '100vh' },
@@ -243,7 +243,7 @@ parseNumericValue(10) // 10
 Measure text dimensions.
 
 ```typescript
-import { measureText } from '@wolfie/core'
+import { measureText } from '@wolf-tui/core'
 
 const { width, height } = measureText('Hello\nWorld')
 // { width: 5, height: 2 }
@@ -254,7 +254,7 @@ const { width, height } = measureText('Hello\nWorld')
 Wrap text to fit width.
 
 ```typescript
-import { wrapText } from '@wolfie/core'
+import { wrapText } from '@wolf-tui/core'
 
 const wrapped = wrapText('Long text here', 10, 'wrap')
 ```
@@ -271,7 +271,7 @@ Wrap modes:
 Parse terminal keypress data.
 
 ```typescript
-import { parseKeypress } from '@wolfie/core'
+import { parseKeypress } from '@wolf-tui/core'
 
 const key = parseKeypress('\x1b[A') // Up arrow
 // { name: 'up', ctrl: false, shift: false, meta: false, ... }
@@ -282,7 +282,7 @@ const key = parseKeypress('\x1b[A') // Up arrow
 Apply ANSI colors to text.
 
 ```typescript
-import { colorize } from '@wolfie/core'
+import { colorize } from '@wolf-tui/core'
 
 const colored = colorize('Hello', 'green', 'black')
 ```
@@ -292,7 +292,7 @@ const colored = colorize('Hello', 'green', 'black')
 Measure a rendered element.
 
 ```typescript
-import { measureElement } from '@wolfie/core'
+import { measureElement } from '@wolf-tui/core'
 
 const { width, height } = measureElement(node)
 ```
@@ -306,7 +306,7 @@ const { width, height } = measureElement(node)
 Create a log updater for a stream.
 
 ```typescript
-import { logUpdate } from '@wolfie/core'
+import { logUpdate } from '@wolf-tui/core'
 
 const log = logUpdate.create(process.stdout)
 
@@ -461,7 +461,7 @@ interface LayoutTree {
 └────────────────────────┬────────────────────────────────────┘
                          │
               ┌──────────▼──────────┐
-              │   @wolfie/core      │
+              │   @wolf-tui/core      │
               │                     │
               │ ┌─────────────────┐ │
               │ │ DOM Abstraction │ │

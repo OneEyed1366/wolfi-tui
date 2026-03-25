@@ -37,7 +37,7 @@ async function verify() {
 	// WHY: dynamic import bc solid-invaders builds to ES module format (formats: ['es'])
 	// App is a named export (not default) — see src/index.tsx: export { default as App }
 	const { App } = await import('./dist/index.js')
-	const { render } = await import('@wolfie/solid')
+	const { render } = await import('@wolf-tui/solid')
 
 	const stdout = createFakeStream(120, 40)
 	const stdin = createFakeStdin()

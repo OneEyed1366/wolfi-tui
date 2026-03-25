@@ -1,4 +1,4 @@
-import { Box, Text, Spacer } from '@wolfie/react'
+import { Box, Text, Spacer } from '@wolf-tui/react'
 import { BRAND } from '../theme'
 
 //#region Types

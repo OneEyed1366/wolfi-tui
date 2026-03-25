@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { ref, markRaw, type Component } from 'vue'
-import { Box, Text, useInput, useApp } from '@wolfie/vue'
+import { Box, Text, useInput, useApp } from '@wolf-tui/vue'
 import StyleDemo from './screens/StyleDemo.vue'
 import InputDemo from './screens/InputDemo.vue'
 import SelectDemo from './screens/SelectDemo.vue'

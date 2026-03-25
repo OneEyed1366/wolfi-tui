@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref, computed, defineComponent, h } from 'vue'
-import { Box, Text, useInput, useFocus, useFocusManager } from '@wolfie/vue'
+import { Box, Text, useInput, useFocus, useFocusManager } from '@wolf-tui/vue'
 
 const items = [
 	{ id: 'item-1', label: 'First Item', color: 'red' },

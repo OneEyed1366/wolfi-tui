@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Box, Text } from '@wolfie/svelte'
+	import { Box, Text } from '@wolf-tui/svelte'
 	import { BRAND } from '../theme'
 
 	//#region Constants

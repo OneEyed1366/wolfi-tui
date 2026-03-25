@@ -1,4 +1,4 @@
-import { Box, Text, ProgressBar } from '@wolfie/react'
+import { Box, Text, ProgressBar } from '@wolf-tui/react'
 import { SHIELD_DAMAGE_SPRITES } from '../constants'
 import type { Shield as ShieldType } from '../hooks/useInvaders'
 

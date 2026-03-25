@@ -9,15 +9,15 @@
 		"example": "node esbuild.config.js && node dist/index.cjs"
 	},
 	"dependencies": {
-		"@wolfie/angular": "workspace:*",
+		"@wolf-tui/angular": "workspace:*",
 		"@angular/compiler": "^19.0.0",
 		"zone.js": "^0.16.0"
 	},
 	"devDependencies": {
 		"@angular/common": "^19.0.0",
 		"@angular/core": "^19.0.0",
-		"@wolfie/plugin": "workspace:*",
-		"@wolfie/typescript-plugin": "workspace:*",
+		"@wolf-tui/plugin": "workspace:*",
+		"@wolf-tui/typescript-plugin": "workspace:*",
 		"esbuild": "^0.24.0",
 		"less": "^4.2.0",
 		"rxjs": "^7.8.0",

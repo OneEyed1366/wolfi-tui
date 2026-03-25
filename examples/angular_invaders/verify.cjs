@@ -34,7 +34,7 @@ function createFakeStdin() {
 
 async function verify() {
 	const { AppComponent } = require('./dist/index.cjs')
-	const { renderWolfie } = require('@wolfie/angular')
+	const { renderWolfie } = require('@wolf-tui/angular')
 	const { NgZone } = require('@angular/core')
 	const stripAnsiMod = require('strip-ansi')
 	const stripAnsi = stripAnsiMod.default ?? stripAnsiMod

@@ -6,12 +6,12 @@ import {
 	type DOMElement,
 	type LayoutTree,
 	type ElementNames,
-} from '@wolfie/core'
+} from '@wolf-tui/core'
 import {
 	layoutTreeRegistry,
 	type WolfieAngularInstance,
 } from '../../src/wolfie-angular'
-import { registerStyles, clearGlobalStyles } from '@wolfie/shared'
+import { registerStyles, clearGlobalStyles } from '@wolf-tui/shared'
 
 //#region Mock Helpers
 /**

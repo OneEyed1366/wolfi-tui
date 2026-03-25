@@ -4,7 +4,7 @@
 		defaultSelectTheme,
 		type SelectRenderTheme,
 		type Option,
-	} from '@wolfie/shared'
+	} from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
 	import { useSelectState } from '../composables/use-select-state.svelte.js'

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getContext, type Snippet } from 'svelte'
 	import chalk from 'chalk'
-	import { colorize, type Styles } from '@wolfie/core'
+	import { colorize, type Styles } from '@wolf-tui/core'
 	import { resolveClassName, type ClassNameValue } from '../styles/index.js'
 	import { wolfieProps } from '../renderer/wolfie-action.js'
 	import { ACCESSIBILITY_CTX, BACKGROUND_CTX } from '../context/symbols.js'

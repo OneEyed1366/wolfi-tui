@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { BoxComponent, TextComponent } from '@wolfie/angular'
+import { BoxComponent, TextComponent } from '@wolf-tui/angular'
 
 // Import CSS Modules
 import buttonStyles from '../styles/Button.module.css'

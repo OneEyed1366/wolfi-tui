@@ -1,18 +1,18 @@
 /**
- * Global component type augmentation for @wolfie/vue.
+ * Global component type augmentation for @wolf-tui/vue.
  *
  * Add this reference to your project's env.d.ts or shims-vue.d.ts
  * to enable Volar/vue-tsc to recognize Wolfie components in templates:
  *
  * @example
  * ```ts
- * /// <reference types="@wolfie/vue/global" />
+ * /// <reference types="@wolf-tui/vue/global" />
  * ```
  *
  * Or import it in your main entry file:
  * @example
  * ```ts
- * import '@wolfie/vue/global'
+ * import '@wolf-tui/vue/global'
  * ```
  */
 

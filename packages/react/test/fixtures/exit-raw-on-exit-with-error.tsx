@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, Text, useApp, useStdin } from '@wolfie/react'
+import { render, Text, useApp, useStdin } from '@wolf-tui/react'
 
 class Exit extends React.Component<{
 	onSetRawMode: (value: boolean) => void

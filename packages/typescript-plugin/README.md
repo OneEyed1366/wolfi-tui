@@ -1,11 +1,11 @@
-# @wolfie/typescript-plugin
+# @wolf-tui/typescript-plugin
 
 TypeScript language service plugin that provides type information for CSS module imports in Wolfie projects.
 
 ## Features
 
 - **Class name autocomplete** — Type `styles.` and get suggestions for all CSS classes
-- **Type-safe access** — Each class returns `Styles` type from `@wolfie/core`
+- **Type-safe access** — Each class returns `Styles` type from `@wolf-tui/core`
 - **Go-to-definition** — Jump from class usage to CSS file definition
 - **Hover information** — See type information on hover
 - **Preprocessor support** — Works with `.module.css`, `.module.scss`, `.module.less`, `.module.styl`
@@ -13,9 +13,9 @@ TypeScript language service plugin that provides type information for CSS module
 ## Installation
 
 ```bash
-npm install @wolfie/typescript-plugin -D
+npm install @wolf-tui/typescript-plugin -D
 # or
-pnpm add @wolfie/typescript-plugin -D
+pnpm add @wolf-tui/typescript-plugin -D
 ```
 
 ## Setup
@@ -27,7 +27,7 @@ Add the plugin to your `tsconfig.json`:
 	"compilerOptions": {
 		"plugins": [
 			{
-				"name": "@wolfie/typescript-plugin"
+				"name": "@wolf-tui/typescript-plugin"
 			}
 		]
 	}
@@ -41,7 +41,7 @@ Add the plugin to your `tsconfig.json`:
 	"compilerOptions": {
 		"plugins": [
 			{
-				"name": "@wolfie/typescript-plugin",
+				"name": "@wolf-tui/typescript-plugin",
 				"customMatcher": "\\.module\\.(css|scss)$",
 				"classnameTransform": "camelCase"
 			}
@@ -95,19 +95,19 @@ TypeScript plugins **only work in editors** (VS Code, WebStorm, etc.), not durin
 ```ts
 // env.d.ts or global.d.ts
 declare module '*.module.css' {
-	import type { Styles } from '@wolfie/core'
+	import type { Styles } from '@wolf-tui/core'
 	const styles: Record<string, Styles>
 	export default styles
 }
 
 declare module '*.module.scss' {
-	import type { Styles } from '@wolfie/core'
+	import type { Styles } from '@wolf-tui/core'
 	const styles: Record<string, Styles>
 	export default styles
 }
 
 declare module '*.module.less' {
-	import type { Styles } from '@wolfie/core'
+	import type { Styles } from '@wolf-tui/core'
 	const styles: Record<string, Styles>
 	export default styles
 }
@@ -128,10 +128,10 @@ For Vue projects using Volar, the plugin should work automatically once VS Code 
 
 ## Related Packages
 
-- [`@wolfie/plugin`](../plugin) — Build plugin for Vite, esbuild, webpack
-- [`@wolfie/vue`](../vue) — Vue 3 adapter
-- [`@wolfie/react`](../react) — React adapter
-- [`@wolfie/core`](../../internal/core) — Core types and utilities
+- [`@wolf-tui/plugin`](../plugin) — Build plugin for Vite, esbuild, webpack
+- [`@wolf-tui/vue`](../vue) — Vue 3 adapter
+- [`@wolf-tui/react`](../react) — React adapter
+- [`@wolf-tui/core`](../../internal/core) — Core types and utilities
 
 ## License
 

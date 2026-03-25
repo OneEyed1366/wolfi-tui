@@ -3,10 +3,10 @@ import {
 	renderProgressBar,
 	defaultProgressBarTheme,
 	type ProgressBarRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../../theme/theme'
 import { wNodeToReact } from '../../wnode/wnode-to-react'
-import { measureElement, type DOMElement } from '@wolfie/core'
+import { measureElement, type DOMElement } from '@wolf-tui/core'
 
 //#region Types
 export type IProgressBarProps = {

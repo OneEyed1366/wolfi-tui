@@ -1,5 +1,5 @@
 {
-	"name": "@wolfie/vue",
+	"name": "@wolf-tui/vue",
 	"version": "1.2.1",
 	"description": "Vue 3 adapter for Wolfie",
 	"license": "MIT",
@@ -34,8 +34,8 @@
 		"global.d.ts"
 	],
 	"dependencies": {
-		"@wolfie/core": "workspace:*",
-		"@wolfie/shared": "workspace:*",
+		"@wolf-tui/core": "workspace:*",
+		"@wolf-tui/shared": "workspace:*",
 		"ansi-escapes": "^7.2.0",
 		"ansi-styles": "^6.2.1",
 		"auto-bind": "^5.0.1",
@@ -57,9 +57,9 @@
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^5.2.1",
 		"@vitejs/plugin-vue-jsx": "^4.1.1",
-		"@wolfie/css-parser": "workspace:*",
-		"@wolfie/plugin": "workspace:*",
-		"@wolfie/spec": "workspace:*",
+		"@wolf-tui/css-parser": "workspace:*",
+		"@wolf-tui/plugin": "workspace:*",
+		"@wolf-tui/spec": "workspace:*",
 		"memfs": "^4.56.10",
 		"ts-loader": "^9.5.4",
 		"vue": "^3.5.0"
@@ -67,5 +67,18 @@
 	"peerDependencies": {
 		"chalk": "^5.0.0",
 		"vue": "^3.5.0"
-	}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/OneEyed1366/wolfi-tui.git",
+		"directory": "packages/vue"
+	},
+	"homepage": "https://github.com/OneEyed1366/wolfi-tui/tree/master/packages/vue#readme",
+	"bugs": {
+		"url": "https://github.com/OneEyed1366/wolfi-tui/issues"
+	},
+	"author": "A.Prokopenko <psevdoproger@gmail.com>"
 }

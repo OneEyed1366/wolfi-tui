@@ -1,5 +1,5 @@
 import { onDestroy } from 'svelte'
-import { parseInputData, type IKey } from '@wolfie/shared'
+import { parseInputData, type IKey } from '@wolf-tui/shared'
 import { useStdin } from './use-stdin.js'
 
 //#region Types

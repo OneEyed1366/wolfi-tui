@@ -1,6 +1,6 @@
 import process from 'node:process'
 import React, { useEffect, useState } from 'react'
-import { Box, Text, render } from '@wolfie/react'
+import { Box, Text, render } from '@wolf-tui/react'
 
 function Erase() {
 	const [show, setShow] = useState(true)

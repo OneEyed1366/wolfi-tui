@@ -14,7 +14,7 @@ import {
 	DEFAULT_DOMAINS,
 	renderTextInput,
 	defaultTextInputTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { injectInput, type Key } from '../../services/stdin.service'
 import { FocusService } from '../../services/focus.service'
 import { WNodeOutletComponent } from '../wnode-outlet/wnode-outlet.component'

@@ -1,13 +1,13 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vitest/config'
 import solidPlugin from 'vite-plugin-solid'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 
 export default defineConfig({
 	resolve: {
-		// Map @wolfie/solid/renderer to source so JSX transform uses local renderer
+		// Map @wolf-tui/solid/renderer to source so JSX transform uses local renderer
 		alias: {
-			'@wolfie/solid/renderer': resolve(__dirname, 'src/renderer/index.ts'),
+			'@wolf-tui/solid/renderer': resolve(__dirname, 'src/renderer/index.ts'),
 		},
 		// Force browser build of solid-js (Node resolves to server build otherwise)
 		conditions: ['browser', 'development'],
@@ -16,7 +16,7 @@ export default defineConfig({
 		wolfie('solid', { include: /\.module\.css$/ }),
 		solidPlugin({
 			solid: {
-				moduleName: '@wolfie/solid/renderer',
+				moduleName: '@wolf-tui/solid/renderer',
 				generate: 'universal',
 			},
 		}),
@@ -28,8 +28,8 @@ export default defineConfig({
 		exclude: ['test/helpers/**'],
 		server: {
 			deps: {
-				// Inline @wolfie workspace packages so Vite transforms their source
-				inline: [/@wolfie/],
+				// Inline @wolf-tui workspace packages so Vite transforms their source
+				inline: [/@wolf-tui/],
 			},
 		},
 		pool: 'forks',

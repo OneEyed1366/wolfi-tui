@@ -1,4 +1,4 @@
-import { setStyle, applyLayoutStyle, logger, type Styles } from '@wolfie/core'
+import { setStyle, applyLayoutStyle, logger, type Styles } from '@wolf-tui/core'
 import type { WolfieElement } from './wolfie-element.js'
 
 //#region Types

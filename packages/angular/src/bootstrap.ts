@@ -80,7 +80,7 @@ export interface WolfieInstance {
  *
  * @example
  * ```typescript
- * import { renderWolfie } from '@wolfie/angular'
+ * import { renderWolfie } from '@wolf-tui/angular'
  * import { AppComponent } from './app.component'
  *
  * const instance = renderWolfie(AppComponent, {

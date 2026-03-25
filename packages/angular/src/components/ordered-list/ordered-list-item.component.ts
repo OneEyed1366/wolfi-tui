@@ -6,7 +6,7 @@ import {
 	signal,
 	computed,
 } from '@angular/core'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import { BoxComponent } from '../box/box.component'
 import { TextComponent } from '../text/text.component'
 

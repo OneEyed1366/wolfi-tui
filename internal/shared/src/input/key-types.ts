@@ -1,4 +1,4 @@
-import { parseKeypress, nonAlphanumericKeys, logger } from '@wolfie/core'
+import { parseKeypress, nonAlphanumericKeys, logger } from '@wolf-tui/core'
 
 //#region Types
 export type IKey = {

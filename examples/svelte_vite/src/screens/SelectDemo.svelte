@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text, Select, MultiSelect } from '@wolfie/svelte'
+	import { Box, Text, Select, MultiSelect } from '@wolf-tui/svelte'
 
 	const colorOptions = [
 		{ label: 'Red', value: 'red' },

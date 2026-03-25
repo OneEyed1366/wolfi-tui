@@ -1,6 +1,6 @@
 import { createRenderer } from 'solid-js/universal'
 import { createNodeOps, type NodeOpsConfig } from './node-ops'
-import type { DOMNode } from '@wolfie/core'
+import type { DOMNode } from '@wolf-tui/core'
 import type { Renderer } from 'solid-js/universal'
 
 //#region Renderer Singleton

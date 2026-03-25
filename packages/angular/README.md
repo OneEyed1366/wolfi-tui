@@ -1,4 +1,4 @@
-# @wolfie/angular
+# @wolf-tui/angular
 
 ### Build terminal UIs with Angular — flexbox layouts, styled components, signals
 
@@ -24,10 +24,10 @@ If you've used [Ink](https://github.com/vadimdemedes/ink) for React terminal UIs
 
 ```bash
 # Runtime dependencies
-pnpm add @wolfie/angular chalk @angular/core @angular/common
+pnpm add @wolf-tui/angular chalk @angular/core @angular/common
 
 # Build tooling
-pnpm add -D @wolfie/plugin vite
+pnpm add -D @wolf-tui/plugin vite
 ```
 
 | Peer dependency   | Version   |
@@ -47,7 +47,7 @@ import {
 	TextComponent,
 	injectInput,
 	type Key,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 
 @Component({
 	selector: 'app-root',
@@ -75,7 +75,7 @@ export class AppComponent {
 ```
 
 ```typescript
-import { renderWolfie } from '@wolfie/angular'
+import { renderWolfie } from '@wolf-tui/angular'
 import { AppComponent } from './app.component'
 
 renderWolfie(AppComponent)
@@ -131,7 +131,7 @@ All components use custom element selectors prefixed with `w-`. All are standalo
 <details>
 <summary><b>Box & Text inputs</b></summary>
 
-Both accept `[style]` (inline object) and `class`/`[className]` (CSS classes via `@wolfie/plugin`).
+Both accept `[style]` (inline object) and `class`/`[className]` (CSS classes via `@wolf-tui/plugin`).
 
 **Box style properties** (passed via `[style]`):
 
@@ -266,7 +266,7 @@ Angular uses dependency injection instead of hooks/composables.
 Inject keyboard input handler. Must be called in injection context (constructor or field initializer).
 
 ```typescript
-import { injectInput, type Key } from '@wolfie/angular'
+import { injectInput, type Key } from '@wolf-tui/angular'
 
 @Component({
 	/* ... */
@@ -318,7 +318,7 @@ App lifecycle — inject for `exit()`.
 
 ```typescript
 import { inject } from '@angular/core'
-import { AppService } from '@wolfie/angular'
+import { AppService } from '@wolf-tui/angular'
 
 private app = inject(AppService)
 this.app.exit()
@@ -349,7 +349,7 @@ import {
 	APP_CONTEXT,
 	FOCUS_CONTEXT,
 	ACCESSIBILITY_CONTEXT,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 ```
 
 </details>

@@ -96,7 +96,7 @@ export async function createApp(
 			const bundlePath = resolve(ROOT, 'examples/react_invaders/dist/index.js')
 			const { App } = await import(bundlePath)
 			const React = await import('react')
-			const { render } = await import('@wolfie/react')
+			const { render } = await import('@wolf-tui/react')
 			const element = React.createElement(App)
 			const instance = render(element, {
 				stdout: stdout as unknown as NodeJS.WriteStream,
@@ -111,7 +111,7 @@ export async function createApp(
 		case 'vue': {
 			const bundlePath = resolve(ROOT, 'examples/vue_invaders/dist/index.js')
 			const { App } = await import(bundlePath)
-			const { render } = await import('@wolfie/vue')
+			const { render } = await import('@wolf-tui/vue')
 			const instance = render(App, {
 				stdout: stdout as unknown as NodeJS.WriteStream,
 				stdin: stdin as unknown as NodeJS.ReadStream,
@@ -130,7 +130,7 @@ export async function createApp(
 				'examples/angular_invaders/dist/index.cjs'
 			)
 			const { AppComponent } = esmRequire(bundlePath)
-			const { renderWolfie } = esmRequire('@wolfie/angular')
+			const { renderWolfie } = esmRequire('@wolf-tui/angular')
 			// debug: false + maxFps: 30 — same as Vue; debug: true floods
 			// event loop during game ticks, starving setTimeout in tests
 			const instance = await renderWolfie(AppComponent, {
@@ -148,7 +148,7 @@ export async function createApp(
 		case 'solid': {
 			const bundlePath = resolve(ROOT, 'examples/solid_invaders/dist/index.js')
 			const { App } = await import(bundlePath)
-			const { render } = await import('@wolfie/solid')
+			const { render } = await import('@wolf-tui/solid')
 			// debug: false + maxFps: 30 — same as Vue; solid uses data events
 			const instance = render(App, {
 				stdout: stdout as unknown as NodeJS.WriteStream,

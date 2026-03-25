@@ -1,5 +1,5 @@
 import { createSignal, onCleanup, type Accessor } from 'solid-js'
-import { useStdout } from '@wolfie/solid'
+import { useStdout } from '@wolf-tui/solid'
 
 //#region Types
 export type TerminalSize = {

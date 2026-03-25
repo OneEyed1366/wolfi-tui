@@ -33,7 +33,7 @@ function createFakeStdin() {
 
 async function verify() {
 	const { App } = await import('./dist/index.js')
-	const { render } = await import('@wolfie/vue')
+	const { render } = await import('@wolf-tui/vue')
 
 	const stdout = createFakeStream(80, 24)
 	const stdin = createFakeStdin()

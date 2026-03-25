@@ -4,6 +4,6 @@ export {
 	clearGlobalStyles,
 	getGlobalStyle,
 	resolveClassName,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 
-export type { ClassNameValue } from '@wolfie/shared'
+export type { ClassNameValue } from '@wolf-tui/shared'

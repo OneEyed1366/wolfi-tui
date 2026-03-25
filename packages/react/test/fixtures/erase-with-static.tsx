@@ -1,6 +1,6 @@
 import process from 'node:process'
 import React from 'react'
-import { Static, Box, Text, render } from '@wolfie/react'
+import { Static, Box, Text, render } from '@wolf-tui/react'
 
 function EraseWithStatic() {
 	return (

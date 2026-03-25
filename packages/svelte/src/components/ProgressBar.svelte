@@ -3,8 +3,8 @@
 		renderProgressBar,
 		defaultProgressBarTheme,
 		type ProgressBarRenderTheme,
-	} from '@wolfie/shared'
-	import { measureElement } from '@wolfie/core'
+	} from '@wolf-tui/shared'
+	import { measureElement } from '@wolf-tui/core'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
 	import { WolfieElement } from '../renderer/wolfie-element.js'

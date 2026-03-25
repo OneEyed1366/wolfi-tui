@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text, ErrorOverview } from '@wolfie/svelte'
+	import { Box, Text, ErrorOverview } from '@wolf-tui/svelte'
 
 	const sampleError = new Error('Failed to fetch user data from API')
 	sampleError.stack = `Error: Failed to fetch user data from API

@@ -1,6 +1,6 @@
 import 'zone.js'
 import '@angular/compiler' // Required for JIT compilation of services
-import { renderWolfie, type WolfieInstance } from '@wolfie/angular'
+import { renderWolfie, type WolfieInstance } from '@wolf-tui/angular'
 import { AppComponent } from './app.component'
 
 // Bootstrap the Angular app

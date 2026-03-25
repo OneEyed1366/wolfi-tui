@@ -1,4 +1,4 @@
-import { renderNewline } from '@wolfie/shared'
+import { renderNewline } from '@wolf-tui/shared'
 import { wNodeToReact } from '../../wnode/wnode-to-react'
 import type { IProps } from './types'
 

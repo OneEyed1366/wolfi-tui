@@ -4,8 +4,8 @@ import {
 	renderProgressBar,
 	defaultProgressBarTheme,
 	type ProgressBarRenderTheme,
-} from '@wolfie/shared'
-import { measureElement, type DOMElement } from '@wolfie/core'
+} from '@wolf-tui/shared'
+import { measureElement, type DOMElement } from '@wolf-tui/core'
 import { wNodeToVue } from '../wnode/wnode-to-vue'
 
 //#region Types

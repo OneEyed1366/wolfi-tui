@@ -10,7 +10,7 @@ import {
 } from '@angular/core'
 import { injectInput, type Key } from '../../services/stdin.service'
 import { FocusService } from '../../services/focus.service'
-import { renderConfirmInput, defaultConfirmInputTheme } from '@wolfie/shared'
+import { renderConfirmInput, defaultConfirmInputTheme } from '@wolf-tui/shared'
 import { WNodeOutletComponent } from '../wnode-outlet/wnode-outlet.component'
 
 //#region Types

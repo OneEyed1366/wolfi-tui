@@ -8,7 +8,7 @@ import {
 	renderMultiSelect,
 	defaultMultiSelectTheme,
 	type MultiSelectRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../theme'
 import type { Option } from '../types'
 import { useMultiSelectState } from '../composables/use-multi-select-state'

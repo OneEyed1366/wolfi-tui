@@ -1,5 +1,5 @@
 /**
- * @wolfie/typescript-plugin
+ * @wolf-tui/typescript-plugin
  *
  * TypeScript language service plugin that provides type information
  * for CSS module imports in Wolfie projects.
@@ -24,7 +24,7 @@ declare namespace init {
 	 *   "compilerOptions": {
 	 *     "plugins": [
 	 *       {
-	 *         "name": "@wolfie/typescript-plugin",
+	 *         "name": "@wolf-tui/typescript-plugin",
 	 *         "customMatcher": "\\.module\\.css$",
 	 *         "classnameTransform": "camelCase"
 	 *       }

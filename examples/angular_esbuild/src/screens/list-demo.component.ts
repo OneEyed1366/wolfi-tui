@@ -6,7 +6,7 @@ import {
 	OrderedListItemComponent,
 	UnorderedListComponent,
 	UnorderedListItemComponent,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 
 @Component({
 	selector: 'app-list-demo',

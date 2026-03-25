@@ -9,7 +9,7 @@
  * 2. load: extract `<style>` from `.svelte` file, compile preprocessor, parse to styles, return JS
  */
 import type { Plugin } from 'vite'
-import { compile, parseCSS } from '@wolfie/css-parser'
+import { compile, parseCSS } from '@wolf-tui/css-parser'
 
 const WOLFIE_SVELTE_STYLE_PREFIX = '\x00wolfie-svelte-style:'
 
@@ -118,7 +118,7 @@ export function createSvelteSfcPlugin(): Plugin {
 			const stylesJson = JSON.stringify(styles)
 
 			return {
-				code: `import { registerStyles } from '@wolfie/svelte'
+				code: `import { registerStyles } from '@wolf-tui/svelte'
 const styles = ${stylesJson}
 registerStyles(styles)
 export default styles`,

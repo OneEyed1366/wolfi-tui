@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text, useFocus } from '@wolfie/svelte'
+	import { Box, Text, useFocus } from '@wolf-tui/svelte'
 
 	let { id, label, color, autoFocus = false, isActive = true } = $props()
 

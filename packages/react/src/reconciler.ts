@@ -19,7 +19,7 @@ import {
 	type Styles,
 	type OutputTransformer,
 	type LayoutTree,
-} from '@wolfie/core'
+} from '@wolf-tui/core'
 
 // We need to conditionally perform devtools connection to avoid
 // accidentally breaking other third-party code.

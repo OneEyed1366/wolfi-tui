@@ -4,7 +4,7 @@
 		defaultMultiSelectTheme,
 		type MultiSelectRenderTheme,
 		type Option,
-	} from '@wolfie/shared'
+	} from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
 	import { useMultiSelectState } from '../composables/use-multi-select-state.svelte.js'

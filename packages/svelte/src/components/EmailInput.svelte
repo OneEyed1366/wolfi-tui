@@ -3,7 +3,7 @@
 		renderTextInput,
 		defaultTextInputTheme,
 		type TextInputRenderTheme,
-	} from '@wolfie/shared'
+	} from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 	import { useComponentTheme } from '../theme/index.js'
 	import { useEmailInputState } from '../composables/use-email-input-state.svelte.js'

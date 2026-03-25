@@ -12,7 +12,7 @@ import {
 import chalk from 'chalk'
 import { injectInput, type Key } from '../../services/stdin.service'
 import { FocusService } from '../../services/focus.service'
-import { renderTextInput, defaultTextInputTheme } from '@wolfie/shared'
+import { renderTextInput, defaultTextInputTheme } from '@wolf-tui/shared'
 import { WNodeOutletComponent } from '../wnode-outlet/wnode-outlet.component'
 
 //#region Types

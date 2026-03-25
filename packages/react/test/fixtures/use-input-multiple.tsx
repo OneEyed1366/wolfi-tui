@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { render, useInput, useApp, Text } from '@wolfie/react'
+import { render, useInput, useApp, Text } from '@wolf-tui/react'
 
 function App() {
 	const { exit } = useApp()

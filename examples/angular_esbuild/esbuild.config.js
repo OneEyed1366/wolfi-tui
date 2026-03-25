@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import { wolfie } from '@wolfie/plugin/esbuild'
+import { wolfie } from '@wolf-tui/plugin/esbuild'
 
 await esbuild.build({
 	entryPoints: ['src/main.ts'],
@@ -10,18 +10,18 @@ await esbuild.build({
 	target: 'node20',
 	tsconfig: 'tsconfig.json',
 	plugins: [
-		// WHY: nativeBindings disabled because @wolfie/angular is externalized;
+		// WHY: nativeBindings disabled because @wolf-tui/angular is externalized;
 		// native .node files are resolved through node_modules at runtime
 		wolfie('angular', { nativeBindings: false }),
 	],
-	// WHY: @wolfie/angular carries native .node bindings that can't be bundled;
+	// WHY: @wolf-tui/angular carries native .node bindings that can't be bundled;
 	// Angular packages and zone.js are runtime deps loaded from node_modules
 	external: [
 		'@angular/core',
 		'@angular/common',
 		'@angular/compiler',
 		'zone.js',
-		'@wolfie/angular',
+		'@wolf-tui/angular',
 	],
 	logLevel: 'info',
 })

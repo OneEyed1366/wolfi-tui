@@ -1,5 +1,5 @@
 import { createSignal } from 'solid-js'
-import { render, Box, Text, Spinner, useApp, useInput } from '@wolfie/solid'
+import { render, Box, Text, Spinner, useApp, useInput } from '@wolf-tui/solid'
 import './styles.css'
 
 function App() {

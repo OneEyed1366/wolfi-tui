@@ -53,25 +53,25 @@ importers:
       '@vitejs/plugin-vue-jsx':
         specifier: ^4.2.0
         version: 4.2.0(vite@6.4.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.2)(lightningcss@1.31.1)(sass@1.98.0)(stylus@0.64.0)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.30(typescript@5.9.3))
-      '@wolfie/angular':
+      '@wolf-tui/angular':
         specifier: workspace:*
         version: link:packages/angular
-      '@wolfie/core':
+      '@wolf-tui/core':
         specifier: workspace:*
         version: link:internal/core
-      '@wolfie/css-parser':
+      '@wolf-tui/css-parser':
         specifier: workspace:*
         version: link:internal/css-parser
-      '@wolfie/react':
+      '@wolf-tui/react':
         specifier: workspace:*
         version: link:packages/react
-      '@wolfie/solid':
+      '@wolf-tui/solid':
         specifier: workspace:*
         version: link:packages/solid
-      '@wolfie/svelte':
+      '@wolf-tui/svelte':
         specifier: workspace:*
         version: link:packages/svelte
-      '@wolfie/vue':
+      '@wolf-tui/vue':
         specifier: workspace:*
         version: link:packages/vue
       ansi-to-html:
@@ -206,7 +206,7 @@ importers:
       '@angular/compiler':
         specifier: ^19.0.0
         version: 19.2.19
-      '@wolfie/angular':
+      '@wolf-tui/angular':
         specifier: workspace:*
         version: link:../../packages/angular
       zone.js:
@@ -219,10 +219,10 @@ importers:
       '@angular/core':
         specifier: ^19.0.0
         version: 19.2.19(rxjs@7.8.2)(zone.js@0.16.1)
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       esbuild:
@@ -243,7 +243,7 @@ importers:
 
   examples/angular_invaders:
     dependencies:
-      '@wolfie/angular':
+      '@wolf-tui/angular':
         specifier: workspace:*
         version: link:../../packages/angular
       zone.js:
@@ -262,10 +262,10 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       postcss:
@@ -299,13 +299,13 @@ importers:
       '@angular/core':
         specifier: ^19.0.0
         version: 19.2.19(rxjs@7.8.2)(zone.js@0.16.1)
-      '@wolfie/angular':
+      '@wolf-tui/angular':
         specifier: workspace:*
         version: link:../../packages/angular
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       chalk:
@@ -338,7 +338,7 @@ importers:
       '@angular/compiler':
         specifier: ^19.0.0
         version: 19.2.19
-      '@wolfie/angular':
+      '@wolf-tui/angular':
         specifier: workspace:*
         version: link:../../packages/angular
       zone.js:
@@ -351,10 +351,10 @@ importers:
       '@angular/core':
         specifier: ^19.0.0
         version: 19.2.19(rxjs@7.8.2)(zone.js@0.16.1)
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       less:
@@ -384,7 +384,7 @@ importers:
 
   examples/react_esbuild:
     dependencies:
-      '@wolfie/react':
+      '@wolf-tui/react':
         specifier: workspace:*
         version: link:../../packages/react
       react:
@@ -394,7 +394,7 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
       autoprefixer:
@@ -412,7 +412,7 @@ importers:
 
   examples/react_invaders:
     dependencies:
-      '@wolfie/react':
+      '@wolf-tui/react':
         specifier: workspace:*
         version: link:../../packages/react
       react:
@@ -422,10 +422,10 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       postcss:
@@ -446,17 +446,17 @@ importers:
 
   examples/react_vite:
     dependencies:
-      '@wolfie/react':
+      '@wolf-tui/react':
         specifier: workspace:*
         version: link:../../packages/react
       react:
         specifier: ^19.0.0
         version: 19.2.4
     devDependencies:
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       autoprefixer:
@@ -474,7 +474,7 @@ importers:
 
   examples/react_webpack:
     dependencies:
-      '@wolfie/react':
+      '@wolf-tui/react':
         specifier: workspace:*
         version: link:../../packages/react
       react:
@@ -484,10 +484,10 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.0.0
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       autoprefixer:
@@ -520,7 +520,7 @@ importers:
 
   examples/solid_esbuild:
     dependencies:
-      '@wolfie/solid':
+      '@wolf-tui/solid':
         specifier: workspace:*
         version: link:../../packages/solid
       solid-js:
@@ -530,10 +530,10 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       autoprefixer:
@@ -563,7 +563,7 @@ importers:
 
   examples/solid_invaders:
     dependencies:
-      '@wolfie/solid':
+      '@wolf-tui/solid':
         specifier: workspace:*
         version: link:../../packages/solid
       solid-js:
@@ -573,10 +573,10 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       postcss:
@@ -600,7 +600,7 @@ importers:
 
   examples/solid_webpack:
     dependencies:
-      '@wolfie/solid':
+      '@wolf-tui/solid':
         specifier: workspace:*
         version: link:../../packages/solid
       solid-js:
@@ -616,10 +616,10 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.0.0
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       autoprefixer:
@@ -652,7 +652,7 @@ importers:
 
   examples/svelte_esbuild:
     dependencies:
-      '@wolfie/svelte':
+      '@wolf-tui/svelte':
         specifier: workspace:*
         version: link:../../packages/svelte
       svelte:
@@ -662,10 +662,10 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       esbuild:
@@ -698,7 +698,7 @@ importers:
 
   examples/svelte_invaders:
     dependencies:
-      '@wolfie/svelte':
+      '@wolf-tui/svelte':
         specifier: workspace:*
         version: link:../../packages/svelte
       svelte:
@@ -711,10 +711,10 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       postcss:
@@ -735,7 +735,7 @@ importers:
 
   examples/svelte_vite:
     dependencies:
-      '@wolfie/svelte':
+      '@wolf-tui/svelte':
         specifier: workspace:*
         version: link:../../packages/svelte
       svelte:
@@ -748,10 +748,10 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.2.1
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       less:
@@ -778,17 +778,17 @@ importers:
 
   examples/svelte_webpack:
     dependencies:
-      '@wolfie/svelte':
+      '@wolf-tui/svelte':
         specifier: workspace:*
         version: link:../../packages/svelte
       svelte:
         specifier: ^5.0.0
         version: 5.53.12
     devDependencies:
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       less:
@@ -821,7 +821,7 @@ importers:
 
   examples/vue_esbuild:
     dependencies:
-      '@wolfie/vue':
+      '@wolf-tui/vue':
         specifier: workspace:*
         version: link:../../packages/vue
       vue:
@@ -840,10 +840,10 @@ importers:
       '@vue/compiler-sfc':
         specifier: ^3.5.27
         version: 3.5.30
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       babel-plugin-transform-vue-jsx:
@@ -873,7 +873,7 @@ importers:
 
   examples/vue_invaders:
     dependencies:
-      '@wolfie/vue':
+      '@wolf-tui/vue':
         specifier: workspace:*
         version: link:../../packages/vue
       vue:
@@ -886,10 +886,10 @@ importers:
       '@vitejs/plugin-vue':
         specifier: ^6.0.3
         version: 6.0.4(vite@6.4.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.2)(lightningcss@1.31.1)(sass@1.98.0)(stylus@0.64.0)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.30(typescript@5.9.3))
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       postcss:
@@ -913,13 +913,13 @@ importers:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
         version: 5.2.4(vite@6.4.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.2)(lightningcss@1.31.1)(sass@1.98.0)(stylus@0.62.0)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.30(typescript@5.9.3))
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
-      '@wolfie/vue':
+      '@wolf-tui/vue':
         specifier: workspace:*
         version: link:../../packages/vue
       less:
@@ -946,7 +946,7 @@ importers:
 
   examples/vue_webpack:
     dependencies:
-      '@wolfie/vue':
+      '@wolf-tui/vue':
         specifier: workspace:*
         version: link:../../packages/vue
       vue:
@@ -956,10 +956,10 @@ importers:
       '@vue/compiler-sfc':
         specifier: ^3.5.27
         version: 3.5.30
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@wolfie/typescript-plugin':
+      '@wolf-tui/typescript-plugin':
         specifier: workspace:*
         version: link:../../packages/typescript-plugin
       less:
@@ -1077,7 +1077,7 @@ importers:
 
   internal/css-parser:
     dependencies:
-      '@wolfie/core':
+      '@wolf-tui/core':
         specifier: workspace:*
         version: link:../core
       colorjs.io:
@@ -1129,7 +1129,7 @@ importers:
 
   internal/shared:
     dependencies:
-      '@wolfie/core':
+      '@wolf-tui/core':
         specifier: workspace:*
         version: link:../core
       chalk:
@@ -1147,10 +1147,10 @@ importers:
 
   internal/spec:
     dependencies:
-      '@wolfie/core':
+      '@wolf-tui/core':
         specifier: workspace:*
         version: link:../core
-      '@wolfie/shared':
+      '@wolf-tui/shared':
         specifier: workspace:*
         version: link:../shared
       chalk:
@@ -1166,10 +1166,10 @@ importers:
 
   packages/angular:
     dependencies:
-      '@wolfie/core':
+      '@wolf-tui/core':
         specifier: workspace:*
         version: link:../../internal/core
-      '@wolfie/shared':
+      '@wolf-tui/shared':
         specifier: workspace:*
         version: link:../../internal/shared
       ansi-escapes:
@@ -1236,13 +1236,13 @@ importers:
       '@angular/core':
         specifier: ^19.0.0
         version: 19.2.19(rxjs@7.8.2)(zone.js@0.16.1)
-      '@wolfie/css-parser':
+      '@wolf-tui/css-parser':
         specifier: workspace:*
         version: link:../../internal/css-parser
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../plugin
-      '@wolfie/spec':
+      '@wolf-tui/spec':
         specifier: workspace:*
         version: link:../../internal/spec
       memfs:
@@ -1260,7 +1260,7 @@ importers:
 
   packages/plugin:
     dependencies:
-      '@wolfie/css-parser':
+      '@wolf-tui/css-parser':
         specifier: workspace:*
         version: link:../../internal/css-parser
       esbuild:
@@ -1294,10 +1294,10 @@ importers:
       '@types/react':
         specifier: '>=19.0.0'
         version: 19.2.14
-      '@wolfie/core':
+      '@wolf-tui/core':
         specifier: workspace:*
         version: link:../../internal/core
-      '@wolfie/shared':
+      '@wolf-tui/shared':
         specifier: workspace:*
         version: link:../../internal/shared
       ansi-escapes:
@@ -1367,13 +1367,13 @@ importers:
         specifier: ^9.0.0
         version: 9.0.2
     devDependencies:
-      '@wolfie/css-parser':
+      '@wolf-tui/css-parser':
         specifier: workspace:*
         version: link:../../internal/css-parser
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../plugin
-      '@wolfie/spec':
+      '@wolf-tui/spec':
         specifier: workspace:*
         version: link:../../internal/spec
       memfs:
@@ -1385,10 +1385,10 @@ importers:
 
   packages/solid:
     dependencies:
-      '@wolfie/core':
+      '@wolf-tui/core':
         specifier: workspace:*
         version: link:../../internal/core
-      '@wolfie/shared':
+      '@wolf-tui/shared':
         specifier: workspace:*
         version: link:../../internal/shared
       ansi-escapes:
@@ -1446,13 +1446,13 @@ importers:
         specifier: ^9.0.0
         version: 9.0.2
     devDependencies:
-      '@wolfie/css-parser':
+      '@wolf-tui/css-parser':
         specifier: workspace:*
         version: link:../../internal/css-parser
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../plugin
-      '@wolfie/spec':
+      '@wolf-tui/spec':
         specifier: workspace:*
         version: link:../../internal/spec
       memfs:
@@ -1467,10 +1467,10 @@ importers:
 
   packages/svelte:
     dependencies:
-      '@wolfie/core':
+      '@wolf-tui/core':
         specifier: workspace:*
         version: link:../../internal/core
-      '@wolfie/shared':
+      '@wolf-tui/shared':
         specifier: workspace:*
         version: link:../../internal/shared
       ansi-escapes:
@@ -1537,10 +1537,10 @@ importers:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.0.0
         version: 5.1.1(svelte@5.53.12)(vite@6.4.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.2)(lightningcss@1.31.1)(sass@1.98.0)(stylus@0.64.0)(terser@5.46.0)(yaml@2.8.2))
-      '@wolfie/css-parser':
+      '@wolf-tui/css-parser':
         specifier: workspace:*
         version: link:../../internal/css-parser
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../plugin
       svelte:
@@ -1552,7 +1552,7 @@ importers:
 
   packages/typescript-plugin:
     dependencies:
-      '@wolfie/css-parser':
+      '@wolf-tui/css-parser':
         specifier: workspace:*
         version: link:../../internal/css-parser
     devDependencies:
@@ -1571,10 +1571,10 @@ importers:
 
   packages/vue:
     dependencies:
-      '@wolfie/core':
+      '@wolf-tui/core':
         specifier: workspace:*
         version: link:../../internal/core
-      '@wolfie/shared':
+      '@wolf-tui/shared':
         specifier: workspace:*
         version: link:../../internal/shared
       ansi-escapes:
@@ -1638,13 +1638,13 @@ importers:
       '@vitejs/plugin-vue-jsx':
         specifier: ^4.1.1
         version: 4.2.0(vite@6.4.1(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.2)(lightningcss@1.31.1)(sass@1.98.0)(stylus@0.64.0)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.30(typescript@5.9.3))
-      '@wolfie/css-parser':
+      '@wolf-tui/css-parser':
         specifier: workspace:*
         version: link:../../internal/css-parser
-      '@wolfie/plugin':
+      '@wolf-tui/plugin':
         specifier: workspace:*
         version: link:../plugin
-      '@wolfie/spec':
+      '@wolf-tui/spec':
         specifier: workspace:*
         version: link:../../internal/spec
       memfs:

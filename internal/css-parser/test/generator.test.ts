@@ -46,7 +46,7 @@ describe('Code Generator - TypeScript Module Mode', () => {
 
 	it('includes type import', () => {
 		const output = generateTypeScript(styles, { mode: 'module' })
-		expect(output).toContain("import type { Styles } from '@wolfie/core'")
+		expect(output).toContain("import type { Styles } from '@wolf-tui/core'")
 	})
 
 	it('includes style properties', () => {
@@ -77,7 +77,7 @@ describe('Code Generator - TypeScript Global Mode', () => {
 		const output = generateTypeScript(styles, { mode: 'global' })
 		expect(output).toContain('registerStyles({')
 		expect(output).toContain(
-			"import { registerStyles, registerTailwindMetadata } from '@wolfie/react/styles'"
+			"import { registerStyles, registerTailwindMetadata } from '@wolf-tui/react/styles'"
 		)
 	})
 
@@ -116,7 +116,7 @@ describe('Code Generator - JavaScript Output', () => {
 	it('generates JavaScript global mode', () => {
 		const output = generateJavaScript(styles, { mode: 'global' })
 		expect(output).toContain(
-			"import { registerStyles, registerTailwindMetadata } from '@wolfie/react/styles'"
+			"import { registerStyles, registerTailwindMetadata } from '@wolf-tui/react/styles'"
 		)
 		expect(output).toContain('registerStyles({')
 	})

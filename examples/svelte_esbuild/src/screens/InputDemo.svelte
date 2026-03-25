@@ -1,5 +1,5 @@
 <script>
-	import { Box, Text, TextInput, PasswordInput, EmailInput, ConfirmInput } from '@wolfie/svelte'
+	import { Box, Text, TextInput, PasswordInput, EmailInput, ConfirmInput } from '@wolf-tui/svelte'
 
 	const nameSuggestions = ['Alice', 'Bob', 'Charlie', 'Diana', 'Edward']
 

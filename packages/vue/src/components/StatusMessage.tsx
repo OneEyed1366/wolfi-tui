@@ -4,7 +4,7 @@ import {
 	defaultStatusMessageTheme,
 	type StatusMessageRenderTheme,
 	type StatusMessageVariant,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { wNodeToVue } from '../wnode/wnode-to-vue'
 
 //#region Types

@@ -1,5 +1,5 @@
 {
-	"name": "@wolfie/core",
+	"name": "@wolf-tui/core",
 	"version": "1.2.1",
 	"description": "Framework-agnostic TUI core library",
 	"license": "MIT",
@@ -67,5 +67,18 @@
 	},
 	"devDependencies": {
 		"@napi-rs/cli": "^3.0.0-alpha"
-	}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/OneEyed1366/wolfi-tui.git",
+		"directory": "internal/core"
+	},
+	"homepage": "https://github.com/OneEyed1366/wolfi-tui/tree/master/internal/core#readme",
+	"bugs": {
+		"url": "https://github.com/OneEyed1366/wolfi-tui/issues"
+	},
+	"author": "A.Prokopenko <psevdoproger@gmail.com>"
 }

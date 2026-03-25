@@ -1,5 +1,5 @@
 import { defineComponent, type PropType } from 'vue'
-import { renderNewline } from '@wolfie/shared'
+import { renderNewline } from '@wolf-tui/shared'
 import { wNodeToVue } from '../wnode/wnode-to-vue'
 
 //#region Types

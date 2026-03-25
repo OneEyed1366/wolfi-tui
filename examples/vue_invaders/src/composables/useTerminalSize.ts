@@ -1,5 +1,5 @@
 import { ref, onMounted, onUnmounted, type Ref } from 'vue'
-import { useStdout } from '@wolfie/vue'
+import { useStdout } from '@wolf-tui/vue'
 
 //#region Types
 export type TerminalSize = {

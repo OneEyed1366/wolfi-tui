@@ -16,7 +16,7 @@
 > - Prebuilt for Linux (x64/arm64), macOS (Intel/Apple Silicon), Windows
 > - No network calls, no telemetry, no files written outside your project
 >
-> **Uninstall:** `npm remove @wolfie/react @wolfie/plugin` (substitute your adapter)
+> **Uninstall:** `npm remove @wolf-tui/react @wolf-tui/plugin` (substitute your adapter)
 
 ## The Problem
 
@@ -33,11 +33,11 @@ Pick your framework:
 ### React
 
 ```bash
-npm install @wolfie/react @wolfie/plugin chalk
+npm install @wolf-tui/react @wolf-tui/plugin chalk
 ```
 
 ```tsx
-import { render, Box, Text } from '@wolfie/react'
+import { render, Box, Text } from '@wolf-tui/react'
 
 function App() {
 	return (
@@ -54,12 +54,12 @@ render(<App />)
 <summary><b>Vue</b></summary>
 
 ```bash
-npm install @wolfie/vue @wolfie/plugin chalk
+npm install @wolf-tui/vue @wolf-tui/plugin chalk
 ```
 
 ```vue
 <script setup>
-import { Box, Text } from '@wolfie/vue'
+import { Box, Text } from '@wolf-tui/vue'
 </script>
 
 <template>
@@ -70,7 +70,7 @@ import { Box, Text } from '@wolfie/vue'
 ```
 
 ```ts
-import { render } from '@wolfie/vue'
+import { render } from '@wolf-tui/vue'
 import App from './App.vue'
 
 render(App)
@@ -82,12 +82,12 @@ render(App)
 <summary><b>Angular</b></summary>
 
 ```bash
-npm install @wolfie/angular @wolfie/plugin chalk
+npm install @wolf-tui/angular @wolf-tui/plugin chalk
 ```
 
 ```typescript
 import { Component } from '@angular/core'
-import { BoxComponent, TextComponent } from '@wolfie/angular'
+import { BoxComponent, TextComponent } from '@wolf-tui/angular'
 
 @Component({
 	standalone: true,
@@ -102,7 +102,7 @@ export class AppComponent {}
 ```
 
 ```ts
-import { renderWolfie } from '@wolfie/angular'
+import { renderWolfie } from '@wolf-tui/angular'
 import { AppComponent } from './app.component'
 
 renderWolfie(AppComponent)
@@ -114,11 +114,11 @@ renderWolfie(AppComponent)
 <summary><b>SolidJS</b></summary>
 
 ```bash
-npm install @wolfie/solid @wolfie/plugin chalk solid-js
+npm install @wolf-tui/solid @wolf-tui/plugin chalk solid-js
 ```
 
 ```tsx
-import { render, Box, Text } from '@wolfie/solid'
+import { render, Box, Text } from '@wolf-tui/solid'
 
 function App() {
 	return (
@@ -137,13 +137,13 @@ render(App, { stdout: process.stdout, stdin: process.stdin })
 <summary><b>Svelte</b></summary>
 
 ```bash
-npm install @wolfie/svelte @wolfie/plugin chalk svelte
+npm install @wolf-tui/svelte @wolf-tui/plugin chalk svelte
 ```
 
 ```svelte
 <!-- App.svelte -->
 <script>
-import { Box, Text } from '@wolfie/svelte'
+import { Box, Text } from '@wolf-tui/svelte'
 </script>
 
 <Box style={{ flexDirection: 'column', padding: 1 }}>
@@ -152,7 +152,7 @@ import { Box, Text } from '@wolfie/svelte'
 ```
 
 ```ts
-import { render } from '@wolfie/svelte'
+import { render } from '@wolf-tui/svelte'
 import App from './App.svelte'
 
 render(App)
@@ -168,17 +168,17 @@ Each adapter has a detailed README with full API docs, Vite/esbuild/webpack conf
 
 ## Packages
 
-| Package                                                           | Description                                | Docs                                           |
-| ----------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------- |
-| [@wolfie/core](internal/core/README.md)                           | Layout engine, DOM, renderer               | Core                                           |
-| [@wolfie/react](packages/react/README.md)                         | React 19+ adapter                          | [README](packages/react/README.md)             |
-| [@wolfie/vue](packages/vue/README.md)                             | Vue 3.5+ adapter                           | [README](packages/vue/README.md)               |
-| [@wolfie/angular](packages/angular/README.md)                     | Angular 17+ adapter                        | [README](packages/angular/README.md)           |
-| [@wolfie/solid](packages/solid/README.md)                         | SolidJS 1.9+ adapter                       | [README](packages/solid/README.md)             |
-| [@wolfie/svelte](packages/svelte/README.md)                       | Svelte 5+ adapter                          | [README](packages/svelte/README.md)            |
-| [@wolfie/plugin](packages/plugin/README.md)                       | Build plugin (Vite/esbuild/webpack/Rollup) | [README](packages/plugin/README.md)            |
-| [@wolfie/typescript-plugin](packages/typescript-plugin/README.md) | TypeScript plugin for CSS module types     | [README](packages/typescript-plugin/README.md) |
-| [@wolfie/css-parser](internal/css-parser/README.md)               | CSS/SCSS/LESS/Stylus parser                | Internal                                       |
+| Package                                                             | Description                                | Docs                                           |
+| ------------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------- |
+| [@wolf-tui/core](internal/core/README.md)                           | Layout engine, DOM, renderer               | Core                                           |
+| [@wolf-tui/react](packages/react/README.md)                         | React 19+ adapter                          | [README](packages/react/README.md)             |
+| [@wolf-tui/vue](packages/vue/README.md)                             | Vue 3.5+ adapter                           | [README](packages/vue/README.md)               |
+| [@wolf-tui/angular](packages/angular/README.md)                     | Angular 17+ adapter                        | [README](packages/angular/README.md)           |
+| [@wolf-tui/solid](packages/solid/README.md)                         | SolidJS 1.9+ adapter                       | [README](packages/solid/README.md)             |
+| [@wolf-tui/svelte](packages/svelte/README.md)                       | Svelte 5+ adapter                          | [README](packages/svelte/README.md)            |
+| [@wolf-tui/plugin](packages/plugin/README.md)                       | Build plugin (Vite/esbuild/webpack/Rollup) | [README](packages/plugin/README.md)            |
+| [@wolf-tui/typescript-plugin](packages/typescript-plugin/README.md) | TypeScript plugin for CSS module types     | [README](packages/typescript-plugin/README.md) |
+| [@wolf-tui/css-parser](internal/css-parser/README.md)               | CSS/SCSS/LESS/Stylus parser                | Internal                                       |
 
 ---
 
@@ -213,12 +213,12 @@ See individual adapter READMEs for API details and prop reference.
 </Box>
 ```
 
-| Method           | Setup                           |
-| ---------------- | ------------------------------- |
-| Inline styles    | Works out of the box            |
-| Tailwind CSS     | PostCSS + `@wolfie/plugin`      |
-| CSS Modules      | `*.module.css` imports          |
-| SCSS/LESS/Stylus | Preprocessor + `@wolfie/plugin` |
+| Method           | Setup                             |
+| ---------------- | --------------------------------- |
+| Inline styles    | Works out of the box              |
+| Tailwind CSS     | PostCSS + `@wolf-tui/plugin`      |
+| CSS Modules      | `*.module.css` imports            |
+| SCSS/LESS/Stylus | Preprocessor + `@wolf-tui/plugin` |
 
 All CSS approaches resolve to terminal styles at build time — no runtime CSS engine.
 
@@ -251,12 +251,12 @@ All CSS approaches resolve to terminal styles at build time — no runtime CSS e
 
 ```
 ┌──────────────────┐
-│  @wolfie/core    │  Taffy layout, virtual DOM, ANSI renderer
+│  @wolf-tui/core    │  Taffy layout, virtual DOM, ANSI renderer
 │  (napi-rs)       │  native .node bindings
 └────────┬─────────┘
          │
 ┌────────┴─────────┐
-│  @wolfie/shared  │  render scheduler, shared render functions,
+│  @wolf-tui/shared  │  render scheduler, shared render functions,
 │                  │  input parsing, theme system
 └────────┬─────────┘
          │
@@ -289,7 +289,7 @@ Integration details:
 render(<App />, { incrementalRendering: false })
 ```
 
-**React Compiler:** `@wolfie/react` ships pre-compiled with the [React Compiler](https://react.dev/learn/react-compiler) — all library components skip re-renders when props haven't changed. To apply to your own components:
+**React Compiler:** `@wolf-tui/react` ships pre-compiled with the [React Compiler](https://react.dev/learn/react-compiler) — all library components skip re-renders when props haven't changed. To apply to your own components:
 
 ```bash
 npm install -D babel-plugin-react-compiler
@@ -299,7 +299,7 @@ npm install -D babel-plugin-react-compiler
 // vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 
 export default defineConfig({
 	plugins: [
@@ -343,7 +343,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
 ## Acknowledgments
 
-This project started as a fork of [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes. The React package (`@wolfie/react`) builds upon Ink's foundation and includes components from the ink-\* ecosystem.
+This project started as a fork of [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes. The React package (`@wolf-tui/react`) builds upon Ink's foundation and includes components from the ink-\* ecosystem.
 
 ## License
 

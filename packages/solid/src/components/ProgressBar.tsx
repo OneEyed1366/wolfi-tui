@@ -1,6 +1,6 @@
 import { type JSX, createSignal } from 'solid-js'
-import { renderProgressBar, defaultProgressBarTheme } from '@wolfie/shared'
-import { measureElement } from '@wolfie/core'
+import { renderProgressBar, defaultProgressBarTheme } from '@wolf-tui/shared'
+import { measureElement } from '@wolf-tui/core'
 import { wNodeToSolid } from '../wnode/wnode-to-solid'
 
 //#region Types

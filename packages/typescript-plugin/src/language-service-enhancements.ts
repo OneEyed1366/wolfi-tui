@@ -103,7 +103,7 @@ export function createLanguageServiceEnhancements(
 		if (classPosition === undefined) return prior
 
 		logger?.info(
-			`[@wolfie/typescript-plugin] Go-to-definition: ${cssModuleInfo.propertyName} in ${cssModuleInfo.cssModulePath}`
+			`[@wolf-tui/typescript-plugin] Go-to-definition: ${cssModuleInfo.propertyName} in ${cssModuleInfo.cssModulePath}`
 		)
 
 		// Return definition pointing to CSS file

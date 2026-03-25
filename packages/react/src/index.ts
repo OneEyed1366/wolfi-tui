@@ -122,7 +122,7 @@ export {
 	nonAlphanumericKeys,
 	measureElement,
 	type DOMElement,
-} from '@wolfie/core'
+} from '@wolf-tui/core'
 
 // Theme system
 export * from './theme/theme'

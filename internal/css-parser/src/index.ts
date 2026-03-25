@@ -1,5 +1,5 @@
 /**
- * @wolfie/css-parser
+ * @wolf-tui/css-parser
  *
  * CSS/SCSS/Less/Stylus parser and code generator for wolfie
  */

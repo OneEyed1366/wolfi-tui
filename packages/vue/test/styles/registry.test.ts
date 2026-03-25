@@ -4,7 +4,7 @@ import {
 	clearGlobalStyles,
 	getGlobalStyle,
 	resolveClassName,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 
 describe('Style Registry', () => {
 	beforeEach(() => {

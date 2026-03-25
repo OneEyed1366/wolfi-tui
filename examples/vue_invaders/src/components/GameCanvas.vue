@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Box, Text } from '@wolfie/vue'
+import { Box, Text } from '@wolf-tui/vue'
 import {
 	ALIEN_SPRITE_FRAMES,
 	PLAYER_SPRITE,

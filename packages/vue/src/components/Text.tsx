@@ -1,10 +1,10 @@
 import { defineComponent, inject, unref, type PropType } from 'vue'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import {
 	computeTextTransform,
 	resolveClassName,
 	type ClassNameValue,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { AccessibilitySymbol, BackgroundSymbol } from '../context/symbols'
 
 //#region Types

@@ -4,12 +4,12 @@ import {
 	type VNode,
 	type DefineComponent,
 } from 'vue'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import {
 	renderBadge,
 	defaultBadgeTheme,
 	type BadgeRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { wNodeToVue } from '../wnode/wnode-to-vue'
 
 //#region Types

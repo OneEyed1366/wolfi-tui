@@ -2,7 +2,7 @@
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"typescript.tsserver.pluginPaths": [
-		"./node_modules/@wolfie/typescript-plugin",
+		"./node_modules/@wolf-tui/typescript-plugin",
 		"./packages/typescript-plugin"
 	]
 }

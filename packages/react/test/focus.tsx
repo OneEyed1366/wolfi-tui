@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import delay from 'delay'
 import { test, expect } from 'vitest'
 import { spy, stub } from 'sinon'
-import { render, Box, Text, useFocus, useFocusManager } from '@wolfie/react'
+import { render, Box, Text, useFocus, useFocusManager } from '@wolf-tui/react'
 import createStdout from './helpers/create-stdout'
 
 const createStdin = () => {

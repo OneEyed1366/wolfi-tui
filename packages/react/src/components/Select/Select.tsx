@@ -2,8 +2,8 @@ import {
 	renderSelect,
 	defaultSelectTheme,
 	type SelectRenderTheme,
-} from '@wolfie/shared'
-import type { Option } from '@wolfie/shared'
+} from '@wolf-tui/shared'
+import type { Option } from '@wolf-tui/shared'
 import { useComponentTheme } from '../../theme/theme'
 import { useSelectState } from './use-select-state'
 import { useSelect } from './use-select'

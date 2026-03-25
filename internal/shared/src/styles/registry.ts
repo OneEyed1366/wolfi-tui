@@ -1,4 +1,4 @@
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import { STATIC_UTILITIES, UTILITY_PREFIXES } from './tailwind-data.generated'
 
 /** Global registry of styles from side-effect CSS imports */

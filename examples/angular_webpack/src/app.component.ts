@@ -5,7 +5,7 @@ import {
 	injectInput,
 	AppService,
 	type Key,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 
 // Import styles (side-effect imports for global styles)
 import './styles/tailwind.css'

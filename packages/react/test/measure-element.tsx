@@ -8,7 +8,7 @@ import {
 	render,
 	measureElement,
 	type DOMElement,
-} from '@wolfie/react'
+} from '@wolf-tui/react'
 import createStdout from './helpers/create-stdout'
 
 test('measure element', async () => {

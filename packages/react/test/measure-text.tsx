@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { measureText } from '@wolfie/core'
+import { measureText } from '@wolf-tui/core'
 
 test('measure "constructor"', () => {
 	const { width } = measureText('constructor')

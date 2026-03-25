@@ -6,8 +6,8 @@ import {
 	ChangeDetectionStrategy,
 	ElementRef,
 } from '@angular/core'
-import type { Styles, DOMElement } from '@wolfie/core'
-import { computeTextTransform, type ClassNameValue } from '@wolfie/shared'
+import type { Styles, DOMElement } from '@wolf-tui/core'
+import { computeTextTransform, type ClassNameValue } from '@wolf-tui/shared'
 import { BACKGROUND_CONTEXT } from '../../tokens'
 
 //#region TextComponent

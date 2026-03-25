@@ -1,5 +1,5 @@
 {
-	"name": "@wolfie/vue-game-invaders",
+	"name": "@wolf-tui/vue-game-invaders",
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
@@ -9,13 +9,13 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@wolfie/vue": "workspace:*",
+		"@wolf-tui/vue": "workspace:*",
 		"vue": "^3.5.16"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^6.0.3",
-		"@wolfie/plugin": "workspace:*",
-		"@wolfie/typescript-plugin": "workspace:*",
+		"@wolf-tui/plugin": "workspace:*",
+		"@wolf-tui/typescript-plugin": "workspace:*",
 		"@tailwindcss/postcss": "^4.1.18",
 		"postcss": "^8.5.6",
 		"tailwindcss": "~4.1.18",

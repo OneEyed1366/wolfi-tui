@@ -5,7 +5,7 @@ import {
 	SelectComponent,
 	MultiSelectComponent,
 	type Option,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 
 //#region SelectDemoComponent
 @Component({

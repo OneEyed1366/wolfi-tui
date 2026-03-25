@@ -43,7 +43,7 @@ async function verify() {
 	// WHY: dynamic import because react-invaders dist is ES module (lib mode Vite build)
 	const { App } = await import('./dist/index.js')
 	const React = await import('react')
-	const { render } = await import('@wolfie/react')
+	const { render } = await import('@wolf-tui/react')
 
 	const stdout = createFakeStream(80, 24)
 	const stdin = createFakeStdin()

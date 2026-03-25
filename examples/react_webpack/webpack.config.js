@@ -2,7 +2,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import webpack from 'webpack'
 import fs from 'node:fs'
-import { wolfie } from '@wolfie/plugin/webpack'
+import { wolfie } from '@wolf-tui/plugin/webpack'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -53,19 +53,19 @@ export default {
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js', '.node'],
 		alias: {
-			'@wolfie/core/layout': path.resolve(
+			'@wolf-tui/core/layout': path.resolve(
 				__dirname,
 				'../../internal/core/layout.js'
 			),
-			'@wolfie/core': path.resolve(
+			'@wolf-tui/core': path.resolve(
 				__dirname,
 				'../../internal/core/src/index.ts'
 			),
-			'@wolfie/react/styles': path.resolve(
+			'@wolf-tui/react/styles': path.resolve(
 				__dirname,
 				'../../packages/react/src/styles/index.ts'
 			),
-			'@wolfie/react': path.resolve(
+			'@wolf-tui/react': path.resolve(
 				__dirname,
 				'../../packages/react/src/index.ts'
 			),
@@ -117,7 +117,7 @@ export default {
 			// Optional napi-rs platform packages and platform-specific .node files
 			// are all wrapped in try-catch in index.cjs — pass them through as-is
 			if (
-				/^@wolfie\/core-/.test(request) ||
+				/^@wolf-tui\/core-/.test(request) ||
 				/^\.\/wolfie-layout\.\S+\.node$/.test(request)
 			) {
 				return callback(null, `commonjs ${request}`)

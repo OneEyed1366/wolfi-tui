@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import solidPlugin from 'vite-plugin-solid'
-import { wolfie } from '@wolfie/plugin/vite'
+import { wolfie } from '@wolf-tui/plugin/vite'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { builtinModules } from 'node:module'
@@ -17,7 +17,7 @@ export default defineConfig({
 	plugins: [
 		solidPlugin({
 			solid: {
-				moduleName: '@wolfie/solid/renderer',
+				moduleName: '@wolf-tui/solid/renderer',
 				generate: 'universal',
 			},
 		}),
@@ -28,7 +28,7 @@ export default defineConfig({
 	},
 	resolve: {
 		alias: {
-			'solid-js': '@wolfie/solid',
+			'solid-js': '@wolf-tui/solid',
 		},
 	},
 	build: {
@@ -41,8 +41,8 @@ export default defineConfig({
 		rollupOptions: {
 			preserveEntrySignatures: 'exports-only',
 			external: (id) =>
-				id === '@wolfie/solid' ||
-				id.startsWith('@wolfie/solid/') ||
+				id === '@wolf-tui/solid' ||
+				id.startsWith('@wolf-tui/solid/') ||
 				nodeBuiltins.includes(id),
 		},
 	},

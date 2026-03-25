@@ -137,7 +137,7 @@ pnpm example examples/styling-super-hybrid/index.tsx
 The example uses:
 
 - **Vite** for development with hot reload
-- **@wolfie/css-parser/vite** plugin for CSS transformation
+- **@wolf-tui/css-parser/vite** plugin for CSS transformation
 - **Tailwind v3.4** for utility classes
 - **Sass** for SCSS preprocessing
 - **React** reconciler binding

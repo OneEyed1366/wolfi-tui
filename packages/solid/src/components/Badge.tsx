@@ -1,10 +1,10 @@
 import { type JSX, splitProps, createMemo } from 'solid-js'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 import {
 	renderBadge,
 	defaultBadgeTheme,
 	type BadgeRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useComponentTheme } from '../theme'
 import { wNodeToSolid } from '../wnode/wnode-to-solid'
 

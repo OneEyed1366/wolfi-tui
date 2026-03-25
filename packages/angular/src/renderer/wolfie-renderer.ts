@@ -19,7 +19,7 @@ import {
 	type LayoutTree,
 	type OutputTransformer,
 	logger,
-} from '@wolfie/core'
+} from '@wolf-tui/core'
 import {
 	layoutTreeRegistry,
 	type WolfieAngularInstance,
@@ -167,7 +167,7 @@ const initLayoutTreeRecursively = (
 //#region WolfieRenderer
 /**
  * Custom Renderer2 implementation for Wolfie TUI
- * Maps Angular's Renderer2 API to @wolfie/core DOM operations
+ * Maps Angular's Renderer2 API to @wolf-tui/core DOM operations
  */
 export class WolfieRenderer implements Renderer2 {
 	readonly data: { [key: string]: unknown } = {}

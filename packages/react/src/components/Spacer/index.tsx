@@ -1,4 +1,4 @@
-import { renderSpacer } from '@wolfie/shared'
+import { renderSpacer } from '@wolf-tui/shared'
 import { wNodeToReact } from '../../wnode/wnode-to-react'
 
 /**

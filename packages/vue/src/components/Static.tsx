@@ -1,5 +1,5 @@
 import { defineComponent, ref, watch, type PropType, type VNode } from 'vue'
-import type { Styles } from '@wolfie/core'
+import type { Styles } from '@wolf-tui/core'
 
 //#region Types
 export interface StaticProps<T> {

@@ -1,4 +1,4 @@
-import { Box, Text, Transform, Spacer, StatusMessage } from '@wolfie/react'
+import { Box, Text, Transform, Spacer, StatusMessage } from '@wolf-tui/react'
 import styles from '../styles/game.module.css'
 
 //#region Types

@@ -1,5 +1,5 @@
 import { type JSX } from 'solid-js'
-import { renderNewline } from '@wolfie/shared'
+import { renderNewline } from '@wolf-tui/shared'
 import { wNodeToSolid } from '../wnode/wnode-to-solid'
 
 //#region Types

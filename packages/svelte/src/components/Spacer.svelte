@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { renderSpacer } from '@wolfie/shared'
+	import { renderSpacer } from '@wolf-tui/shared'
 	import { mountWNode } from '../wnode/wnode-to-svelte.js'
 
 	const wnode = renderSpacer()

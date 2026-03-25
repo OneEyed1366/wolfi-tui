@@ -1,4 +1,4 @@
-import { useApp } from '@wolfie/svelte'
+import { useApp } from '@wolf-tui/svelte'
 
 //#region Composable
 export function useQuit(): () => void {

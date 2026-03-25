@@ -1,5 +1,5 @@
 import { createSignal, createEffect, createMemo, on, onCleanup } from 'solid-js'
-import { Box, Text, Show, useInput, useStdin } from '@wolfie/solid'
+import { Box, Text, Show, useInput, useStdin } from '@wolf-tui/solid'
 import GameCanvas from '../components/GameCanvas'
 import HUD from '../components/HUD'
 import KillLog from '../components/KillLog'

@@ -7,7 +7,7 @@ import {
 	renderErrorOverview,
 	type ErrorOverviewData,
 	type ErrorOverviewStackFrame,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { wNodeToVue } from '../wnode/wnode-to-vue'
 
 //#region Types

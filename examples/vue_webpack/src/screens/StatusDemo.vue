@@ -47,5 +47,5 @@ import {
 	StatusMessage,
 	Spinner,
 	ProgressBar,
-} from '@wolfie/vue'
+} from '@wolf-tui/vue'
 </script>

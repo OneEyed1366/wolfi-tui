@@ -10,7 +10,7 @@ import {
 	TextComponent,
 	StdoutService,
 	THEME_CONTEXT,
-} from '@wolfie/angular'
+} from '@wolf-tui/angular'
 import { InvadersService } from './services/invaders.service'
 import { invadersTheme } from './theme'
 import { MenuComponent } from './screens/menu.component'

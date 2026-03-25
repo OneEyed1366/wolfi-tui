@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Box, Text, useInput } from '@wolfie/svelte'
+	import { Box, Text, useInput } from '@wolf-tui/svelte'
 	import type { Screen } from '../composables/useInvaders.svelte'
 	import { useQuit } from '../composables/useQuit'
 	import { BRAND } from '../theme'

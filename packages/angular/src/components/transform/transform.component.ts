@@ -6,7 +6,7 @@ import {
 	ChangeDetectionStrategy,
 	ElementRef,
 } from '@angular/core'
-import type { DOMElement, OutputTransformer } from '@wolfie/core'
+import type { DOMElement, OutputTransformer } from '@wolf-tui/core'
 // TODO: Use ACCESSIBILITY_CONTEXT for screen reader support
 // import { ACCESSIBILITY_CONTEXT } from '../../tokens'
 

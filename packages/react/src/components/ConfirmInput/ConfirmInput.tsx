@@ -2,7 +2,7 @@ import {
 	renderConfirmInput,
 	defaultConfirmInputTheme,
 	type ConfirmInputRenderTheme,
-} from '@wolfie/shared'
+} from '@wolf-tui/shared'
 import { useInput } from '../../hooks/use-input'
 import { useComponentTheme } from '../../theme/theme'
 import { wNodeToReact } from '../../wnode/wnode-to-react'

@@ -2,4 +2,4 @@ export {
 	ConfirmInput,
 	type IConfirmInputProps as ConfirmInputProps,
 } from './ConfirmInput'
-export { defaultConfirmInputTheme as confirmInputTheme } from '@wolfie/shared'
+export { defaultConfirmInputTheme as confirmInputTheme } from '@wolf-tui/shared'
