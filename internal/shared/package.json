@@ -41,12 +41,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/OneEyed1366/wolfi-tui.git",
+		"url": "git+https://github.com/OneEyed1366/wolf-tui.git",
 		"directory": "internal/shared"
 	},
-	"homepage": "https://github.com/OneEyed1366/wolfi-tui/tree/master/internal/shared#readme",
+	"homepage": "https://github.com/OneEyed1366/wolf-tui/tree/master/internal/shared#readme",
 	"bugs": {
-		"url": "https://github.com/OneEyed1366/wolfi-tui/issues"
+		"url": "https://github.com/OneEyed1366/wolf-tui/issues"
 	},
 	"author": "A.Prokopenko <psevdoproger@gmail.com>"
 }
