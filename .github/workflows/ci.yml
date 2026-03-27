@@ -235,7 +235,7 @@ jobs:
   publish:
     name: Publish to npm
     needs: [release, collect-native]
-    if: needs.release.outputs.releases_created == 'true' || inputs.force_publish == true
+    if: ${{ always() && !cancelled() && (needs.release.outputs.releases_created == 'true' || inputs.force_publish) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
