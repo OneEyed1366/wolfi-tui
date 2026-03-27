@@ -239,7 +239,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Download native bindings
+      - name: Download combined native bindings
         uses: actions/download-artifact@v4
         with:
           path: internal/core
@@ -250,9 +250,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-output
-
-      - name: Generate index.cjs
-        run: cp internal/core/index.js internal/core/index.cjs
 
       - name: Move binaries into platform packages
         working-directory: internal/core
