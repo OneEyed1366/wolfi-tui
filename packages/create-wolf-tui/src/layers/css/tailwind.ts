@@ -5,6 +5,14 @@ import { TEMPLATE_FILES } from '../../paths'
 export const tailwindLayer: ILayer = {
 	id: 'css:tailwind',
 	templateVars: { cssImport: './styles/tailwind.css', cssFlavor: 'tailwind' },
+	configPatches: [
+		{
+			target: 'vite.config.ts',
+			slot: 'extraConfigSlot',
+			content: "css: { postcss: resolve(__dirname, 'postcss.config.cjs') },",
+			mode: 'add',
+		},
+	],
 	packageJson: {
 		devDependencies: {
 			'@tailwindcss/postcss': '^4.1.18',
