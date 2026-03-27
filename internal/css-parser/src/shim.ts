@@ -32,3 +32,5 @@ if (!(originalFromCodePoint as any).__patched) {
 	// Mark as patched
 	;(String.fromCodePoint as any).__patched = true
 }
+
+export {}
