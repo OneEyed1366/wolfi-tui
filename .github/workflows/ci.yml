@@ -266,13 +266,14 @@ jobs:
           path: internal/core
 
       - name: Download build artifacts
+        id: download-build
         uses: actions/download-artifact@v4
         with:
           name: build-output
         continue-on-error: true
 
-      - name: Build packages (if checks were skipped)
-        if: needs.checks.result == 'skipped'
+      - name: Build packages (if build artifacts missing)
+        if: steps.download-build.outcome == 'failure'
         run: pnpm build
 
       - name: Move binaries into platform packages
