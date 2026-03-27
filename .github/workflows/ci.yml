@@ -242,9 +242,8 @@ jobs:
       - name: Download combined native bindings
         uses: actions/download-artifact@v4
         with:
+          name: wolfie-core-node
           path: internal/core
-          pattern: bindings-*
-          merge-multiple: true
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
