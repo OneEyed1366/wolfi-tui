@@ -56,11 +56,28 @@ async function getStylus() {
 import { createRequire } from 'node:module'
 import { parseCSS } from './parser'
 import type { ParsedStyles, IPreprocessorType, CSSParserOptions } from './types'
-import './shim' // Apply Tailwind v4 patch
-import {
-	compile as tailwindCompile,
-	__unstable__loadDesignSystem as loadDesignSystem,
-} from 'tailwindcss'
+// Lazy-loaded: only imported when Tailwind CSS is actually used
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let _tailwind: { compile: any; loadDesignSystem: any } | null = null
+
+async function getTailwind() {
+	if (!_tailwind) {
+		try {
+			// Apply Tailwind v4 patch (side-effect import)
+			await import('./shim')
+			const tw = await import('tailwindcss')
+			_tailwind = {
+				compile: tw.compile,
+				loadDesignSystem: tw.__unstable__loadDesignSystem,
+			}
+		} catch {
+			throw new Error(
+				'tailwindcss is required for Tailwind CSS. Install it: npm i -D tailwindcss'
+			)
+		}
+	}
+	return _tailwind
+}
 
 //#region Tailwind Compiler Singleton
 class TailwindCompiler {
@@ -176,7 +193,8 @@ class TailwindCompiler {
 					}
 				}
 
-				const compiled = await tailwindCompile(baseCss, {
+				const tw = await getTailwind()
+				const compiled = await tw.compile(baseCss, {
 					base: root,
 					loadStylesheet,
 				})
@@ -184,7 +202,7 @@ class TailwindCompiler {
 				this.buildFn = compiled.build
 
 				try {
-					const ds = await loadDesignSystem(baseCss, {
+					const ds = await tw.loadDesignSystem(baseCss, {
 						base: root,
 						loadStylesheet,
 					})
