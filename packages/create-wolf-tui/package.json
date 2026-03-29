@@ -5,7 +5,7 @@
 	"license": "MIT",
 	"type": "module",
 	"bin": {
-		"create-wolf-tui": "./dist/index.mjs"
+		"create-wolf-tui": "./dist/bin/index.mjs"
 	},
 	"main": "./dist/index.mjs",
 	"exports": {
